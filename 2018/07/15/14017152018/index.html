@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      线性代数学习笔记01-行列式 | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Marcus.Lee">
+    
+    
+
+    <meta name="description" content="排列与逆序&amp;emsp;&amp;emsp;定义1.1 在一个n级排列$ i_1i_2…..i_n $中，如果较大的数$ i_t $在较小数$ i_s $前面（$ i_t $ &amp;gt; $ i_s $），则称$ i_t $与$ i_s $构成一个逆序。一个n级排列中逆序的总数称为它的逆序数，记为N（$ i_1i_2…..i_n $）。如果排列$ i_1i_2…..i_n $的逆序数N（$ i_1i_2….">
+<meta name="keywords" content="线性代数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="线性代数学习笔记01-行列式 | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/07/15/14017152018/index.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="排列与逆序&amp;emsp;&amp;emsp;定义1.1 在一个n级排列$ i_1i_2…..i_n $中，如果较大的数$ i_t $在较小数$ i_s $前面（$ i_t $ &amp;gt; $ i_s $），则称$ i_t $与$ i_s $构成一个逆序。一个n级排列中逆序的总数称为它的逆序数，记为N（$ i_1i_2…..i_n $）。如果排列$ i_1i_2…..i_n $的逆序数N（$ i_1i_2….">
+<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:updated_time" content="2018-07-16T15:25:35.083Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="线性代数学习笔记01-行列式 | Mr.Muzi">
+<meta name="twitter:description" content="排列与逆序&amp;emsp;&amp;emsp;定义1.1 在一个n级排列$ i_1i_2…..i_n $中，如果较大的数$ i_t $在较小数$ i_s $前面（$ i_t $ &amp;gt; $ i_s $），则称$ i_t $与$ i_s $构成一个逆序。一个n级排列中逆序的总数称为它的逆序数，记为N（$ i_1i_2…..i_n $）。如果排列$ i_1i_2…..i_n $的逆序数N（$ i_1i_2….">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo" /></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider" />
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title="" class="">图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title="" class="">归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title="" class="">关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+------------------------------>
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="Huno on GitHub">
+          <i class='icon icon-social-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">线性代数学习笔记01-行列式</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2018-07-15" class="post-meta__date date">2018-07-15</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+            <font class="categories">
+            &#8226; 分类:
+            <a class="categories-link" href="/categories/数学理论/">数学理论</a>
+            </font>
+          
+
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/线性代数/">线性代数</a>
+            </font>
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+	  
+    <a id="more"></a>
+<h2 id="排列与逆序"><a href="#排列与逆序" class="headerlink" title="排列与逆序"></a>排列与逆序</h2><p>&emsp;&emsp;<b>定义1.1</b> 在一个n级排列$ i_1i_2…..i_n $中，如果较大的数$ i_t $在较小数$ i_s $前面（$ i_t $ &gt; $ i_s $），则称$ i_t $与$ i_s $构成一个逆序。一个n级排列中逆序的总数称为它的逆序数，记为N（$ i_1i_2…..i_n $）。如果排列$ i_1i_2…..i_n $的逆序数N（$ i_1i_2…..i_n $）是奇数，则称为奇排列，逆序数是偶数则称为偶排列。<br>&emsp;&emsp;在一个排列 $i_1…i_s…i_t…i_n$中，如果仅将它的两个数码$i_s$和$i_t$对调，得到另一个排列$i_1…i_t…i_s…i_n$,这样的对话记为对换($i_s$，$i_t$)。</p>
+<h3 id="逆序数性质"><a href="#逆序数性质" class="headerlink" title="逆序数性质"></a>逆序数性质</h3><p>&emsp;&emsp;<b>定理1.1</b> 任意一个排列经过一个对换后改变其奇偶性。</p>
+<p>&emsp;&emsp;<b>定理1.2</b> n(n &gt; 1)个数码共有n！个n级排列，其中奇、偶排列各占一半。</p>
+<h2 id="n阶行列式"><a href="#n阶行列式" class="headerlink" title="n阶行列式"></a>n阶行列式</h2><p>&emsp;&emsp;<b>定义1.2</b> 用 $ n^2 $ 个数 $ a_{ij} $(i,j = 1,2,3,…..,n)组成的记号<script type="math/tex">\begin {vmatrix}
+     a_{11} & a_{12} & \cdots & a_{1n} \\
+     a_{21} & a_{22} & \cdots & a_{2n} \\
+     \vdots  & \vdots& \vdots & \vdots \\
+     a_{n1} & a_{n2} & \cdots & a_{nn}    
+\end {vmatrix}</script> 称为n阶行列式。其中横排称为行，竖排称为列。它表示所有取自不同的行、列的n个元素乘积的代数和。各项的符号是：当这一项中元素的行标按照自然数顺序排列后，如果对应的列标构成的排列是偶排列取正号，是奇排列则取负号。因此n阶行列式所表示的代数和中的一般项可以写为<script type="math/tex">(-1)^{N(j_1j_2j_3...j_n)}a_{1j_1}a_{2j_2}....a_{nj_n}</script>其中，$ j_1j_2j_3…j_n$构成一个n级排列，当$ j_1j_2j_3…j_n$取遍所有n级排列时，则得到n级行列式的代数和中所有的项，即<script type="math/tex">\begin {vmatrix}
+     a_{11} & a_{12} & \cdots & a_{1n} \\
+     a_{21} & a_{22} & \cdots & a_{2n} \\
+     \vdots  & \vdots& \vdots & \vdots \\
+     a_{n1} & a_{n2} & \cdots & a_{nn}    
+\end {vmatrix}   = \sum(-1)^{N(j_1j_2j_3...j_n)}a_{1j_1}a_{2j_2}....a_{nj_n} .</script></p>
+<p>&emsp;&emsp;三种特殊的行列式，下三角行列式：</p>
+<script type="math/tex; mode=display">D = \begin {vmatrix}
+     a_{11} & 0 & 0 &\cdots & 0 \\
+     a_{21} & a_{22} & 0 &\cdots & 0 \\
+     a_{31} & a_{32} & a_{33} &\cdots & 0 \\
+     \vdots  & \vdots& \vdots & \vdots & \vdots\\
+     a_{n1} & a_{n2} & a_{n3} & \cdots & a_{nn}    
+\end {vmatrix}</script><p>&emsp;&emsp;上三角行列式：</p>
+<script type="math/tex; mode=display">D = \begin {vmatrix}
+     a_{11} & a_{12} & a_{13} & \cdots & a_{1n} \\
+     0 & a_{22} & a_{23} & \cdots & a_{2n} \\
+     0 & 0 & a_{33} & \cdots & a_{2n} \\
+     \vdots  & \vdots& \vdots & \vdots & \vdots \\
+     0 & 0 & 0 & \cdots & a_{nn}  
+\end {vmatrix}</script><p>&emsp;&emsp;对角行行列式：<script type="math/tex">D = \begin {vmatrix}
+     a_{11} & 0 & 0 &\cdots & 0 \\
+     0 & a_{22} & 0 &\cdots & 0 \\
+     0 & 0 & a_{33} &\cdots & 0 \\
+     \vdots  & \vdots& \vdots & \vdots & \vdots\\
+     0 & 0 & 0 & \cdots & a_{nn}    
+\end {vmatrix}</script></p>
+<h3 id="n阶行列式性质"><a href="#n阶行列式性质" class="headerlink" title="n阶行列式性质"></a>n阶行列式性质</h3><p>&emsp;&emsp;<b>定理1.3</b> n阶行列式D = |$a_{ij}$|的一般项可以记为<script type="math/tex">(-1)^{N(i_1i_2i_3...i_n)+N(j_1j_2j_3...j_n)}a_{i_1j_1}a_{i_2j_2}....a_{i_nj_n}</script>其中，$i_1i_2i_3…i_n$和$j_1j_2j_3…j_n$均为n阶排列。即<script type="math/tex">\begin {vmatrix}
+     a_{11} & a_{12} & \cdots & a_{1n} \\
+     a_{21} & a_{22} & \cdots & a_{2n} \\
+     \vdots  & \vdots& \vdots & \vdots \\
+     a_{n1} & a_{n2} & \cdots & a_{nn}    
+\end {vmatrix}   = \sum(-1)^{N(i_1i_2i_3...i_n)+N(j_1j_2j_3...j_n)}a_{i_1j_1}a_{i_2j_2}....a_{i_nj_n} .</script><br>&emsp;&emsp;<b>定理1.4</b> n阶行列式也可以定义为<script type="math/tex">D = \sum(-1)^{N(i_1i_2i_3...i_n)}a_{i_11}a_{i_22}....a_{i_nn} .</script>其中，$\sum$表示对所有的n阶排列求和。</p>
+<p>&emsp;&emsp;<b>定理1.5</b> 行列式与它的转置行列式相等，即<script type="math/tex">D^T = D.</script></p>
+<p>&emsp;&emsp;<b>定理1.6</b> 交换行列式的任意两行(列)，行列式变号。<br>&emsp;&emsp;<b>推论</b> 如果行列式中有两行（列）的对应元素相同，则此行列式为零。</p>
+<p>&emsp;&emsp;<b>定理1.7</b> 用数k乘以行列式的一行（列），等于以数k乘以此行列式。即，如果设D=|$a_{ij}$|,则<script type="math/tex">D_1 = \begin {vmatrix}
+     a_{11} & a_{12} & \cdots & a_{1n} \\
+     \vdots  & \vdots& \vdots & \vdots \\
+     ka_{i1} & ka_{i2} & \cdots & ka_{in} \\
+     \vdots  & \vdots& \vdots & \vdots \\
+     a_{n1} & a_{n2} & \cdots & a_{nn}    
+\end {vmatrix}  = k\begin {vmatrix}
+     a_{11} & a_{12} & \cdots & a_{1n} \\
+     \vdots  & \vdots& \vdots & \vdots \\
+     a_{i1} & a_{i2} & \cdots & a_{in} \\
+     \vdots  & \vdots& \vdots & \vdots \\
+     a_{n1} & a_{n2} & \cdots & a_{nn}    
+\end {vmatrix} =kD.</script><br>&emsp;&emsp;<b>推论1</b> 如果行列式某行（列）的所有元素有公因子，则公因子可以提到行列式的外面。<br>&emsp;&emsp;<b>推论2</b> 如果行列式有两行（列）的对应元素成比例，则行列式为零。</p>
+
+	
+  </section>
+	
+		
+			<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Marcus.Lee">Marcus.Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。本文作者为<b><a href="/about" target="_blank" title="Marcus.Lee">Marcus.Lee</a></b>，本文标题为<b><a href="/2018/07/15/14017152018/" target="_blank" title="线性代数学习笔记01-行列式">线性代数学习笔记01-行列式</a></b>，本文链接为<b><a href="/2018/07/15/14017152018/" target="_blank" title="线性代数学习笔记01-行列式">https://marcuseddie.github.io/2018/07/15/14017152018/</a></b>。<br>&emsp;<br>&emsp;</div>
+</p>
+<section class="post-declare">
+		
+	
+	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+<div class="prev_next clearfix">
+  
+  
+    <a href="/2018/05/13/hello-world/" class="alignright next" title="Hello World">Hello World</a>
+  
+</div>
+
+
+</article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2014-2015. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/someus/huno">Huno</a></span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+    
+<!--
+
+    
+
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+	-->
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                autoDetectHeadings: true,
+			  enableToTopButton: true,
+			  title: "INDEX",
+			  css: {
+				  fontSize: "14px",
+				  largeFontSize: "18px",
+			  },
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
