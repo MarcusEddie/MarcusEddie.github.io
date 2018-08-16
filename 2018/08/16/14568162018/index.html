@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    
+
+    <title>
+      Java源码阅读笔记02 - String | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Marcus.Lee">
+    
+    
+
+    <meta name="description" content="&amp;emsp;&amp;emsp;关于 java.lang.String   的部分笔记，基于JDK版本1.7。">
+<meta name="keywords" content="JDK 1.7">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java源码阅读笔记02 - String | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/08/16/14568162018/index.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;关于 java.lang.String   的部分笔记，基于JDK版本1.7。">
+<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:updated_time" content="2018-08-16T14:00:59.023Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java源码阅读笔记02 - String | Mr.Muzi">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;关于 java.lang.String   的部分笔记，基于JDK版本1.7。">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo" /></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider" />
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title="" class="">图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title="" class="">归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title="" class="">关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+------------------------------>
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="Huno on GitHub">
+          <i class='icon icon-social-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+
+  <header class="post-header">
+    
+    <h1 class="post-title">Java源码阅读笔记02 - String</h1>
+
+    
+
+    <div class="post-meta">
+      <time datetime="2018-08-16" class="post-meta__date date">2018-08-16</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+            <font class="categories">
+            &#8226; 分类:
+            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+            </font>
+          
+
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>
+            </font>
+          
+
+      </span>
+    </div>
+    
+    
+
+  </header>
+
+  <section id="post-content" class="article-content post">
+	  
+    <p>&emsp;&emsp;关于<em> <strong>java.lang.String </strong> </em> 的部分笔记，基于JDK版本<strong>1.7</strong>。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;Java语言中关于基础数据类型<strong>String</strong>的封装类型，包含了一些类型之间的字符串查找比较、相互转换封装方法，除此之外还有一些非String类型数据转换String的封装方法API供开发人员使用。</p>
+<h2 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">--java.lang.Object</span><br><span class="line">    --java.lang.String</span><br></pre></td></tr></table></figure>
+<h2 id="实现接口"><a href="#实现接口" class="headerlink" title="实现接口"></a>实现接口</h2><p>&emsp;&emsp;<strong>Serializable, CharSequence, Comparable&lt;String&gt;</strong></p>
+<h2 id="部分方法"><a href="#部分方法" class="headerlink" title="部分方法"></a>部分方法</h2><h3 id="hashCode"><a href="#hashCode" class="headerlink" title="hashCode()"></a>hashCode()</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> h = hash;</span><br><span class="line">    <span class="keyword">if</span> (h == <span class="number">0</span> &amp;&amp; value.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">char</span> val[] = value;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; value.length; i++) &#123;</span><br><span class="line">            h = <span class="number">31</span> * h + val[i];</span><br><span class="line">        &#125;</span><br><span class="line">        hash = h;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> h;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;该方法计算每个string字符串的hash值。计算过程中，代码行6-8遵循公式 <strong>s[0]*31^(n-1) + s[1]*31^(n-2) + … + s[n-1]</strong>进行计算，最终算出整个string字符串的hash值。关于计算公式中底数的选择，原作者采用<strong>31</strong>作为指数计算的底数参与计算，对于这一选择，做如下分析和讨论：</p>
+<p>&emsp;&emsp;首先，在散列表的设计中有一个概念是冲突率，也就是采用相同的散列函数对不同的数据值进行计算会获取到相同的散列值，于是这些拥有相同散列值的数据会存储在同一个散列表队列中，这样会降低散列查找时的性能。于是在设计散列函数时会尽可能的降低冲突率，使得全域数据值可以尽可能平均的散列在每个散列表中以保证查找效率。鉴于此，在设计散列函数时会考虑选择一些质数来参与计算，诸如2，31，33，37，41，43，101等，这样可以一定程度上保证数据值能均匀分布以降低冲突率（经过数学证明）。</p>
+<p>&emsp;&emsp;那么为什么会选择31参与计算而不是2或者其他质数呢？在上述公式中，我们假设n=6，那么 $ 2^{6-1} = 32$ 得出的散列值集中在一个小的区间里，当数据量逐渐增大时，冲突率也会逐渐上升。所以不会采用2参与散列计算。同理，31，33，37，41，43，101等值与n做幂运算会得到一个相对大的散列区间。但是需要注意的是，101求出的散列区间可能会产生溢出（如果用int表示散列值的话），这样会导致数据丢失，所以101也不是一个好的选择。至于31，33，37，41，43这几个质数应该是比较合理的选择，在这里我们引用《Effective Java》中的一段话：</p>
+<blockquote>
+<p>The value 31 was chosen because it is an odd prime. If it were even and the multiplication overflowed, information would be lost, as multiplication by 2 is equivalent to shifting. The advantage of using a prime is less clear, but it is traditional. A nice property of 31 is that the multiplication can be replaced by a shift and a subtraction for better performance: <code>31 * i == (i &lt;&lt; 5) - i</code>. Modern VMs do this sort of optimization automatically. </p>
+</blockquote>
+<p>其中提及到了现代虚拟机对于 31 * i 的一个优化，因为31相对于其他质数来说可以更简单的通过移位和减法操作来实现，所以源码作者最终采用31这个质数参与散列函数的计算。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>[美] Joshua Bloch. Effective Java 2nd Edition[M]. Boston:Addison-Wesley Professional, 2008.</li>
+<li>coolblog. <a href="https://segmentfault.com/a/1190000010799123" target="_blank" rel="noopener">科普：为什么 String hashCode 方法选择数字31作为乘子</a>[E]</li>
+<li></li>
+</ol>
+
+	
+  </section>
+	
+		
+			<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Marcus.Lee">Marcus.Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。本文作者为<b><a href="/about" target="_blank" title="Marcus.Lee">Marcus.Lee</a></b>，本文标题为<b><a href="/2018/08/16/14568162018/" target="_blank" title="Java源码阅读笔记02 - String">Java源码阅读笔记02 - String</a></b>，本文链接为<b><a href="/2018/08/16/14568162018/" target="_blank" title="Java源码阅读笔记02 - String">https://marcuseddie.github.io/2018/08/16/14568162018/</a></b>。<br>&emsp;<br>&emsp;</div>
+</p>
+<section class="post-declare">
+		
+	
+	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+<div class="prev_next clearfix">
+  
+  
+    <a href="/2018/08/01/2106812018/" class="alignright next" title="Java源码阅读笔记01 - Integer">Java源码阅读笔记01 - Integer</a>
+  
+</div>
+
+
+</article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2014-2015. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/someus/huno">Huno</a></span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+    
+<!--
+
+    
+
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+	-->
+    
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                autoDetectHeadings: true,
+			  enableToTopButton: true,
+			  title: "INDEX",
+			  css: {
+				  fontSize: "14px",
+				  largeFontSize: "18px",
+			  },
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<!--<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+</body>
+</html>
