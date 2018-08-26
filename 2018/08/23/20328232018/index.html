@@ -25,7 +25,7 @@
 <meta property="og:description" content="&amp;emsp;&amp;emsp;在Java语言规范中，处理一个字符串可以通过三个类 — String、Stringbuilder、Stringbuffer来实现，三者之间在增删改字符串内容时采用的方法和原理有很多不一致的地方，这里将简单论述上述三个类型的异同。本文演示代码段的执行环境基于JDK版本1.7。">
 <meta property="og:locale" content="Asia/Shanghai">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1534927160/BlogImages/14568162018/note_string_intern_jdk_7_model_part_12.png">
-<meta property="og:updated_time" content="2018-08-23T13:56:48.471Z">
+<meta property="og:updated_time" content="2018-08-26T11:55:45.451Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java源码阅读笔记03 - 字符串三剑客 | Mr.Muzi">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp;在Java语言规范中，处理一个字符串可以通过三个类 — String、Stringbuilder、Stringbuffer来实现，三者之间在增删改字符串内容时采用的方法和原理有很多不一致的地方，这里将简单论述上述三个类型的异同。本文演示代码段的执行环境基于JDK版本1.7。">
@@ -288,10 +288,6 @@ classes that you can use:
 &emsp;
 </div>
 
-
-
-<h2 id="连接符号”-”"><a href="#连接符号”-”" class="headerlink" title="连接符号”+”"></a>连接符号”+”</h2><p>&emsp;&emsp;Java中String对象可以通过”+”来拼接两个字符串，底层原理是通过创建一个Stringbuilder实例对象来完成字符串的拼接，也就是说，通过”+”完成一次字符串拼接会产生一个Stringbuilder对象实例，该实例的值等于拼接操作执行后的预期结果，并通过Stringbuilder对象的toString方法返回执行结果。在JDK1.5之前，底层创建的是Stringbuffer对象，之所以在1.5之后采用Stringbuilder是因为Stringbuilder相对于Stringbuffer来说更有效率。相关代码如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 源代码如下：</span></span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">10</span>;</span><br><span class="line">        String s = <span class="string">"abc"</span>;</span><br><span class="line">        System.out.println(s + i);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//经过反编译操作后获取的底层代码段</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span> </span>&#123;    <span class="comment">//删除了默认构造函数和字节码</span></span><br><span class="line">        <span class="keyword">byte</span> byte0 = <span class="number">10</span>;      </span><br><span class="line">        String s = <span class="string">"abc"</span>;      </span><br><span class="line">        System.out.println((<span class="keyword">new</span> StringBuilder()).append(s).append(byte0).toString());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="涉及基础知识点"><a href="#涉及基础知识点" class="headerlink" title="涉及基础知识点"></a>涉及基础知识点</h2><ol>
 <li><p>String的初始化方式及区别：</p>
 <ol>
@@ -304,19 +300,6 @@ classes that you can use:
 <li>字符串如果是变量相加，先开空间，在拼接。除非变量是用final修饰的，那么可以把用final修饰的变量视为常量处理；</li>
 <li>字符串如果是常量相加，是先加，然后在常量池找，如果有就直接返回，否则，就创建。</li>
 </ol>
-</li>
-<li><p>Java语言规范(The Java Language Specification Java SE 7 Edition)关于字符串常量的一些论述如下:</p>
-<blockquote>
-<p>Literal strings within the same class in the same package represent references to the same String object.</p>
-<p>Literal strings within different classes in the same package represent references to the same String object.</p>
-<p>Literal strings within different classes in different packages likewise represent references to the same String object.</p>
-<p>Strings computed by constant expressions are computed at compile time and then treated as if they were literals.</p>
-<p>Strings computed by concatenation at run time are newly created and therefore distinct.</p>
-<p>The result of explicitly interning a computed string is the same string as any pre-existing literal string with the same contents.</p>
-</blockquote>
-<p>同一个包下同一个类中的字符串常量的引用指向同一个字符串对象；</p>
-<p>同一个包下不同的类中的字符串常量的引用指向同一个字符串对象；</p>
-<p>不同的包下不同的类中的字符串常量的引用仍然指向同一个字符串对象；</p>
 </li>
 </ol>
 <h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
