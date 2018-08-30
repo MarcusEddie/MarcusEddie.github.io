@@ -7,7 +7,7 @@
     
 
     <title>
-      Archive 
+      Java源码阅读笔记04 - BufferedIn/OutputStream | Mr.Muzi 
     </title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -21,16 +21,16 @@
 	
 	
     <meta name="description" content="JAVA、Python">
-<meta name="keywords" content="Java、Python">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Archive">
-<meta property="og:url" content="https://marcuseddie.github.io/archive/index.html">
+<meta name="keywords" content="JDK 1.7">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java源码阅读笔记04 - BufferedIn&#x2F;OutputStream | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/08/30/22118302018/index.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="JAVA、Python">
 <meta property="og:locale" content="Asia/Shanghai">
-<meta property="og:updated_time" content="2018-04-01T05:40:25.106Z">
+<meta property="og:updated_time" content="2018-08-30T14:18:59.526Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Archive">
+<meta name="twitter:title" content="Java源码阅读笔记04 - BufferedIn&#x2F;OutputStream | Mr.Muzi">
 <meta name="twitter:description" content="JAVA、Python">
     
     
@@ -202,74 +202,69 @@ classes that you can use:
 
   <header class="post-header">
     
-    <h1 class="post-title">Archive</h1>
+    <h1 class="post-title">Java源码阅读笔记04 - BufferedIn/OutputStream</h1>
 
-    <section id="post-content" class="article-content post">
-        
-    </section>
+    
 
+    <div class="post-meta">
+      <time datetime="2018-08-30" class="post-meta__date date">2018-08-30</time> 
+
+      <span class="post-meta__tags tags">
+
+          
+            <font class="categories">
+            &#8226; 分类:
+            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+            </font>
+          
+
+          
+             &#8226; 标签:
+            <font class="tags">
+              <a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>
+            </font>
+          
+
+      </span>
+    </div>
+    
+    
 
   </header>
 
+  <section id="post-content" class="article-content post">
+	  
+    
+	
+  </section>
+	
+		
+			<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Marcus.Lee">Marcus.Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。本文作者为<b><a href="/about" target="_blank" title="Marcus.Lee">Marcus.Lee</a></b>，本文标题为<b><a href="/2018/08/30/22118302018/" target="_blank" title="Java源码阅读笔记04 - BufferedIn/OutputStream">Java源码阅读笔记04 - BufferedIn/OutputStream</a></b>，本文链接为<b><a href="/2018/08/30/22118302018/" target="_blank" title="Java源码阅读笔记04 - BufferedIn/OutputStream">https://marcuseddie.github.io/2018/08/30/22118302018/</a></b>。<br>&emsp;<br>&emsp;</div>
+</p>
+<section class="post-declare">
+		
+	
+	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+<div class="prev_next clearfix">
+  
+    <a href="/2018/09/30/21568302018/" class="alignleft prev" title="Java源码阅读笔记 - JAVA I/O概述">Java源码阅读笔记 - JAVA I/O概述</a>
+  
+  
+    <a href="/2018/08/23/20328232018/" class="alignright next" title="Java源码阅读笔记03 - 字符串三剑客">Java源码阅读笔记03 - 字符串三剑客</a>
+  
+</div>
+
+
 </article>
 
-<div class="archive-meta">
 
-
-    <h3>categories</h3>
-
-    <div class="categorieslist">
-        
-          
-            <span><a href="/categories/Hexo教程/" title="Hexo教程">Hexo教程<sup>1</sup></a></span>
-          
-        
-          
-            <span><a href="/categories/数学理论/" title="数学理论">数学理论<sup>1</sup></a></span>
-          
-        
-          
-            <span><a href="/categories/源码阅读/" title="源码阅读">源码阅读<sup>5</sup></a></span>
-          
-        
-          
-            <span><a href="/categories/计算广告/" title="计算广告">计算广告<sup>1</sup></a></span>
-          
-        
-     </div>
-
-
-
-    <h3>tags</h3>
-    <div class="tagslist">
-        
-            
-                <span><a href="/tags/JDK-1-7/" title="JDK 1.7">JDK 1.7<sup>5</sup></a></span>
-            
-        
-            
-                <span><a href="/tags/Hexo教程/" title="Hexo教程">Hexo教程<sup>2</sup></a></span>
-            
-        
-            
-                <span><a href="/tags/线性代数/" title="线性代数">线性代数<sup>1</sup></a></span>
-            
-        
-            
-                <span><a href="/tags/CPC广告/" title="CPC广告">CPC广告<sup>1</sup></a></span>
-            
-        
-    </div>
-
-
-
-    <h3>archives</h3>
-    <div class="archiveslist">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">1</span></li></ul>
-    </div>
-
-
-</div>
             <footer class="footer">
 
     <span class="footer__copyright">&copy; 2014-2015. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/someus/huno">Huno</a></span>
@@ -299,6 +294,23 @@ classes that you can use:
 
 	-->
     
+
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                autoDetectHeadings: true,
+			  enableToTopButton: true,
+			  title: "INDEX",
+			  css: {
+				  fontSize: "14px",
+				  largeFontSize: "18px",
+			  },
+            });
+        });
+    </script>
+
+
     
     
     <!--kill ie6 -->
