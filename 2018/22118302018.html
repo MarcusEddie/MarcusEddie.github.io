@@ -20,18 +20,18 @@
 	  <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw" />
 	
 	
-    <meta name="description" content="JAVA、Python">
-<meta name="keywords" content="JDK 1.7">
+    <meta name="description" content="BufferedIn、OutputStream">
+<meta name="keywords" content="IO、BufferedInputStream、summary">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java源码阅读笔记04 - BufferedIn&#x2F;OutputStream | Mr.Muzi">
-<meta property="og:url" content="https://marcuseddie.github.io/2018/08/30/22118302018/index.html">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/22118302018.html">
 <meta property="og:site_name" content="Mr.Muzi">
-<meta property="og:description" content="JAVA、Python">
+<meta property="og:description" content="BufferedIn、OutputStream">
 <meta property="og:locale" content="Asia/Shanghai">
-<meta property="og:updated_time" content="2018-08-30T14:18:59.526Z">
+<meta property="og:updated_time" content="2018-09-01T08:06:28.919Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java源码阅读笔记04 - BufferedIn&#x2F;OutputStream | Mr.Muzi">
-<meta name="twitter:description" content="JAVA、Python">
+<meta name="twitter:description" content="BufferedIn、OutputStream">
     
     
     
@@ -208,7 +208,7 @@ classes that you can use:
 
     <div class="post-meta">
       <time datetime="2018-08-30" class="post-meta__date date">2018-08-30</time> 
-
+	  <span class="post-meta__count count">字数统计:&nbsp;0&emsp;阅读时长:&nbsp;1&nbsp;min</span>
       <span class="post-meta__tags tags">
 
           
@@ -241,7 +241,7 @@ classes that you can use:
 		
 			<section class="post-declare">
 <p>
-<div style="background-color:#E8E8E8;color:#000"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Marcus.Lee">Marcus.Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。本文作者为<b><a href="/about" target="_blank" title="Marcus.Lee">Marcus.Lee</a></b>，本文标题为<b><a href="/2018/08/30/22118302018/" target="_blank" title="Java源码阅读笔记04 - BufferedIn/OutputStream">Java源码阅读笔记04 - BufferedIn/OutputStream</a></b>，本文链接为<b><a href="/2018/08/30/22118302018/" target="_blank" title="Java源码阅读笔记04 - BufferedIn/OutputStream">https://marcuseddie.github.io/2018/08/30/22118302018/</a></b>。<br>&emsp;<br>&emsp;</div>
+<div style="background-color:#E8E8E8;color:#000"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Marcus.Lee">Marcus.Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。本文作者为<b><a href="/about" target="_blank" title="Marcus.Lee">Marcus.Lee</a></b>，本文标题为<b><a href="/2018/22118302018.html" target="_blank" title="Java源码阅读笔记04 - BufferedIn/OutputStream">Java源码阅读笔记04 - BufferedIn/OutputStream</a></b>，本文链接为<b><a href="/2018/22118302018.html" target="_blank" title="Java源码阅读笔记04 - BufferedIn/OutputStream">https://marcuseddie.github.io/2018/22118302018.html</a></b>。<br>&emsp;<br>&emsp;</div>
 </p>
 <section class="post-declare">
 		
@@ -254,10 +254,10 @@ classes that you can use:
 	
 <div class="prev_next clearfix">
   
-    <a href="/2018/09/30/21568302018/" class="alignleft prev" title="Java源码阅读笔记 - JAVA I/O概述">Java源码阅读笔记 - JAVA I/O概述</a>
+    <a href="/2018/21568302018.html" class="alignleft prev" title="Java源码阅读笔记 - JAVA I/O概述">Java源码阅读笔记 - JAVA I/O概述</a>
   
   
-    <a href="/2018/08/23/20328232018/" class="alignright next" title="Java源码阅读笔记03 - 字符串三剑客">Java源码阅读笔记03 - 字符串三剑客</a>
+    <a href="/2018/20328232018.html" class="alignright next" title="Java源码阅读笔记03 - 字符串三剑客">Java源码阅读笔记03 - 字符串三剑客</a>
   
 </div>
 
@@ -318,21 +318,5 @@ classes that you can use:
   <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
 <![endif]-->
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        tex2jax: {
-            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
-            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
-            processEscapes: true
-        }
-    });
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax();
-        for (var i = 0; i < all.length; ++i)
-            all[i].SourceElement().parentNode.className += ' has-jax';
-    });
-</script>
-<!--<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </body>
 </html>

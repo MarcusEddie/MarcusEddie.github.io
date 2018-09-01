@@ -24,7 +24,7 @@
 <meta name="keywords" content="JDK 1.7">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java源码阅读笔记03 - 字符串三剑客 | Mr.Muzi">
-<meta property="og:url" content="https://marcuseddie.github.io/2018/08/23/20328232018/index.html">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/20328232018.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="&amp;emsp;&amp;emsp;在Java语言规范中，处理一个字符串可以通过三个类 — String、Stringbuilder、Stringbuffer来实现，三者之间在增删改字符串内容时采用的方法和原理有很多不一致的地方，这里将简单论述上述三个类型的异同。本文演示代码段的执行环境基于JDK版本1.7。">
 <meta property="og:locale" content="Asia/Shanghai">
@@ -208,7 +208,7 @@ classes that you can use:
 
     <div class="post-meta">
       <time datetime="2018-08-23" class="post-meta__date date">2018-08-23</time> 
-
+	  <span class="post-meta__count count">字数统计:&nbsp;3,097&emsp;阅读时长:&nbsp;14&nbsp;min</span>
       <span class="post-meta__tags tags">
 
           
@@ -303,7 +303,7 @@ classes that you can use:
 		
 			<section class="post-declare">
 <p>
-<div style="background-color:#E8E8E8;color:#000"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Marcus.Lee">Marcus.Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。本文作者为<b><a href="/about" target="_blank" title="Marcus.Lee">Marcus.Lee</a></b>，本文标题为<b><a href="/2018/08/23/20328232018/" target="_blank" title="Java源码阅读笔记03 - 字符串三剑客">Java源码阅读笔记03 - 字符串三剑客</a></b>，本文链接为<b><a href="/2018/08/23/20328232018/" target="_blank" title="Java源码阅读笔记03 - 字符串三剑客">https://marcuseddie.github.io/2018/08/23/20328232018/</a></b>。<br>&emsp;<br>&emsp;</div>
+<div style="background-color:#E8E8E8;color:#000"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Marcus.Lee">Marcus.Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。本文作者为<b><a href="/about" target="_blank" title="Marcus.Lee">Marcus.Lee</a></b>，本文标题为<b><a href="/2018/20328232018.html" target="_blank" title="Java源码阅读笔记03 - 字符串三剑客">Java源码阅读笔记03 - 字符串三剑客</a></b>，本文链接为<b><a href="/2018/20328232018.html" target="_blank" title="Java源码阅读笔记03 - 字符串三剑客">https://marcuseddie.github.io/2018/20328232018.html</a></b>。<br>&emsp;<br>&emsp;</div>
 </p>
 <section class="post-declare">
 		
@@ -316,10 +316,10 @@ classes that you can use:
 	
 <div class="prev_next clearfix">
   
-    <a href="/2018/08/30/22118302018/" class="alignleft prev" title="Java源码阅读笔记04 - BufferedIn/OutputStream">Java源码阅读笔记04 - BufferedIn/OutputStream</a>
+    <a href="/2018/22118302018.html" class="alignleft prev" title="Java源码阅读笔记04 - BufferedIn/OutputStream">Java源码阅读笔记04 - BufferedIn/OutputStream</a>
   
   
-    <a href="/2018/08/16/14568162018/" class="alignright next" title="Java源码阅读笔记02 - String">Java源码阅读笔记02 - String</a>
+    <a href="/2018/14568162018.html" class="alignright next" title="Java源码阅读笔记02 - String">Java源码阅读笔记02 - String</a>
   
 </div>
 
@@ -380,21 +380,5 @@ classes that you can use:
   <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
 <![endif]-->
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        tex2jax: {
-            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
-            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
-            processEscapes: true
-        }
-    });
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax();
-        for (var i = 0; i < all.length; ++i)
-            all[i].SourceElement().parentNode.className += ' has-jax';
-    });
-</script>
-<!--<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </body>
 </html>

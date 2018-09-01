@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Allow: /library/
+Allow: /archive/
+Allow: /archives/
+Allow: /about/
+
+Disallow: /js/
+Disallow: /css/
+Disallow: /fonts/
+Sitemap: https://marcuseddie.github.io/sitemap.xml

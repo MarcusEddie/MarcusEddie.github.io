@@ -1036,6 +1036,7 @@ code {
 .date,
 .time,
 .author,
+.count,
 .tags {
   font-size: .8em;
   color: #c7c7c7; }
@@ -1141,6 +1142,9 @@ hr {
   color: #c7c7c7; }
 
 .post-meta__date {
+  margin-right: .5em; }
+
+.post-meta__count {
   margin-right: .5em; }
 
 .post-meta__tags {
