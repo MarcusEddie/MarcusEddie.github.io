@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://marcuseddie.github.io/library/index.html</loc>
+    
+    <lastmod>2018-09-23T04:08:12.586Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://marcuseddie.github.io/2018/10-years-of-speed-in-chrome.html</loc>
     
     <lastmod>2018-09-23T03:57:45.598Z</lastmod>
@@ -61,13 +68,6 @@
     <loc>https://marcuseddie.github.io/2018/Java-source-IO-guide.html</loc>
     
     <lastmod>2018-09-23T03:47:43.122Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://marcuseddie.github.io/library/index.html</loc>
-    
-    <lastmod>2018-08-16T13:54:34.695Z</lastmod>
     
   </url>
   
