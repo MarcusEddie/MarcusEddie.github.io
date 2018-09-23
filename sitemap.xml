@@ -2,51 +2,65 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/CPC-click-fraud-and-anti-fraud.html</loc>
+    <loc>https://marcuseddie.github.io/2018/10-years-of-speed-in-chrome.html</loc>
     
-    <lastmod>2018-09-04T03:35:37.182Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://marcuseddie.github.io/2018/Java-source-Integer.html</loc>
-    
-    <lastmod>2018-09-04T03:34:07.005Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://marcuseddie.github.io/2018/Java-source-IO-guide.html</loc>
-    
-    <lastmod>2018-09-04T03:31:55.738Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://marcuseddie.github.io/2018/Java-source-String.html</loc>
-    
-    <lastmod>2018-09-04T03:31:22.618Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://marcuseddie.github.io/2018/Java-source-String-StringBuilder-StringBuffer.html</loc>
-    
-    <lastmod>2018-09-04T03:27:35.840Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://marcuseddie.github.io/2018/hello-world.html</loc>
-    
-    <lastmod>2018-09-02T00:40:29.978Z</lastmod>
+    <lastmod>2018-09-23T03:57:45.598Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://marcuseddie.github.io/2018/Linear-algebra-determinant.html</loc>
     
-    <lastmod>2018-09-02T00:38:21.707Z</lastmod>
+    <lastmod>2018-09-23T03:49:34.356Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/Java-source-String-StringBuilder-StringBuffer.html</loc>
+    
+    <lastmod>2018-09-23T03:49:26.471Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/Java-source-String.html</loc>
+    
+    <lastmod>2018-09-23T03:49:17.002Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/Java-source-Integer.html</loc>
+    
+    <lastmod>2018-09-23T03:49:02.370Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/Java-source-BufferedInput-OutputStream.html</loc>
+    
+    <lastmod>2018-09-23T03:48:48.674Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/hello-world.html</loc>
+    
+    <lastmod>2018-09-23T03:48:38.352Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/CPC-click-fraud-and-anti-fraud.html</loc>
+    
+    <lastmod>2018-09-23T03:48:29.794Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/Java-source-IO-guide.html</loc>
+    
+    <lastmod>2018-09-23T03:47:43.122Z</lastmod>
     
   </url>
   
