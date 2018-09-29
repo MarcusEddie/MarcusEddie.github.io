@@ -2,9 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://marcuseddie.github.io/2018/10-years-of-speed-in-chrome.html</loc>
+    
+    <lastmod>2018-09-29T06:26:47.534Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://marcuseddie.github.io/2018/Java-source-BufferedInput-OutputStream.html</loc>
     
-    <lastmod>2018-09-24T02:33:21.942Z</lastmod>
+    <lastmod>2018-09-29T06:25:58.381Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-InputStream-OutputStream.html</loc>
+    
+    <lastmod>2018-09-29T06:25:35.813Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/Java-source-IO-guide.html</loc>
+    
+    <lastmod>2018-09-26T13:53:22.533Z</lastmod>
     
   </url>
   
@@ -12,13 +33,6 @@
     <loc>https://marcuseddie.github.io/library/index.html</loc>
     
     <lastmod>2018-09-23T04:08:12.589Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://marcuseddie.github.io/2018/10-years-of-speed-in-chrome.html</loc>
-    
-    <lastmod>2018-09-23T03:57:45.598Z</lastmod>
     
   </url>
   
@@ -61,13 +75,6 @@
     <loc>https://marcuseddie.github.io/2018/CPC-click-fraud-and-anti-fraud.html</loc>
     
     <lastmod>2018-09-23T03:48:29.794Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://marcuseddie.github.io/2018/Java-source-IO-guide.html</loc>
-    
-    <lastmod>2018-09-23T03:47:43.122Z</lastmod>
     
   </url>
   
