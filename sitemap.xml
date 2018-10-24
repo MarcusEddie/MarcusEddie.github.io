@@ -2,30 +2,58 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/Java-source-IO-guide.html</loc>
+    <loc>https://marcuseddie.github.io/2018/The-Why-of-Agile.html</loc>
     
-    <lastmod>2018-10-20T06:08:24.838Z</lastmod>
+    <lastmod>2018-10-24T14:58:50.669Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/java-PrintStream.html</loc>
+    <loc>https://marcuseddie.github.io/2018/Java-source-IO-guide.html</loc>
     
-    <lastmod>2018-10-20T06:07:36.619Z</lastmod>
+    <lastmod>2018-10-24T14:52:44.809Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-FileInputStream-FileOutputStream.html</loc>
+    
+    <lastmod>2018-10-24T14:51:45.794Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/Java-source-BufferedInput-OutputStream.html</loc>
+    
+    <lastmod>2018-10-24T14:44:48.381Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://marcuseddie.github.io/2018/java-PushbackInputStream.html</loc>
     
-    <lastmod>2018-10-17T14:33:37.187Z</lastmod>
+    <lastmod>2018-10-24T14:44:39.756Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-PrintStream.html</loc>
+    
+    <lastmod>2018-10-24T14:44:29.540Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-InputStream-OutputStream.html</loc>
+    
+    <lastmod>2018-10-24T14:44:21.361Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://marcuseddie.github.io/2018/java-DataInputStream-DataOutputStream.html</loc>
     
-    <lastmod>2018-10-17T14:25:32.761Z</lastmod>
+    <lastmod>2018-10-24T14:44:11.466Z</lastmod>
     
   </url>
   
@@ -40,20 +68,6 @@
     <loc>https://marcuseddie.github.io/2018/10-years-of-speed-in-chrome.html</loc>
     
     <lastmod>2018-09-29T06:26:47.534Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://marcuseddie.github.io/2018/Java-source-BufferedInput-OutputStream.html</loc>
-    
-    <lastmod>2018-09-29T06:25:58.381Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://marcuseddie.github.io/2018/java-InputStream-OutputStream.html</loc>
-    
-    <lastmod>2018-09-29T06:25:35.813Z</lastmod>
     
   </url>
   
