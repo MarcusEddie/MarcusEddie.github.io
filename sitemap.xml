@@ -2,16 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/The-Why-of-Agile.html</loc>
+    <loc>https://marcuseddie.github.io/2018/Java-source-IO-guide.html</loc>
     
-    <lastmod>2018-10-24T14:58:50.669Z</lastmod>
+    <lastmod>2018-10-30T12:03:35.152Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/Java-source-IO-guide.html</loc>
+    <loc>https://marcuseddie.github.io/library/index.html</loc>
     
-    <lastmod>2018-10-24T14:52:44.809Z</lastmod>
+    <lastmod>2018-10-30T12:01:55.188Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-PipedInputStream-PipedOutputStream.html</loc>
+    
+    <lastmod>2018-10-30T11:51:29.635Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/The-Why-of-Agile.html</loc>
+    
+    <lastmod>2018-10-24T14:58:50.669Z</lastmod>
     
   </url>
   
@@ -54,13 +68,6 @@
     <loc>https://marcuseddie.github.io/2018/java-DataInputStream-DataOutputStream.html</loc>
     
     <lastmod>2018-10-24T14:44:11.466Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://marcuseddie.github.io/library/index.html</loc>
-    
-    <lastmod>2018-10-14T05:59:02.081Z</lastmod>
     
   </url>
   
