@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://marcuseddie.github.io/2018/java-BufferedReader-BufferedWriter.html</loc>
+    
+    <lastmod>2018-11-27T14:26:53.344Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://marcuseddie.github.io/2018/Java-source-IO-guide.html</loc>
     
-    <lastmod>2018-11-24T03:22:08.044Z</lastmod>
+    <lastmod>2018-11-27T14:26:05.861Z</lastmod>
     
   </url>
   
