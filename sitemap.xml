@@ -2,16 +2,191 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/java-BufferedReader-BufferedWriter.html</loc>
+    <loc>https://marcuseddie.github.io/2018/Java-source-IO-guide.html</loc>
     
-    <lastmod>2018-11-27T14:26:53.344Z</lastmod>
+    <lastmod>2018-12-18T14:13:56.105Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/Java-source-IO-guide.html</loc>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-Map.html</loc>
     
-    <lastmod>2018-11-27T14:26:05.861Z</lastmod>
+    <lastmod>2018-12-18T14:10:12.515Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-ConcurrentHashMap.html</loc>
+    
+    <lastmod>2018-12-18T14:08:21.682Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-AbstractMap.html</loc>
+    
+    <lastmod>2018-12-18T14:06:12.339Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-LinkedHashMap.html</loc>
+    
+    <lastmod>2018-12-18T14:05:13.691Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-HashMap.html</loc>
+    
+    <lastmod>2018-12-18T14:00:44.711Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-Hashtable.html</loc>
+    
+    <lastmod>2018-12-18T13:44:23.116Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-Segment.html</loc>
+    
+    <lastmod>2018-12-18T13:33:51.380Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-ObjectOutputStream.html</loc>
+    
+    <lastmod>2018-12-11T15:28:57.106Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-ObjectInputStream-InternalClass.html</loc>
+    
+    <lastmod>2018-12-11T15:23:21.009Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-BlockDataInputStream.html</loc>
+    
+    <lastmod>2018-12-11T15:23:13.421Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-ObjectInputStream.html</loc>
+    
+    <lastmod>2018-12-11T15:22:42.537Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-LinkedList.html</loc>
+    
+    <lastmod>2018-12-09T04:48:03.837Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-Set.html</loc>
+    
+    <lastmod>2018-12-09T04:02:57.800Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-List.html</loc>
+    
+    <lastmod>2018-12-09T03:17:13.673Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/how-we-built-a-cost-based-sql-optimizer.html</loc>
+    
+    <lastmod>2018-12-07T13:34:55.132Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-SortedSet-NavigableSet.html</loc>
+    
+    <lastmod>2018-12-07T13:10:27.185Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-TreeSet.html</loc>
+    
+    <lastmod>2018-12-07T13:08:18.962Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-LinkedHashSet.html</loc>
+    
+    <lastmod>2018-12-07T13:06:55.260Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-HashSet.html</loc>
+    
+    <lastmod>2018-12-06T12:47:09.160Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-AbstractSet.html</loc>
+    
+    <lastmod>2018-12-06T12:46:52.343Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-Vector.html</loc>
+    
+    <lastmod>2018-12-03T14:09:34.848Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-AbstractSequentialList.html</loc>
+    
+    <lastmod>2018-12-02T06:16:38.967Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-AbstractList.html</loc>
+    
+    <lastmod>2018-12-02T05:37:45.594Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-ArrayList.html</loc>
+    
+    <lastmod>2018-12-02T05:22:16.732Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-Stack.html</loc>
+    
+    <lastmod>2018-11-30T14:13:14.829Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-BufferedReader-BufferedWriter.html</loc>
+    
+    <lastmod>2018-11-27T14:26:53.344Z</lastmod>
     
   </url>
   
