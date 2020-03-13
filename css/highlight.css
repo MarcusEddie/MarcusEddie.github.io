@@ -193,9 +193,3 @@ pre .javascript .function {
   color: #fafafa;
   background: #717171;
 }
-.prev_next a.prev::before {
-  content: "上一篇：";
-}
-.prev_next a.next::before {
-  content: "下一篇：";
-}
