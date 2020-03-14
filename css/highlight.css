@@ -187,6 +187,7 @@ pre .javascript .function {
   text-align: center;
   padding: 0.4em 0;
   color: #1a1a1a;
+  white-space: nowrap;
   transition: background 0.45s color 0.45s;
 }
 .prev_next a:hover {
