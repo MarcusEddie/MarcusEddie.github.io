@@ -1202,12 +1202,14 @@ hr {
   max-width: none;
   height: 100%;
   background: url(../images/background-cover.jpg) top left no-repeat #666666;
-  background-size: cover; }
+  background-size: cover; overflow-y: hidden;}
 
 .panel-cover--collapsed {
   width: 32%;
-  max-width: 430px; }
-
+  max-width: 430px; overflow-y: hidden;}
+.notScroll {
+    overflow: hidden;
+}
 .panel-cover--overlay {
   display: block;
   position: absolute;
@@ -1462,7 +1464,7 @@ i {
   margin-left: .5em; }
 
 .post-list__divider {
-  width: 30%;
+  width: 70%;
   margin: 2.2em 0 2.1em 0;
   border-top: 1px solid #dddddd; }
 
