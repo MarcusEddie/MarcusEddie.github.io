@@ -206,6 +206,46 @@ classes that you can use:
     <li>
 
       <h2 class="post-list__post-title post-title">
+        <a href="/2018/java-Collection-LinkedList.html" title="link to Java Collection 07 - LinkedList">Java Collection 07 - LinkedList</a>
+      </h2>
+
+      <div class="post-list__meta">
+
+        <time datetime="2018-11-30" class="post-list__meta--date date">2018-11-30</time> 
+      		<span class="post-meta__count count">字数统计:&nbsp;8.7k&emsp;阅读时长:&nbsp;37&nbsp;mins</span>
+	  </div>
+
+      <div class="excerpt">
+	
+          <p>&emsp;&emsp;关于<em> <strong>java.util.LinkedList&lt;E&gt;</strong> </em>的部分笔记，LinkedList是一个非线程安全的List集合实现类。因为其采用了双向链表作为底层存储数据结构而具有了可以以常量时间插入数据的性能，但是因为底层数据结构的限制导致其只能顺序访问元素。鉴于此，LinkedList适用于元素插入频繁，而元素遍历查找相对次要的场景中。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+		
+			  <p class="article-more-link">
+			      <a href="/2018/java-Collection-LinkedList.html" style="color:black;font-weight:bold;">Read More...</a>
+			  </p>
+		  
+	
+      </div>
+	<span class="post-meta__tags tags">
+	  
+		<font class="categories">
+		<img src="/images/cat.png" title="categories">
+		<a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+		&nbsp&nbsp&nbsp&nbsp
+		</font>
+	  
+	  
+		<img src="/images/tag.png" title="tags">
+		<font class="categories">
+		<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java集合/">Java集合</a>
+		</font>
+	  
+	</span>
+      <hr class="post-list__divider">
+    </li>
+    
+    <li>
+
+      <h2 class="post-list__post-title post-title">
         <a href="/2018/java-Collection-AbstractSequentialList.html" title="link to Java Collection 06 - AbstractSequentialList">Java Collection 06 - AbstractSequentialList</a>
       </h2>
 
@@ -563,46 +603,6 @@ classes that you can use:
       <hr class="post-list__divider">
     </li>
     
-    <li>
-
-      <h2 class="post-list__post-title post-title">
-        <a href="/2018/java-Collection-Vector.html" title="link to Java Collection 04 - Vector">Java Collection 04 - Vector</a>
-      </h2>
-
-      <div class="post-list__meta">
-
-        <time datetime="2018-11-20" class="post-list__meta--date date">2018-11-20</time> 
-      		<span class="post-meta__count count">字数统计:&nbsp;5.7k&emsp;阅读时长:&nbsp;25&nbsp;mins</span>
-	  </div>
-
-      <div class="excerpt">
-	
-          <p>&emsp;&emsp;关于<em> <strong>java.util.Vector&lt;E&gt;</strong> </em>的部分笔记。Vector是线程安全版本的、可变长度的、可用随机访问的方式获取元素的、基于数组实现的集合容器实现类。但是由于其主要方法都通过synchronized保证了多线程的线程安全特性，所以其性能相对ArrayList而言会慢很多。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
-		
-			  <p class="article-more-link">
-			      <a href="/2018/java-Collection-Vector.html" style="color:black;font-weight:bold;">Read More...</a>
-			  </p>
-		  
-	
-      </div>
-	<span class="post-meta__tags tags">
-	  
-		<font class="categories">
-		<img src="/images/cat.png" title="categories">
-		<a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
-		&nbsp&nbsp&nbsp&nbsp
-		</font>
-	  
-	  
-		<img src="/images/tag.png" title="tags">
-		<font class="categories">
-		<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java集合/">Java集合</a>
-		</font>
-	  
-	</span>
-      <hr class="post-list__divider">
-    </li>
-    
   </ol>
 
   <hr class="post-list__divider ">
@@ -657,21 +657,5 @@ classes that you can use:
   <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
 <![endif]-->
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        tex2jax: {
-            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
-            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
-            processEscapes: true
-        }
-    });
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax();
-        for (var i = 0; i < all.length; ++i)
-            all[i].SourceElement().parentNode.className += ' has-jax';
-    });
-</script>
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
-<script src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </body>
 </html>

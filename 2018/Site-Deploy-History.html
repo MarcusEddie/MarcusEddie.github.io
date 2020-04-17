@@ -16,18 +16,18 @@
     
     
 
-    <meta name="description" content="V 20.4.2Fixed：  将mathjax.js的加载方式由官方CDN改为本地加载，js文件加载速度提高  TO-DO：  修改未通过FireFox验证，待修复  V 20.3.20Fixed：  修复了在主页状态下滚动条滚动问题。当进入主页时鼠标滚轮和方向键不会触发滚动条滚动，可保证当进入首页后滚动条始终置顶  TO-DO：  主页状态下鼠标左键点击滚动条时，滚动条仍可滚动，待修复">
+    <meta name="description" content="V 20.4.2Fixed：  将mathjax.js的加载方式由官方CDN改为本地加载，js文件加载速度提高  TO-DO：  修改未通过FireFox验证，待修复  V 20.3.20Fixed：  修复了在主页状态下滚动条滚动问题。当进入主页时鼠标滚轮和方向键不会触发滚动条滚动，可保证当进入首页后滚动条始终置顶  TO-DO：  主页状态下鼠标左键点击滚动条时，滚动条仍可滚动，待修复  V">
 <meta name="keywords" content="Hexo">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Site Deploy History | Mr.Muzi">
 <meta property="og:url" content="https://marcuseddie.github.io/2018/Site-Deploy-History.html">
 <meta property="og:site_name" content="Mr.Muzi">
-<meta property="og:description" content="V 20.4.2Fixed：  将mathjax.js的加载方式由官方CDN改为本地加载，js文件加载速度提高  TO-DO：  修改未通过FireFox验证，待修复  V 20.3.20Fixed：  修复了在主页状态下滚动条滚动问题。当进入主页时鼠标滚轮和方向键不会触发滚动条滚动，可保证当进入首页后滚动条始终置顶  TO-DO：  主页状态下鼠标左键点击滚动条时，滚动条仍可滚动，待修复">
+<meta property="og:description" content="V 20.4.2Fixed：  将mathjax.js的加载方式由官方CDN改为本地加载，js文件加载速度提高  TO-DO：  修改未通过FireFox验证，待修复  V 20.3.20Fixed：  修复了在主页状态下滚动条滚动问题。当进入主页时鼠标滚轮和方向键不会触发滚动条滚动，可保证当进入首页后滚动条始终置顶  TO-DO：  主页状态下鼠标左键点击滚动条时，滚动条仍可滚动，待修复  V">
 <meta property="og:locale" content="Asia/Shanghai">
-<meta property="og:updated_time" content="2020-04-02T14:33:52.243Z">
+<meta property="og:updated_time" content="2020-04-03T06:12:44.265Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Site Deploy History | Mr.Muzi">
-<meta name="twitter:description" content="V 20.4.2Fixed：  将mathjax.js的加载方式由官方CDN改为本地加载，js文件加载速度提高  TO-DO：  修改未通过FireFox验证，待修复  V 20.3.20Fixed：  修复了在主页状态下滚动条滚动问题。当进入主页时鼠标滚轮和方向键不会触发滚动条滚动，可保证当进入首页后滚动条始终置顶  TO-DO：  主页状态下鼠标左键点击滚动条时，滚动条仍可滚动，待修复">
+<meta name="twitter:description" content="V 20.4.2Fixed：  将mathjax.js的加载方式由官方CDN改为本地加载，js文件加载速度提高  TO-DO：  修改未通过FireFox验证，待修复  V 20.3.20Fixed：  修复了在主页状态下滚动条滚动问题。当进入主页时鼠标滚轮和方向键不会触发滚动条滚动，可保证当进入首页后滚动条始终置顶  TO-DO：  主页状态下鼠标左键点击滚动条时，滚动条仍可滚动，待修复  V">
     
     
     
@@ -206,7 +206,7 @@ classes that you can use:
 
     <div class="post-meta">
       <time datetime="2018-05-13" class="post-meta__date date">2018-05-13</time> 
-          <span class="post-meta__count count">字数统计:&nbsp;129&emsp;阅读时长:&nbsp;1&nbsp;mins</span>
+          <span class="post-meta__count count">字数统计:&nbsp;172&emsp;阅读时长:&nbsp;1&nbsp;mins</span>
       <span class="post-meta__tags tags">
 
           
@@ -246,6 +246,14 @@ classes that you can use:
 <p>TO-DO：</p>
 <ul>
 <li>主页状态下鼠标左键点击滚动条时，滚动条仍可滚动，待修复</li>
+</ul>
+<h1 id="V-20-3-2"><a href="#V-20-3-2" class="headerlink" title="V 20.3.2"></a>V 20.3.2</h1><p>Fixed:</p>
+<ul>
+<li>上一页/下一页标签字符长度超出一行限制时用省略号代替，避免换行</li>
+</ul>
+<h1 id="V18-5-10"><a href="#V18-5-10" class="headerlink" title="V18.5.10"></a>V18.5.10</h1><p>Add：</p>
+<ul>
+<li>站点第一次发布</li>
 </ul>
 
   </section>
@@ -340,21 +348,5 @@ classes that you can use:
   <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
 <![endif]-->
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        tex2jax: {
-            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
-            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
-            processEscapes: true
-        }
-    });
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax();
-        for (var i = 0; i < all.length; ++i)
-            all[i].SourceElement().parentNode.className += ' has-jax';
-    });
-</script>
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
-<script src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </body>
 </html>

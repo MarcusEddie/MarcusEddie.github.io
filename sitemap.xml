@@ -2,9 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://marcuseddie.github.io/2019/PGP-Introduction.html</loc>
+    
+    <lastmod>2020-04-17T03:31:26.070Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2019/java-multiThread-ThreadLocal.html</loc>
+    
+    <lastmod>2020-04-15T06:06:47.156Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://marcuseddie.github.io/2018/Site-Deploy-History.html</loc>
     
-    <lastmod>2020-04-02T14:33:52.243Z</lastmod>
+    <lastmod>2020-04-03T06:12:44.265Z</lastmod>
     
   </url>
   
@@ -47,13 +61,6 @@
     <loc>https://marcuseddie.github.io/2019/For-Tony.html</loc>
     
     <lastmod>2019-04-29T13:05:01.281Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://marcuseddie.github.io/2019/java-multiThread-ThreadLocal.html</loc>
-    
-    <lastmod>2019-04-15T13:46:11.395Z</lastmod>
     
   </url>
   
