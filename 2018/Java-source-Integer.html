@@ -199,41 +199,33 @@ classes that you can use:
             
 
 <article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>Java源码阅读笔记01 - Integer</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-08-01" class="post-meta__date date">2018-08-01</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;2.4k&emsp;阅读时长:&nbsp;10&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+			            </font>
+			        
 
-  <header class="post-header">
-    
-    <h1 class="post-title"><b>Java源码阅读笔记01 - Integer</b></h1>
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
 
-    
-
-    <div class="post-meta">
-      <time datetime="2018-08-01" class="post-meta__date date">2018-08-01</time> 
-          <span class="post-meta__count count">字数统计:&nbsp;2.4k&emsp;阅读时长:&nbsp;10&nbsp;mins</span>
-      <span class="post-meta__tags tags">
-
-          
-            <font class="categories">
-            &#8226; 分类:
-            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
-            </font>
-          
-
-          
-             &#8226; 标签:
-            <font class="tags">
-              <a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>
-            </font>
-          
-
-      </span>
-    </div>
-    
-    
-
-  </header>
-
-  <section id="post-content" class="article-content post">
-    <p>&emsp;&emsp;关于<em> <strong>java.lang.Integer</strong> </em>的部分笔记，基于JDK版本<strong>1.7</strong>。<br><a id="more"></a></p>
+  	<section id="post-content" class="article-content post">
+    	<p>&emsp;&emsp;关于<em> <strong>java.lang.Integer</strong> </em>的部分笔记，基于JDK版本<strong>1.7</strong>。<br><a id="more"></a></p>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;Java语言中关于基础数据类型<strong>int</strong>的封装类型，包含了一些类型之间的相互转换封装方法，除此之外还有一些关于机器数操作的封装API供开发人员使用。</p>
 <h2 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">--java.lang.Object</span><br><span class="line">  --java.lang.Number</span><br><span class="line">    --java.lang.Integer</span><br></pre></td></tr></table></figure>
 <h2 id="部分方法"><a href="#部分方法" class="headerlink" title="部分方法"></a>部分方法</h2><h3 id="getChars-int-i-int-index-char-buf"><a href="#getChars-int-i-int-index-char-buf" class="headerlink" title="getChars(int i, int index, char[] buf)"></a>getChars(int i, int index, char[] buf)</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">getChars</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> index, <span class="keyword">char</span>[] buf)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> q, r;</span><br><span class="line">    <span class="keyword">int</span> charPos = index;</span><br><span class="line">    <span class="keyword">char</span> sign = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (i &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        sign = <span class="string">'-'</span>;</span><br><span class="line">        i = -i;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Generate two digits per iteration</span></span><br><span class="line">    <span class="keyword">while</span> (i &gt;= <span class="number">65536</span>) &#123;</span><br><span class="line">        q = i / <span class="number">100</span>;</span><br><span class="line">        <span class="comment">// really: r = i - (q * 100);</span></span><br><span class="line">        r = i - ((q &lt;&lt; <span class="number">6</span>) + (q &lt;&lt; <span class="number">5</span>) + (q &lt;&lt; <span class="number">2</span>));</span><br><span class="line">        i = q;</span><br><span class="line">        buf [--charPos] = DigitOnes[r];</span><br><span class="line">        buf [--charPos] = DigitTens[r];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Fall thru to fast mode for smaller numbers</span></span><br><span class="line">    <span class="comment">// assert(i &lt;= 65536, i);</span></span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        q = (i * <span class="number">52429</span>) &gt;&gt;&gt; (<span class="number">16</span>+<span class="number">3</span>);</span><br><span class="line">        r = i - ((q &lt;&lt; <span class="number">3</span>) + (q &lt;&lt; <span class="number">1</span>));  <span class="comment">// r = i-(q*10) ...</span></span><br><span class="line">        buf [--charPos] = digits [r];</span><br><span class="line">        i = q;</span><br><span class="line">        <span class="keyword">if</span> (i == <span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (sign != <span class="number">0</span>) &#123;</span><br><span class="line">        buf [--charPos] = sign;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -308,30 +300,32 @@ q = i * (num1 / 2^{num2}).</script><p>根据上述两个等式，要保证i * nu
 </ol>
 <p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
 
-  </section>
-  <div>
-	  
-		<div>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
 	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------</div>
 </div>
-	  
-	</div>
-      
-	  
-	      <section class="post-declare">
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
 <p>
 <div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/Java-source-Integer.html" target="_blank" title="Java源码阅读笔记01 - Integer">Java源码阅读笔记01 - Integer</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/Java-source-Integer.html" target="_blank" title="Java源码阅读笔记01 - Integer">https://marcuseddie.github.io/2018/Java-source-Integer.html</a></b></div>
 </p>
 <section class="post-declare"></section></section>
-	  
-      
-      
-      <section class="post-comments">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
 
     <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
     
 </section>
-      
+	
+	
 <div class="prev_next clearfix">
 	<div style="width:50%;float:left;">
 		
@@ -349,7 +343,65 @@ q = i * (num1 / 2^{num2}).</script><p>根据上述两个等式，要保证i * nu
 	</div>
 </div>
 
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
 
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
 </article>
 
 
@@ -400,5 +452,21 @@ q = i * (num1 / 2^{num2}).</script><p>根据上述两个等式，要保证i * nu
   <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
 <![endif]-->
 
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+<script src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </body>
 </html>

@@ -203,41 +203,33 @@ classes that you can use:
             
 
 <article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>【译】一文了解Chrome的十年“加速”历程</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-09-23" class="post-meta__date date">2018-09-23</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;2.4k&emsp;阅读时长:&nbsp;8&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/外文翻译/">外文翻译</a>
+			            </font>
+			        
 
-  <header class="post-header">
-    
-    <h1 class="post-title"><b>【译】一文了解Chrome的十年“加速”历程</b></h1>
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/协作翻译/">协作翻译</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
 
-    
-
-    <div class="post-meta">
-      <time datetime="2018-09-23" class="post-meta__date date">2018-09-23</time> 
-          <span class="post-meta__count count">字数统计:&nbsp;2.4k&emsp;阅读时长:&nbsp;8&nbsp;mins</span>
-      <span class="post-meta__tags tags">
-
-          
-            <font class="categories">
-            &#8226; 分类:
-            <a class="categories-link" href="/categories/外文翻译/">外文翻译</a>
-            </font>
-          
-
-          
-             &#8226; 标签:
-            <font class="tags">
-              <a class="tags-link" href="/tags/协作翻译/">协作翻译</a>
-            </font>
-          
-
-      </span>
-    </div>
-    
-    
-
-  </header>
-
-  <section id="post-content" class="article-content post">
-    <p>&emsp;&emsp;自十年前 Chrome 浏览器首次推出后，速度已经成为 Chrome 的<a href="https://www.chromium.org/developers/core-principles" target="_blank" rel="noopener">四个核心原则</a>之一。我们一直都想让 Web 开发者能够向用户提供快速的、优秀的上网体验。在 Chrome 诞生十周年之际，我们认为回顾在这十年中为提高速度所付出的努力，以及我们接下来要进行的尝试将会是一件非常有趣的事情。<br><a id="more"></a></p>
+  	<section id="post-content" class="article-content post">
+    	<p>&emsp;&emsp;自十年前 Chrome 浏览器首次推出后，速度已经成为 Chrome 的<a href="https://www.chromium.org/developers/core-principles" target="_blank" rel="noopener">四个核心原则</a>之一。我们一直都想让 Web 开发者能够向用户提供快速的、优秀的上网体验。在 Chrome 诞生十周年之际，我们认为回顾在这十年中为提高速度所付出的努力，以及我们接下来要进行的尝试将会是一件非常有趣的事情。<br><a id="more"></a></p>
 <p>&emsp;</p>
 <h2 id="致力于提速的多个浏览器组件"><a href="#致力于提速的多个浏览器组件" class="headerlink" title="致力于提速的多个浏览器组件"></a>致力于提速的多个浏览器组件</h2><p>&emsp;&emsp;<a href="https://v8project.blogspot.com" target="_blank" rel="noopener">V8</a> 是 Chrome 的一个 JavaScript 和 WebAssembly 引擎。随着网页使用 JavaScript 脚本数量的快速增长，一个能够处理这些 JavaScript 脚本的高速引擎成为一个非常重要的基础。这些年，我们为 V8 研发了一个<a href="https://v8project.blogspot.com/2017/05/launching-ignition-and-turbofan.html" target="_blank" rel="noopener">新的 JavaScript 执行管道(pipeline)</a>，启用了 <a href="https://github.com/v8/v8/wiki/Interpreter" target="_blank" rel="noopener">Ignition</a>（一个新的解释器）和 <a href="https://github.com/v8/v8/wiki/TurboFan" target="_blank" rel="noopener">TurboFan</a>(一个优化的编译器)。这些举措使得我们关于速度基准测试方面的性能提升了 5%-10%。<a href="https://blog.chromium.org/2015/03/new-javascript-techniques-for-rapid.html" target="_blank" rel="noopener">脚本流(Script streaming)</a>使得我们在 JavaScript 脚本开始下载的时候就在一个后台线程中解析这些 JavaScript 脚本，而这可以将页面加载速度提高最多 10%。后来加入的<a href="https://v8project.blogspot.com/2018/03/background-compilation.html" target="_blank" rel="noopener">后台编译过程</a>将主线程的编译时间减少了最多 20%。 </p>
 <div align="center"><img src="https://res.cloudinary.com/jknight/image/upload/v1537670868/BlogImages/10-years-of-speed-in-chrome/ba9342523d46d2fbf21fa934cbc6019e2e2.png" width="600" height="346" align="center/"></div>
@@ -310,30 +302,32 @@ classes that you can use:
 </ol>
 <p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
 
-  </section>
-  <div>
-	  
-		<div>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
 	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------</div>
 </div>
-	  
-	</div>
-      
-      
-	  
-	      <section class="post-declare">
+		  	
+		</div>
+	    
+	  	
+		  	
+		      	<section class="post-declare">
 <p>
 <div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>参与翻译完成，首发于<a href="https://www.oschina.net/translate?tab=completed">开源中国社区</a>，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/10-years-of-speed-in-chrome.html" target="_blank" title="【译】一文了解Chrome的十年“加速”历程">【译】一文了解Chrome的十年“加速”历程</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/10-years-of-speed-in-chrome.html" target="_blank" title="【译】一文了解Chrome的十年“加速”历程">https://marcuseddie.github.io/2018/10-years-of-speed-in-chrome.html</a></b></div>
 </p>
 <section class="post-declare"></section></section>
-	  
-      
-      <section class="post-comments">
+		  	
+	  	
+	  	<section class="post-comments">
 
     <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
     
 </section>
-      
+	
+	
 <div class="prev_next clearfix">
 	<div style="width:50%;float:left;">
 		
@@ -351,7 +345,65 @@ classes that you can use:
 	</div>
 </div>
 
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
 
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
 </article>
 
 
@@ -402,5 +454,21 @@ classes that you can use:
   <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
 <![endif]-->
 
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+<script src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </body>
 </html>

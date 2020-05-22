@@ -207,6 +207,46 @@ classes that you can use:
     <li>
 
       <h2 class="post-list__post-title post-title">
+        <a href="/2018/java-ObjectInputStream-InternalClass.html" title="link to Java I/O 24 - ObjectInputStream内部类">Java I/O 24 - ObjectInputStream内部类</a>
+      </h2>
+
+      <div class="post-list__meta">
+
+        <time datetime="2018-11-29" class="post-list__meta--date date">2018-11-29</time> 
+      		<span class="post-meta__count count">字数统计:&nbsp;2.6k&emsp;阅读时长:&nbsp;12&nbsp;mins</span>
+	  </div>
+
+      <div class="excerpt">
+	
+          <p>&emsp;&emsp;关于<em> <strong>java.io.ObjectInputStream</strong> </em>内部类的部分笔记，里面涉及到了HandleTable、ValidationList、GetField及其实现等几个内部类的声明和实现。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+		
+			  <p class="article-more-link">
+			      <a href="/2018/java-ObjectInputStream-InternalClass.html" style="color:black;font-weight:bold;">Read More...</a>
+			  </p>
+		  
+	
+      </div>
+	<span class="post-meta__tags tags">
+	  
+		<font class="categories">
+		<img src="/images/cat.png" title="categories">
+		<a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+		&nbsp&nbsp&nbsp&nbsp
+		</font>
+	  
+	  
+		<img src="/images/tag.png" title="tags">
+		<font class="categories">
+		<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
+		</font>
+	  
+	</span>
+      <hr class="post-list__divider">
+    </li>
+    
+    <li>
+
+      <h2 class="post-list__post-title post-title">
         <a href="/2018/java-ObjectInputStream.html" title="link to Java I/O 23 - ObjectInputStream">Java I/O 23 - ObjectInputStream</a>
       </h2>
 
@@ -564,46 +604,6 @@ classes that you can use:
       <hr class="post-list__divider">
     </li>
     
-    <li>
-
-      <h2 class="post-list__post-title post-title">
-        <a href="/2018/java-Collection-ArrayList.html" title="link to Java Collection 03 - ArrayList">Java Collection 03 - ArrayList</a>
-      </h2>
-
-      <div class="post-list__meta">
-
-        <time datetime="2018-11-17" class="post-list__meta--date date">2018-11-17</time> 
-      		<span class="post-meta__count count">字数统计:&nbsp;8.6k&emsp;阅读时长:&nbsp;38&nbsp;mins</span>
-	  </div>
-
-      <div class="excerpt">
-	
-          <p>&emsp;&emsp;关于<em> <strong>java.util.ArrayList&lt;E&gt;</strong> </em>的部分笔记，ArrayList是一个数组实现的可变长度的集合类。由于其实现了RandomAccess接口，所以可以通过随机访问的方式以常量时间获取到集合内的每个元素。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
-		
-			  <p class="article-more-link">
-			      <a href="/2018/java-Collection-ArrayList.html" style="color:black;font-weight:bold;">Read More...</a>
-			  </p>
-		  
-	
-      </div>
-	<span class="post-meta__tags tags">
-	  
-		<font class="categories">
-		<img src="/images/cat.png" title="categories">
-		<a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
-		&nbsp&nbsp&nbsp&nbsp
-		</font>
-	  
-	  
-		<img src="/images/tag.png" title="tags">
-		<font class="categories">
-		<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java集合/">Java集合</a>
-		</font>
-	  
-	</span>
-      <hr class="post-list__divider">
-    </li>
-    
   </ol>
 
   <hr class="post-list__divider ">
@@ -658,5 +658,21 @@ classes that you can use:
   <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
 <![endif]-->
 
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+<script src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </body>
 </html>

@@ -286,7 +286,7 @@ classes that you can use:
       <div class="post-list__meta">
 
         <time datetime="2018-05-13" class="post-list__meta--date date">2018-05-13</time> 
-      		<span class="post-meta__count count">字数统计:&nbsp;172&emsp;阅读时长:&nbsp;1&nbsp;mins</span>
+      		<span class="post-meta__count count">字数统计:&nbsp;216&emsp;阅读时长:&nbsp;1&nbsp;mins</span>
 	  </div>
 
       <div class="excerpt">
@@ -402,5 +402,21 @@ classes that you can use:
   <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
 <![endif]-->
 
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+<script src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </body>
 </html>

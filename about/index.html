@@ -197,17 +197,13 @@ classes that you can use:
             
 
 <article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>About</b></h1>
+	    
+  	</header>
 
-  <header class="post-header">
-    
-    <h1 class="post-title"><b>About</b></h1>
-
-    
-
-  </header>
-
-  <section id="post-content" class="article-content post">
-    <h2 id="Nathan-R-Lee"><a href="#Nathan-R-Lee" class="headerlink" title="Nathan R. Lee"></a>Nathan R. Lee</h2><p>&emsp;&emsp;一只在南方被冻成狗的北方汉子，从小立志成为一名职业军人，然后就顺利的成为了一个程序猿。自知直男属性值太高，在努力的优化中。除了coding，每周会有固定的时间去撸铁，这样穿衬衫和正装的时候就会更好看一些啦！喜欢看书，历史相关的会更喜欢一点吧，不限于国家或者民族的发展历史这种，像文字起源啊，技术发展史啊都可以接受。甚至于像地球演变史这种都可以，虽然把它归类于自然科学领域会更恰当一些。个人觉得从过去可以看懂现在，然后预习未来。也看小说，这个就仅限于一些大师们的科幻小说了。</p>
+  	<section id="post-content" class="article-content post">
+    	<h2 id="Nathan-R-Lee"><a href="#Nathan-R-Lee" class="headerlink" title="Nathan R. Lee"></a>Nathan R. Lee</h2><p>&emsp;&emsp;一只在南方被冻成狗的北方汉子，从小立志成为一名职业军人，然后就顺利的成为了一个程序猿。自知直男属性值太高，在努力的优化中。除了coding，每周会有固定的时间去撸铁，这样穿衬衫和正装的时候就会更好看一些啦！喜欢看书，历史相关的会更喜欢一点吧，不限于国家或者民族的发展历史这种，像文字起源啊，技术发展史啊都可以接受。甚至于像地球演变史这种都可以，虽然把它归类于自然科学领域会更恰当一些。个人觉得从过去可以看懂现在，然后预习未来。也看小说，这个就仅限于一些大师们的科幻小说了。</p>
 <p>&emsp;&emsp;关于这个博客，它的定位就是一个内容积累的地方吧。了解过的技术，学习时的笔记，看过的书都会存在这里。这样也会让自己可以定期的整理一些东西出来。尽管作为懒癌晚期的我都不信这种话，啊哈哈哈~每个人最大的敌人其实就是自己，所以和自己搏一圈，がんばってください 。</p>
 <p>&emsp;&emsp;如果想约我一起喝酒吃肉谈人生谈理想的话，emmmm…….其实喝酒吃肉就可以了。可以考虑如下的联系方式：</p>
 <blockquote>
@@ -215,19 +211,79 @@ classes that you can use:
 </blockquote>
 <p>&emsp;&emsp;最后再说两句，为了你的秀发千万别学计算机。我是学计算机的，不是学修电脑装系统的。假装下面有照骗吧，溜了溜了~</p>
 
-  </section>
-  <div>
-	  
-	</div>
-      
-      
-      <section class="post-comments">
+  	</section>
+  	
+	  	<div>
+		  	
+		</div>
+	    
+	  	
+	  	<section class="post-comments">
 
     <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
     
 </section>
-      
+	
+	
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
 
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
 </article>
 
 
@@ -265,5 +321,21 @@ classes that you can use:
   <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
 <![endif]-->
 
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+<script src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </body>
 </html>

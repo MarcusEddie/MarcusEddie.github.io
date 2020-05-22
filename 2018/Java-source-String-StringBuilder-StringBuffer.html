@@ -197,41 +197,33 @@ classes that you can use:
             
 
 <article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>Java源码阅读笔记03 - 字符串三剑客</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-08-23" class="post-meta__date date">2018-08-23</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;3k&emsp;阅读时长:&nbsp;13&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+			            </font>
+			        
 
-  <header class="post-header">
-    
-    <h1 class="post-title"><b>Java源码阅读笔记03 - 字符串三剑客</b></h1>
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
 
-    
-
-    <div class="post-meta">
-      <time datetime="2018-08-23" class="post-meta__date date">2018-08-23</time> 
-          <span class="post-meta__count count">字数统计:&nbsp;3k&emsp;阅读时长:&nbsp;13&nbsp;mins</span>
-      <span class="post-meta__tags tags">
-
-          
-            <font class="categories">
-            &#8226; 分类:
-            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
-            </font>
-          
-
-          
-             &#8226; 标签:
-            <font class="tags">
-              <a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>
-            </font>
-          
-
-      </span>
-    </div>
-    
-    
-
-  </header>
-
-  <section id="post-content" class="article-content post">
-    <p>&emsp;&emsp;在Java语言规范中，处理一个字符串可以通过三个类 — <strong>String、StringBuilder、StringBuffer</strong>来实现，三者之间在增删改字符串内容时采用的方法和原理有很多不一致的地方，这里将简单论述上述三个类型的异同。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+  	<section id="post-content" class="article-content post">
+    	<p>&emsp;&emsp;在Java语言规范中，处理一个字符串可以通过三个类 — <strong>String、StringBuilder、StringBuffer</strong>来实现，三者之间在增删改字符串内容时采用的方法和原理有很多不一致的地方，这里将简单论述上述三个类型的异同。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;在String、StringBuilder、StringBuffer中，String被定义为不可变类型，也就是说String对象value字段一经赋值就不会被改变，直至生命周期结束被垃圾回收机制回收。而后两者是可变的，并且都提供了对应的API以便开发人员可以根据需要修改其所包含的内容。但是后两者也有一些区别，StringBuilder不适用于多线程环境，StringBuffer可以在多线程环境中保证数据一致。鉴于此，StringBuilder的处理效率相对于StringBuffer来说会更乐观一些。</p>
 <h2 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//StringBuilder/StringBuffer</span></span><br><span class="line">--java.lang.Object</span><br><span class="line">    --java.lang.AbstractStringBuilder</span><br><span class="line">        --java.lang.StringBuilder/StringBuffer</span><br><span class="line"></span><br><span class="line"><span class="comment">//String     </span></span><br><span class="line">--java.lang.Object</span><br><span class="line">    --java.lang.String</span><br></pre></td></tr></table></figure>
@@ -294,30 +286,32 @@ classes that you can use:
 <li>NIL<br>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</li>
 </ol>
 
-  </section>
-  <div>
-	  
-		<div>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
 	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------</div>
 </div>
-	  
-	</div>
-      
-	  
-	      <section class="post-declare">
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
 <p>
 <div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/Java-source-String-StringBuilder-StringBuffer.html" target="_blank" title="Java源码阅读笔记03 - 字符串三剑客">Java源码阅读笔记03 - 字符串三剑客</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/Java-source-String-StringBuilder-StringBuffer.html" target="_blank" title="Java源码阅读笔记03 - 字符串三剑客">https://marcuseddie.github.io/2018/Java-source-String-StringBuilder-StringBuffer.html</a></b></div>
 </p>
 <section class="post-declare"></section></section>
-	  
-      
-      
-      <section class="post-comments">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
 
     <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
     
 </section>
-      
+	
+	
 <div class="prev_next clearfix">
 	<div style="width:50%;float:left;">
 		
@@ -335,7 +329,65 @@ classes that you can use:
 	</div>
 </div>
 
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
 
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
 </article>
 
 
@@ -386,5 +438,21 @@ classes that you can use:
   <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
 <![endif]-->
 
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+<script src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </body>
 </html>

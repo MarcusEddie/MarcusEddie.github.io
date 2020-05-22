@@ -207,6 +207,46 @@ classes that you can use:
     <li>
 
       <h2 class="post-list__post-title post-title">
+        <a href="/2019/MurMurhash-Learning.html" title="link to Murmurhash初步学习">Murmurhash初步学习</a>
+      </h2>
+
+      <div class="post-list__meta">
+
+        <time datetime="2019-08-06" class="post-list__meta--date date">2019-08-06</time> 
+      		<span class="post-meta__count count">字数统计:&nbsp;2.2k&emsp;阅读时长:&nbsp;8&nbsp;mins</span>
+	  </div>
+
+      <div class="excerpt">
+	
+          <p>&emsp;&emsp;Murmurhash是由Austin Appleby在2008年发明的一种非常简单的、不具有加密特性的散列函数，可以非常容易的应用在一般的基于散列的查找场景中。Murmurhash非常简单，在X86体系结构的机器上可以用少于52条指令完成所有的计算，由此带来的性能也是非常优秀的。此外，Murmurhash具有非常好的强混淆性（雪崩效应）和非常低的冲突风险。强混淆性指的是输入数据的微小改变，都会产生一个完全不同的散列值。Murmurhash的强混淆性使得通过Murmurhash计算得到的散列值具有非常的分布性。Murmurhash的当前版本是Murmurhash3，可以用来生成一个32位或128的散列值。如果生成结果是128位结果，那么在X86结构和X64结构上的计算结果是不一样的。本文以Murmurhash2为例进行讨论。</p>
+		
+			  <p class="article-more-link">
+			      <a href="/2019/MurMurhash-Learning.html" style="color:black;font-weight:bold;">Read More...</a>
+			  </p>
+		  
+	
+      </div>
+	<span class="post-meta__tags tags">
+	  
+		<font class="categories">
+		<img src="/images/cat.png" title="categories">
+		<a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+		&nbsp&nbsp&nbsp&nbsp
+		</font>
+	  
+	  
+		<img src="/images/tag.png" title="tags">
+		<font class="categories">
+		<a class="tags-link" href="/tags/散列函数/">散列函数</a>
+		</font>
+	  
+	</span>
+      <hr class="post-list__divider">
+    </li>
+    
+    <li>
+
+      <h2 class="post-list__post-title post-title">
         <a href="/2019/java-multiThread-ThreadLocal.html" title="link to Java多线程 - ThreadLocal解释">Java多线程 - ThreadLocal解释</a>
       </h2>
 
@@ -564,46 +604,6 @@ classes that you can use:
       <hr class="post-list__divider">
     </li>
     
-    <li>
-
-      <h2 class="post-list__post-title post-title">
-        <a href="/2018/java-Collection-TreeSet.html" title="link to Java Collection 13 - TreeSet">Java Collection 13 - TreeSet</a>
-      </h2>
-
-      <div class="post-list__meta">
-
-        <time datetime="2018-12-04" class="post-list__meta--date date">2018-12-04</time> 
-      		<span class="post-meta__count count">字数统计:&nbsp;2.7k&emsp;阅读时长:&nbsp;12&nbsp;mins</span>
-	  </div>
-
-      <div class="excerpt">
-	
-          <p>&emsp;&emsp;关于<em> <strong>java.util.TreeSet&lt;E&gt;</strong> </em>的部分笔记，TreeSet是一个有序的、不可存储重复元素的Set集合实现类。TreeSet集合的顺序由Comparable实现或者Comparator指定。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
-		
-			  <p class="article-more-link">
-			      <a href="/2018/java-Collection-TreeSet.html" style="color:black;font-weight:bold;">Read More...</a>
-			  </p>
-		  
-	
-      </div>
-	<span class="post-meta__tags tags">
-	  
-		<font class="categories">
-		<img src="/images/cat.png" title="categories">
-		<a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
-		&nbsp&nbsp&nbsp&nbsp
-		</font>
-	  
-	  
-		<img src="/images/tag.png" title="tags">
-		<font class="categories">
-		<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java集合/">Java集合</a>
-		</font>
-	  
-	</span>
-      <hr class="post-list__divider">
-    </li>
-    
   </ol>
 
   <hr class="post-list__divider ">
@@ -654,5 +654,21 @@ classes that you can use:
   <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
 <![endif]-->
 
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+<script src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </body>
 </html>

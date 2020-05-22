@@ -2,6 +2,41 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://marcuseddie.github.io/2019/MurMurhash-Learning.html</loc>
+    
+    <lastmod>2020-05-22T14:23:45.759Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-HashMap.html</loc>
+    
+    <lastmod>2020-05-22T13:59:31.654Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2019/Tech-Books.html</loc>
+    
+    <lastmod>2020-04-20T06:53:32.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2019/For-Tony.html</loc>
+    
+    <lastmod>2020-04-19T05:34:11.674Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/Site-Deploy-History.html</loc>
+    
+    <lastmod>2020-04-17T09:14:07.273Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://marcuseddie.github.io/2019/PGP-Introduction.html</loc>
     
     <lastmod>2020-04-17T03:31:26.070Z</lastmod>
@@ -12,13 +47,6 @@
     <loc>https://marcuseddie.github.io/2019/java-multiThread-ThreadLocal.html</loc>
     
     <lastmod>2020-04-15T06:06:47.156Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://marcuseddie.github.io/2018/Site-Deploy-History.html</loc>
-    
-    <lastmod>2020-04-03T06:12:44.265Z</lastmod>
     
   </url>
   
@@ -54,13 +82,6 @@
     <loc>https://marcuseddie.github.io/library/index.html</loc>
     
     <lastmod>2019-05-11T06:42:55.157Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://marcuseddie.github.io/2019/For-Tony.html</loc>
-    
-    <lastmod>2019-04-29T13:05:01.281Z</lastmod>
     
   </url>
   
@@ -117,13 +138,6 @@
     <loc>https://marcuseddie.github.io/2018/java-Collection-Set.html</loc>
     
     <lastmod>2018-12-27T13:50:44.034Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://marcuseddie.github.io/2018/java-Collection-HashMap.html</loc>
-    
-    <lastmod>2018-12-27T13:46:42.303Z</lastmod>
     
   </url>
   

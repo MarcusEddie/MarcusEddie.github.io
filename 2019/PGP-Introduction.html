@@ -204,41 +204,33 @@ classes that you can use:
             
 
 <article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>PGP工作原理简述</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2019-09-06" class="post-meta__date date">2019-09-06</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;4.2k&emsp;阅读时长:&nbsp;14&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/Security/">Security</a>
+			            </font>
+			        
 
-  <header class="post-header">
-    
-    <h1 class="post-title"><b>PGP工作原理简述</b></h1>
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/PGP/">PGP</a>, <a class="tags-link" href="/tags/加解密/">加解密</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
 
-    
-
-    <div class="post-meta">
-      <time datetime="2019-09-06" class="post-meta__date date">2019-09-06</time> 
-          <span class="post-meta__count count">字数统计:&nbsp;4.2k&emsp;阅读时长:&nbsp;14&nbsp;mins</span>
-      <span class="post-meta__tags tags">
-
-          
-            <font class="categories">
-            &#8226; 分类:
-            <a class="categories-link" href="/categories/Security/">Security</a>
-            </font>
-          
-
-          
-             &#8226; 标签:
-            <font class="tags">
-              <a class="tags-link" href="/tags/PGP/">PGP</a>, <a class="tags-link" href="/tags/加解密/">加解密</a>
-            </font>
-          
-
-      </span>
-    </div>
-    
-    
-
-  </header>
-
-  <section id="post-content" class="article-content post">
-    <p>&emsp;&emsp;<strong>PGP</strong>（Pretty Good Privacy，中文翻译“优良保密协议”）是一个基于RSA体系、将公开密钥加密与传统密钥加密相结合的用于信息加密、验证的商业应用程序，由菲尔·齐默尔曼 (Philip R. Zimmermann) 于1991年开发完成并发布。自发布以来，PGP凭借其可以运行于多种操作系统平台、其加密算法得到普遍认可、具有广泛的应用场景等特性使得PGP的应用领域迅速扩大，同时使PGP自身也得到了更好的发展。</p>
+  	<section id="post-content" class="article-content post">
+    	<p>&emsp;&emsp;<strong>PGP</strong>（Pretty Good Privacy，中文翻译“优良保密协议”）是一个基于RSA体系、将公开密钥加密与传统密钥加密相结合的用于信息加密、验证的商业应用程序，由菲尔·齐默尔曼 (Philip R. Zimmermann) 于1991年开发完成并发布。自发布以来，PGP凭借其可以运行于多种操作系统平台、其加密算法得到普遍认可、具有广泛的应用场景等特性使得PGP的应用领域迅速扩大，同时使PGP自身也得到了更好的发展。</p>
 <a id="more"></a>
 <p>&emsp;&emsp;之后，在1997年，菲尔向 <strong>IETF</strong> 提交了<a href="https://www.openpgp.org" target="_blank" rel="noopener"><strong>OpenPGP</strong></a> 加密标准的提案，OpenPGP标准的详细细节可参考文档<a href="https://www.ietf.org/rfc/rfc4880.txt" target="_blank" rel="noopener">RFC 4880</a>。OpenPGP由PGP衍生而来，是在 PGP 基础上定义的开放标准，号称是世界上使用最广泛的邮件加密标准。OpenPGP标准提供了完整的数据完整性服务，用户可以查看、检验、生成和写入加密信息、秘钥以及签名等。由于美国密码技术出口限制的制约，使得在美国境内严禁编写实现公开密钥软件的软件，即使美国公民在境外完成软件实现也不允许。鉴于此，德国人Werner Koch于1997年开始编写一款称为<a href="https://www.gnupg.org" target="_blank" rel="noopener"><strong>GPG</strong>（<strong>GNU Privacy Guard</strong> 或<strong>GnuPG</strong>）</a>的程序，并于于1998年2月发布了第一个版本。经过一系列的开发工作，GPG 1.0.0版于1999年9月7日正式发布。GPG是一个开源的（依照GNU第三版许可），且具有和PGP相同功能的加密应用程序，其按照OpenPGP标准完成相应的设计和实现工作，是 OpenPGP 协议的一种完备的实现方案，目前由德国政府资助其研发工作。</p>
 <blockquote>
@@ -367,48 +359,108 @@ classes that you can use:
 </ol>
 <p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
 
-  </section>
-  <div>
-	  
-		<div>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
 	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------</div>
 </div>
-	  
-	</div>
-      
-	  
-	      <section class="post-declare">
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
 <p>
 <div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2019/PGP-Introduction.html" target="_blank" title="PGP工作原理简述">PGP工作原理简述</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2019/PGP-Introduction.html" target="_blank" title="PGP工作原理简述">https://marcuseddie.github.io/2019/PGP-Introduction.html</a></b></div>
 </p>
 <section class="post-declare"></section></section>
-	  
-      
-      
-      <section class="post-comments">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
 
     <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
     
 </section>
-      
+	
+	
 <div class="prev_next clearfix">
 	<div style="width:50%;float:left;">
 		
 			
-				<a href="/2019/everything-is-gone.html" class="alignleft prev" title="一切都结束了"> 上一篇： 一切都结束了</a>
+				<a href="/2019/Tech-Books.html" class="alignleft prev" title="技术书籍"> 上一篇： 技术书籍</a>
 			
 		
 	</div>
 	<div style="width:50%;float:right;">
 		
 			
-				<a href="/2019/For-Tony.html" class="alignright next" title="I am Iron Man"> 下一篇： I am Iron Man</a>
+				<a href="/2019/MurMurhash-Learning.html" class="alignright next" title="Murmurhash初步学习"> 下一篇： Murmurhash初步学习</a>
 			
 		
 	</div>
 </div>
 
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
 
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
 </article>
 
 
@@ -459,5 +511,21 @@ classes that you can use:
   <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
 <![endif]-->
 
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+<script src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </body>
 </html>
