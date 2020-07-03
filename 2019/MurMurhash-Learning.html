@@ -25,7 +25,7 @@
 <meta property="og:description" content="Murmurhash是一种简单、非加密的散列函数，具有强混淆性、低冲突风险。Murmurhash包含Murmurhash、Murmurhash2和Murmurhash3三个版本的算法，支持X86、X64体系结构，可以生成32位、64位、128位的散列值">
 <meta property="og:locale" content="Asia/Shanghai">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1590126930/BlogImages/Algorithm/hash-related/Murmurhash-Learning-Result-About-Java-Hashcode-And-Murmurhash.png">
-<meta property="og:updated_time" content="2020-05-22T14:23:45.759Z">
+<meta property="og:updated_time" content="2020-05-23T01:30:52.914Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Murmurhash初步学习 | Mr.Muzi">
 <meta name="twitter:description" content="Murmurhash是一种简单、非加密的散列函数，具有强混淆性、低冲突风险。Murmurhash包含Murmurhash、Murmurhash2和Murmurhash3三个版本的算法，支持X86、X64体系结构，可以生成32位、64位、128位的散列值">
@@ -243,7 +243,7 @@ classes that you can use:
 <p>&emsp;&emsp;如果我们修改程序中的m使之等于1，那么在散列值的计算过程中由于m=1导致k的影响被完全抵消进而产生相同的散列值。即使我们清楚这个问题并严禁将m赋值为1，对同一个输入数据的所有可能散列值也无法达到期望的$ 2^{32} $。</p>
 <p>&emsp;&emsp;尽管该缺陷难以修复，但在实际的使用场景中，这个缺陷很难让应用程序运行失败。这个缺陷发生的条件非常苛刻：数据内容中包括重复的4字节值，且数据内容的差异仅存在于这些重复的4字节值上，且重复次数位于4字节的边界。如果真的发生了这种情况，那么散列值的范围将由$ 2^{32} $变成$ 2^{27.4} $。</p>
 <p>&emsp;&emsp;在Murmurhash3中，作者采用了更好的设计来完成散列值的计算，规避了Murmurhash2的设计缺陷，且具有更快的计算速度。</p>
-<h2 id="Murmurhash和Java语言的执行测试"><a href="#Murmurhash和Java语言的执行测试" class="headerlink" title="Murmurhash和Java语言的执行测试"></a>Murmurhash和Java语言的执行测试</h2><p>&emsp;&emsp;下面为一段字符串为例，观察Java提供的String.hashcode()和Murmurhash的执行结果的差异，Murmurhash的实现由Jedis提供。这里对同一个字符串分别用String.hashCode()方法和Murmurhash的算法来生成散列值，需要注意的是，Murmurhash生成的64位的散列值：</p>
+<h2 id="Murmurhash和Java语言的执行测试"><a href="#Murmurhash和Java语言的执行测试" class="headerlink" title="Murmurhash和Java语言的执行测试"></a>Murmurhash和Java语言的执行测试</h2><p>&emsp;&emsp;下面为一段字符串为例，观察Java提供的String.hashcode()和Murmurhash的执行结果的差异，Murmurhash的实现由Jedis提供。这里对同一个字符串分别用String.hashCode()方法和Murmurhash的算法来生成散列值，需要注意的是，Murmurhash生成的是64位的散列值：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    System.out.println(<span class="string">"LiXiansheng01"</span>.hashCode());</span><br><span class="line">    System.out.println(<span class="string">"LiXiansheng02"</span>.hashCode());</span><br><span class="line">    MurmurHash hash = <span class="keyword">new</span> MurmurHash();</span><br><span class="line">    System.out.println(hash.hash(<span class="string">"LiXiansheng01"</span>));</span><br><span class="line">    System.out.println(hash.hash(<span class="string">"LiXiansheng02"</span>));</span><br><span class="line">    System.out.println(hash.hash(<span class="string">"LiXiansheng03"</span>));</span><br><span class="line">    System.out.println(hash.hash(<span class="string">"LiXiansheng04"</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>&emsp;&emsp;代码执行结果如图 - 1所示：</p>
 <div style="text-align: center; width: 100%;">
@@ -276,6 +276,7 @@ classes that you can use:
 <li>Anderson Dadario. <a href="https://dadario.com.br/cryptographic-and-non-cryptographic-hash-functions/" target="_blank" rel="noopener">Cryptographic and Non-Cryptographic Hash Functions</a> [E]</li>
 <li>Wikipedia. <a href="http://en.wikipedia.org/wiki/MurmurHash" target="_blank" rel="noopener">MurmurHash</a> [E]</li>
 </ol>
+<p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
 
   	</section>
   	
