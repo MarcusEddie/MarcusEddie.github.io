@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-Collection-Segment.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="Segment是ConcurrentHashMap的内部类，也是ConcurrentHashMap集合中存储键值对实体的底层数据结构.具有方法put,rehash,remove,replace,clear。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1545100740/BlogImages/java-collection/map/ConcurrentHashMap-Segment-demo-example.png">
 <meta property="og:updated_time" content="2018-12-27T13:37:56.901Z">
 <meta name="twitter:card" content="summary">
@@ -87,6 +87,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -225,6 +228,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.util.concurrent.ConcurrentHashMap.Segment&lt;K, V&gt;</strong> </em>的部分笔记，Segment是ConcurrentHashMap的内部类，也是ConcurrentHashMap集合中存储键值对实体的底层数据结构。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;Segment是一个特殊的散列表。这个类继承了ReentrantLock，因此Segment自身具有锁和解锁的特性，可以在希望的场景中取得锁和释放锁，以此来保证多线程环境下的线程安全。</p>

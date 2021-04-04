@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-ObjectInputStream-InternalClass.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="关于java.io.ObjectInputStream有几个内部类，里面涉及到了HandleTable、ValidationList、GetField及其实现等几个内部类的声明和实现。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2018-12-27T13:41:40.038Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java I&#x2F;O 24 - ObjectInputStream内部类 | Mr.Muzi">
@@ -85,6 +85,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -223,6 +226,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.io.ObjectInputStream</strong> </em>内部类的部分笔记，里面涉及到了HandleTable、ValidationList、GetField及其实现等几个内部类的声明和实现。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;HandleTable是一个非同步表，用来跟踪对象映射的连接句柄，以及反序列对象过程中发生的ClassNotFoundException异常。这个类实现了一个异常传播算法来决定哪些对象应该被认为是属于异常ClassNotFoundException的。</p>

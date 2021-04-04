@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/10-years-of-speed-in-chrome.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="&amp;emsp;&amp;emsp;自十年前 Chrome 浏览器首次推出后，速度已经成为 Chrome 的四个核心原则之一。我们一直都想让 Web 开发者能够向用户提供快速的、优秀的上网体验。在 Chrome 诞生十周年之际，我们认为回顾在这十年中为提高速度所付出的努力，以及我们接下来要进行的尝试将会是一件非常有趣的事情。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1537670868/BlogImages/10-years-of-speed-in-chrome/ba9342523d46d2fbf21fa934cbc6019e2e2.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1537670867/BlogImages/10-years-of-speed-in-chrome/6f489f514ddca1b2242262eda8813bb1900.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1537670868/BlogImages/10-years-of-speed-in-chrome/e4ec482a2bf86f5cba8996785c22cfc009e.png">
@@ -91,6 +91,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -229,6 +232,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;自十年前 Chrome 浏览器首次推出后，速度已经成为 Chrome 的<a href="https://www.chromium.org/developers/core-principles" target="_blank" rel="noopener">四个核心原则</a>之一。我们一直都想让 Web 开发者能够向用户提供快速的、优秀的上网体验。在 Chrome 诞生十周年之际，我们认为回顾在这十年中为提高速度所付出的努力，以及我们接下来要进行的尝试将会是一件非常有趣的事情。<br><a id="more"></a></p>
 <p>&emsp;</p>
 <h2 id="致力于提速的多个浏览器组件"><a href="#致力于提速的多个浏览器组件" class="headerlink" title="致力于提速的多个浏览器组件"></a>致力于提速的多个浏览器组件</h2><p>&emsp;&emsp;<a href="https://v8project.blogspot.com" target="_blank" rel="noopener">V8</a> 是 Chrome 的一个 JavaScript 和 WebAssembly 引擎。随着网页使用 JavaScript 脚本数量的快速增长，一个能够处理这些 JavaScript 脚本的高速引擎成为一个非常重要的基础。这些年，我们为 V8 研发了一个<a href="https://v8project.blogspot.com/2017/05/launching-ignition-and-turbofan.html" target="_blank" rel="noopener">新的 JavaScript 执行管道(pipeline)</a>，启用了 <a href="https://github.com/v8/v8/wiki/Interpreter" target="_blank" rel="noopener">Ignition</a>（一个新的解释器）和 <a href="https://github.com/v8/v8/wiki/TurboFan" target="_blank" rel="noopener">TurboFan</a>(一个优化的编译器)。这些举措使得我们关于速度基准测试方面的性能提升了 5%-10%。<a href="https://blog.chromium.org/2015/03/new-javascript-techniques-for-rapid.html" target="_blank" rel="noopener">脚本流(Script streaming)</a>使得我们在 JavaScript 脚本开始下载的时候就在一个后台线程中解析这些 JavaScript 脚本，而这可以将页面加载速度提高最多 10%。后来加入的<a href="https://v8project.blogspot.com/2018/03/background-compilation.html" target="_blank" rel="noopener">后台编译过程</a>将主线程的编译时间减少了最多 20%。 </p>

@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/Java-source-String.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="关于String源码设计的一些学习笔记，其中涉及到了常用方法hashCode,intern等方法的设计和实现原理。除此之外，还解释了String字符串常量池，String constants pool，String的不可变性的原理以及String的拼接字符串“+”的实现原理。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1534926029/BlogImages/14568162018/note_string_intern_jdk_6_model_part_1.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1534926029/BlogImages/14568162018/note_string_intern_jdk_6_model_part_2.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1534926028/BlogImages/14568162018/note_string_intern_jdk_6_model_part_3.png">
@@ -96,6 +96,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -234,6 +237,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.lang.String </strong> </em> 的部分笔记，基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;Java语言中关于基础数据类型<strong>char</strong>的封装类型，包含了一些类型之间的字符串查找比较、相互转换封装方法，除此之外还有一些非String类型数据转换String的封装方法API供开发人员使用。</p>

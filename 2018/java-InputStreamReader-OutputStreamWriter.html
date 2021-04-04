@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-InputStreamReader-OutputStreamWriter.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="InputStreamReader和OutputStreamWriter是字节流和字符流之间转化的一个桥梁,底层依赖于类StreamDecoder和StreamEncoder。通过read,ready,close,flushBuffer,write,flush完成相关操作。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2018-12-27T13:41:26.499Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java I&#x2F;O 14 - InputStreamReader &amp; OutputStreamWriter | Mr.Muzi">
@@ -85,6 +85,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -223,6 +226,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.io.InputStreamReader</strong> </em> 和 <em> <strong>java.io.OutputStreamWriter</strong> </em>的部分笔记，这两个类完成了字节流和字符流之间的相互转化和读写操作，但是这两个类自身不负责任何操作，所有的操作均依赖于类StreamDecoder和StreamEncoder。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;InputStreamReader和OutputStreamWriter是字节流和字符流之间进行相互转化的一个桥梁和媒介。InputStreamReader负责将字节流转成字符流，其底层是通过StreamDecoder来完成所有操作的。OutputStreamWriter则负责将字符流转换成对应的字节流，其底层的实现则依赖于StreamEncoder。换言之，InputStreamReader和OutputStreamWriter自身并不需要做什么操作和处理，所有的操作和实现都是在底层的调用StreamDecoder和StreamEncoder中，InputStreamReader和OutputStreamWriter只是起到了一个封装和调用的作用。</p>

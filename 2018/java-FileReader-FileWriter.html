@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-FileReader-FileWriter.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="FileReader和FileWriter用来完成关于文件字符流的读写操作。通过read, write, close,getEncoding,ready,mark,reset,append等方法来操作文件，不能用于字节流环境。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2018-12-27T13:41:02.597Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java I&#x2F;O 13 - FileReader &amp; FileWriter | Mr.Muzi">
@@ -85,6 +85,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -223,6 +226,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.io.FileReader</strong> </em> 和 <em> <strong>java.io.FileWriter</strong> </em>的部分笔记，这两个类实现了对文件的字符级别的读写操作。FileReader和FileWriter中对于文件的读写操作方法全部来自于继承的父类中，自身仅包含了对于底层输入流的初始化方法。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;FileReader和FileWriter用来完成关于文件字符流的读写操作。在读写文件时，采用的都是默认的字符街编码格式。而且，这两个类仅仅用来处理字符流的操作，若要采用字节流的处理方式，那么需要使用FileInputStream和FileOutputStream来完成操作。</p>

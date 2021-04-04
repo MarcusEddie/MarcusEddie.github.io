@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-Collection-AbstractSet.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="AbstractSet是Set的默认最小化实现，拥有且实现了方法equals,hashCode,removeAll。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2018-12-27T13:36:11.584Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java Collection 09 - AbstractSet | Mr.Muzi">
@@ -85,6 +85,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -223,6 +226,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.util.AbstractSet&lt;E&gt;</strong> </em>的部分笔记，AbstractSet是Set的默认最小化实现。在具体的使用场景中，由继承AbstractSet的具体实现类完成数据的存储和操作需求。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;AbstractSet对Set接口做了最小规模的实现。实际上仅实现了Set接口的<strong>removeAll(Collection&lt;?&gt; c)</strong>方法。除此之外就是重写了equals(Object o)方法和hashCode()方法。由于AbstractSet继承了AbstractCollection，所以继承AbstractSet并实现Set接口的具体实现类也会包含AbstractCollection中的方法，但是要注意的是，实现类只是单纯的继承和拥有了AbstractCollection的方法，并未尝试对AbstractCollection中的方法进行覆盖。</p>

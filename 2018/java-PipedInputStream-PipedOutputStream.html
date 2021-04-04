@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-PipedInputStream-PipedOutputStream.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="PipedInputStream和PipedOutputStream需要在不同的线程中同时使用来完成数据读写。借助receive, read, write, flush等方法向缓冲区数组中写入读取数据。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1540899912/BlogImages/PipedInputStream-PipedOutputStream/pipedInputStream_receive_scene-1.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1540899912/BlogImages/PipedInputStream-PipedOutputStream/pipedInputStream_receive_scene-2.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1540899913/BlogImages/PipedInputStream-PipedOutputStream/pipedInputStream_receive_scene-3.png">
@@ -89,6 +89,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -227,6 +230,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.io.PipedInputStream</strong> </em> 和 <em> <strong>java.io.PipedOutputStream</strong> </em>的部分笔记，这两个类需要在两个不同的线程中同时使用来完成数据的读取和写入操作。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;PipedInputStream和PipedOutputStream两个类需要共同使用才能完成数据的读写操作，且输入流和输出流需要在不同的线程中执行，否则容易发生死锁现象。在PipedInputStream中维护了一个缓冲区数组，PipedOutputStream的写数据操作实际上调用的是PipedInputStream的方法向缓冲区数组中写入数据，PipedInputStream中的read()方法则从缓冲区数组中读取所需要的数据。PipedInputStream中的缓冲区数组按照环形数组的设计来读取和写入，根据读取位置等于写入位置来判断缓冲区数组中是否还有未读取的数据。</p>

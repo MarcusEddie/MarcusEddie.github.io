@@ -7,7 +7,7 @@
     
 
     <title>
-      Hello World | Mr.Muzi 
+      Java I/O 18 - CharArrayReader &amp; CharArrayWriter | Mr.Muzi 
     </title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -16,18 +16,18 @@
     
     
 
-    <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.">
-<meta name="keywords" content="Hexo">
+    <meta name="description" content="CharArrayReader和CharArrayWriter是内存流，参考流的思想操作内存空间中的数组内容。常用方法有read,skip,ready,close,write,append。">
+<meta name="keywords" content="CharArrayReader,CharArrayWriter,read,skip,ready,close,write,append,toString,flush,toCharArray,reset,mark">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World | Mr.Muzi">
-<meta property="og:url" content="https://marcuseddie.github.io/2018/hello-world.html">
+<meta property="og:title" content="Java I&#x2F;O 18 - CharArrayReader &amp; CharArrayWriter | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/en/java-CharArrayReader-CharArrayWriter.html">
 <meta property="og:site_name" content="Mr.Muzi">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.">
+<meta property="og:description" content="CharArrayReader和CharArrayWriter是内存流，参考流的思想操作内存空间中的数组内容。常用方法有read,skip,ready,close,write,append。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-04-02T14:08:26.163Z">
+<meta property="og:updated_time" content="2021-04-04T06:47:10.570Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello World | Mr.Muzi">
-<meta name="twitter:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.">
+<meta name="twitter:title" content="Java I&#x2F;O 18 - CharArrayReader &amp; CharArrayWriter | Mr.Muzi">
+<meta name="twitter:description" content="CharArrayReader和CharArrayWriter是内存流，参考流的思想操作内存空间中的数组内容。常用方法有read,skip,ready,close,write,append。">
     
     
     
@@ -201,23 +201,23 @@ classes that you can use:
 
 <article class="post-container post-container--single">
   	<header class="post-header">
-	    <h1 class="post-title"><b>Hello World</b></h1>
+	    <h1 class="post-title"><b>Java I/O 18 - CharArrayReader &amp; CharArrayWriter</b></h1>
 	    
 		    <div class="post-meta">
-		      	<time datetime="2018-05-13" class="post-meta__date date">2018-05-13</time> 
-		        <span class="post-meta__count count">字数统计:&nbsp;73&emsp;阅读时长:&nbsp;1&nbsp;mins</span>
+		      	<time datetime="2018-11-20" class="post-meta__date date">2018-11-20</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;99&emsp;阅读时长:&nbsp;1&nbsp;mins</span>
 		      	<span class="post-meta__tags tags">
 			        
 			            <font class="categories">
 				            &#8226; 分类:
-				            <a class="categories-link" href="/categories/Hexo/">Hexo</a>
+				            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
 			            </font>
 			        
 
 			        
 			            &#8226; 标签:
 			            <font class="tags">
-			              	<a class="tags-link" href="/tags/Hexo/">Hexo</a>
+			              	<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
 			            </font>
 			        
 		    	</span>
@@ -227,16 +227,21 @@ classes that you can use:
 
   	<section id="post-content" class="article-content post">
   		
+  			
+		  
 
-    	<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.<br><a id="more"></a></p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+    	<p>&emsp;&emsp;关于<em> <strong>java.io.CharArrayReader</strong> </em> 和 <em> <strong>java.io.CharArrayWriter</strong> </em>的部分笔记，这两个类属于内存流的一种，参考流的思想操作内存空间中的数组内容。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;CharArrayRe个空方法，不执行任何操作。</p>
+<p>&emsp;</p>
+<h2 id="涉及基础知识点"><a href="#涉及基础知识点" class="headerlink" title="涉及基础知识点"></a>涉及基础知识点</h2><ol>
+<li>NIL</li>
+</ol>
+<p>&emsp;</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>NIL</li>
+</ol>
+<p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
 
   	</section>
   	
@@ -251,7 +256,7 @@ classes that you can use:
 		 	
 		      	<section class="post-declare">
 <p>
-<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/hello-world.html" target="_blank" title="Hello World">Hello World</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/hello-world.html" target="_blank" title="Hello World">https://marcuseddie.github.io/2018/hello-world.html</a></b></div>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/en/java-CharArrayReader-CharArrayWriter.html" target="_blank" title="Java I/O 18 - CharArrayReader &amp; CharArrayWriter">Java I/O 18 - CharArrayReader &amp; CharArrayWriter</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/en/java-CharArrayReader-CharArrayWriter.html" target="_blank" title="Java I/O 18 - CharArrayReader &amp; CharArrayWriter">https://marcuseddie.github.io/2018/en/java-CharArrayReader-CharArrayWriter.html</a></b></div>
 </p>
 <section class="post-declare"></section></section>
 		  	
@@ -268,13 +273,15 @@ classes that you can use:
 	<div style="width:50%;float:left;">
 		
 			
-				<a href="/2018/Site-Deploy-History.html" class="alignleft prev" title="Site Deploy History"> 上一篇： Site Deploy History</a>
+				<a href="/2018/java-CharArrayReader-CharArrayWriter.html" class="alignleft prev" title="Java I/O 18 - CharArrayReader &amp; CharArrayWriter"> 上一篇： Java I/O 18 - CharArrayReader &amp; Cha...</a>
 			
 		
 	</div>
 	<div style="width:50%;float:right;">
 		
-			<a href="javascript:return false;" class="alignleft next" title="NON_NEXT_ANYMORE">再往后就没有了哦~</a>
+			
+				<a href="/2018/java-PipedReader-PipedWriter.html" class="alignright next" title="Java I/O 17 - PipedReader &amp; PipedWriter"> 下一篇： Java I/O 17 - PipedReader &amp; PipedWr...</a>
+			
 		
 	</div>
 </div>

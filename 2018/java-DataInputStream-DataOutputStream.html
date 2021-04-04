@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-DataInputStream-DataOutputStream.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="DataInputStream和DataOutputStream以一种不依赖平台的方式完成数据的读取和输出操作，可以读取Javaava基本数据类型（primitive data types）的数据，其中包含方法readFully、readUTF、writeUTF等。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2018-12-27T13:40:47.774Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java I&#x2F;O 06 - DataInputStream &amp; DataOutputStream | Mr.Muzi">
@@ -85,6 +85,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -223,6 +226,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.io.DataInputStream</strong> </em> 和 <em> <strong>java.io.DataOutputStream</strong> </em>的部分笔记，这两个类共同实现对数据类型为Java原生数据类型的数据的字节输入、输出流操作。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;DataInputStream和DataOutputStream这两个类实现了Java原生数据类型的写入和读取操作。DataInputStream以一种不依赖于特定运行平台的方式从底层输入流中将Java类型的数据读出进行计算处理。但是DataInputStream不保证多线程环境下的安全性，需要开发人员自己来保证多线程环境下可以正确无误的使用该类中的方法。</p>

@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-CharArrayReader-CharArrayWriter.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="CharArrayReader和CharArrayWriter是内存流，参考流的思想操作内存空间中的数组内容。常用方法有read,skip,ready,close,write,append。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2018-12-27T13:40:34.995Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java I&#x2F;O 18 - CharArrayReader &amp; CharArrayWriter | Mr.Muzi">
@@ -85,6 +85,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -223,6 +226,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.io.CharArrayReader</strong> </em> 和 <em> <strong>java.io.CharArrayWriter</strong> </em>的部分笔记，这两个类属于内存流的一种，参考流的思想操作内存空间中的数组内容。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;CharArrayReader和CharArrayWriter是典型的内存流，这两个类在内存中维护了一个char数组，把char数组视为输入/输出流的位置并实现了一套对char数组进行读写的方法API。可以在一些需要Reader/Writer作为参数，且实际内容是char数组的场合中使用CharArrayReader和CharArrayWriter。因为没有调用过除了内存之外的其他系统资源，所以这两个类的close()方法除了释放char数组占用的资源外无其他操作。</p>
@@ -351,7 +356,7 @@ classes that you can use:
 	<div style="width:50%;float:right;">
 		
 			
-				<a href="/2018/java-PipedReader-PipedWriter.html" class="alignright next" title="Java I/O 17 - PipedReader &amp; PipedWriter"> 下一篇： Java I/O 17 - PipedReader &amp; PipedWr...</a>
+				<a href="/2018/en/java-CharArrayReader-CharArrayWriter.html" class="alignright next" title="Java I/O 18 - CharArrayReader &amp; CharArrayWriter"> 下一篇： Java I/O 18 - CharArrayReader &amp; Cha...</a>
 			
 		
 	</div>

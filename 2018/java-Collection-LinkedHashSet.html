@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-Collection-LinkedHashSet.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="LinkedHashSet是基于散列表（hash table)和双向链表结构的Set实现类,具有元素不重复，顺序固定的特点。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2018-12-27T13:37:25.517Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java Collection 11 - LinkedHashSet | Mr.Muzi">
@@ -85,6 +85,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -223,6 +226,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.util.LinkedHashSet&lt;E&gt;</strong> </em>的部分笔记。LinkedHashSet集合了散列表（hash table）和链表的特点于一身，解决了HashSet无法保证元素遍历顺序的问题，具有元素不重复，顺序固定的特点。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;LinkedHashSet是基于散列表（hash table）和双向链表结构的Set实现类。和HashSet不同的是， LinkedHashSet保证了集合内元素的迭代顺序。该顺序是由双向链表来维护的，所以在集合元素遍历时，默认会按照元素被加入集合的顺序遍历并返回。<br>&emsp;&emsp;LinkedHashSet相对于HashSet保证了遍历顺序，同时也避免了随元素增多而导致的耗时增加（像TreeSet那样）。</p>

@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-PrintWriter.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="PrintWriter用来向文本输出流打印经过格式化处理的数据,借助方法write,newLine,print,println,printf,format,append完成操作且不会抛出IOException。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2018-12-27T13:42:31.834Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java I&#x2F;O 21 - PrintWriter | Mr.Muzi">
@@ -85,6 +85,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -223,6 +226,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.io.PrintWriter</strong> </em> 的部分笔记，PrintWriter属于处理流的一种，提供了丰富的打印方法用来向目标位置打印输出字符内容。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;PrintWriter用来向文本输出流打印经过格式化处理的数据。它实现了PrintStream中提及的所有打印方法，且这个类处理的都是字符数据，没有提供对字节数据的处理方法。和PrintStream不同的是，PrintWriter只会在调用了<tt>println</tt>, <tt>printf</tt>, 和<tt>format</tt>方法之后才会自动将数据推送到目标输出位置上（如果autoFlush = true）。而且，换行所用的行分隔符也是基于具体的运行机器的。</p>

@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-ObjectInputStream.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="&amp;emsp;&amp;emsp;关于 java.io.ObjectInputStream 的部分笔记，ObjectInputStream是Java反序列化操作的实现类，通过该类可以完成默认的或者自定义的对象反序列化操作。本文演示代码段的执行环境基于JDK版本1.7。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2018-12-27T14:17:56.043Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java I&#x2F;O 23 - ObjectInputStream | Mr.Muzi">
@@ -85,6 +85,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -223,6 +226,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.io.ObjectInputStream</strong> </em>的部分笔记，ObjectInputStream是Java反序列化操作的实现类，通过该类可以完成默认的或者自定义的对象反序列化操作。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;ObjectInputStream对来自于ObjectOutputStream的基础数据类型和对象数据做反序列化操作。ObjectInputStream和ObjectOutputStream被用于持久化存储对象数据（只有支持<strong>java.io.Serializable</strong>和<strong>java.io.Externalizable</strong>的对象才会拥有这个能力）的场景中。<strong>java.io.Serializable</strong>和<strong>java.io.Externalizable</strong>这两个接口决定了序列化和反序列化的执行过程。用来将数据序列化处理之后通过网络等途径传输到目标持久化位置，而ObjectInputStream则会将序列化之后的数据反序列之后传入内存中供计算机程序处理，保证了从流中得到的对象还原成JVM支持的数据类型。</p>

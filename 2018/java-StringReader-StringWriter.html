@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-StringReader-StringWriter.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="StringReader和StringWriter用于对String/ StringBuffer的流操作，可以用在一些需要字符流作为参数，且内容单纯的只有String的场景中，涉及方法包括read, skip, ready, close,reset, write, append,flush。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2018-12-27T13:43:22.835Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java I&#x2F;O 16 - StringReader &amp; StringWriter | Mr.Muzi">
@@ -85,6 +85,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -223,6 +226,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.io.StringReader</strong> </em> 和 <em> <strong>java.io.StringWriter</strong> </em>的部分笔记，这两个类维护了一套对于String/ StringBuffer的流操作集合。其底层的流内容来源和最终存储位置也是String/StringBuffer而非其他第三方的输入输出流位置。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;StringReader和StringWriter的底层输入输出位置是String/StringBuffer，事实上是把String/StringBuffer当做了一个虚拟的输入输出流来对待处理而不依赖第三个真正意义上的输入输出流。所有的操作都是围绕着String/ StringBuffer进行。这两个类可以用在一些需要字符流作为参数，且内容单纯的只有String的场景中。</p>

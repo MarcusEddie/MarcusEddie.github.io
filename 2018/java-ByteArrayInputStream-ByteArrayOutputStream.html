@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-ByteArrayInputStream-ByteArrayOutputStream.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="ByteArrayInputStream和ByteArrayOutputStream通过内存来完成数据的读写和转移，用于处理临时数据，程序结束，数据就从内存中消失。借助read, skip, mark, reset, close, write, writeTo, reset, toString, toByteArray等方法可以提升临时文件读写的效率和性能。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2018-12-27T13:40:27.453Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java I&#x2F;O 11 - ByteArrayInputStream &amp; ByteArrayOutputStream | Mr.Muzi">
@@ -85,6 +85,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -223,6 +226,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.io.ByteArrayInputStream</strong> </em> 和 <em> <strong>java.io.ByteArrayOutputStream</strong> </em>的部分笔记，这两个类相互合作借助内存来完成数据的读写和转移。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;ByteArrayInputStream和ByteArrayOutputStream没有太多涉及到和其他输入输出流进行交互的设计和实现，更多的是通过这两个类内部维护在内存中的字节数组来完成数据的读写和转移。对于一些不需要做持久处理的数据而言，以内存作为中转站来完成数据的操作和转移相对于写文件或者数据库等持久化处理来说性能更乐观，同时也省掉了很多不必要的、没有实际价值的处理和操作。</p>

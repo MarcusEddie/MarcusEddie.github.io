@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-PipedReader-PipedWriter.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="PipedReader和PipedWriter同时使用用来满足线程间的数据传送和通信需求。借助方法connect,read,write,receive,close完成字符内容在缓冲区buffer中读取/写入操作。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2018-12-27T13:42:16.179Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java I&#x2F;O 17 - PipedReader &amp; PipedWriter | Mr.Muzi">
@@ -85,6 +85,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -223,6 +226,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.io.PipedReader</strong> </em> 和 <em> <strong>java.io.PipedWriter</strong> </em>的部分笔记，用来完成不同线程间的数据传送和通信。读写操作分别在不同的线程中向缓冲区buffer中写入数据、读取数据。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;PipedReader和PipedWriter两个类可以同时使用用来满足线程间的数据传送和通信需求。读和写操作各自使用一个线程，向缓冲区buffer中写入字符内容，然后唤醒读线程读取内容，然后再唤醒写线程继续写入字符内容，然后再唤醒读线程读取内容，依次直到满足某个条件读取/写入操作结束。</p>
@@ -336,7 +341,7 @@ classes that you can use:
 	<div style="width:50%;float:left;">
 		
 			
-				<a href="/2018/java-CharArrayReader-CharArrayWriter.html" class="alignleft prev" title="Java I/O 18 - CharArrayReader &amp; CharArrayWriter"> 上一篇： Java I/O 18 - CharArrayReader &amp; Cha...</a>
+				<a href="/2018/en/java-CharArrayReader-CharArrayWriter.html" class="alignleft prev" title="Java I/O 18 - CharArrayReader &amp; CharArrayWriter"> 上一篇： Java I/O 18 - CharArrayReader &amp; Cha...</a>
 			
 		
 	</div>

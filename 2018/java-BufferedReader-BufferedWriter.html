@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-BufferedReader-BufferedWriter.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="BufferedReader和BufferedWriter提供缓冲区作为中间媒介，以此降低字符流读写操作与物理存储的交互次数并提高其读写效率和性能，涉及方法read,write,fill,close,flush,skip,mark,reset,flushBuffer。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2018-12-27T13:40:19.904Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java I&#x2F;O 22 - BufferedReader &amp; BufferedWriter | Mr.Muzi">
@@ -85,6 +85,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -223,6 +226,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.io.BufferedReader</strong> </em> 和<em> <strong>java.io.BufferedWriter</strong> </em> 的部分笔记，对字符读写提供了一个缓冲区作为中间媒介，以此降低读写操作与物理存储的交互次数并提高其读写效率和性能。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;BufferedReader和BufferedWriter同BufferedInputStream和BufferedOutputStream一样，对输入输出提供了一套缓冲区机制，以此来提高数据读写的效率和性能。BufferedReader和BufferedWriter内部的缓冲区默认大小为8192，通过将数据存储在缓冲区中（本质上是存储在内存中）可以降低读写与物理存储介质的交互次数，以达到优化读写速度的目标。但是和BufferedInputStream和BufferedOutputStream不同的是，BufferedReader和BufferedWriter处理的字符流，其数据范围是0 ~ 65535，而BufferedInputStream和BufferedOutputStream处理的字节流。</p>

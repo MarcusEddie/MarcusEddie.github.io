@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/Java-source-Integer.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="关于Integer源码的笔记，其中涉及getChars,decode,reverse,reverseBytes,IntegerCache等方法的设计实现原理。在Integer的实现中，对数字的计算机处理涉及很多，诸如原码、反码、补码和位移操作等都是Integer常用手段。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1533028543/Integer_bitCount_binary_tree_demo.png">
 <meta property="og:updated_time" content="2018-09-23T03:49:02.370Z">
 <meta name="twitter:card" content="summary">
@@ -87,6 +87,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -225,6 +228,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.lang.Integer</strong> </em>的部分笔记，基于JDK版本<strong>1.7</strong>。<br><a id="more"></a></p>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;Java语言中关于基础数据类型<strong>int</strong>的封装类型，包含了一些类型之间的相互转换封装方法，除此之外还有一些关于机器数操作的封装API供开发人员使用。</p>
 <h2 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">--java.lang.Object</span><br><span class="line">  --java.lang.Number</span><br><span class="line">    --java.lang.Integer</span><br></pre></td></tr></table></figure>

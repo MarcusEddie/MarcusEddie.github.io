@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-Reader-Writer.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="Reader和Writer是用来完成关于字符流读写操作的公共父类，继承这两个类的子类分别实现读写操作和关闭操作。子类会重写覆盖其方法。涉及的方法包括read, write, close, skip, ready, mark, reset, append, flush。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2018-12-27T13:42:55.637Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java I&#x2F;O 15 - Reader &amp; Writer | Mr.Muzi">
@@ -85,6 +85,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -223,6 +226,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.io.Reader</strong> </em> 和 <em> <strong>java.io.Writer</strong> </em>的部分笔记，这两个类是所有的字符流读写类的父类。继承这两个类的子类出于性能等方面的考虑会重写其方法。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;Reader和Writer是用来完成关于字符流读写操作的公共父类。继承这两个类的子类分别实现读写操作和关闭操作。虽然自身实现了部分的读写方法，但是出于高效、额外功能的考虑，子类需要重写覆盖Reader和Writer自身已经实现的方法来获取更好的使用性能。</p>

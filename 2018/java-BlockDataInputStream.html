@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-BlockDataInputStream.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="BlockDataInputStream是ObjectInputStream的底层读取类。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1544515541/BlogImages/Serializable-related/ObjectInputStream-BlockDataInputStream-refill-example.png">
 <meta property="og:updated_time" content="2018-12-27T13:40:12.989Z">
 <meta name="twitter:card" content="summary">
@@ -87,6 +87,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -225,6 +228,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.io.ObjectInputStream.BlockDataInputStream</strong> </em>的部分笔记，该类是ObjectInputStream的底层数据读取类，用来完成从流中读取数据的所有操作。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;BlockDataInputStream有两个读取模式：默认模式中，输入数据按照和DataOutputStream一样的格式被写入，如果在块数据模式中，输入数据被块数据标记包围写入。是否采用缓存支持取决于读取模式，默认模式不会采用缓存机制来获取数据，所有数据直接从底层输入流获取。反之，如果是块数据模式那么数据会被缓存下来供以后读取需要。</p>

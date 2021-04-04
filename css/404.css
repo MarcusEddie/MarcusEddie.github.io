@@ -1,0 +1,12 @@
+body,html{position:absolute;width:100%;height:100%}
+body.mobile .wrap_2018_404 .tip,html.mobile .wrap_2018_404 .tip,body.mobile .content_2018_404 .tip,html.mobile .content_2018_404 .tip{margin-top:100px;font-size:.3rem}
+body.mobile .wrap_2018_404 h1,html.mobile .wrap_2018_404 h1,body.mobile .content_2018_404 h1,html.mobile .content_2018_404 h1{width:5.25rem;margin-left:-2.625rem;margin-top:-1.2rem}
+body.mobile .wrap_2018_404 h1 img,html.mobile .wrap_2018_404 h1 img,body.mobile .content_2018_404 h1 img,html.mobile .content_2018_404 h1 img{width:5.25rem}
+body .wrap_2018_404,html .wrap_2018_404,body .content_2018_404,html .content_2018_404{width:100%;height:100%}
+body .content_2018_404,html .content_2018_404{width:100%;height:100%}
+body .content_2018_404 h1,html .content_2018_404 h1{position:absolute;width:420px;height:193px;left:50%;top:40%;margin-left:-210px;margin-top:-88px;overflow:hidden}
+body .content_2018_404 h1 img,html .content_2018_404 h1 img{width:420px}
+body .content_2018_404 .tip,html .content_2018_404 .tip{position:absolute;display:block;top:40%;margin-top:120px;width:100%;height:30px;font-size:16px;font-family:"Microsoft Yahei","Hiragino Sans GB","STHeiti";color:#888;text-align:center}
+body .content_2018_404 .tip:hover,html .content_2018_404 .tip:hover{text-decoration:none}
+body .content_2018_404 .tip:active,html .content_2018_404 .tip:active,body .content_2018_404 .tip:visited,html .content_2018_404 .tip:visited{color:#888}
+

@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/how-we-built-a-cost-based-sql-optimizer.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="&amp;emsp;&amp;emsp;在 Cockroach 实验室，我们一直在持续关注性能的提升和可扩展性。为了实现这个目标，我们发布的 2.1  版本产品中包含了一个全新的、从零起步的、基于成本的 SQL  优化器。这个优化器因提供了一个灵活的优化框架会在未来即将发布的版本中带来显著的性能提升，尤其是在一些复杂的报表查询场景中。除此之外，还首次启用了关联子查询等 SQL  功能特性。如果你有一些想要查询速度">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1544189634/BlogImages/how-we-built-a-cost-based-sql-optimizer/Cost-based-optimizer-transaction-flow.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1544189628/BlogImages/how-we-built-a-cost-based-sql-optimizer/Cost-based-optimizer-memo-how-work.png">
 <meta property="og:updated_time" content="2018-12-07T13:34:55.132Z">
@@ -88,6 +88,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -226,6 +229,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;在 Cockroach 实验室，我们一直在持续关注性能的提升和可扩展性。为了实现这个目标，我们发布的 2.1  版本产品中包含了一个全新的、从零起步的、基于成本的 SQL  优化器。这个优化器因提供了一个灵活的优化框架会在未来即将发布的版本中带来显著的性能提升，尤其是在一些复杂的报表查询场景中。除此之外，还首次启用了关联子查询等 SQL  功能特性。如果你有一些想要查询速度更快的查询请求场景，把它们交给我们吧！我们正在构建一个用来调节优化器性能的查询库，并以此来规划确定未来工作的优先级顺序。 </p>
 <a id="more"></a>
 <p>&emsp;&emsp;作为一个工程师，我急切的想要深入了解新优化器是如何工作的（TL;DR -  一个令人兴奋的存在），所以第一件事情就是先要做好各种准备工作。我将会以解释什么是基于成本的 SQL  优化器作为开始，紧接着会告诉你我们是如何决定从众多优化器中选择出最能满足我们需要的一个优化器，以至于我们集合了四个工程师，把他们都关在了封闭的小黑屋里，全权委托他们重写实现了 CockroachDB  的一个主要部件。之后，我会带领大家进入到真正让人着迷的部分，引导大家一探新优化器内部的真面目。鉴于篇幅的缘故，我们不可能完全了解新优化器的全部，因为这不是一篇博文可以做到的。但是也不用太担心，之后还会有详细介绍优化器内部机制的文章不断发布。所以，请各位读者稍安勿躁，敬请期待。 </p>

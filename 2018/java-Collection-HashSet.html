@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-Collection-HashSet.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="HashSet集合是一个不会存储重复元素、遍历元素顺序无法保证的集合实现。拥有add,remove,clear,clone,iterator,size,isEmpty,contains,wrtieObject,readObject等方法。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2018-12-27T13:37:00.659Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java Collection 10 - HashSet | Mr.Muzi">
@@ -85,6 +85,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -223,6 +226,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.util.HashSet&lt;E&gt;</strong> </em>的部分笔记。HashSet集合是一个不会存储重复元素、遍历元素顺序无法保证的集合实现。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;HashSet是一个以HashMap为底层数据结构的集合实现类，该实现类实现了Set接口中规定的集合处理方法API，而且允许存储null元素。HashSet集合具有集合内元素唯一，且无序的特点。由于底层数据结构依赖于散列表，所以HashSet的add(E e)、remove(Object o)、contains(Object o)、size()等方法可以实现常量时间的操作性能。</p>

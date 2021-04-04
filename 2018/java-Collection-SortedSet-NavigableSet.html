@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-Collection-SortedSet-NavigableSet.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="SortedSet和NavigableSet借助于Comparable和Comparator提供了建立在元素大小关系的顺序（升序、降序）。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2018-12-27T13:38:12.459Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java Collection 12 - SortedSet &amp; NavigableSet | Mr.Muzi">
@@ -85,6 +85,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -223,6 +226,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;SortedSet和NavigableSet是两个继承了Set接口的子接口。除了常见的Set集合操作外，这两个接口提供了一种排序来更快的访问元素的机制和方法。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;SortedSet和NavigableSet均是Set接口的子接口，其中SortedSet直接继承于Set，而NavigableSet则直接继承于SortedSet。SortedSet借助于接口<strong>java.lang.Comparable</strong>和<strong>java.util.Comparator</strong>提供了一种建立在元素上的全排序（即对象中的所有字段都参与排序，在某字段相同的情况下比较下一个字段的大小关系），而这种排序手段可以允许迭代器向前或者向后访问元素。因此，SortedSet额外声明了一些方法来充分利用这种双向访问的特点。LinkedHashSet也是有序访问的，但是LinkedHashSet维护的是元素插入集合时的先后顺序，这个顺序是固定的，不会随着元素的插入发生变化。而SortedSet维护的是元素之间大小关系的顺序（比如升序、 降序等），这种顺序会随着元素的插入而发生变更。 </p>

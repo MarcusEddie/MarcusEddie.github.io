@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-PushbackInputStream.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="PushbackInputStream提供了unread方法来将已经从底层输入流中读出的字节数据再回退到输入流中，实现回退（push back）或者再读（re-read）操作。涉及到方法有read, unread, skip, available, close。再次调用read方法时，获取的将会是被回退的数据，直到回退的数据被读取完毕。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2018-12-27T13:55:48.574Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java I&#x2F;O 07 - PushbackInputStream | Mr.Muzi">
@@ -85,6 +85,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -223,6 +226,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.io.PushbackInputStream</strong> </em>的部分笔记，这个类可以完成对输入流数据的回退操作。也就是说，通过read方法从底层输入流中读出的数据可以在被退回到输入流中，这样下次read方法将会首先读取到被退回到输入流中的数据。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;PushbackInputStream提供了unread方法来将已经从底层输入流中读出的字节数据再回退到输入流中，实现回退（push back）或者再读（re-read）操作。在调用unread方法后再次调用read方法时，获取的将会是被回退的数据，直到回退的数据被读取完毕，才会获取到新的输入流数据。</p>

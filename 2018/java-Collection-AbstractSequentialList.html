@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-Collection-AbstractSequentialList.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="&amp;emsp;&amp;emsp;关于 java.util.AbstractSequentialList&amp;lt;E&amp;gt; 的部分笔记。AbstractSequentialList因其借鉴顺序访问的思想而被用于插入元素比访问元素更频繁的场景中。顺序访问思想赋予了其插入元素可以做到常量时间的优势。鉴于其是一个抽象类，在实际应用时实现其抽象方法来完成实际操作。需要本文演示代码段的执行环境基于JDK版本1.7。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2018-12-27T13:36:04.161Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java Collection 06 - AbstractSequentialList | Mr.Muzi">
@@ -85,6 +85,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -223,6 +226,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.util.AbstractSequentialList&lt;E&gt;</strong> </em>的部分笔记。AbstractSequentialList因其借鉴顺序访问的思想而被用于插入元素比访问元素更频繁的场景中。顺序访问思想赋予了其插入元素可以做到常量时间的优势。鉴于其是一个抽象类，在实际应用时实现其抽象方法来完成实际操作。需要本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;AbstractSequentialList提供了顺序访问List集合的一种思路和实现，其最常见的实现类即为 <a href="/2018/java-Collection-LinkedList.html">LinkedList</a>。和以AbstractList为代表的随机访问类相比，顺序访问会导致在访问元素时会按照从首到尾逐个遍历的方式获取目标元素，所以其访问元素需要的时间随着集合元素数量呈比例增长，但是其优点是保证了元素插入的高效率。</p>

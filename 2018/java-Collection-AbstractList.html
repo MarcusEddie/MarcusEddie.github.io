@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-Collection-AbstractList.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="AbstractList是List接口的最小程度的实现，可随机访问存储数据。拥有add,addAll,get,set,remove,removeAll,indexOf,lastIndexOf,clear,iterator,subList等方法。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1543500093/BlogImages/java-collection/list/AbstractList-Itr-ListItr-cursor.png">
 <meta property="og:updated_time" content="2018-12-27T13:53:54.292Z">
 <meta name="twitter:card" content="summary">
@@ -87,6 +87,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -225,6 +228,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.util.AbstractList&lt;E&gt;</strong> </em>的部分笔记，AbstractList是List的默认最小化实现。在具体的使用场景中，由继承AbstractList的具体实现类完成数据的存储和操作需求。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;AbstractList是List接口的最小程度的实现。之所以说是最小程度，是因为AbstractList中大部分已经实现的方法基本上都是只返回了异常信息而没有做任何有效的处理操作。List有两个抽象实现，一个是AbstractList，另一个是AbstractSequentialList。AbstractList实现了一种随机访问存储数据的方案，类似于数组那样,所以其具有元素访问速度快的特点，但是由于其底层实现采用的数组的方式，所以在插入元素时会因为需要移动元素分配空间而导致元素插入速度相对较慢。而AbstractSequentialList则实现了一种顺序访问存储数据的方案，其继承类便是LinkedList。</p>

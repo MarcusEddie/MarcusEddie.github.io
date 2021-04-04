@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-Collection-TreeSet.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="TreeSet是一个有序的、不可存储重复元素的、非线程安全的Set集合实现类,集合内的元素按照实现了Comparable接口的自然顺序进行排序，或者由Comparator指定一个排序顺序。有size,isEmpty,contains,add,remove,clear,addAll,subSet,headSet,tailSet,first,last,lower,floor,ceiling,highe">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2018-12-27T13:38:27.394Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java Collection 13 - TreeSet | Mr.Muzi">
@@ -85,6 +85,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -223,6 +226,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.util.TreeSet&lt;E&gt;</strong> </em>的部分笔记，TreeSet是一个有序的、不可存储重复元素的Set集合实现类。TreeSet集合的顺序由Comparable实现或者Comparator指定。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;TreeSet是一个基于TreeMap的Set集合实现，继承了AbstractSet的同时实现了NavigableSet接口（该接口直接继承于SortedSet）中声明的方法操作。集合内的元素按照实现了Comparable接口的自然顺序进行排序，或者由Comparator指定一个排序顺序。TreeSet实现保证在调用add(E e)、remove(Object o) 、contains(Object o)方法时可以得到log(n)的时间性能。</p>

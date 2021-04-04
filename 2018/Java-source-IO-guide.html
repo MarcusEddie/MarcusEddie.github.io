@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/Java-source-IO-guide.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="关于java.io包下的相关类和接口的整体概括，io包下的类负责对字节流,字符流,文件(file)的操作。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1542809473/BlogImages/21568302018/java_io_structure.png">
 <meta property="og:updated_time" content="2018-12-18T14:13:56.105Z">
 <meta name="twitter:card" content="summary">
@@ -87,6 +87,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -225,6 +228,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;在Java语言规范中，<strong>java.io</strong>下的接口和类设计负责完成系统输入、输出的功能，涵盖了数据流、序列化、文件、网络流多种应用场景，可以支持字节流、字符流的输入输出。所有测试及代码描述基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;在java.io包下，共有各种类51个，含有或涉及接口12个。具体信息参考表1和表2：</p>

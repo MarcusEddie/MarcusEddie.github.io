@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-SequenceInputStream.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="SequenceInputStream中含有多个底层输入流，可以按照顺序依次从多个底层输入流中读取数据。实现了nextStream, read, available等方法。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2018-12-27T13:43:02.691Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java I&#x2F;O 12 - SequenceInputStream | Mr.Muzi">
@@ -85,6 +85,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -223,6 +226,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.io.SequenceInputStream</strong> </em>的部分笔记，SequenceInputStream中包含了多个输入流，多个输入流之间按照先后顺序依次通过read()方法提供新数据。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;SequenceInputStream在其中维护了多个输入流，这些输入流按照先后顺序依次提供输入数据。如果当前输入流已经无法继续提供输入数据，那么就会取得下一个数据流，并从下一个输入流的read()方法中获取新的数据流。如果最后一个输入流的数据也已经读取完毕，那么就不会有新数据可以读取了。输入流的获取按照先后顺序依次进行。</p>

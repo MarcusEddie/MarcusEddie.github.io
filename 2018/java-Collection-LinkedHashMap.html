@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-Collection-LinkedHashMap.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="LinkedHashMap是HashMap的扩展，底层依赖数组+双向链表的形式完成了元素的存储和查找，并且该实现返回的元素是有序的，transfer,init,containsValue,get,clear,addEntry,createEntry,accessOrder。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1544702029/BlogImages/java-collection/map/Map-LinkedHashMap-underlying-data-structure-example.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1544701064/BlogImages/java-collection/map/Map-LinkedHashMap-Entry-example.png">
 <meta property="og:updated_time" content="2019-01-15T14:47:22.459Z">
@@ -88,6 +88,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -226,6 +229,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.util.LinkedHashMap&lt;K, V&gt;</strong> </em>的部分笔记，LinkedHashMap是HashMap的扩展，底层依赖数组+双向链表的形式完成了元素的存储和查找，并且该实现返回的元素是有序的。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;LinkedHashMap是一个可预先确定键值对遍历顺序的map集合实现。直接继承于HashMap，但是和HashMap不同的是，LinkedHashMap底层多了一个双向链表来链接所有的键值对实体对象。于是乎， LinkedHashMap的元素迭代顺序是由双向链表决定和维护的，而双向链表的顺序也反映了键值对被加入集合时的顺序，所以也可以理解成元素的插入顺序。如果向LinkedHashMap集合中插入一个已经存在的键值对，那么其在集合中的顺序不会因此而改变。</p>

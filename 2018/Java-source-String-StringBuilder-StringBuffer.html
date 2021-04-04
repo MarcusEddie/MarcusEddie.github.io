@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/Java-source-String-StringBuilder-StringBuffer.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="关于String、StringBuffer、StringBuilder的笔记，其中涉及append,reverse,delete,insert,trimToSize,substring等方法的设计实现原理。此外还解释了StringBuffer、StringBuilder序列化、反序列化的差异和实现过程以及和String三者之间的区别。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2018-09-23T03:49:26.471Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java源码阅读笔记03 - 字符串三剑客 | Mr.Muzi">
@@ -85,6 +85,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -223,6 +226,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;在Java语言规范中，处理一个字符串可以通过三个类 — <strong>String、StringBuilder、StringBuffer</strong>来实现，三者之间在增删改字符串内容时采用的方法和原理有很多不一致的地方，这里将简单论述上述三个类型的异同。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;在String、StringBuilder、StringBuffer中，String被定义为不可变类型，也就是说String对象value字段一经赋值就不会被改变，直至生命周期结束被垃圾回收机制回收。而后两者是可变的，并且都提供了对应的API以便开发人员可以根据需要修改其所包含的内容。但是后两者也有一些区别，StringBuilder不适用于多线程环境，StringBuffer可以在多线程环境中保证数据一致。鉴于此，StringBuilder的处理效率相对于StringBuffer来说会更乐观一些。</p>

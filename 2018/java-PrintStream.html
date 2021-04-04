@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-PrintStream.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="PrintStream除了可以向目标位置输出内容，还提供了打印输出内容的方法，涉及的方法有newLine、println、print、printf等。开发者可以便捷调用其提供的打印方法来完成输出内容的打印显示。PrintStream不会抛出IOException，通过trouble来判断。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2018-12-27T13:42:23.624Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java I&#x2F;O 08 - PrintStream | Mr.Muzi">
@@ -85,6 +85,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -223,6 +226,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.io.PrintStream</strong> </em>的部分笔记，这个类除了实现了继承自FilterOutputStream的基本的write方法外，还提供了打印输出内容的方法来打印当前输出的内容。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;PrintStream提供了打印输出内容的便捷方法，这样可以直接调用其提供的方法来完成输出内容的输出和打印显示两个操作。所有通过PrintStream输出打印的内容都会被转成字节流然后输出到目标位置。除此之外，PrintStream也不会抛出IOException，而是通过内置字段<strong>trouble</strong>来判断是否在调用过程中抛出了IOException。</p>

@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-Collection-Set.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="Set作为Java集合框架中的一员，常用实现有HashSet,LinkedHashSet,TreeSet。其实现机制和特点使得Set是一个无序的，不可存储重复数据的数据结构。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1544021679/BlogImages/java-collection/list/Set-guide.png">
 <meta property="og:updated_time" content="2018-12-27T13:50:44.034Z">
 <meta name="twitter:card" content="summary">
@@ -87,6 +87,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -225,6 +228,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;在Java语言规范中，Set和List同属于Java集合框架中的Collection，是一种可以保证不会出现重复元素的数据结构，类似于数学领域中的集合。提供了对同类型数据进行存储、插入、删除和查找等需求的实现过程。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;Set是Java集合体系中的成员之一，和List接口一样直接继承于Collection。所以，Set本身只是一个接口定义，其定义了对Set集合进行操作的方法API。Set底层依赖的数据结构决定了其无法存储重复元素（如果允许存储null元素的话最多也只能存储一个null元素），而且也无法保证Set集合的元素先后顺序，即在多次重复遍历同一集合的情况下，每次遍历得到的元素返回顺序无法保证一致。Set的特点如下：</p>

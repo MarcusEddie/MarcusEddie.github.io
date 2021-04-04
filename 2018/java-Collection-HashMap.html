@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-Collection-HashMap.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="HashMap是一个遍历顺序无序，不允许key重复的存储键值对映射的集合实现类。底层依赖了一个数组集合，数组中的每个元素维护了具有需要存储在相同下标位置的键值对实体链表结构,拥有方法hash,get,put,remove,containsKey,containsValue,entrySet,size,isEmpty,clear">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1544683504/BlogImages/java-collection/map/Map-HashMap-underlying-data-structure-example.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1544615810/BlogImages/java-collection/map/Map-HashMap-createEntry-example.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1544618617/BlogImages/java-collection/map/Map-HashMap-transfer-example.png">
@@ -91,6 +91,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -229,6 +232,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.util.HashMap&lt;K, V&gt;</strong> </em>的部分笔记，HashMap是一个遍历顺序无序，不允许key重复的存储键值对映射的集合实现类。底层依赖了一个数组集合，数组中的每个元素维护了具有需要存储在相同下标位置的键值对实体链表结构。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;HashMap是Map接口的实现类，提供了接口声明的所有方法的具体实现。HashMap允许存储key为null、value为null的元素。HashMap可以被视为等同于散列表（hash table），但是不同的是，散列表是线程安全的，主要方法都被synchronized关键字做了修饰，而HashMap是非线程安全的。Hashmap不保证元素遍历的顺序。</p>

@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-Collection-LinkedList.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="LinkedList是一个非线程安全的、以双向链表为基础的List集合实现类,可以以常量时间插入数据，但只能顺序访问元素。常用方法LinkedList,linkFirst,linkLast,linkBefore,unlinkFirst,unlinkLast,unlink,add,addAll,remove,contains,indexOf,toArray。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1544328570/BlogImages/java-collection/list/LinkedList-Node-example.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1544280608/BlogImages/java-collection/list/LinkedList-LinkFirst-example.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1544280610/BlogImages/java-collection/list/LinkedList-LinkLast-example.png">
@@ -95,6 +95,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -233,6 +236,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.util.LinkedList&lt;E&gt;</strong> </em>的部分笔记，LinkedList是一个非线程安全的List集合实现类。因为其采用了双向链表作为底层存储数据结构而具有了可以以常量时间插入数据的性能，但是因为底层数据结构的限制导致其只能顺序访问元素。鉴于此，LinkedList适用于元素插入频繁，而元素遍历查找相对次要的场景中。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;LinkedList是一个以双向链表为基础的List集合，其综合了List集合和Deque队列的优势和特点实现了一个顺序访问的集合实现类。因为LinkedList的底层依赖了链表数据结构，所以在元素访问时都是按照链表的方式从首元素依次遍历直至到达目标元素。此外，鉴于其依赖的链表实现，所以在元素插入时可以达到常量时间的操作性能。</p>

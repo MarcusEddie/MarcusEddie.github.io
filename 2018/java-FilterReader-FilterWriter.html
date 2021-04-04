@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2018/java-FilterReader-FilterWriter.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="FilterReader和FilterWriter自身实现了输入输出操作，但其子类应覆盖重写read,mark,close,skip,ready,write,flush等完成输入输出流的操作。">
-<meta property="og:locale" content="Asia/Shanghai">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1542893609/BlogImages/java-IO-FilterReader-FilterWriter/Design-Patterns-Decorator.png">
 <meta property="og:updated_time" content="2018-12-27T13:41:12.413Z">
 <meta name="twitter:card" content="summary">
@@ -87,6 +87,9 @@
               
                 
                 <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
               
                 
                 <li class="navigation__item"><a href="/about" title class>关于</a></li>
@@ -225,6 +228,8 @@ classes that you can use:
   	</header>
 
   	<section id="post-content" class="article-content post">
+  		
+
     	<p>&emsp;&emsp;关于<em> <strong>java.io.FilterReader</strong> </em> 和 <em> <strong>java.io.FilterWriter</strong> </em>的部分笔记，自身实现了完整的输入输出流操作，继承这两个类的子类应该重写其拥有的操作方法API。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;FilterReader和FilterWriter这两个类分别继承了Reader和Writer，其自身实现了一整套关于输入输出流的默认操作。但是因为FilterReader和FilterWriter被设计成抽象类的缘故，所以任何继承这两个类的子类都应该重写其方法，如果有必要的话可以提供额外的方法和字段。和FilterInputStream/FilterOutputStream类似，FilterReader和FilterWriter在设计时也采用了装饰器的设计模式，继承自FilterReader的子类PushbackReader则是具体的装饰类。</p>
