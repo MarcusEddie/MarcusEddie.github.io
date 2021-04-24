@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
@@ -255,7 +255,7 @@ classes that you can use:
   	<section id="post-content" class="article-content post">
   		
 
-    	<p>&emsp;&emsp;关于<em> <strong>java.util.LinkedHashMap&lt;K, V&gt;</strong> </em>的部分笔记，LinkedHashMap是HashMap的扩展，底层依赖数组+双向链表的形式完成了元素的存储和查找，并且该实现返回的元素是有序的。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.util.LinkedHashMap&lt;K, V&gt;</strong> </em>的部分笔记，LinkedHashMap是HashMap的扩展，底层依赖数组+双向链表的形式完成了元素的存储和查找，并且该实现返回的元素是有序的。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;LinkedHashMap是一个可预先确定键值对遍历顺序的map集合实现。直接继承于HashMap，但是和HashMap不同的是，LinkedHashMap底层多了一个双向链表来链接所有的键值对实体对象。于是乎， LinkedHashMap的元素迭代顺序是由双向链表决定和维护的，而双向链表的顺序也反映了键值对被加入集合时的顺序，所以也可以理解成元素的插入顺序。如果向LinkedHashMap集合中插入一个已经存在的键值对，那么其在集合中的顺序不会因此而改变。</p>
 <p>&emsp;&emsp;LinkedHashMap提供了一个特殊的构造方法：</p>
@@ -370,13 +370,14 @@ classes that you can use:
 <li>NIL</li>
 </ol>
 <p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
-
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
   	</section>
   	
 	  	<div>
 		  	
 				<div>
-	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------</div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
 </div>
 		  	
 		</div>
@@ -386,7 +387,7 @@ classes that you can use:
 <p>
 <div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-Collection-LinkedHashMap.html" target="_blank" title="Java Map 04 - LinkedHashMap">Java Map 04 - LinkedHashMap</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-Collection-LinkedHashMap.html" target="_blank" title="Java Map 04 - LinkedHashMap">https://marcuseddie.github.io/2018/java-Collection-LinkedHashMap.html</a></b></div>
 </p>
-<section class="post-declare"></section></section>
+<section class="post-declare">
 		  	
 	  	
 	  	
@@ -473,7 +474,7 @@ classes that you can use:
 	        createImgEventFullScreen();
 	    }, 1000)
 	</script>
-</article>
+</section></section></article>
 
 
             <footer class="footer">

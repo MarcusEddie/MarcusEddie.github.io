@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
@@ -252,7 +252,7 @@ classes that you can use:
   	<section id="post-content" class="article-content post">
   		
 
-    	<p>&emsp;&emsp;关于<em> <strong>java.io.BufferedInputStream</strong> </em> 和 <em> <strong>java.io.BufferedOutputStream</strong> </em>的部分笔记，这两个类配套完成带缓存处理的字节输入、输出流操作。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.io.BufferedInputStream</strong> </em> 和 <em> <strong>java.io.BufferedOutputStream</strong> </em>的部分笔记，这两个类配套完成带缓存处理的字节输入、输出流操作。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <p>&emsp;</p>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;BufferedInputStream和BufferedOutputStream两个类完成带缓存处理的字节输入、输出流操作。BufferedInputStream继承的InputStream负责从外部资源将数据移动到Java程序中 ，BufferedOutputStream继承的OutputStream负责从Java程序中将数据移动到外部目标 。这两个类分别继承了FilterInputStream和FilterOutputStream这两个类，内部引用了InputStream和OutputStream，在初始化实例BufferedInputStream和BufferedOutputStream时分别需要传入一个InputStream和OutputStream。BufferedInputStream和BufferedOutputStream两个类在设计时借鉴了装饰器模式的设计思想。BufferedInputStream和BufferedOutputStream在读写数据时，从数据源一次读入多个字节的数据存储在内存缓存中，待内存缓存写满后再一次性将读入的数据写入到其他目的位置，然后再重新填充新的输入流数据到内存缓存中，直至整个输入流的数据全部读完。通过内存缓存作为临时存储空间向磁盘读写数据的处理方式避免了很多对磁盘IO的操作，而读写内存相对于读写磁盘来说，速度更快，由此带来的好处就是在读写大容量数据时通过带缓存的读取比不带缓存的读取效率更高，会节省很多时间。</p>
@@ -331,13 +331,14 @@ classes that you can use:
 <li>zhhphappy. <a href="http://zhhphappy.iteye.com/blog/1562427" target="_blank" rel="noopener">BufferedInputStream 源码学习笔记</a> [E]</li>
 <li>stackoverflow. <a href="https://stackoverflow.com/questions/42389245/what-is-the-use-of-mark-read-limit-in-bufferedinputstream" target="_blank" rel="noopener">what is the use of mark read limit in bufferedinputstream</a> [E]<br>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</li>
 </ol>
-
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
   	</section>
   	
 	  	<div>
 		  	
 				<div>
-	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------</div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
 </div>
 		  	
 		</div>
@@ -347,7 +348,7 @@ classes that you can use:
 <p>
 <div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/Java-source-BufferedInput-OutputStream.html" target="_blank" title="Java I/O 04 - BufferedInputStream &amp; BufferedOutputStream">Java I/O 04 - BufferedInputStream &amp; BufferedOutputStream</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/Java-source-BufferedInput-OutputStream.html" target="_blank" title="Java I/O 04 - BufferedInputStream &amp; BufferedOutputStream">https://marcuseddie.github.io/2018/Java-source-BufferedInput-OutputStream.html</a></b></div>
 </p>
-<section class="post-declare"></section></section>
+<section class="post-declare">
 		  	
 	  	
 	  	
@@ -434,7 +435,7 @@ classes that you can use:
 	        createImgEventFullScreen();
 	    }, 1000)
 	</script>
-</article>
+</section></section></article>
 
 
             <footer class="footer">

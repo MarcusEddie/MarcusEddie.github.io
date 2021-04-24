@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
@@ -252,7 +252,7 @@ classes that you can use:
   	<section id="post-content" class="article-content post">
   		
 
-    	<p>&emsp;&emsp;关于<em> <strong>java.io.ObjectInputStream</strong> </em>的部分笔记，ObjectInputStream是Java反序列化操作的实现类，通过该类可以完成默认的或者自定义的对象反序列化操作。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.io.ObjectInputStream</strong> </em>的部分笔记，ObjectInputStream是Java反序列化操作的实现类，通过该类可以完成默认的或者自定义的对象反序列化操作。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;ObjectInputStream对来自于ObjectOutputStream的基础数据类型和对象数据做反序列化操作。ObjectInputStream和ObjectOutputStream被用于持久化存储对象数据（只有支持<strong>java.io.Serializable</strong>和<strong>java.io.Externalizable</strong>的对象才会拥有这个能力）的场景中。<strong>java.io.Serializable</strong>和<strong>java.io.Externalizable</strong>这两个接口决定了序列化和反序列化的执行过程。用来将数据序列化处理之后通过网络等途径传输到目标持久化位置，而ObjectInputStream则会将序列化之后的数据反序列之后传入内存中供计算机程序处理，保证了从流中得到的对象还原成JVM支持的数据类型。</p>
 <p>&emsp;&emsp;ObjectInputStream中的<strong>readObject()</strong>方法会从流中读取被序列化的对象数据。基础数据类型可以通过readXX()方法得到。默认的反序列化机制会计算并返回对象的每个字段被序列化之前的类型和存储的内容。如果字段声明中含有<strong>transient</strong>或者<strong>static</strong>，那么这些字段在反序列化的过程中不会被恢复。如果在一个对象中引用了其他对象，那么这些被引用的对象也会被序列化且ObjectInputStream会从流中尝试反序列这些对象。在反序列化的过程中，新的对象和原有对象分别占用不同的内存空间，所以对原有对象的修改不会影响到新对象，反之亦然。</p>
@@ -425,13 +425,14 @@ classes that you can use:
 <li>Java Object Serialization Specification 1.6</li>
 </ol>
 <p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
-
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
   	</section>
   	
 	  	<div>
 		  	
 				<div>
-	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------</div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
 </div>
 		  	
 		</div>
@@ -441,7 +442,7 @@ classes that you can use:
 <p>
 <div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-ObjectInputStream.html" target="_blank" title="Java I/O 23 - ObjectInputStream">Java I/O 23 - ObjectInputStream</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-ObjectInputStream.html" target="_blank" title="Java I/O 23 - ObjectInputStream">https://marcuseddie.github.io/2018/java-ObjectInputStream.html</a></b></div>
 </p>
-<section class="post-declare"></section></section>
+<section class="post-declare">
 		  	
 	  	
 	  	
@@ -528,7 +529,7 @@ classes that you can use:
 	        createImgEventFullScreen();
 	    }, 1000)
 	</script>
-</article>
+</section></section></article>
 
 
             <footer class="footer">

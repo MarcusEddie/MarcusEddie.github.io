@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
@@ -256,7 +256,7 @@ classes that you can use:
   	<section id="post-content" class="article-content post">
   		
 
-    	<p>&emsp;&emsp;关于<em> <strong>java.io.PipedInputStream</strong> </em> 和 <em> <strong>java.io.PipedOutputStream</strong> </em>的部分笔记，这两个类需要在两个不同的线程中同时使用来完成数据的读取和写入操作。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.io.PipedInputStream</strong> </em> 和 <em> <strong>java.io.PipedOutputStream</strong> </em>的部分笔记，这两个类需要在两个不同的线程中同时使用来完成数据的读取和写入操作。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;PipedInputStream和PipedOutputStream两个类需要共同使用才能完成数据的读写操作，且输入流和输出流需要在不同的线程中执行，否则容易发生死锁现象。在PipedInputStream中维护了一个缓冲区数组，PipedOutputStream的写数据操作实际上调用的是PipedInputStream的方法向缓冲区数组中写入数据，PipedInputStream中的read()方法则从缓冲区数组中读取所需要的数据。PipedInputStream中的缓冲区数组按照环形数组的设计来读取和写入，根据读取位置等于写入位置来判断缓冲区数组中是否还有未读取的数据。</p>
 <p>&emsp;</p>
@@ -350,13 +350,14 @@ classes that you can use:
 <li>ReggieDing. <a href="https://zhuanlan.zhihu.com/p/31352578" target="_blank" rel="noopener">PipedInputStream和PipedOutStream记录</a> [E]</li>
 <li>Asslstne. <a href="https://www.jianshu.com/p/8aefeb3a12cf" target="_blank" rel="noopener">源码分析: PipedInputStream和PipedOutputStream</a> [E]<br>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</li>
 </ol>
-
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
   	</section>
   	
 	  	<div>
 		  	
 				<div>
-	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------</div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
 </div>
 		  	
 		</div>
@@ -366,7 +367,7 @@ classes that you can use:
 <p>
 <div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-PipedInputStream-PipedOutputStream.html" target="_blank" title="Java I/O 10 - PipedInputStream &amp; PipedOutputStream">Java I/O 10 - PipedInputStream &amp; PipedOutputStream</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-PipedInputStream-PipedOutputStream.html" target="_blank" title="Java I/O 10 - PipedInputStream &amp; PipedOutputStream">https://marcuseddie.github.io/2018/java-PipedInputStream-PipedOutputStream.html</a></b></div>
 </p>
-<section class="post-declare"></section></section>
+<section class="post-declare">
 		  	
 	  	
 	  	
@@ -453,7 +454,7 @@ classes that you can use:
 	        createImgEventFullScreen();
 	    }, 1000)
 	</script>
-</article>
+</section></section></article>
 
 
             <footer class="footer">

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
@@ -252,7 +252,7 @@ classes that you can use:
   	<section id="post-content" class="article-content post">
   		
 
-    	<p>&emsp;&emsp;SortedSet和NavigableSet是两个继承了Set接口的子接口。除了常见的Set集合操作外，这两个接口提供了一种排序来更快的访问元素的机制和方法。</p>
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;SortedSet和NavigableSet是两个继承了Set接口的子接口。除了常见的Set集合操作外，这两个接口提供了一种排序来更快的访问元素的机制和方法。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;SortedSet和NavigableSet均是Set接口的子接口，其中SortedSet直接继承于Set，而NavigableSet则直接继承于SortedSet。SortedSet借助于接口<strong>java.lang.Comparable</strong>和<strong>java.util.Comparator</strong>提供了一种建立在元素上的全排序（即对象中的所有字段都参与排序，在某字段相同的情况下比较下一个字段的大小关系），而这种排序手段可以允许迭代器向前或者向后访问元素。因此，SortedSet额外声明了一些方法来充分利用这种双向访问的特点。LinkedHashSet也是有序访问的，但是LinkedHashSet维护的是元素插入集合时的先后顺序，这个顺序是固定的，不会随着元素的插入发生变化。而SortedSet维护的是元素之间大小关系的顺序（比如升序、 降序等），这种顺序会随着元素的插入而发生变更。 </p>
 <p>&emsp;&emsp;但是SortedSet对加入集合中的元素也提出了一些要求，即需要实现Comparable或者comparator接口。此外，这些元素相互之间可以互相比较而不会抛出<strong>ClassCastException</strong>异常。</p>
@@ -406,13 +406,14 @@ classes that you can use:
 <li>[美] Joshua Bloch. Effective Java 2nd Edtion[M]. Boston:Addison-Wesley.</li>
 </ol>
 <p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
-
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
   	</section>
   	
 	  	<div>
 		  	
 				<div>
-	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------</div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
 </div>
 		  	
 		</div>
@@ -422,7 +423,7 @@ classes that you can use:
 <p>
 <div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-Collection-SortedSet-NavigableSet.html" target="_blank" title="Java Collection 12 - SortedSet &amp; NavigableSet">Java Collection 12 - SortedSet &amp; NavigableSet</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-Collection-SortedSet-NavigableSet.html" target="_blank" title="Java Collection 12 - SortedSet &amp; NavigableSet">https://marcuseddie.github.io/2018/java-Collection-SortedSet-NavigableSet.html</a></b></div>
 </p>
-<section class="post-declare"></section></section>
+<section class="post-declare">
 		  	
 	  	
 	  	
@@ -509,7 +510,7 @@ classes that you can use:
 	        createImgEventFullScreen();
 	    }, 1000)
 	</script>
-</article>
+</section></section></article>
 
 
             <footer class="footer">

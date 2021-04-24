@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
@@ -252,7 +252,7 @@ classes that you can use:
   	<section id="post-content" class="article-content post">
   		
 
-    	<p>&emsp;&emsp;关于<em> <strong>java.io.ObjectInputStream</strong> </em>内部类的部分笔记，里面涉及到了HandleTable、ValidationList、GetField及其实现等几个内部类的声明和实现。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.io.ObjectInputStream</strong> </em>内部类的部分笔记，里面涉及到了HandleTable、ValidationList、GetField及其实现等几个内部类的声明和实现。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;HandleTable是一个非同步表，用来跟踪对象映射的连接句柄，以及反序列对象过程中发生的ClassNotFoundException异常。这个类实现了一个异常传播算法来决定哪些对象应该被认为是属于异常ClassNotFoundException的。</p>
 <p>&emsp;&emsp;关于该表的使用场景，大致可分为如下几种：在反序列过程中，一个给定对象通过assign方法第一次被分配了一个句柄，此时该句柄属于“开放”状态。其中对其他句柄的异常状态的依赖关系可以通过调用markDependency方法注册，或者通过调用markException直接与句柄关联一个异常。如果当前句柄被指向了一个异常，那么根据异常传播机制和当前句柄有关联的其他对象都会被标记为异常态。一旦所有的异常信息/依赖都被注册了，那么当前句柄就可以通过close()被“关闭”了。通过finish()方法允许异常传播算法删除相关的依赖链，减少性能和内存损耗。</p>
@@ -300,13 +300,14 @@ classes that you can use:
 <li>NIL</li>
 </ol>
 <p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
-
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
   	</section>
   	
 	  	<div>
 		  	
 				<div>
-	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------</div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
 </div>
 		  	
 		</div>
@@ -316,7 +317,7 @@ classes that you can use:
 <p>
 <div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-ObjectInputStream-InternalClass.html" target="_blank" title="Java I/O 24 - ObjectInputStream内部类">Java I/O 24 - ObjectInputStream内部类</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-ObjectInputStream-InternalClass.html" target="_blank" title="Java I/O 24 - ObjectInputStream内部类">https://marcuseddie.github.io/2018/java-ObjectInputStream-InternalClass.html</a></b></div>
 </p>
-<section class="post-declare"></section></section>
+<section class="post-declare">
 		  	
 	  	
 	  	
@@ -403,7 +404,7 @@ classes that you can use:
 	        createImgEventFullScreen();
 	    }, 1000)
 	</script>
-</article>
+</section></section></article>
 
 
             <footer class="footer">

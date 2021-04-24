@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
@@ -262,7 +262,7 @@ classes that you can use:
   	<section id="post-content" class="article-content post">
   		
 
-    	<p>&emsp;&emsp;关于<em> <strong>java.util.LinkedList&lt;E&gt;</strong> </em>的部分笔记，LinkedList是一个非线程安全的List集合实现类。因为其采用了双向链表作为底层存储数据结构而具有了可以以常量时间插入数据的性能，但是因为底层数据结构的限制导致其只能顺序访问元素。鉴于此，LinkedList适用于元素插入频繁，而元素遍历查找相对次要的场景中。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.util.LinkedList&lt;E&gt;</strong> </em>的部分笔记，LinkedList是一个非线程安全的List集合实现类。因为其采用了双向链表作为底层存储数据结构而具有了可以以常量时间插入数据的性能，但是因为底层数据结构的限制导致其只能顺序访问元素。鉴于此，LinkedList适用于元素插入频繁，而元素遍历查找相对次要的场景中。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;LinkedList是一个以双向链表为基础的List集合，其综合了List集合和Deque队列的优势和特点实现了一个顺序访问的集合实现类。因为LinkedList的底层依赖了链表数据结构，所以在元素访问时都是按照链表的方式从首元素依次遍历直至到达目标元素。此外，鉴于其依赖的链表实现，所以在元素插入时可以达到常量时间的操作性能。</p>
 <p>&emsp;&emsp;需要注意的是，LinkedList是一个非线程安全的集合实现。如果需要在多线程环境中使用LinkedList完成需求，那么需要添加另外处理来保证多线程环境下的线程安全，一种可以实现要求的常用处理方式是使用<strong>Collections.synchronizedList(new LinkedList(…))</strong>来在LinkedList初始化时保证LinkedList的线程安全。示例如下：</p>
@@ -484,13 +484,14 @@ classes that you can use:
 <li>清浅池塘. <a href="https://zhuanlan.zhihu.com/p/28101975" target="_blank" rel="noopener">LinkedList初探</a> [E]</li>
 </ol>
 <p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
-
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
   	</section>
   	
 	  	<div>
 		  	
 				<div>
-	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------</div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
 </div>
 		  	
 		</div>
@@ -500,7 +501,7 @@ classes that you can use:
 <p>
 <div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-Collection-LinkedList.html" target="_blank" title="Java Collection 07 - LinkedList">Java Collection 07 - LinkedList</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-Collection-LinkedList.html" target="_blank" title="Java Collection 07 - LinkedList">https://marcuseddie.github.io/2018/java-Collection-LinkedList.html</a></b></div>
 </p>
-<section class="post-declare"></section></section>
+<section class="post-declare">
 		  	
 	  	
 	  	
@@ -587,7 +588,7 @@ classes that you can use:
 	        createImgEventFullScreen();
 	    }, 1000)
 	</script>
-</article>
+</section></section></article>
 
 
             <footer class="footer">

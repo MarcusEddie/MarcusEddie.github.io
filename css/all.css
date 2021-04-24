@@ -1,4 +1,4 @@
-body{line-height:1.5;font-family:arial,"\5b8b\4f53";background:#fff;font-size:12px}
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css">body{line-height:1.5;font-family:arial,"\5b8b\4f53";background:#fff;font-size:12px}
 body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,p,blockquote,th,td{margin:0;padding:0}
 h1,h2,h3,h4,h5,h6{font-size:100%}
 ol,ul{list-style:none}
@@ -350,3 +350,4 @@ blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}
 .sports_crumbs{float:left;height:24px;line-height:30px;overflow:hidden;margin:26px 0 0 0;font-size:14px}
 .sports_calendar{float:right;width:83px;height:30px;text-align:center;margin:21px 0 0 5px;cursor:pointer;position:relative;z-index:99}
 
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>

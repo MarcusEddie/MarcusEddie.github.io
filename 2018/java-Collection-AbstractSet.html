@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
@@ -252,7 +252,7 @@ classes that you can use:
   	<section id="post-content" class="article-content post">
   		
 
-    	<p>&emsp;&emsp;关于<em> <strong>java.util.AbstractSet&lt;E&gt;</strong> </em>的部分笔记，AbstractSet是Set的默认最小化实现。在具体的使用场景中，由继承AbstractSet的具体实现类完成数据的存储和操作需求。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.util.AbstractSet&lt;E&gt;</strong> </em>的部分笔记，AbstractSet是Set的默认最小化实现。在具体的使用场景中，由继承AbstractSet的具体实现类完成数据的存储和操作需求。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;AbstractSet对Set接口做了最小规模的实现。实际上仅实现了Set接口的<strong>removeAll(Collection&lt;?&gt; c)</strong>方法。除此之外就是重写了equals(Object o)方法和hashCode()方法。由于AbstractSet继承了AbstractCollection，所以继承AbstractSet并实现Set接口的具体实现类也会包含AbstractCollection中的方法，但是要注意的是，实现类只是单纯的继承和拥有了AbstractCollection的方法，并未尝试对AbstractCollection中的方法进行覆盖。</p>
 <p>&emsp;</p>
@@ -292,13 +292,14 @@ classes that you can use:
 <li>NIL</li>
 </ol>
 <p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
-
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
   	</section>
   	
 	  	<div>
 		  	
 				<div>
-	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------</div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
 </div>
 		  	
 		</div>
@@ -308,7 +309,7 @@ classes that you can use:
 <p>
 <div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-Collection-AbstractSet.html" target="_blank" title="Java Collection 09 - AbstractSet">Java Collection 09 - AbstractSet</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-Collection-AbstractSet.html" target="_blank" title="Java Collection 09 - AbstractSet">https://marcuseddie.github.io/2018/java-Collection-AbstractSet.html</a></b></div>
 </p>
-<section class="post-declare"></section></section>
+<section class="post-declare">
 		  	
 	  	
 	  	
@@ -395,7 +396,7 @@ classes that you can use:
 	        createImgEventFullScreen();
 	    }, 1000)
 	</script>
-</article>
+</section></section></article>
 
 
             <footer class="footer">

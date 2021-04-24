@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
@@ -252,7 +252,7 @@ classes that you can use:
   	<section id="post-content" class="article-content post">
   		
 
-    	<p>&emsp;&emsp;关于<em> <strong>java.util.Hashtable&lt;K, V&gt;</strong> </em>的部分笔记，Hashtable是一个不允许key和value为null的集合实现。和HashMap的功能和应用场景大致相同，但是Hashtable是一个线程安全的实现，可以用于多线程环境中。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.util.Hashtable&lt;K, V&gt;</strong> </em>的部分笔记，Hashtable是一个不允许key和value为null的集合实现。和HashMap的功能和应用场景大致相同，但是Hashtable是一个线程安全的实现，可以用于多线程环境中。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;Hashtable是一个存储key=value映射的实现类，对键值对的要求是key和value均不能为空。为了可能正确有效的存储和检索Hashtable里的键值对实体，key所属的类型必须要实现hashcode()和equals()方法。</p>
 <p>&emsp;&emsp;Hashtable中有两个参数会影响散列表的操作性能：initialCapacity和loadFactor。initialCapacity决定了散列表中桶（存储键值对实体的数组）的大小，而loadFactor决定了当桶填充到什么程度时会执行数组扩容处理。如果执行了扩容操作，那么需要将当前散列表的键值对实体重新计算hashcode值并分配在扩容后数组中的位置。默认的加载因子是0.75，这个值保证了散列表的操作性能可以在时间和空间利用方面达到一个理想的平衡。</p>
@@ -366,13 +366,14 @@ classes that you can use:
 <li>NIL</li>
 </ol>
 <p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
-
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
   	</section>
   	
 	  	<div>
 		  	
 				<div>
-	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------</div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
 </div>
 		  	
 		</div>
@@ -382,7 +383,7 @@ classes that you can use:
 <p>
 <div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-Collection-Hashtable.html" target="_blank" title="Java Map 05 - Hashtable">Java Map 05 - Hashtable</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-Collection-Hashtable.html" target="_blank" title="Java Map 05 - Hashtable">https://marcuseddie.github.io/2018/java-Collection-Hashtable.html</a></b></div>
 </p>
-<section class="post-declare"></section></section>
+<section class="post-declare">
 		  	
 	  	
 	  	
@@ -469,7 +470,7 @@ classes that you can use:
 	        createImgEventFullScreen();
 	    }, 1000)
 	</script>
-</article>
+</section></section></article>
 
 
             <footer class="footer">

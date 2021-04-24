@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
@@ -252,7 +252,7 @@ classes that you can use:
   	<section id="post-content" class="article-content post">
   		
 
-    	<p>&emsp;&emsp;关于<em> <strong>java.util.TreeSet&lt;E&gt;</strong> </em>的部分笔记，TreeSet是一个有序的、不可存储重复元素的Set集合实现类。TreeSet集合的顺序由Comparable实现或者Comparator指定。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.util.TreeSet&lt;E&gt;</strong> </em>的部分笔记，TreeSet是一个有序的、不可存储重复元素的Set集合实现类。TreeSet集合的顺序由Comparable实现或者Comparator指定。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;TreeSet是一个基于TreeMap的Set集合实现，继承了AbstractSet的同时实现了NavigableSet接口（该接口直接继承于SortedSet）中声明的方法操作。集合内的元素按照实现了Comparable接口的自然顺序进行排序，或者由Comparator指定一个排序顺序。TreeSet实现保证在调用add(E e)、remove(Object o) 、contains(Object o)方法时可以得到log(n)的时间性能。</p>
 <p>&emsp;&emsp;和LinkedHashSet不一致的是，TreeSet维护的顺序是基于元素内容的，按照事先定义好的比较规则比较插入TreeSet集合的每一个元素，因此在元素插入后，集合的顺序可能会随之发生变更。而LinkedHashSet维护的元素插入的顺序，这个顺序为固定的，只与元素被加入集合时的时间有关系。</p>
@@ -355,13 +355,14 @@ classes that you can use:
 <li>Lirx_Tech. <a href="https://blog.csdn.net/Lirx_Tech/article/details/51514248" target="_blank" rel="noopener">[疯狂Java]集合：SortedSet、TreeSet</a> [E]</li>
 </ol>
 <p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
-
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
   	</section>
   	
 	  	<div>
 		  	
 				<div>
-	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------</div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
 </div>
 		  	
 		</div>
@@ -371,7 +372,7 @@ classes that you can use:
 <p>
 <div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-Collection-TreeSet.html" target="_blank" title="Java Collection 13 - TreeSet">Java Collection 13 - TreeSet</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-Collection-TreeSet.html" target="_blank" title="Java Collection 13 - TreeSet">https://marcuseddie.github.io/2018/java-Collection-TreeSet.html</a></b></div>
 </p>
-<section class="post-declare"></section></section>
+<section class="post-declare">
 		  	
 	  	
 	  	
@@ -458,7 +459,7 @@ classes that you can use:
 	        createImgEventFullScreen();
 	    }, 1000)
 	</script>
-</article>
+</section></section></article>
 
 
             <footer class="footer">

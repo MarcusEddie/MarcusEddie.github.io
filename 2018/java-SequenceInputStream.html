@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
@@ -252,7 +252,7 @@ classes that you can use:
   	<section id="post-content" class="article-content post">
   		
 
-    	<p>&emsp;&emsp;关于<em> <strong>java.io.SequenceInputStream</strong> </em>的部分笔记，SequenceInputStream中包含了多个输入流，多个输入流之间按照先后顺序依次通过read()方法提供新数据。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.io.SequenceInputStream</strong> </em>的部分笔记，SequenceInputStream中包含了多个输入流，多个输入流之间按照先后顺序依次通过read()方法提供新数据。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;SequenceInputStream在其中维护了多个输入流，这些输入流按照先后顺序依次提供输入数据。如果当前输入流已经无法继续提供输入数据，那么就会取得下一个数据流，并从下一个输入流的read()方法中获取新的数据流。如果最后一个输入流的数据也已经读取完毕，那么就不会有新数据可以读取了。输入流的获取按照先后顺序依次进行。</p>
 <p>&emsp;</p>
@@ -297,13 +297,14 @@ classes that you can use:
 <h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
 <li>NIL<br>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</li>
 </ol>
-
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
   	</section>
   	
 	  	<div>
 		  	
 				<div>
-	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------</div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
 </div>
 		  	
 		</div>
@@ -313,7 +314,7 @@ classes that you can use:
 <p>
 <div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-SequenceInputStream.html" target="_blank" title="Java I/O 12 - SequenceInputStream">Java I/O 12 - SequenceInputStream</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-SequenceInputStream.html" target="_blank" title="Java I/O 12 - SequenceInputStream">https://marcuseddie.github.io/2018/java-SequenceInputStream.html</a></b></div>
 </p>
-<section class="post-declare"></section></section>
+<section class="post-declare">
 		  	
 	  	
 	  	
@@ -400,7 +401,7 @@ classes that you can use:
 	        createImgEventFullScreen();
 	    }, 1000)
 	</script>
-</article>
+</section></section></article>
 
 
             <footer class="footer">

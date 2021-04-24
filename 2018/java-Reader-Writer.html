@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
@@ -252,7 +252,7 @@ classes that you can use:
   	<section id="post-content" class="article-content post">
   		
 
-    	<p>&emsp;&emsp;关于<em> <strong>java.io.Reader</strong> </em> 和 <em> <strong>java.io.Writer</strong> </em>的部分笔记，这两个类是所有的字符流读写类的父类。继承这两个类的子类出于性能等方面的考虑会重写其方法。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.io.Reader</strong> </em> 和 <em> <strong>java.io.Writer</strong> </em>的部分笔记，这两个类是所有的字符流读写类的父类。继承这两个类的子类出于性能等方面的考虑会重写其方法。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;Reader和Writer是用来完成关于字符流读写操作的公共父类。继承这两个类的子类分别实现读写操作和关闭操作。虽然自身实现了部分的读写方法，但是出于高效、额外功能的考虑，子类需要重写覆盖Reader和Writer自身已经实现的方法来获取更好的使用性能。</p>
 <p>&emsp;&emsp;在使用Writer向底层输出流输出数据内容时，Writer仅保证通过flush操作可以将数据从内存输出给操作系统，但是并不保证数据可以正确完整的写入到特定的物理设备中，这一点在使用时需要加以注意。</p>
@@ -330,13 +330,14 @@ classes that you can use:
 <h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
 <li>NIL<br>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</li>
 </ol>
-
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
   	</section>
   	
 	  	<div>
 		  	
 				<div>
-	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------</div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
 </div>
 		  	
 		</div>
@@ -346,7 +347,7 @@ classes that you can use:
 <p>
 <div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-Reader-Writer.html" target="_blank" title="Java I/O 15 - Reader &amp; Writer">Java I/O 15 - Reader &amp; Writer</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-Reader-Writer.html" target="_blank" title="Java I/O 15 - Reader &amp; Writer">https://marcuseddie.github.io/2018/java-Reader-Writer.html</a></b></div>
 </p>
-<section class="post-declare"></section></section>
+<section class="post-declare">
 		  	
 	  	
 	  	
@@ -433,7 +434,7 @@ classes that you can use:
 	        createImgEventFullScreen();
 	    }, 1000)
 	</script>
-</article>
+</section></section></article>
 
 
             <footer class="footer">

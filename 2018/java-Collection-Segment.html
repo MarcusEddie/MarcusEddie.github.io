@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
@@ -254,7 +254,7 @@ classes that you can use:
   	<section id="post-content" class="article-content post">
   		
 
-    	<p>&emsp;&emsp;关于<em> <strong>java.util.concurrent.ConcurrentHashMap.Segment&lt;K, V&gt;</strong> </em>的部分笔记，Segment是ConcurrentHashMap的内部类，也是ConcurrentHashMap集合中存储键值对实体的底层数据结构。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.util.concurrent.ConcurrentHashMap.Segment&lt;K, V&gt;</strong> </em>的部分笔记，Segment是ConcurrentHashMap的内部类，也是ConcurrentHashMap集合中存储键值对实体的底层数据结构。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;Segment是一个特殊的散列表。这个类继承了ReentrantLock，因此Segment自身具有锁和解锁的特性，可以在希望的场景中取得锁和释放锁，以此来保证多线程环境下的线程安全。</p>
 <p>&emsp;&emsp;在ConcurrentHashMap的底层是一个Segment数组，每个元素都是一个Segment节点。而每个Segment节点内部维护了一个HashEntry对象，ConcurrentHashMap中的键值对都是存储在某个具体的Segment节点的HashEntry数组内。每个线程会对一个特定的Segment元素获取锁，也就是说，不同的线程会操作不同的Segment元素。在读取元素时，不会对Segment元素加锁，只有向集合中写入数据时才会尝试获取锁。Segment结构如图1所示：</p>
@@ -318,13 +318,14 @@ classes that you can use:
 <li>NIL</li>
 </ol>
 <p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
-
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
   	</section>
   	
 	  	<div>
 		  	
 				<div>
-	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------</div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
 </div>
 		  	
 		</div>
@@ -334,7 +335,7 @@ classes that you can use:
 <p>
 <div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-Collection-Segment.html" target="_blank" title="Java Map 08 - Segment">Java Map 08 - Segment</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-Collection-Segment.html" target="_blank" title="Java Map 08 - Segment">https://marcuseddie.github.io/2018/java-Collection-Segment.html</a></b></div>
 </p>
-<section class="post-declare"></section></section>
+<section class="post-declare">
 		  	
 	  	
 	  	
@@ -421,7 +422,7 @@ classes that you can use:
 	        createImgEventFullScreen();
 	    }, 1000)
 	</script>
-</article>
+</section></section></article>
 
 
             <footer class="footer">

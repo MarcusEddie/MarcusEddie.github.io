@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
@@ -254,7 +254,7 @@ classes that you can use:
   	<section id="post-content" class="article-content post">
   		
 
-    	<p>&emsp;&emsp;关于<em> <strong>java.util.AbstractList&lt;E&gt;</strong> </em>的部分笔记，AbstractList是List的默认最小化实现。在具体的使用场景中，由继承AbstractList的具体实现类完成数据的存储和操作需求。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.util.AbstractList&lt;E&gt;</strong> </em>的部分笔记，AbstractList是List的默认最小化实现。在具体的使用场景中，由继承AbstractList的具体实现类完成数据的存储和操作需求。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;AbstractList是List接口的最小程度的实现。之所以说是最小程度，是因为AbstractList中大部分已经实现的方法基本上都是只返回了异常信息而没有做任何有效的处理操作。List有两个抽象实现，一个是AbstractList，另一个是AbstractSequentialList。AbstractList实现了一种随机访问存储数据的方案，类似于数组那样,所以其具有元素访问速度快的特点，但是由于其底层实现采用的数组的方式，所以在插入元素时会因为需要移动元素分配空间而导致元素插入速度相对较慢。而AbstractSequentialList则实现了一种顺序访问存储数据的方案，其继承类便是LinkedList。</p>
 <p>&emsp;&emsp;对于AbstractList的子类来说，如果想要处理的是不可修改的list集合，那么只需要实现AbstractList中的get(int index)和int size()方法就足够了。如果要处理的可修改list集合，那么就需要额外实现set(int index, E element)。如果想要处理一个可变长度的list集合，那么还需要实现add(int index, E element)和remove(int index)方法。</p>
@@ -353,13 +353,14 @@ classes that you can use:
 <li>千念飞羽. <a href="https://blog.csdn.net/u011518120/article/details/51932040" target="_blank" rel="noopener">源码分析-java-AbstractList-Itr和ListItr的实现</a> [E]</li>
 </ol>
 <p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
-
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
   	</section>
   	
 	  	<div>
 		  	
 				<div>
-	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------</div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
 </div>
 		  	
 		</div>
@@ -369,7 +370,7 @@ classes that you can use:
 <p>
 <div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-Collection-AbstractList.html" target="_blank" title="Java Collection 02 - AbstractList">Java Collection 02 - AbstractList</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-Collection-AbstractList.html" target="_blank" title="Java Collection 02 - AbstractList">https://marcuseddie.github.io/2018/java-Collection-AbstractList.html</a></b></div>
 </p>
-<section class="post-declare"></section></section>
+<section class="post-declare">
 		  	
 	  	
 	  	
@@ -456,7 +457,7 @@ classes that you can use:
 	        createImgEventFullScreen();
 	    }, 1000)
 	</script>
-</article>
+</section></section></article>
 
 
             <footer class="footer">

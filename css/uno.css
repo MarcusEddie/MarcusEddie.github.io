@@ -982,7 +982,7 @@ h5 {
   font-size: 1em; }
 
 p {
-  margin-bottom: 1.3em;
+  /* margin-bottom: 1.3em; */
   line-height: 1.7em; }
 
 strong {
@@ -993,14 +993,14 @@ em {
 
 blockquote {
   margin: 1em 0;
-  padding: 1em 0;
+  padding: 1em 0.5em;
   background: #f8f8f8;
   border: 1px solid #eeeeee;
   border-radius: 3px;
   /*font-family: "Roboto Slab", serif;*/
   font-family:  "Raleway",Verdana,sans-serif,宋体, serif, "Droid Serif", Helvetica Neue, Helvetica, Arial;
   font-weight: lighter;
-  font-style: italic;
+  /* font-style: italic; */
   font-size: 1.0em;
   /*text-align: center;*/ }
   blockquote p:last-child {
@@ -1133,7 +1133,8 @@ hr {
 
 .post-comments {
   border-top: 1px solid #dddddd;
-  padding: 60px 0; }
+  padding: 60px 0;
+  margin: 25px 0; }
 
 .post-meta {
   margin: 0 0 1.4em 0;

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
@@ -252,7 +252,7 @@ classes that you can use:
   	<section id="post-content" class="article-content post">
   		
 
-    	<p>&emsp;&emsp;关于<em> <strong>java.io.PrintWriter</strong> </em> 的部分笔记，PrintWriter属于处理流的一种，提供了丰富的打印方法用来向目标位置打印输出字符内容。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.io.PrintWriter</strong> </em> 的部分笔记，PrintWriter属于处理流的一种，提供了丰富的打印方法用来向目标位置打印输出字符内容。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;PrintWriter用来向文本输出流打印经过格式化处理的数据。它实现了PrintStream中提及的所有打印方法，且这个类处理的都是字符数据，没有提供对字节数据的处理方法。和PrintStream不同的是，PrintWriter只会在调用了<tt>println</tt>, <tt>printf</tt>, 和<tt>format</tt>方法之后才会自动将数据推送到目标输出位置上（如果autoFlush = true）。而且，换行所用的行分隔符也是基于具体的运行机器的。</p>
 <p>&emsp;&emsp;PrintWriter还有一点特殊的地方就是，在调用其他方法都不会抛出I/O异常。如果要确认在调用PrintWriter处理输出数据的过程中是否产生了异常，可以通过调用<code>checkError()</code>进行确认。此这个过程中，如果流还没有关闭，会自动进行flush，同时返回错误状态标识位。</p>
@@ -341,13 +341,14 @@ classes that you can use:
 <li>NIL</li>
 </ol>
 <p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
-
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
   	</section>
   	
 	  	<div>
 		  	
 				<div>
-	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------</div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
 </div>
 		  	
 		</div>
@@ -357,7 +358,7 @@ classes that you can use:
 <p>
 <div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-PrintWriter.html" target="_blank" title="Java I/O 21 - PrintWriter">Java I/O 21 - PrintWriter</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-PrintWriter.html" target="_blank" title="Java I/O 21 - PrintWriter">https://marcuseddie.github.io/2018/java-PrintWriter.html</a></b></div>
 </p>
-<section class="post-declare"></section></section>
+<section class="post-declare">
 		  	
 	  	
 	  	
@@ -444,7 +445,7 @@ classes that you can use:
 	        createImgEventFullScreen();
 	    }, 1000)
 	</script>
-</article>
+</section></section></article>
 
 
             <footer class="footer">

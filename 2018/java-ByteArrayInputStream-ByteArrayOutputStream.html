@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
@@ -252,7 +252,7 @@ classes that you can use:
   	<section id="post-content" class="article-content post">
   		
 
-    	<p>&emsp;&emsp;关于<em> <strong>java.io.ByteArrayInputStream</strong> </em> 和 <em> <strong>java.io.ByteArrayOutputStream</strong> </em>的部分笔记，这两个类相互合作借助内存来完成数据的读写和转移。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.io.ByteArrayInputStream</strong> </em> 和 <em> <strong>java.io.ByteArrayOutputStream</strong> </em>的部分笔记，这两个类相互合作借助内存来完成数据的读写和转移。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;ByteArrayInputStream和ByteArrayOutputStream没有太多涉及到和其他输入输出流进行交互的设计和实现，更多的是通过这两个类内部维护在内存中的字节数组来完成数据的读写和转移。对于一些不需要做持久处理的数据而言，以内存作为中转站来完成数据的操作和转移相对于写文件或者数据库等持久化处理来说性能更乐观，同时也省掉了很多不必要的、没有实际价值的处理和操作。</p>
 <p>&emsp;</p>
@@ -334,13 +334,14 @@ classes that you can use:
 <li>yuleichun. <a href="https://blog.csdn.net/yuleichun/article/details/60129134" target="_blank" rel="noopener">在java开发过程中什么时候使用ByteArrayInputStream和ByteArrayOuitputStream?</a> [E]</li>
 </ol>
 <p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
-
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
   	</section>
   	
 	  	<div>
 		  	
 				<div>
-	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------</div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
 </div>
 		  	
 		</div>
@@ -350,7 +351,7 @@ classes that you can use:
 <p>
 <div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-ByteArrayInputStream-ByteArrayOutputStream.html" target="_blank" title="Java I/O 11 - ByteArrayInputStream &amp; ByteArrayOutputStream">Java I/O 11 - ByteArrayInputStream &amp; ByteArrayOutputStream</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-ByteArrayInputStream-ByteArrayOutputStream.html" target="_blank" title="Java I/O 11 - ByteArrayInputStream &amp; ByteArrayOutputStream">https://marcuseddie.github.io/2018/java-ByteArrayInputStream-ByteArrayOutputStream.html</a></b></div>
 </p>
-<section class="post-declare"></section></section>
+<section class="post-declare">
 		  	
 	  	
 	  	
@@ -437,7 +438,7 @@ classes that you can use:
 	        createImgEventFullScreen();
 	    }, 1000)
 	</script>
-</article>
+</section></section></article>
 
 
             <footer class="footer">
