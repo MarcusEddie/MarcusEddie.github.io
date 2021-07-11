@@ -39,7 +39,7 @@
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1624802691/BlogImages/CloudSerials/K8sNetArchP4/Pod-Communication-Cross-Node-In-Overlay-Mode-Flannel-VXLAN-Arch.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1624928288/BlogImages/CloudSerials/K8sNetArchP4/Pod-Communication-Cross-Node-In-Overlay-Mode-Flannel-VXLAN-Demo.webp">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1624887689/BlogImages/CloudSerials/K8sNetArchP4/Flannel-VXLAN-Package-Structure-Demo.png">
-<meta property="og:updated_time" content="2021-07-11T07:54:25.442Z">
+<meta property="og:updated_time" content="2021-07-11T07:59:57.369Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="K8s network之四：Kubernetes集群通信的实现原理 | Mr.Muzi">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp;Kubernetes网络架构要求集群内的任意两个Pod之间可以在无需NAT的前提下进行通信。在集群中一共有四种Pod间通信的场景：Pod内容器之间相互通信、同一个节点内多个Pod之间相互通信、不同节点上的多个Pod之间相互通信以及Pod和Service之间的通信。其中，Pod和Service之间的通信过程分析请移步到《K8s network之五：Kubernetes集群Po">
@@ -244,7 +244,7 @@ classes that you can use:
 	    <h1 class="post-title"><b>K8s network之四：Kubernetes集群通信的实现原理</b></h1>
 	    
 		    <div class="post-meta">
-		      	<time datetime="2021-04-30" class="post-meta__date date">2021-04-30</time> 
+		      	<time datetime="2021-05-20" class="post-meta__date date">2021-05-20</time> 
 		        <span class="post-meta__count count">字数统计:&nbsp;8.7k&emsp;阅读时长:&nbsp;32&nbsp;mins</span>
 		      	<span class="post-meta__tags tags">
 			        
@@ -762,21 +762,5 @@ classes that you can use:
   <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
 <![endif]-->
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        tex2jax: {
-            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
-            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
-            processEscapes: true
-        }
-    });
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax();
-        for (var i = 0; i < all.length; ++i)
-            all[i].SourceElement().parentNode.className += ' has-jax';
-    });
-</script>
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
-<script src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </body>
 </html>

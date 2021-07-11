@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://marcuseddie.github.io/2021/K8s-Network-Architecture-section-two.html</loc>
+    
+    <lastmod>2021-07-11T08:00:28.562Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2021/K8s-Network-Architecture-section-four.html</loc>
+    
+    <lastmod>2021-07-11T07:59:57.369Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://marcuseddie.github.io/2021/K8s-Network-Architecture-section-one.html</loc>
     
     <lastmod>2021-07-11T07:54:25.442Z</lastmod>
@@ -9,21 +23,7 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2021/K8s-Network-Architecture-section-four.html</loc>
-    
-    <lastmod>2021-07-11T07:54:25.442Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://marcuseddie.github.io/2021/K8s-Network-Architecture-section-five.html</loc>
-    
-    <lastmod>2021-07-11T07:54:25.442Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://marcuseddie.github.io/2021/K8s-Network-Architecture-section-two.html</loc>
     
     <lastmod>2021-07-11T07:54:25.442Z</lastmod>
     
