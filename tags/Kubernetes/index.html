@@ -7,7 +7,7 @@
     
 
     <title>
-      page 4 | Mr.Muzi 
+      标签: Kubernetes 
     </title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -15,19 +15,17 @@
       <meta name="author" content="Nathan R. Lee">
     
     
-      <meta name="description" content="JAVA、Python">
-    
 
     <meta name="description" content="JAVA、Python">
 <meta name="keywords" content="Java、Python">
 <meta property="og:type" content="website">
-<meta property="og:title" content="page 4 | Mr.Muzi">
-<meta property="og:url" content="https://marcuseddie.github.io/page/4/index.html">
+<meta property="og:title" content="标签: Kubernetes">
+<meta property="og:url" content="https://marcuseddie.github.io/tags/Kubernetes/index.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="JAVA、Python">
 <meta property="og:locale" content="zh-CN">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="page 4 | Mr.Muzi">
+<meta name="twitter:title" content="标签: Kubernetes">
 <meta name="twitter:description" content="JAVA、Python">
     
     
@@ -62,8 +60,8 @@
     </div>
     
     
- 
-<header class="panel-cover">
+
+<header class="panel-cover panel-cover--collapsed">
 
 
   <div class="panel-main">
@@ -225,7 +223,8 @@ classes that you can use:
             
 
 
-   <!-- do nothing -->
+  <h1 class="archive-title">标签: Kubernetes</h1>
+  <hr class="post-list__divider">
 
 
 <div class="main-post-list">
@@ -235,21 +234,21 @@ classes that you can use:
     <li>
 
       <h2 class="post-list__post-title post-title">
-        <a href="/2018/java-ObjectInputStream.html" title="link to Java I/O 23 - ObjectInputStream">Java I/O 23 - ObjectInputStream</a>
+        <a href="/2021/K8s-Network-Architecture-section-five.html" title="link to K8s network之五：Kubernetes集群Pod和Service之间通信的实现原理">K8s network之五：Kubernetes集群Pod和Service之间通信的实现原理</a>
       </h2>
 
       <div class="post-list__meta">
 
-        <time datetime="2018-11-28" class="post-list__meta--date date">2018-11-28</time> 
-      		<span class="post-meta__count count">字数统计:&nbsp;9.5k&emsp;阅读时长:&nbsp;43&nbsp;mins</span>
+        <time datetime="2021-05-30" class="post-list__meta--date date">2021-05-30</time> 
+      		<span class="post-meta__count count">字数统计:&nbsp;9.7k&emsp;阅读时长:&nbsp;37&nbsp;mins</span>
 	  </div>
 
       <div class="excerpt">
 	
-          <p>&emsp;&emsp;关于<em> <strong>java.io.ObjectInputStream</strong> </em>的部分笔记，ObjectInputStream是Java反序列化操作的实现类，通过该类可以完成默认的或者自定义的对象反序列化操作。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+          <p>&emsp;&emsp;Kubernetes集群内Pod之间默认可以无障碍的进行通信，但是默认Pod是不稳定的，无法确定Pod会在何时因为何种原因被重启。当Pod重启后，其会得到一个新的IP地址。而且，如有特别指明，Pod有可能会在不同的节点之间被调度。当提供相同服务的Pod有多个时，就需要一个统一的对外地址来接收服务请求，并将请求以负载均衡的方式分发到Pod上。Kubernetes Service就是在这种背景下被引入的，Service是一种为一组提供相同服务的Pod提供单一不变的、简单透明的接入访问点的资源对象。Service的IP地址和端口在其整个生命周期不会改变，客户端可以通过IP:Port的方式发起服务请求，也可以直接访问服务名，由Kubernetes集群提供的DNS解析服务将请求分发到Service背后的Pod上。出于篇幅考虑，相关的yaml配置不会在文章中出现，特殊情况除外，相关的yaml配置可以参考<a href="https://kubernetes.io/" target="_blank" rel="noopener">Kubernetes</a>官方文档。</p>
 		
 			  <p class="article-more-link">
-			      <a href="/2018/java-ObjectInputStream.html" style="color:black;font-weight:bold;">Read More...</a>
+			      <a href="/2021/K8s-Network-Architecture-section-five.html" style="color:black;font-weight:bold;">Read More...</a>
 			  </p>
 		  
 	
@@ -258,14 +257,14 @@ classes that you can use:
 	  
 		<font class="categories">
 		<img src="/images/cat.png" title="categories">
-		<a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+		<a class="categories-link" href="/categories/Cloud-Computing/">Cloud Computing</a>
 		&nbsp&nbsp&nbsp&nbsp
 		</font>
 	  
 	  
 		<img src="/images/tag.png" title="tags">
 		<font class="categories">
-		<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
+		<a class="tags-link" href="/tags/IPVS/">IPVS</a>, <a class="tags-link" href="/tags/Kubernetes/">Kubernetes</a>, <a class="tags-link" href="/tags/Service/">Service</a>, <a class="tags-link" href="/tags/iptables/">iptables</a>, <a class="tags-link" href="/tags/kube-proxy/">kube-proxy</a>
 		</font>
 	  
 	</span>
@@ -275,21 +274,21 @@ classes that you can use:
     <li>
 
       <h2 class="post-list__post-title post-title">
-        <a href="/2018/java-Collection-Stack.html" title="link to Java Collection 05 - Stack">Java Collection 05 - Stack</a>
+        <a href="/2021/K8s-Network-Architecture-section-four.html" title="link to K8s network之四：Kubernetes集群通信的实现原理">K8s network之四：Kubernetes集群通信的实现原理</a>
       </h2>
 
       <div class="post-list__meta">
 
-        <time datetime="2018-11-26" class="post-list__meta--date date">2018-11-26</time> 
-      		<span class="post-meta__count count">字数统计:&nbsp;747&emsp;阅读时长:&nbsp;3&nbsp;mins</span>
+        <time datetime="2021-04-30" class="post-list__meta--date date">2021-04-30</time> 
+      		<span class="post-meta__count count">字数统计:&nbsp;8.7k&emsp;阅读时长:&nbsp;32&nbsp;mins</span>
 	  </div>
 
       <div class="excerpt">
 	
-          <p>&emsp;&emsp;关于<em> <strong>java.util.Stack&lt;E&gt;</strong> </em>的部分笔记，这是一种先进后出的数据结构，对外暴露的操作方法API数量有限。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+          <p>&emsp;&emsp;Kubernetes网络架构要求集群内的任意两个Pod之间可以在无需NAT的前提下进行通信。在集群中一共有四种Pod间通信的场景：Pod内容器之间相互通信、同一个节点内多个Pod之间相互通信、不同节点上的多个Pod之间相互通信以及Pod和Service之间的通信。其中，Pod和Service之间的通信过程分析请移步到《<a href="/2021/K8s-Network-Architecture-section-five.html">K8s network之五：Kubernetes集群Pod和Service之间通信的实现原理</a>》，本文会着重分析多容器Pod内、同一节点上的Pod之间以及不同节点上的Pod之间的通信过程。出于篇幅考虑，相关的yaml配置不会在文章中出现，特殊情况除外，相关的yaml配置可以参考<a href="https://kubernetes.io/" target="_blank" rel="noopener">Kubernetes</a>官方文档。</p>
 		
 			  <p class="article-more-link">
-			      <a href="/2018/java-Collection-Stack.html" style="color:black;font-weight:bold;">Read More...</a>
+			      <a href="/2021/K8s-Network-Architecture-section-four.html" style="color:black;font-weight:bold;">Read More...</a>
 			  </p>
 		  
 	
@@ -298,14 +297,14 @@ classes that you can use:
 	  
 		<font class="categories">
 		<img src="/images/cat.png" title="categories">
-		<a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+		<a class="categories-link" href="/categories/Cloud-Computing/">Cloud Computing</a>
 		&nbsp&nbsp&nbsp&nbsp
 		</font>
 	  
 	  
 		<img src="/images/tag.png" title="tags">
 		<font class="categories">
-		<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java集合/">Java集合</a>
+		<a class="tags-link" href="/tags/Container-Network/">Container Network</a>, <a class="tags-link" href="/tags/Kubernetes/">Kubernetes</a>, <a class="tags-link" href="/tags/Pod-Network/">Pod Network</a>, <a class="tags-link" href="/tags/network/">network</a>, <a class="tags-link" href="/tags/pause/">pause</a>
 		</font>
 	  
 	</span>
@@ -315,21 +314,21 @@ classes that you can use:
     <li>
 
       <h2 class="post-list__post-title post-title">
-        <a href="/2018/java-BufferedReader-BufferedWriter.html" title="link to Java I/O 22 - BufferedReader &amp; BufferedWriter">Java I/O 22 - BufferedReader &amp; BufferedWriter</a>
+        <a href="/2021/K8s-Network-Architecture-section-two.html" title="link to K8s network之二：Kubernetes的域名解析、服务发现和外部访问">K8s network之二：Kubernetes的域名解析、服务发现和外部访问</a>
       </h2>
 
       <div class="post-list__meta">
 
-        <time datetime="2018-11-25" class="post-list__meta--date date">2018-11-25</time> 
-      		<span class="post-meta__count count">字数统计:&nbsp;5.2k&emsp;阅读时长:&nbsp;22&nbsp;mins</span>
+        <time datetime="2021-04-24" class="post-list__meta--date date">2021-04-24</time> 
+      		<span class="post-meta__count count">字数统计:&nbsp;8.4k&emsp;阅读时长:&nbsp;33&nbsp;mins</span>
 	  </div>
 
       <div class="excerpt">
 	
-          <p>&emsp;&emsp;关于<em> <strong>java.io.BufferedReader</strong> </em> 和<em> <strong>java.io.BufferedWriter</strong> </em> 的部分笔记，对字符读写提供了一个缓冲区作为中间媒介，以此降低读写操作与物理存储的交互次数并提高其读写效率和性能。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+          <p>&emsp;&emsp;在<a href="/2021/K8s-Network-Architecture-section-one.html">K8s network之一：K8s网络模型与网络策略</a>中我们大概了解了Kubernetes的<strong>IP-Per-Pod</strong>模型和CNI接口规范，以及如何配置网络策略来限制出入Pod的流量。本篇会继续了解和学习Kubernetes集群如何向集群外提供服务访问以及服务之间如何相互发现这两个重要问题。出于篇幅考虑，相关的yaml配置不会在文章中出现，特殊情况除外，相关的yaml配置可以参考<a href="https://kubernetes.io/" target="_blank" rel="noopener">Kubernetes</a>官方文档。</p>
 		
 			  <p class="article-more-link">
-			      <a href="/2018/java-BufferedReader-BufferedWriter.html" style="color:black;font-weight:bold;">Read More...</a>
+			      <a href="/2021/K8s-Network-Architecture-section-two.html" style="color:black;font-weight:bold;">Read More...</a>
 			  </p>
 		  
 	
@@ -338,14 +337,14 @@ classes that you can use:
 	  
 		<font class="categories">
 		<img src="/images/cat.png" title="categories">
-		<a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+		<a class="categories-link" href="/categories/Cloud-Computing/">Cloud Computing</a>
 		&nbsp&nbsp&nbsp&nbsp
 		</font>
 	  
 	  
 		<img src="/images/tag.png" title="tags">
 		<font class="categories">
-		<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
+		<a class="tags-link" href="/tags/CoreDNS/">CoreDNS</a>, <a class="tags-link" href="/tags/Ingress/">Ingress</a>, <a class="tags-link" href="/tags/Kubernetes/">Kubernetes</a>, <a class="tags-link" href="/tags/network/">network</a>
 		</font>
 	  
 	</span>
@@ -355,21 +354,21 @@ classes that you can use:
     <li>
 
       <h2 class="post-list__post-title post-title">
-        <a href="/2018/java-PrintWriter.html" title="link to Java I/O 21 - PrintWriter">Java I/O 21 - PrintWriter</a>
+        <a href="/2021/K8s-Network-Architecture-section-one.html" title="link to K8s network之一：K8s网络模型与网络策略">K8s network之一：K8s网络模型与网络策略</a>
       </h2>
 
       <div class="post-list__meta">
 
-        <time datetime="2018-11-23" class="post-list__meta--date date">2018-11-23</time> 
-      		<span class="post-meta__count count">字数统计:&nbsp;3.1k&emsp;阅读时长:&nbsp;14&nbsp;mins</span>
+        <time datetime="2021-04-24" class="post-list__meta--date date">2021-04-24</time> 
+      		<span class="post-meta__count count">字数统计:&nbsp;7.9k&emsp;阅读时长:&nbsp;29&nbsp;mins</span>
 	  </div>
 
       <div class="excerpt">
 	
-          <p>&emsp;&emsp;关于<em> <strong>java.io.PrintWriter</strong> </em> 的部分笔记，PrintWriter属于处理流的一种，提供了丰富的打印方法用来向目标位置打印输出字符内容。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+          <p>&emsp;&emsp;Kubernetes网络是Kubernetes得以正常工作的重要基础之一，这其中涉及到了包括但不限于IP地址划分、MAC地址学习、路由转发、服务发现、网络通信等诸多领域。借助于CNI接口及其实现产品，Kubernetes可以提供丰富的网络配置架构方案。关于Kubernetes网络，可能会有一系列笔记，本篇是第一篇—关于Kubernetes网络模型和策略的初步学习，知其然，稍微知其所以然。出于篇幅考虑，相关的yaml配置不会在文章中出现，特殊情况除外，相关的yaml配置可以参考<a href="https://kubernetes.io/" target="_blank" rel="noopener">Kubernetes</a>官方文档。</p>
 		
 			  <p class="article-more-link">
-			      <a href="/2018/java-PrintWriter.html" style="color:black;font-weight:bold;">Read More...</a>
+			      <a href="/2021/K8s-Network-Architecture-section-one.html" style="color:black;font-weight:bold;">Read More...</a>
 			  </p>
 		  
 	
@@ -378,254 +377,14 @@ classes that you can use:
 	  
 		<font class="categories">
 		<img src="/images/cat.png" title="categories">
-		<a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+		<a class="categories-link" href="/categories/Cloud-Computing/">Cloud Computing</a>
 		&nbsp&nbsp&nbsp&nbsp
 		</font>
 	  
 	  
 		<img src="/images/tag.png" title="tags">
 		<font class="categories">
-		<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
-		</font>
-	  
-	</span>
-      <hr class="post-list__divider">
-    </li>
-    
-    <li>
-
-      <h2 class="post-list__post-title post-title">
-        <a href="/2018/java-PushbackReader.html" title="link to Java I/O 20 - PushbackReader">Java I/O 20 - PushbackReader</a>
-      </h2>
-
-      <div class="post-list__meta">
-
-        <time datetime="2018-11-22" class="post-list__meta--date date">2018-11-22</time> 
-      		<span class="post-meta__count count">字数统计:&nbsp;1.6k&emsp;阅读时长:&nbsp;7&nbsp;mins</span>
-	  </div>
-
-      <div class="excerpt">
-	
-          <p>&emsp;&emsp;关于<em> <strong>java.io.PushbackReader</strong> </em> 的部分笔记。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
-		
-			  <p class="article-more-link">
-			      <a href="/2018/java-PushbackReader.html" style="color:black;font-weight:bold;">Read More...</a>
-			  </p>
-		  
-	
-      </div>
-	<span class="post-meta__tags tags">
-	  
-		<font class="categories">
-		<img src="/images/cat.png" title="categories">
-		<a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
-		&nbsp&nbsp&nbsp&nbsp
-		</font>
-	  
-	  
-		<img src="/images/tag.png" title="tags">
-		<font class="categories">
-		<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
-		</font>
-	  
-	</span>
-      <hr class="post-list__divider">
-    </li>
-    
-    <li>
-
-      <h2 class="post-list__post-title post-title">
-        <a href="/2018/java-FilterReader-FilterWriter.html" title="link to Java I/O 19 - FilterReader &amp; FilterWriter">Java I/O 19 - FilterReader &amp; FilterWriter</a>
-      </h2>
-
-      <div class="post-list__meta">
-
-        <time datetime="2018-11-21" class="post-list__meta--date date">2018-11-21</time> 
-      		<span class="post-meta__count count">字数统计:&nbsp;1k&emsp;阅读时长:&nbsp;4&nbsp;mins</span>
-	  </div>
-
-      <div class="excerpt">
-	
-          <p>&emsp;&emsp;关于<em> <strong>java.io.FilterReader</strong> </em> 和 <em> <strong>java.io.FilterWriter</strong> </em>的部分笔记，自身实现了完整的输入输出流操作，继承这两个类的子类应该重写其拥有的操作方法API。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
-		
-			  <p class="article-more-link">
-			      <a href="/2018/java-FilterReader-FilterWriter.html" style="color:black;font-weight:bold;">Read More...</a>
-			  </p>
-		  
-	
-      </div>
-	<span class="post-meta__tags tags">
-	  
-		<font class="categories">
-		<img src="/images/cat.png" title="categories">
-		<a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
-		&nbsp&nbsp&nbsp&nbsp
-		</font>
-	  
-	  
-		<img src="/images/tag.png" title="tags">
-		<font class="categories">
-		<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
-		</font>
-	  
-	</span>
-      <hr class="post-list__divider">
-    </li>
-    
-    <li>
-
-      <h2 class="post-list__post-title post-title">
-        <a href="/2018/java-Collection-Vector.html" title="link to Java Collection 04 - Vector">Java Collection 04 - Vector</a>
-      </h2>
-
-      <div class="post-list__meta">
-
-        <time datetime="2018-11-20" class="post-list__meta--date date">2018-11-20</time> 
-      		<span class="post-meta__count count">字数统计:&nbsp;5.7k&emsp;阅读时长:&nbsp;25&nbsp;mins</span>
-	  </div>
-
-      <div class="excerpt">
-	
-          <p>&emsp;&emsp;关于<em> <strong>java.util.Vector&lt;E&gt;</strong> </em>的部分笔记。Vector是线程安全版本的、可变长度的、可用随机访问的方式获取元素的、基于数组实现的集合容器实现类。但是由于其主要方法都通过synchronized保证了多线程的线程安全特性，所以其性能相对ArrayList而言会慢很多。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
-		
-			  <p class="article-more-link">
-			      <a href="/2018/java-Collection-Vector.html" style="color:black;font-weight:bold;">Read More...</a>
-			  </p>
-		  
-	
-      </div>
-	<span class="post-meta__tags tags">
-	  
-		<font class="categories">
-		<img src="/images/cat.png" title="categories">
-		<a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
-		&nbsp&nbsp&nbsp&nbsp
-		</font>
-	  
-	  
-		<img src="/images/tag.png" title="tags">
-		<font class="categories">
-		<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java集合/">Java集合</a>
-		</font>
-	  
-	</span>
-      <hr class="post-list__divider">
-    </li>
-    
-    <li>
-
-      <h2 class="post-list__post-title post-title">
-        <a href="/2018/java-CharArrayReader-CharArrayWriter.html" title="link to Java I/O 18 - CharArrayReader &amp; CharArrayWriter">Java I/O 18 - CharArrayReader &amp; CharArrayWriter</a>
-      </h2>
-
-      <div class="post-list__meta">
-
-        <time datetime="2018-11-20" class="post-list__meta--date date">2018-11-20</time> 
-      		<span class="post-meta__count count">字数统计:&nbsp;2.5k&emsp;阅读时长:&nbsp;11&nbsp;mins</span>
-	  </div>
-
-      <div class="excerpt">
-	
-          <p>&emsp;&emsp;关于<em> <strong>java.io.CharArrayReader</strong> </em> 和 <em> <strong>java.io.CharArrayWriter</strong> </em>的部分笔记，这两个类属于内存流的一种，参考流的思想操作内存空间中的数组内容。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
-		
-			  <p class="article-more-link">
-			      <a href="/2018/java-CharArrayReader-CharArrayWriter.html" style="color:black;font-weight:bold;">Read More...</a>
-			  </p>
-		  
-	
-      </div>
-	<span class="post-meta__tags tags">
-	  
-		<font class="categories">
-		<img src="/images/cat.png" title="categories">
-		<a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
-		&nbsp&nbsp&nbsp&nbsp
-		</font>
-	  
-	  
-		<img src="/images/tag.png" title="tags">
-		<font class="categories">
-		<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
-		</font>
-	  
-	</span>
-      <hr class="post-list__divider">
-    </li>
-    
-    <li>
-
-      <h2 class="post-list__post-title post-title">
-        <a href="/2018/java-PipedReader-PipedWriter.html" title="link to Java I/O 17 - PipedReader &amp; PipedWriter">Java I/O 17 - PipedReader &amp; PipedWriter</a>
-      </h2>
-
-      <div class="post-list__meta">
-
-        <time datetime="2018-11-18" class="post-list__meta--date date">2018-11-18</time> 
-      		<span class="post-meta__count count">字数统计:&nbsp;2.7k&emsp;阅读时长:&nbsp;12&nbsp;mins</span>
-	  </div>
-
-      <div class="excerpt">
-	
-          <p>&emsp;&emsp;关于<em> <strong>java.io.PipedReader</strong> </em> 和 <em> <strong>java.io.PipedWriter</strong> </em>的部分笔记，用来完成不同线程间的数据传送和通信。读写操作分别在不同的线程中向缓冲区buffer中写入数据、读取数据。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
-		
-			  <p class="article-more-link">
-			      <a href="/2018/java-PipedReader-PipedWriter.html" style="color:black;font-weight:bold;">Read More...</a>
-			  </p>
-		  
-	
-      </div>
-	<span class="post-meta__tags tags">
-	  
-		<font class="categories">
-		<img src="/images/cat.png" title="categories">
-		<a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
-		&nbsp&nbsp&nbsp&nbsp
-		</font>
-	  
-	  
-		<img src="/images/tag.png" title="tags">
-		<font class="categories">
-		<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
-		</font>
-	  
-	</span>
-      <hr class="post-list__divider">
-    </li>
-    
-    <li>
-
-      <h2 class="post-list__post-title post-title">
-        <a href="/2018/java-Collection-ArrayList.html" title="link to Java Collection 03 - ArrayList">Java Collection 03 - ArrayList</a>
-      </h2>
-
-      <div class="post-list__meta">
-
-        <time datetime="2018-11-17" class="post-list__meta--date date">2018-11-17</time> 
-      		<span class="post-meta__count count">字数统计:&nbsp;8.6k&emsp;阅读时长:&nbsp;38&nbsp;mins</span>
-	  </div>
-
-      <div class="excerpt">
-	
-          <p>&emsp;&emsp;关于<em> <strong>java.util.ArrayList&lt;E&gt;</strong> </em>的部分笔记，ArrayList是一个数组实现的可变长度的集合类。由于其实现了RandomAccess接口，所以可以通过随机访问的方式以常量时间获取到集合内的每个元素。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
-		
-			  <p class="article-more-link">
-			      <a href="/2018/java-Collection-ArrayList.html" style="color:black;font-weight:bold;">Read More...</a>
-			  </p>
-		  
-	
-      </div>
-	<span class="post-meta__tags tags">
-	  
-		<font class="categories">
-		<img src="/images/cat.png" title="categories">
-		<a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
-		&nbsp&nbsp&nbsp&nbsp
-		</font>
-	  
-	  
-		<img src="/images/tag.png" title="tags">
-		<font class="categories">
-		<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java集合/">Java集合</a>
+		<a class="tags-link" href="/tags/CNI/">CNI</a>, <a class="tags-link" href="/tags/Kubernetes/">Kubernetes</a>, <a class="tags-link" href="/tags/network/">network</a>
 		</font>
 	  
 	</span>
@@ -638,15 +397,9 @@ classes that you can use:
 
 <nav class="pagination" role="navigation">
     
-    	
-          <a class="newer-posts pagination__newer btn btn-small btn-tertiary" href="/page/3/">&larr; 上一页 </a>
-        
-    
 
-    <span class="pagination__page-number"> 4 / 7</span>
+    <span class="pagination__page-number"> 1 / 1</span>
     
-    
-        <a class="older-posts pagination__older btn btn-small btn-tertiary" href="/page/5/">下一页 &rarr;</a>
     
 </nav>
 
