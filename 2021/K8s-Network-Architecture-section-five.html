@@ -43,7 +43,7 @@
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1625582214/BlogImages/CloudSerials/K8sNetArchP4/IPVS_Mode_Service_Packet_Path.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1625622293/BlogImages/CloudSerials/K8sNetArchP4/Round-Trip-Response-Time-vs-Number-of-Services.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1625622293/BlogImages/CloudSerials/K8sNetArchP4/CPU-vs-Number-of-Services.png">
-<meta property="og:updated_time" content="2021-07-11T07:54:25.442Z">
+<meta property="og:updated_time" content="2021-07-11T08:47:34.151Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="K8s network之五：Kubernetes集群Pod和Service之间通信的实现原理 | Mr.Muzi">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp;Kubernetes集群内Pod之间默认可以无障碍的进行通信，但是默认Pod是不稳定的，无法确定Pod会在何时因为何种原因被重启。当Pod重启后，其会得到一个新的IP地址。而且，如有特别指明，Pod有可能会在不同的节点之间被调度。当提供相同服务的Pod有多个时，就需要一个统一的对外地址来接收服务请求，并将请求以负载均衡的方式分发到Pod上。Kubernetes Servic">
@@ -276,7 +276,7 @@ classes that you can use:
 <a id="more"></a>
 <p>&emsp;&emsp;<a href="/2021/K8s-Network-Architecture-section-one.html">1. K8s network之一：K8s网络模型与网络策略</a></p>
 <p>&emsp;&emsp;<a href="/2021/K8s-Network-Architecture-section-two.html">2. K8s network之二：Kubernetes的域名解析、服务发现和外部访问</a> </p>
-<p>&emsp;&emsp;<a href>3.Linux网络在Kubernetes集群中的应用</a> </p>
+<p>&emsp;&emsp;<a href="/404.html">3.Linux网络在Kubernetes集群中的应用</a> </p>
 <p>&emsp;&emsp;<a href="/2021/K8s-Network-Architecture-section-four.html">4.K8s network之四：Kubernetes集群通信的实现原理</a> </p>
 <h2 id="Pod和Service之间的通信过程"><a href="#Pod和Service之间的通信过程" class="headerlink" title="Pod和Service之间的通信过程"></a>Pod和Service之间的通信过程</h2><p>&emsp;&emsp;前面我们大概了解了Kubernetes集群中同一Pod内各个容器之间以及Pod之间相互通信的过程，Pod之间可以直接通过IP地址在无需NAT的前提下完成通信过程，至于如何得知得知对方IP，可以采用某种方式将IP固定下来，或者写入配置项等等手段。但是Pod的生存周期通常来说是短暂的，有可能会因为各种原因被重启，而Pod的设计原理又使得当Pod在重启前后会得到不一致的IP地址，而且，在Pod启动前会通过CNI插件完成Pod的IP地址分配和配置工作，所以调用方也不可能在Pod启动前提前知道Pod的IP地址信息。就调用方而言，它其实并不关心提供服务的Pod有多少个，分布在哪里，IP地址信息是什么等，它只关心自己能通过何种方式访问Pod提供的服务。Service就是在这种背景下产生的，Service它把一系列提供相同服务的Pod聚合在一起，形成一个抽象的网络服务。Service一方面会根据一定的规则汇总提供服务的Pod信息集合，另一方面又向调用方提供了一个简单且统一的方式供其访问Pod提供的服务。</p>
 <div style="text-align: center; width: 100%;">

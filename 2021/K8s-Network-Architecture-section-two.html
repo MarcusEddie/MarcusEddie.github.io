@@ -36,7 +36,7 @@
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1623760583/BlogImages/CloudSerials/kubedns-general-arch.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1623851508/BlogImages/CloudSerials/coredns-corefile-demo.webp">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1623912290/BlogImages/CloudSerials/nodelocal-dns-cache-arch.png">
-<meta property="og:updated_time" content="2021-07-11T08:00:28.562Z">
+<meta property="og:updated_time" content="2021-07-11T08:46:44.306Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="K8s network之二：Kubernetes的域名解析、服务发现和外部访问 | Mr.Muzi">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp;在K8s network之一：K8s网络模型与网络策略中我们大概了解了Kubernetes的IP-Per-Pod模型和CNI接口规范，以及如何配置网络策略来限制出入Pod的流量。本篇会继续了解和学习Kubernetes集群如何向集群外提供服务访问以及服务之间如何相互发现这两个重要问题。出于篇幅考虑，相关的yaml配置不会在文章中出现，特殊情况除外，相关的yaml配置可以参考">
@@ -268,7 +268,7 @@ classes that you can use:
     	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;在<a href="/2021/K8s-Network-Architecture-section-one.html">K8s network之一：K8s网络模型与网络策略</a>中我们大概了解了Kubernetes的<strong>IP-Per-Pod</strong>模型和CNI接口规范，以及如何配置网络策略来限制出入Pod的流量。本篇会继续了解和学习Kubernetes集群如何向集群外提供服务访问以及服务之间如何相互发现这两个重要问题。出于篇幅考虑，相关的yaml配置不会在文章中出现，特殊情况除外，相关的yaml配置可以参考<a href="https://kubernetes.io/" target="_blank" rel="noopener">Kubernetes</a>官方文档。</p>
 <a id="more"></a>
 <p>&emsp;&emsp;<a href="/2021/K8s-Network-Architecture-section-one.html">1. K8s network之一：K8s网络模型与网络策略</a></p>
-<p>&emsp;&emsp;<a href>3.Linux网络在Kubernetes集群中的应用</a>  </p>
+<p>&emsp;&emsp;<a href="/404.html">3.Linux网络在Kubernetes集群中的应用</a>  </p>
 <p>&emsp;&emsp;<a href="/2021/K8s-Network-Architecture-section-four.html">4.K8s network之四：Kubernetes集群通信的实现原理</a> </p>
 <p>&emsp;&emsp;<a href="/2021/K8s-Network-Architecture-section-five.html">5.K8s network之五：Kubernetes集群Pod和Service之间通信的实现原理</a> </p>
 <h2 id="集群边界路由器Ingress"><a href="#集群边界路由器Ingress" class="headerlink" title="集群边界路由器Ingress"></a>集群边界路由器Ingress</h2><p>&emsp;&emsp;Kubernetes集群内部默认通过Service提供服务，通过Kube-proxy实现Service和Pod之间的负载均衡和转发功能。如果需要将服务暴露到集群外部，可以使用类型为<strong>NodePort</strong>和<strong>LoadBalancer</strong>的Service来对外提供服务，此外，你也可以使用Ingress来履行类型为<strong>NodePort</strong>和<strong>LoadBalancer</strong>的Service所承担的职责，相较于后者而言，使用Ingress暴露服务会更便利、更有优势。</p>

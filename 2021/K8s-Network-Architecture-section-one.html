@@ -37,7 +37,7 @@
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1623247691/BlogImages/CloudSerials/K8s-Network-Policy-Basic.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1623247761/BlogImages/CloudSerials/Calico-Network-Policy-Implement.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1623330489/BlogImages/CloudSerials/K8s-NetworkPolicy-Demo.webp">
-<meta property="og:updated_time" content="2021-07-11T07:54:25.442Z">
+<meta property="og:updated_time" content="2021-07-11T08:47:18.138Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="K8s network之一：K8s网络模型与网络策略 | Mr.Muzi">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp;Kubernetes网络是Kubernetes得以正常工作的重要基础之一，这其中涉及到了包括但不限于IP地址划分、MAC地址学习、路由转发、服务发现、网络通信等诸多领域。借助于CNI接口及其实现产品，Kubernetes可以提供丰富的网络配置架构方案。关于Kubernetes网络，可能会有一系列笔记，本篇是第一篇—关于Kubernetes网络模型和策略的初步学习，知其然，稍">
@@ -269,7 +269,7 @@ classes that you can use:
     	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;Kubernetes网络是Kubernetes得以正常工作的重要基础之一，这其中涉及到了包括但不限于IP地址划分、MAC地址学习、路由转发、服务发现、网络通信等诸多领域。借助于CNI接口及其实现产品，Kubernetes可以提供丰富的网络配置架构方案。关于Kubernetes网络，可能会有一系列笔记，本篇是第一篇—关于Kubernetes网络模型和策略的初步学习，知其然，稍微知其所以然。出于篇幅考虑，相关的yaml配置不会在文章中出现，特殊情况除外，相关的yaml配置可以参考<a href="https://kubernetes.io/" target="_blank" rel="noopener">Kubernetes</a>官方文档。</p>
 <a id="more"></a>
 <p>&emsp;&emsp;<a href="/2021/K8s-Network-Architecture-section-two.html">2. K8s network之二：Kubernetes的域名解析、服务发现和外部访问</a> </p>
-<p>&emsp;&emsp;<a href>3.Linux网络在Kubernetes集群中的应用</a> </p>
+<p>&emsp;&emsp;<a href="/404.html">3.Linux网络在Kubernetes集群中的应用</a> </p>
 <p>&emsp;&emsp;<a href="/2021/K8s-Network-Architecture-section-four.html">4.K8s network之四：Kubernetes集群通信的实现原理</a> </p>
 <p>&emsp;&emsp;<a href="/2021/K8s-Network-Architecture-section-five.html">5.K8s network之五：Kubernetes集群Pod和Service之间通信的实现原理</a> </p>
 <h2 id="网络模型"><a href="#网络模型" class="headerlink" title="网络模型"></a>网络模型</h2><p>&emsp;&emsp;Kubernetes网络模型遵循的一个核心原则是每个pod都拥有一个唯一且独立的IP地址，只要彼此通信的pod在同一个集群里，那么就可以通过IP地址的方式直接访问而无需借助其他工具和手段，即使它们不在同一个node节点上。也就是说，同一个集群里的所有pod形成了一个扁平的、可相互通信的网络组织。于是乎，每个pod可以像虚拟机或者物理机那样执行诸如端口分配、命名、服务发现、负载均衡、应用配置和迁移等动作。因此，基于这个核心原则生成的模型就是“<strong>IP-Per-Pod</strong>”模型。</p>

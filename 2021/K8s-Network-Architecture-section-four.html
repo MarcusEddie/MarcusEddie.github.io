@@ -39,7 +39,7 @@
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1624802691/BlogImages/CloudSerials/K8sNetArchP4/Pod-Communication-Cross-Node-In-Overlay-Mode-Flannel-VXLAN-Arch.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1624928288/BlogImages/CloudSerials/K8sNetArchP4/Pod-Communication-Cross-Node-In-Overlay-Mode-Flannel-VXLAN-Demo.webp">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1624887689/BlogImages/CloudSerials/K8sNetArchP4/Flannel-VXLAN-Package-Structure-Demo.png">
-<meta property="og:updated_time" content="2021-07-11T07:59:57.369Z">
+<meta property="og:updated_time" content="2021-07-11T08:47:26.130Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="K8s network之四：Kubernetes集群通信的实现原理 | Mr.Muzi">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp;Kubernetes网络架构要求集群内的任意两个Pod之间可以在无需NAT的前提下进行通信。在集群中一共有四种Pod间通信的场景：Pod内容器之间相互通信、同一个节点内多个Pod之间相互通信、不同节点上的多个Pod之间相互通信以及Pod和Service之间的通信。其中，Pod和Service之间的通信过程分析请移步到《K8s network之五：Kubernetes集群Po">
@@ -272,7 +272,7 @@ classes that you can use:
 <a id="more"></a>
 <p>&emsp;&emsp;<a href="/2021/K8s-Network-Architecture-section-one.html">1. K8s network之一：K8s网络模型与网络策略</a></p>
 <p>&emsp;&emsp;<a href="/2021/K8s-Network-Architecture-section-two.html">2. K8s network之二：Kubernetes的域名解析、服务发现和外部访问</a> </p>
-<p>&emsp;&emsp;<a href>3.Linux网络在Kubernetes集群中的应用</a> </p>
+<p>&emsp;&emsp;<a href="/404.html">3.Linux网络在Kubernetes集群中的应用</a> </p>
 <p>&emsp;&emsp;<a href="/2021/K8s-Network-Architecture-section-five.html">5.K8s network之五：Kubernetes集群Pod和Service之间通信的实现原理</a> </p>
 <h2 id="Pod内容器之间通信过程"><a href="#Pod内容器之间通信过程" class="headerlink" title="Pod内容器之间通信过程"></a>Pod内容器之间通信过程</h2><p>&emsp;&emsp;在kubernetes集群中，每个Pod会被分配一个IP地址。同一个Pod内的多个业务容器会共享这个IP地址对外通信，同时，这些容器之间也可以直接通过localhost<strong>:</strong>端口号的方式进行通信。为了实现Pod内容器之间的通信，Kubernetes利用pause容器和Docker的container模式网络这两个工具来达成目的。</p>
 <p>&emsp;&emsp;Docker在创建业务容器的时候可以通过命令参数<strong>—network=container:NAME_or_ID</strong>来创建一个container模式的网络结构。在这种场景下，新创建的业务容器会加入NAME_or_ID指定的容器的网络命名空间中，与指定的容器共享同一个网络栈、对外使用同一个IP地址或者MAC地址进行通信、相互之间也可以直接使用localhost<strong>:</strong>端口的形式完成通信。如果业务容器执行了重启动作并再次以<strong>—network=container:NAME_or_ID</strong>完成创建操作，就可以实现重启前后拥有相同的IP地址信息。除非NAME_or_ID指定的容器被重启，否则当前Pod会始终拥有一个固定的IP地址，Pod内的业务容器亦是如此。Kubernetes的Pod内网络实现就是借鉴了Docker的这种模式来实现Pod内多个容器之间的相互通信的。</p>
