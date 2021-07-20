@@ -245,7 +245,7 @@ classes that you can use:
 
       <div class="excerpt">
 	
-          <p>&emsp;&emsp;在<a href="/2021/K8s-Network-Architecture-section-one.html">K8s network之一：K8s网络模型与网络策略</a>中我们大概了解了Kubernetes的<strong>IP-Per-Pod</strong>模型和CNI接口规范，以及如何配置网络策略来限制出入Pod的流量。本篇会继续了解和学习Kubernetes集群如何向集群外提供服务访问以及服务之间如何相互发现这两个重要问题。出于篇幅考虑，相关的yaml配置不会在文章中出现，特殊情况除外，相关的yaml配置可以参考<a href="https://kubernetes.io/" target="_blank" rel="noopener">Kubernetes</a>官方文档。</p>
+          <p>&emsp;&emsp;在《<a href="/2021/K8s-Network-Architecture-section-one.html">K8s network之一：K8s网络模型与网络策略</a>》中我们大概了解了Kubernetes的<strong>IP-Per-Pod</strong>模型和CNI接口规范，以及如何配置网络策略来限制出入Pod的流量。本篇会继续了解和学习Kubernetes集群如何向集群外提供服务访问以及服务之间如何相互发现这两个重要问题。出于篇幅考虑，相关的yaml配置不会在文章中出现，特殊情况除外，相关的yaml配置可以参考<a href="https://kubernetes.io/" target="_blank" rel="noopener">Kubernetes</a>官方文档。</p>
 		
 			  <p class="article-more-link">
 			      <a href="/2021/K8s-Network-Architecture-section-two.html" style="color:black;font-weight:bold;">Read More...</a>
@@ -449,5 +449,21 @@ classes that you can use:
   <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
 <![endif]-->
 
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+<script src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </body>
 </html>
