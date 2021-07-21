@@ -30,6 +30,7 @@
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1625123522/BlogImages/CloudSerials/K8sNetArchP4/Relationship-between-Kube-customed-chains-and-iptables-demo.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1625388343/BlogImages/CloudSerials/K8sNetArchP4/K8s-Services-iptables-overview.svg">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1625119969/BlogImages/CloudSerials/K8sNetArchP4/K8-svc-iptables-clusterIP-mode-flow.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1626874546/BlogImages/CloudSerials/K8sNetArchP4/K8s-iptables-Hairpinning-demo.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1625129239/BlogImages/CloudSerials/K8sNetArchP4/K8-svc-iptables-externalIP-mode-flow.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1625378109/BlogImages/CloudSerials/K8sNetArchP4/K8s-Service-LB-Cluster-Chain-Flow.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1625378109/BlogImages/CloudSerials/K8sNetArchP4/K8s-Service-LB-Local-Chain-Flow.png">
@@ -43,7 +44,7 @@
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1625582214/BlogImages/CloudSerials/K8sNetArchP4/IPVS_Mode_Service_Packet_Path.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1625622293/BlogImages/CloudSerials/K8sNetArchP4/Round-Trip-Response-Time-vs-Number-of-Services.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1625622293/BlogImages/CloudSerials/K8sNetArchP4/CPU-vs-Number-of-Services.png">
-<meta property="og:updated_time" content="2021-07-20T13:35:37.000Z">
+<meta property="og:updated_time" content="2021-07-21T14:05:13.266Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="K8s network之五：Kubernetes集群Pod和Service之间通信的实现原理 | Mr.Muzi">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp;Kubernetes集群内Pod之间默认可以无障碍的进行通信，但是通常情况下Pod是不稳定的，无法确定Pod会在何时因为何种原因被重启。当Pod重启后，其会得到一个新的IP地址。而且，如无特别指明，Pod有可能会在不同的节点之间被调度。当提供相同服务的Pod有多个时，就需要一个统一的对外地址来接收服务请求，并将请求以负载均衡的方式分发到Pod上。Kubernetes Ser">
@@ -249,7 +250,7 @@ classes that you can use:
 	    
 		    <div class="post-meta">
 		      	<time datetime="2021-05-30" class="post-meta__date date">2021-05-30</time> 
-		        <span class="post-meta__count count">字数统计:&nbsp;9.8k&emsp;阅读时长:&nbsp;38&nbsp;mins</span>
+		        <span class="post-meta__count count">字数统计:&nbsp;10.1k&emsp;阅读时长:&nbsp;39&nbsp;mins</span>
 		      	<span class="post-meta__tags tags">
 			        
 			            <font class="categories">
@@ -287,7 +288,6 @@ classes that you can use:
 &emsp;
 </div>
 
-
 <p>&emsp;&emsp;前面提到，Service是一种抽象的逻辑资源，实际上并没有对应的物理实体存在。每个Service都有一个全局唯一的IP地址，称为<strong>Cluster IP</strong>。同样，这个IP地址也是一个逻辑地址，实际上并不存在，尝试通过Ping程序向Cluster IP发送ICMP报文也会一直失败。每个Service都关联了数量不定的endpoints集合，每个endpoint代表了提供Service所声明的服务的一个Pod实例。在实际的Kubernetes集群中，每个节点上都有一个kube-proxy进程，kube-proxy会监听发送到Service上的请求，并根据endpoints列表集合采用指定的负载均衡算法对请求执行了DNAT（Destination Network Address Translation，请求到达Service之前目的地址是Service的Cluster IP和端口，DNAT之后目的地址是Pod的IP和端口）操作之后将请求转发到某个选中的Pod上，由Pod完成对请求的处理和响应。由于请求在转发过程中参与了DNAT的过程，DNAT前后地址信息的变化会被保存在Linux的连接追踪表（connection tracking table，即conntrack）中，当监听到请求的响应报文时，会根据conntrack中的记录执行DNAT的逆操作，也就是响应报文的源地址会从Pod的IP和端口号恢复为Service的Cluster IP和端口，这样请求发起的客户端就会认为自己是和Service直接通信的，实际转发过程对客户端而言是透明的。</p>
 <div style="text-align: center; width: 100%;">
 <img src="https://res.cloudinary.com/jknight/image/upload/v1624958971/BlogImages/CloudSerials/K8sNetArchP4/K8s-Service-Arch.png" style="margin: 0 auto;">
@@ -312,7 +312,6 @@ classes that you can use:
 &emsp;
 </div>
 
-
 <p>&emsp;&emsp;由于一次请求需要在用户空间和内核空间来回转移，造成用户空间模型的整体效率并不高。于是Kubernetes在v1.2版本中用性能更好的iptables来实现Service的功能。</p>
 <h3 id="iptables代理模型"><a href="#iptables代理模型" class="headerlink" title="iptables代理模型"></a>iptables代理模型</h3><p>&emsp;&emsp;iptables从Kubernetes v1.2版本开始称为kube-proxy的默认模式，直到在v1.12版本中被IPVS取代而成为新的kube-proxy默认工作模式。在该模式中，kube-proxy修改了iptables中的filter和nat表，同时又对iptables的链进行了扩充，自定义了KUBE-SERVICES，KUBE-SVC-&lt;HASH&gt;，KUBE-SEP-&lt;HASH&gt;，KUBE-NODEPORTS，KUBE-FW-&lt;HASH&gt;，KUBE-XLB-&lt;HASH&gt;，KUBE-POSTROUTING，KUBE-MARK-MASQ和KUBE-MARK-DROP九个链条，通过在KUBE-SERVICES链中加入每个Service的ClusterIP和端口的匹配规则来完成流量的匹配和重定向工作。Kubernetes自定义的链条与iptables原生链条的调用关系如图4所示：</p>
 <div style="text-align: center; width: 100%;">
@@ -323,7 +322,6 @@ classes that you can use:
 &emsp;
 </div>
 
-
 <p>&emsp;&emsp;与用户空间代理模型不同的是，iptables代理模型中kube-proxy仅负责监听Service、endpoints等资源的变化，并将这种变化同步到iptables中的规则表中，不再参与请求的转发和负载均衡工作。这些工作均由iptables来完成，所以请求会一直在内核空间中传递，不必再被转入用户空间的kube-proxy进程中。</p>
 <div style="text-align: center; width: 100%;">
 <img src="https://res.cloudinary.com/jknight/image/upload/v1625388343/BlogImages/CloudSerials/K8sNetArchP4/K8s-Services-iptables-overview.svg" style="margin: 0 auto;">
@@ -332,7 +330,6 @@ classes that you can use:
     <div align="center"><br>图 - 5 Kubernetes iptables代理模型下Service实现架构<sup id="fnref:4" style="font-size:80%;line-height:80%;"><a href="#fn:4" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[4]</span></a></sup></div>
 &emsp;
 </div>
-
 
 <p>&emsp;&emsp;我们知道，Kubernetes的Service最普遍的应用是以Cluster IP的形式实现在Kubernetes集群内的服务调用，除此之外，Service还可以以NodePort、LoadBalancer、external IP形式将服务暴露到集群外部供外部实体访问和调用服务。这几种方式在iptables中的实现过程会稍有不同，接下来会对其进行简要分析。Kubernetes会按照Cluster IP、externalIP、 LoadBalancer和NodePort的顺序对外暴露服务，所以我们也会按照这个顺序进行学习。</p>
 <h4 id="Cluster-IP"><a href="#Cluster-IP" class="headerlink" title="Cluster IP"></a>Cluster IP</h4><p>&emsp;&emsp;当集群内Pod访问Service的Cluster IP时，报文会通过iptables的OUTPUT链进入Kubernetes的自定义链。假设当前集群中有一个Service A，同时有三个后端Pod用来提供服务Service A，kube-proxy采用随机负载均衡算法来选择Pod，针对Cluster IP的处理流程如下图所示：</p>
@@ -347,21 +344,35 @@ classes that you can use:
 
 <p><strong>【Note】：</strong>某些链条的名字中含有&lt;HASH&gt;字样，这是运用SHA256算法对“namespace + name + portname+协议名”生成哈希值，然后通过base32对该哈希值编码，最后取编码值的前16位的值<sup id="fnref:2" style="font-size:80%;line-height:80%;"><a href="#fn:2" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[2]</span></a></sup>。</p>
 <ol>
-<li>报文会首先进入<strong>KUBE-SERVICES</strong>链条。KUBE-SERVICE针对每个Service会产生两条匹配规则，规则（1）表示如果报文的源地址不是集群内IP地址，同时，报文匹配了请求Service的协议和端口，那么就跳转到（-j）<strong>KUBE-MARK-MASQ</strong>链条，在报文中加入一个特殊的防火墙标识，打上这个标识的报文会在POSTROUTING阶段执行SNAT(Source Network Address Translation)。如果确实命中了规则（1），那么在打完标记后会继续检查规则（2），规则（2）会将报文带入下一个链条—KUBE-SVC-&lt;HASH&gt;。</li>
-<li><strong>KUBE-SVC-&lt;HASH&gt;</strong>包含了当前提供Service的后端Pod、负载均衡模式等消息。kube-proxy默认采用的随机负载算法，因此在这种算法下会为每个Pod分配一个命中概率。在图-6中，三个Pod被命中的概率都是三分之一。当选中一个Pod后，就会跳转到和Pod相对应的KUBE-SEP-&lt;HASH&gt;上。</li>
-<li>每个<strong>KUBE-SEP-&lt;HASH&gt;</strong>和一个Pod相对应，且每个KUBE-SEP-&lt;HASH&gt;均有两条规则。规则（2）表示对请求做DNAT，将请求的目的地址由原来的ClusterIP：Port转换成Pod_IP：Port。这样就将Pod访问Service变成了Pod和Pod之间的访问。规则（1）的目的是为了应对如下场景而设计的：Service A的后端Pod中有可能会有某个Pod访问Service A，然后经过iptables时又恰好选中了自己作为服务的提供方。换句话说，Pod要为自己发出去的服务请求做出响应。在Kubernetes中这样会造成访问失败，如果当出现这种场景时就跳转到KUBE-MARK-MASQ链条执行SNAT，将请求的源地址由Pod自身变成节点的node IP，这样就又变成了正常的服务请求和响应模式。</li>
-<li>执行完DNAT后，会跳转到<strong>POSTROUTING</strong>链条。POSTROUTING会无条件跳转到<strong>KUBE-POSTROUTING</strong>链条，这个链条会检查报文是否有跳转到KUBE-MARK-MASQ链条被打上防火墙标识，如果有的话就会执行SNAT，将报文的源地址变为节点的node IP。</li>
-<li>最后由POSTROUTING将报文发出协议栈。</li>
+<li><p>报文会首先进入<strong>KUBE-SERVICES</strong>链条。KUBE-SERVICE针对每个Service会产生两条匹配规则，规则（1）表示如果报文的源地址不是集群内IP地址，同时，报文匹配了请求Service的协议和端口，那么就跳转到（-j）<strong>KUBE-MARK-MASQ</strong>链条，在报文中加入一个特殊的防火墙标识，打上这个标识的报文会在POSTROUTING阶段执行SNAT(Source Network Address Translation)。如果确实命中了规则（1），那么在打完标记后会继续检查规则（2），规则（2）会将报文带入下一个链条—KUBE-SVC-&lt;HASH&gt;。</p>
+</li>
+<li><p><strong>KUBE-SVC-&lt;HASH&gt;</strong>包含了当前提供Service的后端Pod、负载均衡模式等消息。kube-proxy默认采用的随机负载算法，因此在这种算法下会为每个Pod分配一个命中概率。在图-6中，三个Pod被命中的概率都是三分之一。当选中一个Pod后，就会跳转到和Pod相对应的KUBE-SEP-&lt;HASH&gt;上。</p>
+</li>
+<li><p>每个<strong>KUBE-SEP-&lt;HASH&gt;</strong>和一个Pod相对应，且每个KUBE-SEP-&lt;HASH&gt;均有两条规则。规则（2）表示对请求做DNAT，将请求的目的地址由原来的ClusterIP：Port转换成Pod_IP：Port。这样就将Pod访问Service变成了Pod和Pod之间的访问。规则（1）的目的是为了应对<strong>Hairpinning 发夹问题</strong>而设计的：Service A的后端Pod中有可能会有某个Pod访问Service A，然后经过iptables时又恰好选中了自己作为服务的提供方。换句话说，Pod要为自己发出去的服务请求做出响应。在Kubernetes中这样会造成访问失败，如果当出现这种场景时就跳转到KUBE-MARK-MASQ链条执行SNAT，将请求的源地址由Pod自身变成节点的node IP，这样就又变成了正常的服务请求和响应模式。如图7所示，左边是没有做SNAT的场景，Pod A收到了一个自己发出的服务请求，请求的源和目的地址都是自己，当发送响应给自己时会导致失败。右边是借助SNAT解决Hairpinning问题的场景，Pod A访问自己所属服务的请求到达Linux内核时会通过SNAT将源地址由Pod A的IP变成节点的Node IP。当Pod A发送响应报文时，报文先发送给Node IP，然后在Linux内核中再次进行NAT，将源IP由Pod A的IP改成Service的IP，目的IP由Node节点的IP改为Pod A的IP，这样就可以正常工作了。</p>
+<div style="text-align: center; width: 100%;">
+<img src="https://res.cloudinary.com/jknight/image/upload/v1626874546/BlogImages/CloudSerials/K8sNetArchP4/K8s-iptables-Hairpinning-demo.png" style="margin: 0 auto;">
+</div>
+<div align="center">
+    <div align="center"><br>图 - 7 Hairpinning问题及其解决方法
+ </div>
+&emsp;
+</div>
+</li>
+<li><p>执行完DNAT后，会跳转到<strong>POSTROUTING</strong>链条。POSTROUTING会无条件跳转到<strong>KUBE-POSTROUTING</strong>链条，这个链条会检查报文是否有跳转到KUBE-MARK-MASQ链条被打上防火墙标识，如果有的话就会执行SNAT，将报文的源地址变为节点的node IP。</p>
+</li>
+<li><p>最后由POSTROUTING将报文发出协议栈。</p>
+</li>
 </ol>
 <h4 id="external-IP"><a href="#external-IP" class="headerlink" title="external IP"></a>external IP</h4><p>&emsp;&emsp;当Service可以通过external IP暴露在集群外部供外部实体调用时，报文会通过PREROUTING进入Kubernetes的自定义链条。假设当前集群中有一个Service A，同时有三个后端Pod用来提供服务Service A，kube-proxy采用随机负载均衡算法来选择Pod，针对external IP的处理流程如下图所示：</p>
 <div style="text-align: center; width: 100%;">
 <img src="https://res.cloudinary.com/jknight/image/upload/v1625129239/BlogImages/CloudSerials/K8sNetArchP4/K8-svc-iptables-externalIP-mode-flow.png" style="margin: 0 auto;">
 </div>
 <div align="center">
-    <div align="center"><br>图 - 7 Service在external IP模式下报文处理过程
+    <div align="center"><br>图 - 8 Service在external IP模式下报文处理过程
  </div>
 &emsp;
 </div>
+
 
 <ol>
 <li><p>报文依旧会首先进入KUBE-SERVICE，每个external IP记录会在KUBE-SERVICE中产生三条记录。报文首先会命中规则（3），也就是说如果报文的目的地址是external IP，协议和端口也都命中了，那么就跳转到KUBE-MARK-MASQ打标签，最后会做SNAT。紧接着会检查匹配规则（4），如果当前报文的目的地址是Service的external IP，端口和协议都匹配了，且报文不是bridge接口进来的，且源地址不在本机上，那么就跳转到KUBE-SVC-&lt;HASH&gt;上。最后检查匹配规则规则（5），如果当前报文的目的地址是Service的external IP，端口和协议也匹配了，且目的地址是在本机上，那么就跳转到KUBE-SVC-&lt;HASH&gt;上。</p>
@@ -372,64 +383,60 @@ classes that you can use:
 </ol>
 <h4 id="LoadBalancer"><a href="#LoadBalancer" class="headerlink" title="LoadBalancer"></a>LoadBalancer</h4><p>&emsp;&emsp;Service可以接入外部的负载均衡器来实现节点级别的负载均衡功能。在Service的配置中有一个<strong>externalTrafficPolicy</strong>参数，这个参数有两个值可供选择：Local和Cluster。如果参数设置为Local，那么当流量被外部负载均衡器命中到某个节点上时，流量将只会在该命中节点上被处理，不会通过该节点转发到集群内的其他节点上。如果该节点上没有提供服务的Pod，那么当前请求会被丢弃。如果参数设置为Cluster，那么当流量被外部负载均衡器命中到某个节点上时，该请求可能只是路过该节点，最终会被转发到其他节点上处理。这个参数默认为Cluster。iptables规则处理这两个参数选项的处理过程会稍有不同。</p>
 <p>&emsp;&emsp;针对LoadBalancer类型的Service，KUBE-SERVICE中会生成一条用于命中这种类型的规则，这条规则会将流量转发给规则KUBE-FW-&lt;HASH&gt;。KUBE-FW-&lt;HASH&gt;会根据<strong>externalTrafficPolicy</strong>将流量传递给KUBE-SVC-&lt;HASH&gt;或者KUBE-XLB-&lt;HASH&gt;或者KUBE-MARK-DROP。</p>
-<p>&emsp;&emsp;当externalTrafficPolicy=cluster时，流量匹配过程如图8所示：</p>
+<p>&emsp;&emsp;当externalTrafficPolicy=cluster时，流量匹配过程如图9所示：</p>
 <div style="text-align: center; width: 100%;">
 <img src="https://res.cloudinary.com/jknight/image/upload/v1625378109/BlogImages/CloudSerials/K8sNetArchP4/K8s-Service-LB-Cluster-Chain-Flow.png" style="margin: 0 auto;">
 </div>
 <div align="center">
-    <div align="center"><br>图 - 8 Service在LoadBalancer模式下(Cluster)报文处理过程
+    <div align="center"><br>图 - 9 Service在LoadBalancer模式下(Cluster)报文处理过程
  </div>
 &emsp;
 </div>
-
 
 <ol>
 <li>如果流量的目的地址为负载均衡的IP地址，协议、端口也都命中，那么就跳转到KUBE-FW-&lt;HASH&gt;。</li>
 <li>当流量进入KUBE-FW-&lt;HASH&gt;后，会首先跳到KUBE-MARK-MASQ打上特殊标记用来做SNAT。之后会跳转到KUBE-SVC-&lt;HASH&gt;按照Cluster IP类型的服务进行处理。如果当前无对应的KUBE-SVC-&lt;HASH&gt;，那么就跳转到KUBE-MARK-DROP废弃该报文。</li>
 <li>当流量进入到KUBE-SVC-&lt;HASH&gt;后，按照Cluster IP的过程完成流量转发过程。</li>
 </ol>
-<p>&emsp;&emsp;当externalTrafficPolicy=Local时，流量匹配过程如图9所示：</p>
+<p>&emsp;&emsp;当externalTrafficPolicy=Local时，会通过KUBE-XLB-&lt;HASH&gt;将流量转发到Pod上。此时KUBE-XLB-&lt;HASH&gt;中只会有当前节点上部署的提供特定Service的Pod规则信息，如果当前节点没有满足条件的Pod，会生成KUBE-MARK-DROP规则将流量丢弃。流量匹配过程如图所示：</p>
 <div style="text-align: center; width: 100%;">
 <img src="https://res.cloudinary.com/jknight/image/upload/v1625378109/BlogImages/CloudSerials/K8sNetArchP4/K8s-Service-LB-Local-Chain-Flow.png" style="margin: 0 auto;">
 </div>
 <div align="center">
-    <div align="center"><br>图 - 9 Service在LoadBalancer模式下(Local)报文处理过程
+    <div align="center"><br>图 - 10 Service在LoadBalancer模式下(Local)报文处理过程
  </div>
 &emsp;
 </div>
-
 
 <ol>
 <li>第一步同样是由KUBE-SERVICE中匹配LoadBalancer的规则将流量转入到KUBE-FW-&lt;HASH&gt;。这里的KUBE-FW-&lt;HASH&gt;和externalTrafficPolicy=Cluster下的KUBE-FW-&lt;HASH&gt;有一些不同之处：这里的KUBE-FW-&lt;HASH&gt;只有两条规则，第一条规则会将流量转到KUBE-XLB-&lt;HASH&gt;，当找不到KUBE-XLB-&lt;HASH&gt;时就将流量转入KUBE-MARK-DROP丢弃。</li>
 <li>当流量被转入到KUBE-XLB-&lt;HASH&gt;后，首先尝试匹配规则（1）。如果流量的源地址是集群内地址，那么按照Cluster IP模式进行处理，会将流量直接转入到KUBE-SVC-&lt;HASH&gt;处理。如果流量当前所在节点没有部署任何和该负载均衡服务相关的Pod，那么就通过规则（2-1）丢弃该流量。否则，根据规则（2-2）选中一个Pod，将流量转发到Pod完成服务请求和响应。需要注意的是，规则（2-1）和（2-2）在同一个服务中是互斥的，二者不会同时存在。</li>
 </ol>
 <h4 id="NodePort"><a href="#NodePort" class="headerlink" title="NodePort"></a>NodePort</h4><p>&emsp;&emsp;Service的NodePort是KUBE-SERVICE中最后尝试被匹配的规则。换句话说，匹配NodePort的规则被放在了KUBE-SERVICE规则表中的最后位置。同样，针对<strong>externalTrafficPolicy</strong>参数的不同设置，NodePort模式下iptables的处理过程也稍有差异。</p>
-<p>&emsp;&emsp;当externalTrafficPolicy=Cluster时，流量匹配过程如图10所示：</p>
+<p>&emsp;&emsp;当externalTrafficPolicy=Cluster时，流量匹配过程如图11所示：</p>
 <div style="text-align: center; width: 100%;">
 <img src="https://res.cloudinary.com/jknight/image/upload/v1625378109/BlogImages/CloudSerials/K8sNetArchP4/K8s-Service-NodePort-Cluster-Chain-Flow.png" style="margin: 0 auto;">
 </div>
 <div align="center">
-    <div align="center"><br>图 - 10 Service在NodePort模式下(Cluster)报文处理过程
+    <div align="center"><br>图 - 11 Service在NodePort模式下(Cluster)报文处理过程
  </div>
 &emsp;
 </div>
-
 
 <ol>
 <li>如果流量是通过NodePort流入集群，且目的地址是当前节点上地址范围内的地址，那么就命中了KUBE-SERVICE的规则（7），流量被转入到KUBE-NODEPORTS。</li>
 <li>当流量进入KUBE-NODEPORTS中后，首先跳转到KUBE-MARK-MASQ，为该报文打上执行SNAT的标记。之后会将流量转入到KUBE-SVC-&lt;HASH&gt;。</li>
 <li>之后就按照Cluster IP模式进行流量转发、处理和响应。</li>
 </ol>
-<p>&emsp;&emsp;当externalTrafficPolicy=Local时，流量匹配过程如图11所示：</p>
+<p>&emsp;&emsp;当externalTrafficPolicy=Local时，，会通过KUBE-XLB-&lt;HASH&gt;将流量转发到Pod上。此时KUBE-XLB-&lt;HASH&gt;中只会有当前节点上部署的提供特定Service的Pod规则信息，如果当前节点没有满足条件的Pod，会生成KUBE-MARK-DROP规则将流量丢弃。流量匹配过程如图12所示：</p>
 <div style="text-align: center; width: 100%;">
 <img src="https://res.cloudinary.com/jknight/image/upload/v1625378109/BlogImages/CloudSerials/K8sNetArchP4/K8s-Service-NodePort-Local-Chain-Flow.png" style="margin: 0 auto;">
 </div>
 <div align="center">
-    <div align="center"><br>图 - 11 Service在NodePort模式下(Local)报文处理过程
+    <div align="center"><br>图 - 12 Service在NodePort模式下(Local)报文处理过程
  </div>
 &emsp;
 </div>
-
 
 <ol>
 <li>流量同样由KUBE-SERVICE中规则（7）被转入到KUBE-NODEPORTS。</li>
@@ -454,10 +461,9 @@ classes that you can use:
 <img src="https://res.cloudinary.com/jknight/image/upload/v1625465595/BlogImages/CloudSerials/K8sNetArchP4/IPVS-DR-Mode.svg" style="margin: 0 auto;">
 </div>
 <div align="center">
-    <div align="center">图 - 12 IPVS DR模式工作结构<sup id="fnref:6" style="font-size:80%;line-height:80%;"><a href="#fn:6" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[6]</span></a></sup></div>
+    <div align="center">图 - 13 IPVS DR模式工作结构<sup id="fnref:6" style="font-size:80%;line-height:80%;"><a href="#fn:6" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[6]</span></a></sup></div>
 &emsp;
 </div>
-
 
 <p>&emsp;&emsp;当流量到达IPVS时，IPVS只修改流量的MAC地址，将源MAC由IPVS前一跳设备的MAC修改为IPVS负载均衡设备的MAC，将目的MAC由负载均衡设备的MAC修改为后端Server的MAC。到达后端的流量的IP地址在从请求方到服务端的过程中不会发生变化（在不考虑NAT的场景下）。当后端server发送响应流量时，流量将直接从后端server发送请求方，而不再经过IPVS负载均衡器。由于DR模式下IP地址不会变化，因此IPVS负载均衡设备和后端server都需要配置Service的IP（也就是VIP, Virtual IP），但是只有负载均衡设备会向整个网络通告VIP，后端server不会对外声明自己拥有VIP，这样就避免了IP地址冲突的发生，所有请求VIP对应的服务的流量也都只会通过负载均衡设备转发给后端server。</p>
 <p>&emsp;&emsp;这种模式下，负载均衡设备只负责入流量的转发和管控，而不管出流量。因此负担更轻，能更高效的专注于负载均衡功能。但是这种模式不支持端口映射功能，此外，这个模式需要负载均衡设备和后端server都在一个网段中。因此，这种模式并不适合Kubernetes中Service的应用要求。</p>
@@ -466,10 +472,9 @@ classes that you can use:
 <img src="https://res.cloudinary.com/jknight/image/upload/v1625465594/BlogImages/CloudSerials/K8sNetArchP4/IPVS-IPIP-Mode.svg" style="margin: 0 auto;">
 </div>
 <div align="center">
-    <div align="center">图 - 13 IPVS IPIP模式工作结构<sup id="fnref:6" style="font-size:80%;line-height:80%;"><a href="#fn:6" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[6]</span></a></sup></div>
+    <div align="center">图 - 14 IPVS IPIP模式工作结构<sup id="fnref:6" style="font-size:80%;line-height:80%;"><a href="#fn:6" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[6]</span></a></sup></div>
 &emsp;
 </div>
-
 
 <p>&emsp;&emsp;这种模式支持良好的可扩展性，而且负载均衡设备和后端server也无需一定要处在一个网段中。但是这种模式同样有缺点，和DR模式一样，IPIP模式同样不支持端口映射。而且，IP报文的MTU是有限制的，也就是说实际的请求方发出的IP报文的MTU不能太大，否则会导致负载均衡设备和后端server之间的报文大小超出MTU限制而产生问题。当然，你可以调节MTU的大小，但是这需要你拥有负载均衡设备和后端server所在网络的控制能力才能完成MUT的调节。所以，这个模式也无法胜任Kubernetes中Service的要求。</p>
 <h4 id="NAT"><a href="#NAT" class="headerlink" title="NAT"></a>NAT</h4><p>&emsp;&emsp;NAT模式是IPVS中最简单的模式。负载均衡设备会监听到达设备上的请求，当有流量到达负载均衡设备时，会将目的IP由负载均衡设备的IP改为后端server的IP，并将流量转发给后端server上。当请求响应由后端server发出后，响应报文同样需要被发送到负载均衡设备上，再由负载均衡设备执行源IP地址转换，将源IP地址由后端server的IP替换为负载均衡设备的IP，最后由负载均衡设备将流量转发给请求方。Kubernetes的Service正是使用NAT模式来实现其功能。</p>
@@ -477,9 +482,10 @@ classes that you can use:
 <img src="https://res.cloudinary.com/jknight/image/upload/v1625465594/BlogImages/CloudSerials/K8sNetArchP4/IPVS-NAT-Mode.svg" style="margin: 0 auto;">
 </div>
 <div align="center">
-    <div align="center">图 - 14 IPVS NAT模式工作结构<sup id="fnref:6" style="font-size:80%;line-height:80%;"><a href="#fn:6" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[6]</span></a></sup></div>
+    <div align="center">图 - 15 IPVS NAT模式工作结构<sup id="fnref:6" style="font-size:80%;line-height:80%;"><a href="#fn:6" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[6]</span></a></sup></div>
 &emsp;
 </div>
+
 
 <p>&emsp;&emsp;通过使用IPVS，kube-proxy对iptables的使用进行了进一步的优化：kube-proxy不再直接使用iptables生成规则链条，而是使用ipset来完成该功能。ipset引入了带索引的数据结构，当规则激增时，ipset可以以O(1)时间复杂度很高效地完成查找和匹配。换言之，可以将ipset简单理解为一个IP地址的集合，集合的内容可以是IP地址、IP网段、端口等，iptables可以对ipset进行操作，这样做可以大大减少iptables规则的数量以提高负载均衡的性能。IPVS维护的ipset集合如表1所示：</p>
 <div style="text-align: left; width: 100%;">
@@ -491,9 +497,10 @@ classes that you can use:
 <img src="https://res.cloudinary.com/jknight/image/upload/v1625388343/BlogImages/CloudSerials/K8sNetArchP4/K8s-Services-ipvs-overview.svg" style="margin: 0 auto;">
 </div>
 <div align="center">
-    <div align="center">图 - 15 Kubernetes ipvs代理模型下Service实现架构<sup id="fnref:7" style="font-size:80%;line-height:80%;"><a href="#fn:7" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[7]</span></a></sup></div>
+    <div align="center">图 - 16 Kubernetes ipvs代理模型下Service实现架构<sup id="fnref:7" style="font-size:80%;line-height:80%;"><a href="#fn:7" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[7]</span></a></sup></div>
 &emsp;
 </div>
+
 
 <p>&emsp;&emsp;以Cluster IP类型的Service为例，我们会简单了解下IPVS是如何完成报文的负载均衡和转发工作的。当Cluster IP类型的Service被创建后，IPVS会做如下的三件事：</p>
 <ol>
@@ -531,36 +538,35 @@ classes that you can use:
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-A POSTROUTING -m comment --comment "kubernetes postrouting rules" -j KUBE-POSTROUTING</span><br></pre></td></tr></table></figure>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-A KUBE-POSTROUTING -m comment --comment "kubernetes service traffic requiring SNAT" -m mark --mark 0x4000/0x4000 -j MASQUERADE</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>最后将报文发出协议栈，完成后续的流量转发过程。整个的过程如图16所示：</p>
+<li><p>最后将报文发出协议栈，完成后续的流量转发过程。整个的过程如图17所示：</p>
 </li>
 </ol>
 <div style="text-align: center; width: 100%;">
 <img src="https://res.cloudinary.com/jknight/image/upload/v1625582214/BlogImages/CloudSerials/K8sNetArchP4/IPVS_Mode_Service_Packet_Path.png" style="margin: 0 auto;">
 </div>
 <div align="center">
-    <div align="center"><br>图 - 16 Kubernetes IPVS代理模型报文处理过程<sup id="fnref:8" style="font-size:80%;line-height:80%;"><a href="#fn:8" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[8]</span></a></sup></div>
+    <div align="center"><br>图 - 17 Kubernetes IPVS代理模型报文处理过程<sup id="fnref:8" style="font-size:80%;line-height:80%;"><a href="#fn:8" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[8]</span></a></sup></div>
 &emsp;
 </div>
+
 
 <p>&emsp;&emsp;IPVS凭借更优秀的数据结构和整体设计，获得了比iptables更好的性能，使得集群可以更好的进行大规模扩展。在Calico的文章《<a href="https://www.tigera.io/blog/comparing-kube-proxy-modes-iptables-or-ipvs/" target="_blank" rel="noopener">Comparing kube-proxy modes: iptables or IPVS?</a>》中，作者从服务响应耗时和CPU消耗两个方面对iptables和IPVS两个模型进行了比较。从服务响应耗时角度看，当Service的数量不多时，两个模型的响应耗时差距并不大，这个差异只有当Service数量规模以数千计或万计时，IPVS的性能会远优于iptables。如果将keepalive纳入考虑范围，那么由keepalive支持的服务请求和响应由于节省了每次请求需要执行的TCP连接过程，所以性能也会优于没有keepalive支持的场景。由于测试中服务提供的是静态内容，而实际上服务的响应数据都是动态生成的，响应时间会随着数据规模、算法复杂度等因素有可能会比本测试中耗时更高，这样kube-proxy发挥作用的耗时在整体耗时中的占比会相应的下降。</p>
 <div style="text-align: center; width: 100%;">
 <img src="https://res.cloudinary.com/jknight/image/upload/v1625622293/BlogImages/CloudSerials/K8sNetArchP4/Round-Trip-Response-Time-vs-Number-of-Services.png" style="margin: 0 auto;">
 </div>
 <div align="center">
-    <div align="center">图 - 17 IPVS和iptables在不同规模Service下的响应耗时比较<sup id="fnref:9" style="font-size:80%;line-height:80%;"><a href="#fn:9" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[9]</span></a></sup></div>
+    <div align="center">图 - 18 IPVS和iptables在不同规模Service下的响应耗时比较<sup id="fnref:9" style="font-size:80%;line-height:80%;"><a href="#fn:9" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[9]</span></a></sup></div>
 &emsp;
 </div>
-
 
 <p>&emsp;&emsp;另一方面，作者在禁用keepalive的前提下测试了IPVS和iptables在不同规模Service场景下对CPU的需求情况。和响应耗时类似，只有当Service的规模以万计时，IPVS的性能优势才会更好的展现出来。而且，iptables使用CPU的增速远高于IPVS。这里有两个地方需要注意一下，首先，kube-proxy默认会以30秒的间隔刷新内核规则，所以你会看到IPVS的CPU占用也会有所增长即使IPVS的时间复杂度为O(1)。如果内核的版本比较老旧的话，对iptables的刷新速度会更慢。其次，测试是在禁用keepalive的前提下进行的，当Service的规模非常大时，内核需要遍历整个iptables来建立到后端Pod的连接，而iptables的时间复杂度为O(n)，所以iptables的CPU占用比IPVS更高。如果开启keepalive，那么iptables的CPU占用的下降速度会比IPVS更显著。</p>
 <div style="text-align: center; width: 100%;">
 <img src="https://res.cloudinary.com/jknight/image/upload/v1625622293/BlogImages/CloudSerials/K8sNetArchP4/CPU-vs-Number-of-Services.png" style="margin: 0 auto;">
 </div>
 <div align="center">
-    <div align="center">图 - 18 IPVS和iptables在不同规模Service下的CPU占用比较<sup id="fnref:9" style="font-size:80%;line-height:80%;"><a href="#fn:9" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[9]</span></a></sup></div>
+    <div align="center">图 - 19 IPVS和iptables在不同规模Service下的CPU占用比较<sup id="fnref:9" style="font-size:80%;line-height:80%;"><a href="#fn:9" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[9]</span></a></sup></div>
 &emsp;
 </div>
-
 
 <p>&emsp;&emsp;作者最后给出了一些提高性能的建议：如果集群规模非常大，那么IPVS会是更好的选择。此外，尽可能在新版本的Linux内核上运行Kubernetes集群和kube-proxy，如无特殊限制，保证keepalive处于开启状态。还有，相较于iptables只提供了轮询和会话亲和（SessionAffinity）两种负载均衡实现，IPVS则提供了非常丰富的选择：</p>
 <ul>
