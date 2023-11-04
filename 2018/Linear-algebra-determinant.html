@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      线性代数学习笔记01-行列式 | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="关于线性代数中行列式的一些公式和概念的描述，其中概括了排列与逆序,逆序数性质,n阶行列式,行列式按行（列）展开,下三角行列式,上三角行列式,对角行行列式等概念的定义和通用公式描述，还列出了相关的定理公式的描述。最后列出关于克莱姆法则的一些论述和定理阐述。">
+<meta name="keywords" content="排列与逆序,逆序数性质,n阶行列式,行列式按行（列）展开,克莱姆法则,下三角行列式,上三角行列式,对角行行列式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="线性代数学习笔记01-行列式 | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/Linear-algebra-determinant.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="关于线性代数中行列式的一些公式和概念的描述，其中概括了排列与逆序,逆序数性质,n阶行列式,行列式按行（列）展开,下三角行列式,上三角行列式,对角行行列式等概念的定义和通用公式描述，还列出了相关的定理公式的描述。最后列出关于克莱姆法则的一些论述和定理阐述。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.353Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="线性代数学习笔记01-行列式 | Mr.Muzi">
+<meta name="twitter:description" content="关于线性代数中行列式的一些公式和概念的描述，其中概括了排列与逆序,逆序数性质,n阶行列式,行列式按行（列）展开,下三角行列式,上三角行列式,对角行行列式等概念的定义和通用公式描述，还列出了相关的定理公式的描述。最后列出关于克莱姆法则的一些论述和定理阐述。">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>线性代数学习笔记01-行列式</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-07-15" class="post-meta__date date">2018-07-15</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;1.8k&emsp;阅读时长:&nbsp;8&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/数学理论/">数学理论</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/线性代数/">线性代数</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><a id="more"></a>
+<h2 id="排列与逆序"><a href="#排列与逆序" class="headerlink" title="排列与逆序"></a>排列与逆序</h2><p>&emsp;&emsp;<strong>定义1.1</strong> 在一个n级排列$ i_1i_2…..i_n $中，如果较大的数$ i_t $在较小数$ i_s $前面（$ i_t $ &gt; $ i_s $），则称$ i_t $与$ i_s $构成一个逆序。一个n级排列中逆序的总数称为它的逆序数，记为N（$ i_1i_2…..i_n $）。如果排列$ i_1i_2…..i_n $的逆序数N（$ i_1i_2…..i_n $）是奇数，则称为奇排列，逆序数是偶数则称为偶排列。<br>&emsp;&emsp;在一个排列 $i_1…i_s…i_t…i_n$中，如果仅将它的两个数码$i_s$和$i_t$对调，得到另一个排列 $i_1…i_t…i_s…i_n$,这样的对话记为对换($i_s$，$i_t$)。</p>
+<h3 id="逆序数性质"><a href="#逆序数性质" class="headerlink" title="逆序数性质"></a>逆序数性质</h3><p>&emsp;&emsp;<strong>定理1.1</strong> 任意一个排列经过一个对换后改变其奇偶性。</p>
+<p>&emsp;&emsp;<strong>定理1.2</strong> n(n &gt; 1)个数码共有n！个n级排列，其中奇、偶排列各占一半。</p>
+<h2 id="n阶行列式"><a href="#n阶行列式" class="headerlink" title="n阶行列式"></a>n阶行列式</h2><p>&emsp;&emsp;<strong>定义1.2</strong> 用 $ n^2 $ 个数 $ a_{ij} $(i,j = 1,2,3,…..,n)组成的记号</p>
+<script type="math/tex; mode=display">\begin {vmatrix}
+     a_{11} & a_{12} & \cdots & a_{1n} \\
+     a_{21} & a_{22} & \cdots & a_{2n} \\
+     \vdots  & \vdots& \vdots & \vdots \\
+     a_{n1} & a_{n2} & \cdots & a_{nn}    
+\end {vmatrix}</script><p>称为n阶行列式。其中横排称为行，竖排称为列。它表示所有取自不同的行、列的n个元素乘积的代数和。各项的符号是：当这一项中元素的行标按照自然数顺序排列后，如果对应的列标构成的排列是偶排列取正号，是奇排列则取负号。因此n阶行列式所表示的代数和中的一般项可以写为</p>
+<script type="math/tex; mode=display">(-1)^{N(j_1j_2j_3...j_n)}a_{1j_1}a_{2j_2}....a_{nj_n}</script><p>其中，$j_1j_2j_3…j_n$构成一个n级排列，当$ j_1j_2j_3…j_n$取遍所有n级排列时，则得到n级行列式的代数和中所有的项，即 </p>
+<script type="math/tex; mode=display">\begin {vmatrix}
+     a_{11} & a_{12} & \cdots & a_{1n} \\
+     a_{21} & a_{22} & \cdots & a_{2n} \\
+     \vdots  & \vdots& \vdots & \vdots \\
+     a_{n1} & a_{n2} & \cdots & a_{nn}    
+\end {vmatrix}   = \sum(-1)^{N(j_1j_2j_3...j_n)}a_{1j_1}a_{2j_2}....a_{nj_n} .</script><p>&emsp;&emsp;三种特殊的行列式，下三角行列式：</p>
+<script type="math/tex; mode=display">D = \begin {vmatrix}
+     a_{11} & 0 & 0 &\cdots & 0 \\
+     a_{21} & a_{22} & 0 &\cdots & 0 \\
+     a_{31} & a_{32} & a_{33} &\cdots & 0 \\
+     \vdots  & \vdots& \vdots & \vdots & \vdots\\
+     a_{n1} & a_{n2} & a_{n3} & \cdots & a_{nn}    
+\end {vmatrix}</script><p>&emsp;&emsp;上三角行列式：</p>
+<script type="math/tex; mode=display">D = \begin {vmatrix}
+     a_{11} & a_{12} & a_{13} & \cdots & a_{1n} \\
+     0 & a_{22} & a_{23} & \cdots & a_{2n} \\
+     0 & 0 & a_{33} & \cdots & a_{2n} \\
+     \vdots  & \vdots& \vdots & \vdots & \vdots \\
+     0 & 0 & 0 & \cdots & a_{nn}  
+\end {vmatrix}</script><p>&emsp;&emsp;对角行行列式：</p>
+<script type="math/tex; mode=display">D = \begin {vmatrix}
+     a_{11} & 0 & 0 &\cdots & 0 \\
+     0 & a_{22} & 0 &\cdots & 0 \\
+     0 & 0 & a_{33} &\cdots & 0 \\
+     \vdots  & \vdots& \vdots & \vdots & \vdots\\
+     0 & 0 & 0 & \cdots & a_{nn}    
+\end {vmatrix}</script><h3 id="n阶行列式性质"><a href="#n阶行列式性质" class="headerlink" title="n阶行列式性质"></a>n阶行列式性质</h3><p>&emsp;&emsp;<strong>定理1.3</strong> n阶行列式D = |$a_{ij}$|的一般项可以记为 </p>
+<script type="math/tex; mode=display">(-1)^{N(i_1i_2i_3...i_n)+N(j_1j_2j_3...j_n)}a_{i_1j_1}a_{i_2j_2}....a_{i_nj_n}.</script><p>其中，$ i_1i_2i_3…i_n $和$ j_1j_2j_3…j_n $均为n阶排列。即</p>
+<script type="math/tex; mode=display">\begin {vmatrix}
+     a_{11} & a_{12} & \cdots & a_{1n} \\
+     a_{21} & a_{22} & \cdots & a_{2n} \\
+     \vdots  & \vdots& \vdots & \vdots \\
+     a_{n1} & a_{n2} & \cdots & a_{nn}    
+\end {vmatrix} = \sum(-1)^{N(i_1i_2i_3...i_n)+N(j_1j_2j_3...j_n)}a_{i_1j_1}a_{i_2j_2}....a_{i_nj_n} .</script><p>&emsp;&emsp;<strong>定理1.4</strong> n阶行列式也可以定义为 </p>
+<script type="math/tex; mode=display">D = \sum(-1)^{N(i_1i_2i_3...i_n)}a_{i_11}a_{i_22}....a_{i_nn}.</script><p>其中，$ \sum $表示对所有的n阶排列求和。</p>
+<p>&emsp;&emsp;<strong>定理1.5</strong> 行列式与它的转置行列式相等，即</p>
+<script type="math/tex; mode=display">D^T = D</script><p>&emsp;&emsp;<strong>定理1.6</strong> 交换行列式的任意两行(列)，行列式变号。<br>&emsp;&emsp;<strong>推论</strong> 如果行列式中有两行（列）的对应元素相同，则此行列式为零。</p>
+<p>&emsp;&emsp;<strong>定理1.7</strong> 用数k乘以行列式的一行（列），等于以数k乘以此行列式。即，如果设D=|$a_{ij}$|,则</p>
+<script type="math/tex; mode=display">D_1 = \begin {vmatrix}
+     a_{11} & a_{12} & \cdots & a_{1n} \\
+     \vdots  & \vdots& \vdots & \vdots \\
+     ka_{i1} & ka_{i2} & \cdots & ka_{in} \\
+     \vdots  & \vdots& \vdots & \vdots \\
+     a_{n1} & a_{n2} & \cdots & a_{nn}    
+\end {vmatrix}  = k\begin {vmatrix}
+     a_{11} & a_{12} & \cdots & a_{1n} \\
+     \vdots  & \vdots& \vdots & \vdots \\
+     a_{i1} & a_{i2} & \cdots & a_{in} \\
+     \vdots  & \vdots& \vdots & \vdots \\
+     a_{n1} & a_{n2} & \cdots & a_{nn}    
+\end {vmatrix} =kD.</script><p>&emsp;&emsp;<strong>推论1</strong> 如果行列式某行（列）的所有元素有公因子，则公因子可以提到行列式的外面。<br>&emsp;&emsp;<strong>推论2</strong> 如果行列式有两行（列）的对应元素成比例，则行列式为零。</p>
+<p>&emsp;&emsp;<strong>定理1.8</strong> 如果行列式D中的某一行（列）的每一个元素都是两个数的和，则此行列式可以写成两个行列式的和，这两个行列式分别以这两个数为所在行（列）对应位置的元素，其他位置的元素与D相同，即如果</p>
+<script type="math/tex; mode=display">D = \begin {vmatrix}
+     a_{11} & a_{12} & \cdots & a_{1n} \\
+     \vdots  & \vdots& \vdots & \vdots \\
+     b_{i1} + c_{i1} & b_{i2} + c_{i2} & \cdots & b_{in} + c_{in} \\
+     \vdots  & \vdots& \vdots & \vdots \\
+     a_{n1} & a_{n2} & \cdots & a_{nn}    
+\end {vmatrix} ,</script><script type="math/tex; mode=display">D_1 = \begin {vmatrix}
+     a_{11} & a_{12} & \cdots & a_{1n} \\
+     \vdots  & \vdots& \vdots & \vdots \\
+     b_{i1} & b_{i2} & \cdots & b_{in} \\
+     \vdots  & \vdots& \vdots & \vdots \\
+     a_{n1} & a_{n2} & \cdots & a_{nn}    
+\end {vmatrix} ,  D_2 = \begin {vmatrix}
+     a_{11} & a_{12} & \cdots & a_{1n} \\
+     \vdots  & \vdots& \vdots & \vdots \\
+     c_{i1} & c_{i2} & \cdots & c_{in} \\
+     \vdots  & \vdots& \vdots & \vdots \\
+     a_{n1} & a_{n2} & \cdots & a_{nn}    
+\end {vmatrix} ,</script><p>则<script type="math/tex">D = D_1 + D_2</script><br>&emsp;&emsp;<strong>推论1</strong> 如果将行列式某一行（列）的每一个元素都写成m个数（m为大于2的整数）的和，则此行列式可以写成m个行列式的和。</p>
+<p>&emsp;&emsp;<strong>定理1.9</strong> 将行列式某一行（列）的所有元素同乘以数k后加于另一行（列）对应位置的元素上，行列式不变。</p>
+<h2 id="行列式按行（列）展开"><a href="#行列式按行（列）展开" class="headerlink" title="行列式按行（列）展开"></a>行列式按行（列）展开</h2><p>&emsp;&emsp;<strong>定义1.3</strong> 在n阶行列式D = |$a_{ij}$|中去掉元素$a_{ij}$所在的第i行和第j列后，余下的n-1阶行列式，称为D中元素$a_{ij}$的余子式，记为$M_{ij}$。在$a_{ij}$的余子式$M_{ij}$前添加符号$(-1)^{i+j}$，称为$a_{ij}$的代数余子式，记为$A_{ij}$，即<script type="math/tex">A_{ij} = (-1)^{i+j}M_{ij} .</script></p>
+<p>&emsp;&emsp;<strong>定理1.10</strong> n阶行列式D = |$a_{ij}$|等于它的任意一行（列）的各元素与其对应代数余子式乘积的和，即</p>
+<script type="math/tex; mode=display">D = a_{i1}A_{i1} + a_{i2}A_{i2} + a_{i3}A_{i3} + \cdots + a_{in}A_{in}, (i = 1,2,3,\cdots,n),</script><p>或</p>
+<script type="math/tex; mode=display">D = a_{1j}A_{1j} + a_{2j}A_{2j} + a_{3j}A_{3j} + \cdots + a_{nj}A_{nj}, (j = 1,2,3,\cdots,n).</script><p>&emsp;&emsp;<strong>定理1.11</strong> n阶行列式D的某一行（列）的元素与另一航（列）的对应位置的元素的代数余子式乘积的和等于0。即</p>
+<script type="math/tex; mode=display">a_{i1}A_{s1} + a_{i2}A_{s2} + a_{i3}A_{s3} + \cdots + a_{in}A_{sn} = 0, (i \neq s),</script><p>或</p>
+<script type="math/tex; mode=display">
+a_{1j}A_{1t} + a_{2j}A_{2t} + a_{3j}A_{3t} + \cdots + a_{nj}A_{nt} = 0, (j \neq t).</script><h2 id="克莱姆法则"><a href="#克莱姆法则" class="headerlink" title="克莱姆法则"></a>克莱姆法则</h2><p>&emsp;&emsp;<strong>定理1.12</strong> 关于线性方程组 </p>
+<script type="math/tex; mode=display">\begin{cases}
+a_{11}x_1 + a_{12}x_2 + \cdots + a_{1n}x_n = b_1 \\ 
+a_{21}x_1 + a_{22}x_2 + \cdots + a_{2n}x_n = b_2 \\ 
+\cdots \\ 
+a_{n1}x_1 + a_{n2}x_2 + \cdots + a_{nn}x_n = b_n 
+\end{cases}</script><p>当其系数行列式  </p>
+<script type="math/tex; mode=display">D = \begin {vmatrix}
+     a_{11} & a_{12} & \cdots & a_{1n} \\
+     a_{21} & a_{22} & \cdots & a_{2n} \\
+     \vdots  & \vdots& \vdots & \vdots \\
+     a_{n1} & a_{n2} & \cdots & a_{nn}    
+\end {vmatrix} \neq 0</script><p>时，有且只有一个唯一解</p>
+<script type="math/tex; mode=display">
+x_j = \frac{D_j}{D} (j = 1,2,3, \cdots, n)</script><p>其中，$ D_j (j = 1,2,3, \cdots, n) $是将系数行列式中第j列元素$ a_{1j}, a_{2j}, \cdots, a_{nj} $对应地换成方程组的常数项$ b_1, b_2, \cdots, b_n $后得到的行列式。</p>
+<p>&emsp;&emsp;<strong>定理1.13</strong> 如果齐次线性方程组 </p>
+<script type="math/tex; mode=display">\begin{cases}
+a_{11}x_1 + a_{12}x_2 + \cdots + a_{1n}x_n = 0 \\ 
+a_{21}x_1 + a_{22}x_2 + \cdots + a_{2n}x_n = 0 \\ 
+\cdots \\ 
+a_{n1}x_1 + a_{n2}x_2 + \cdots + a_{nn}x_n = 0 
+\end{cases}</script><p>的系数行列式$ D \neq 0 $，则它只有零解。<br>&emsp;<br>&emsp;<br>&emsp;</p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/Linear-algebra-determinant.html" target="_blank" title="线性代数学习笔记01-行列式">线性代数学习笔记01-行列式</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/Linear-algebra-determinant.html" target="_blank" title="线性代数学习笔记01-行列式">https://marcuseddie.github.io/2018/Linear-algebra-determinant.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2018/Java-source-Integer.html" class="alignleft prev" title="Java源码阅读笔记01 - Integer"> 上一篇： Java源码阅读笔记01 - Integer</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2018/CPC-click-fraud-and-anti-fraud.html" class="alignright next" title="CPC作弊与反作弊分析"> 下一篇： CPC作弊与反作弊分析</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

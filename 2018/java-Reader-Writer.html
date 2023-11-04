@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      Java I/O 15 - Reader &amp; Writer | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="Reader和Writer是用来完成关于字符流读写操作的公共父类，继承这两个类的子类分别实现读写操作和关闭操作。子类会重写覆盖其方法。涉及的方法包括read, write, close, skip, ready, mark, reset, append, flush。">
+<meta name="keywords" content="Reader, Writer, read, write, close, skip, ready, mark, reset, append, flush">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java I&#x2F;O 15 - Reader &amp; Writer | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/java-Reader-Writer.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="Reader和Writer是用来完成关于字符流读写操作的公共父类，继承这两个类的子类分别实现读写操作和关闭操作。子类会重写覆盖其方法。涉及的方法包括read, write, close, skip, ready, mark, reset, append, flush。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.357Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java I&#x2F;O 15 - Reader &amp; Writer | Mr.Muzi">
+<meta name="twitter:description" content="Reader和Writer是用来完成关于字符流读写操作的公共父类，继承这两个类的子类分别实现读写操作和关闭操作。子类会重写覆盖其方法。涉及的方法包括read, write, close, skip, ready, mark, reset, append, flush。">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>Java I/O 15 - Reader &amp; Writer</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-11-13" class="post-meta__date date">2018-11-13</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;1.9k&emsp;阅读时长:&nbsp;8&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.io.Reader</strong> </em> 和 <em> <strong>java.io.Writer</strong> </em>的部分笔记，这两个类是所有的字符流读写类的父类。继承这两个类的子类出于性能等方面的考虑会重写其方法。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;Reader和Writer是用来完成关于字符流读写操作的公共父类。继承这两个类的子类分别实现读写操作和关闭操作。虽然自身实现了部分的读写方法，但是出于高效、额外功能的考虑，子类需要重写覆盖Reader和Writer自身已经实现的方法来获取更好的使用性能。</p>
+<p>&emsp;&emsp;在使用Writer向底层输出流输出数据内容时，Writer仅保证通过flush操作可以将数据从内存输出给操作系统，但是并不保证数据可以正确完整的写入到特定的物理设备中，这一点在使用时需要加以注意。</p>
+<p>&emsp;</p>
+<h2 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Reader</span></span><br><span class="line">--java.lang.Object</span><br><span class="line">  --java.io.Reader</span><br><span class="line"></span><br><span class="line"><span class="comment">// Writer</span></span><br><span class="line">--java.lang.Object</span><br><span class="line">  --java.io.Writer</span><br></pre></td></tr></table></figure>
+<p>&emsp;</p>
+<h2 id="实现接口"><a href="#实现接口" class="headerlink" title="实现接口"></a>实现接口</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">类名</th>
+<th style="text-align:center">实现接口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Reader</td>
+<td style="text-align:center">Closeable, AutoCloseable,Readable</td>
+</tr>
+<tr>
+<td style="text-align:center">Writer</td>
+<td style="text-align:center">Closeable, Flushable, AutoCloseable, Appendable</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>&emsp;</p>
+<h2 id="Reader"><a href="#Reader" class="headerlink" title="Reader"></a>Reader</h2><h3 id="Constructor-Summary"><a href="#Constructor-Summary" class="headerlink" title="Constructor Summary"></a>Constructor Summary</h3><h4 id="protected-Reader"><a href="#protected-Reader" class="headerlink" title="protected Reader()"></a>protected Reader()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="title">Reader</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.lock = <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="protected-Reader-Object-lock"><a href="#protected-Reader-Object-lock" class="headerlink" title="protected Reader(Object lock)"></a>protected Reader(Object lock)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="title">Reader</span><span class="params">(Object lock)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (lock == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">this</span>.lock = lock;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="部分方法"><a href="#部分方法" class="headerlink" title="部分方法"></a>部分方法</h3><h4 id="public-int-read-java-nio-CharBuffer-target"><a href="#public-int-read-java-nio-CharBuffer-target" class="headerlink" title="public int read(java.nio.CharBuffer target)"></a><span id="publicIntReadCharBuffer">public int read(java.nio.CharBuffer target)</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">(java.nio.CharBuffer target)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> len = target.remaining();</span><br><span class="line">    <span class="keyword">char</span>[] cbuf = <span class="keyword">new</span> <span class="keyword">char</span>[len];</span><br><span class="line">    <span class="keyword">int</span> n = read(cbuf, <span class="number">0</span>, len);</span><br><span class="line">    <span class="keyword">if</span> (n &gt; <span class="number">0</span>)</span><br><span class="line">        target.put(cbuf, <span class="number">0</span>, n);</span><br><span class="line">    <span class="keyword">return</span> n;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;从底层读取数据并保存到一个CharBuffer对象中。实际读取的长度由CharBuffer对象的剩余可用空间决定。通过调用方法read(char cbuf[], int off, int len)读取到数据后再封装回CharBuffer对象，最后返回实际读取的字符长度。</p>
+<h4 id="public-int-read"><a href="#public-int-read" class="headerlink" title="public int read()"></a><span id="publicIntReadNull">public int read()</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">char</span> cb[] = <span class="keyword">new</span> <span class="keyword">char</span>[<span class="number">1</span>];</span><br><span class="line">    <span class="keyword">if</span> (read(cb, <span class="number">0</span>, <span class="number">1</span>) == -<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">return</span> cb[<span class="number">0</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;从底层读取一个字符并返回。实际调用的方法是read(char cbuf[])。</p>
+<h4 id="public-int-read-char-cbuf"><a href="#public-int-read-char-cbuf" class="headerlink" title="public int read(char cbuf[])"></a><span id="publicIntReadCbuf">public int read(char cbuf[])</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">(<span class="keyword">char</span> cbuf[])</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> read(cbuf, <span class="number">0</span>, cbuf.length);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">abstract</span> <span class="keyword">public</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">(<span class="keyword">char</span> cbuf[], <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> <span class="keyword">throws</span> IOException</span>;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;从底层输入流中读取数据并将读取的数据保存到数组cbuf中。实际调用的方法是read(char cbuf[], int off, int len)，该方法被声明为抽象方法，需要在子类中实现。</p>
+<h4 id="public-long-skip-long-n"><a href="#public-long-skip-long-n" class="headerlink" title="public long skip(long n)"></a><span id="publicLongSkip">public long skip(long n)</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">skip</span><span class="params">(<span class="keyword">long</span> n)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (n &lt; <span class="number">0L</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"skip value is negative"</span>);</span><br><span class="line">        <span class="keyword">int</span> nn = (<span class="keyword">int</span>) Math.min(n, maxSkipBufferSize);</span><br><span class="line">        <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">            <span class="keyword">if</span> ((skipBuffer == <span class="keyword">null</span>) || (skipBuffer.length &lt; nn))</span><br><span class="line">                skipBuffer = <span class="keyword">new</span> <span class="keyword">char</span>[nn];</span><br><span class="line">            <span class="keyword">long</span> r = n;</span><br><span class="line">            <span class="keyword">while</span> (r &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="keyword">int</span> nc = read(skipBuffer, <span class="number">0</span>, (<span class="keyword">int</span>)Math.min(r, nn));</span><br><span class="line">                <span class="keyword">if</span> (nc == -<span class="number">1</span>)</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                r -= nc;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> n - r;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;跳过长度为n的字节数并开始从第n+1个位置读取数据。代码段通过synchronized保证了多线程环境的线程安全要求。第6 ~ 7行代码计算理论上需要跳过的数据长度并初始化一个数据存储buffer空间。第9 ~ 14行则循环从输入流中读取数据并将读取的数据保存到数组buffer中，如果读取结束则退出循环。最后计算实际跳过的长度并返回给方法调用方，需要注意的是实际跳过的长度有可能小于入参长度n。</p>
+<h4 id="public-boolean-ready"><a href="#public-boolean-ready" class="headerlink" title="public boolean ready()"></a><span id="publicBooleanReady">public boolean ready()</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">ready</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;判断当前输入流是否可以通过read()方法获取数据。</p>
+<h4 id="public-boolean-markSupported"><a href="#public-boolean-markSupported" class="headerlink" title="public boolean markSupported()"></a><span id="publicBooleanMarkSupported">public boolean markSupported()</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">markSupported</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;是否支持标记重读。Reader自身不支持标记重读操作，所以返回false给接口调用方。</p>
+<h4 id="public-void-mark-int-readAheadLimit"><a href="#public-void-mark-int-readAheadLimit" class="headerlink" title="public void mark(int readAheadLimit)"></a><span id="publicVoidMark">public void mark(int readAheadLimit)</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">mark</span><span class="params">(<span class="keyword">int</span> readAheadLimit)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"mark() not supported"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;标记重读的起点。Reader类自身不支持标记重复读取字符的起点，所以直接抛出异常给方法调用方。</p>
+<h4 id="public-void-reset"><a href="#public-void-reset" class="headerlink" title="public void reset()"></a><span id="publicVoidReset">public void reset()</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">reset</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"reset() not supported"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;重置下一个字符读取位置。Reader类自身不支持重置操作，所以直接抛出异常给方法调用方。</p>
+<h4 id="abstract-public-void-close"><a href="#abstract-public-void-close" class="headerlink" title="abstract public void close()"></a><span id="publicVoidCloseIn">abstract public void close()</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">abstract</span> <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> <span class="keyword">throws</span> IOException</span>;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;关闭流并释放占用资源。该方法是一个抽象方法，需要子类去实现具体的关闭流程。</p>
+<p>&emsp;</p>
+<h2 id="Writer"><a href="#Writer" class="headerlink" title="Writer"></a>Writer</h2><h3 id="Constructor-Summary-1"><a href="#Constructor-Summary-1" class="headerlink" title="Constructor Summary"></a>Constructor Summary</h3><h4 id="protected-Writer"><a href="#protected-Writer" class="headerlink" title="protected Writer()"></a>protected Writer()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="title">Writer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.lock = <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="protected-Writer-Object-lock"><a href="#protected-Writer-Object-lock" class="headerlink" title="protected Writer(Object lock)"></a>protected Writer(Object lock)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="title">Writer</span><span class="params">(Object lock)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (lock == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">this</span>.lock = lock;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="部分方法-1"><a href="#部分方法-1" class="headerlink" title="部分方法"></a>部分方法</h3><h4 id="public-void-write-int-c"><a href="#public-void-write-int-c" class="headerlink" title="public void write(int c)"></a><span id="publicVoidWriteIC">public void write(int c)</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">int</span> c)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        <span class="keyword">if</span> (writeBuffer == <span class="keyword">null</span>)&#123;</span><br><span class="line">            writeBuffer = <span class="keyword">new</span> <span class="keyword">char</span>[writeBufferSize];</span><br><span class="line">        &#125;</span><br><span class="line">        writeBuffer[<span class="number">0</span>] = (<span class="keyword">char</span>) c;</span><br><span class="line">        write(writeBuffer, <span class="number">0</span>, <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;向缓冲区buffer中写入一个字符数据。该方法被synchronized关键字包围起来保证了多线程环境下的线程安全。缓冲区buffer数组的长度默认为1024。该方法已经被<strong>java.io.OutputStreamWriter</strong>等子类重写覆盖。</p>
+<h4 id="public-void-write-char-cbuf"><a href="#public-void-write-char-cbuf" class="headerlink" title="public void write(char cbuf[])"></a><span id="publicVoidWriteCC">public void write(char cbuf[])</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">char</span> cbuf[])</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    write(cbuf, <span class="number">0</span>, cbuf.length);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;向缓冲区buffer中写入数组cbuf中的字符数据。该方法通过调用方法write(char cbuf[], int off, int len)实现相关操作。</p>
+<h4 id="abstract-public-void-write-char-cbuf-int-off-int-len"><a href="#abstract-public-void-write-char-cbuf-int-off-int-len" class="headerlink" title="abstract public void write(char cbuf[], int off, int len)"></a><span id="publicVoidWriteCCIOIL">abstract public void write(char cbuf[], int off, int len)</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">abstract</span> <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">char</span> cbuf[], <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> <span class="keyword">throws</span> IOException</span>;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;向缓冲区buffer中写入数组cbuf中包含的字符数据。该方法被声明为一个抽象方法，需要在子类中实现该方法。</p>
+<h4 id="public-void-write-String-str"><a href="#public-void-write-String-str" class="headerlink" title="public void write(String str)"></a><span id="publicVoidWriteSS">public void write(String str)</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(String str)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    write(str, <span class="number">0</span>, str.length());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将一个String字符串写入到缓冲区buffer中。</p>
+<h4 id="public-void-write-String-str-int-off-int-len"><a href="#public-void-write-String-str-int-off-int-len" class="headerlink" title="public void write(String str, int off, int len)"></a><span id="publicVoidWriteSSIOIL">public void write(String str, int off, int len)</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(String str, <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        <span class="keyword">char</span> cbuf[];</span><br><span class="line">        <span class="keyword">if</span> (len &lt;= writeBufferSize) &#123;</span><br><span class="line">            <span class="keyword">if</span> (writeBuffer == <span class="keyword">null</span>) &#123;</span><br><span class="line">                writeBuffer = <span class="keyword">new</span> <span class="keyword">char</span>[writeBufferSize];</span><br><span class="line">            &#125;</span><br><span class="line">            cbuf = writeBuffer;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;    <span class="comment">// Don't permanently allocate very large buffers.</span></span><br><span class="line">            cbuf = <span class="keyword">new</span> <span class="keyword">char</span>[len];</span><br><span class="line">        &#125;</span><br><span class="line">        str.getChars(off, (off + len), cbuf, <span class="number">0</span>);</span><br><span class="line">        write(cbuf, <span class="number">0</span>, len);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将一个String字符串中自下标off位置起长度为len的内容写入到缓冲区buffer中。通过将String字符串转成char数组，再调用write(char cbuf[], int off, int len)方法完成操作。该方法已经被<strong>java.io.OutputStreamWriter</strong>等子类重写覆盖。</p>
+<h4 id="public-Writer-append-CharSequence-csq"><a href="#public-Writer-append-CharSequence-csq" class="headerlink" title="public Writer append(CharSequence csq)"></a><span id="publicWriteAppendCSC">public Writer append(CharSequence csq)</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Writer <span class="title">append</span><span class="params">(CharSequence csq)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (csq == <span class="keyword">null</span>)</span><br><span class="line">        write(<span class="string">"null"</span>);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        write(csq.toString());</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将一个CharSequence对象中包含的内容写入到底层输出流的缓冲区buffer中。该方法的实际效果等同于<strong>write(String str)</strong>，其底层实现也是通过将CharSequence转成String字符串，然后在调用上述方法来完成操作的。</p>
+<h4 id="public-Writer-append-CharSequence-csq-int-start-int-end"><a href="#public-Writer-append-CharSequence-csq-int-start-int-end" class="headerlink" title="public Writer append(CharSequence csq, int start, int end)"></a><span id="publicWriteAppendCCISIE">public Writer append(CharSequence csq, int start, int end)</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Writer <span class="title">append</span><span class="params">(CharSequence csq, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    CharSequence cs = (csq == <span class="keyword">null</span> ? <span class="string">"null"</span> : csq);</span><br><span class="line">    write(cs.subSequence(start, end).toString());</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将一个CharSequence对象中从起始位置start到结束end之间的内容写入到底层输出流的缓冲区buffer中。</p>
+<h4 id="public-Writer-append-char-c"><a href="#public-Writer-append-char-c" class="headerlink" title="public Writer append(char c)"></a><span id="publicWriteAppendCC">public Writer append(char c)</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Writer <span class="title">append</span><span class="params">(<span class="keyword">char</span> c)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    write(c);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将一个字符写入到底层输出了的缓冲区buffer中。该方法的实际效果等同于<strong>write(int c)</strong>。</p>
+<h4 id="abstract-public-void-flush"><a href="#abstract-public-void-flush" class="headerlink" title="abstract public void flush()"></a><span id="publicVoidFlush">abstract public void flush()</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">abstract</span> <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">flush</span><span class="params">()</span> <span class="keyword">throws</span> IOException</span>;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将buffer缓冲区中保存的数据推到底层输出流中。该方法是一个抽象方法，具体流程需要由子类自行完成实现。</p>
+<h4 id="abstract-public-void-close-1"><a href="#abstract-public-void-close-1" class="headerlink" title="abstract public void close()"></a><span id="publicVoidCloseOut">abstract public void close()</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">abstract</span> <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> <span class="keyword">throws</span> IOException</span>;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;关闭当前输出流。该方法是一个抽象方法，具体关闭流的流程需要由子类自行完成实现。</p>
+<p>&emsp;</p>
+<h2 id="涉及基础知识点"><a href="#涉及基础知识点" class="headerlink" title="涉及基础知识点"></a>涉及基础知识点</h2><ol>
+<li>NIL<br>&emsp;</li>
+</ol>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>NIL<br>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</li>
+</ol>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-Reader-Writer.html" target="_blank" title="Java I/O 15 - Reader &amp; Writer">Java I/O 15 - Reader &amp; Writer</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-Reader-Writer.html" target="_blank" title="Java I/O 15 - Reader &amp; Writer">https://marcuseddie.github.io/2018/java-Reader-Writer.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2018/java-StringReader-StringWriter.html" class="alignleft prev" title="Java I/O 16 - StringReader &amp; StringWriter"> 上一篇： Java I/O 16 - StringReader &amp; String...</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2018/java-Collection-AbstractList.html" class="alignright next" title="Java Collection 02 - AbstractList"> 下一篇： Java Collection 02 - AbstractList</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

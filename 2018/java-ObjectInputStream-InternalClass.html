@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      Java I/O 24 - ObjectInputStream内部类 | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="关于java.io.ObjectInputStream有几个内部类，里面涉及到了HandleTable、ValidationList、GetField及其实现等几个内部类的声明和实现。">
+<meta name="keywords" content="ObjectInputStream,HandleTable,ValidationList,GetFieldImpl">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java I&#x2F;O 24 - ObjectInputStream内部类 | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/java-ObjectInputStream-InternalClass.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="关于java.io.ObjectInputStream有几个内部类，里面涉及到了HandleTable、ValidationList、GetField及其实现等几个内部类的声明和实现。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.357Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java I&#x2F;O 24 - ObjectInputStream内部类 | Mr.Muzi">
+<meta name="twitter:description" content="关于java.io.ObjectInputStream有几个内部类，里面涉及到了HandleTable、ValidationList、GetField及其实现等几个内部类的声明和实现。">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>Java I/O 24 - ObjectInputStream内部类</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-11-29" class="post-meta__date date">2018-11-29</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;2.6k&emsp;阅读时长:&nbsp;12&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.io.ObjectInputStream</strong> </em>内部类的部分笔记，里面涉及到了HandleTable、ValidationList、GetField及其实现等几个内部类的声明和实现。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;HandleTable是一个非同步表，用来跟踪对象映射的连接句柄，以及反序列对象过程中发生的ClassNotFoundException异常。这个类实现了一个异常传播算法来决定哪些对象应该被认为是属于异常ClassNotFoundException的。</p>
+<p>&emsp;&emsp;关于该表的使用场景，大致可分为如下几种：在反序列过程中，一个给定对象通过assign方法第一次被分配了一个句柄，此时该句柄属于“开放”状态。其中对其他句柄的异常状态的依赖关系可以通过调用markDependency方法注册，或者通过调用markException直接与句柄关联一个异常。如果当前句柄被指向了一个异常，那么根据异常传播机制和当前句柄有关联的其他对象都会被标记为异常态。一旦所有的异常信息/依赖都被注册了，那么当前句柄就可以通过close()被“关闭”了。通过finish()方法允许异常传播算法删除相关的依赖链，减少性能和内存损耗。</p>
+<p>&emsp;&emsp;ValidationList是一个优先级队列集合，用来存储在对象引用图谱被完全反序列化恢复之后需要执行的回调方法。</p>
+<p>&emsp;&emsp;GetFieldImpl实现了GetField（ObjectInputStream的静态抽象类）声明的所有方法。提供了从输入流中读取字段数据内容的方法。</p>
+<p>&emsp;</p>
+<h2 id="HandleTable"><a href="#HandleTable" class="headerlink" title="HandleTable"></a>HandleTable</h2><h3 id="Constructor-Summary"><a href="#Constructor-Summary" class="headerlink" title="Constructor Summary"></a>Constructor Summary</h3><h4 id="HandleTable-int-initialCapacity"><a href="#HandleTable-int-initialCapacity" class="headerlink" title="HandleTable(int initialCapacity)"></a>HandleTable(int initialCapacity)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">HandleTable(<span class="keyword">int</span> initialCapacity) &#123;</span><br><span class="line">    status = <span class="keyword">new</span> <span class="keyword">byte</span>[initialCapacity];</span><br><span class="line">    entries = <span class="keyword">new</span> Object[initialCapacity];</span><br><span class="line">    deps = <span class="keyword">new</span> HandleList[initialCapacity];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个句柄表。status维护了句柄-&gt;对象状态信息，entries维护了句柄-&gt;对象/异常实体信息（该过程依赖于status），deps维护了句柄-&gt;依赖的句柄列表信息。</p>
+<h3 id="部分方法"><a href="#部分方法" class="headerlink" title="部分方法"></a>部分方法</h3><h4 id="int-assign-Object-obj"><a href="#int-assign-Object-obj" class="headerlink" title="int assign(Object obj)"></a>int assign(Object obj)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">assign</span><span class="params">(Object obj)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (size &gt;= entries.length) &#123;</span><br><span class="line">        grow();</span><br><span class="line">    &#125;</span><br><span class="line">    status[size] = STATUS_UNKNOWN;</span><br><span class="line">    entries[size] = obj;</span><br><span class="line">    <span class="keyword">return</span> size++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;分配下一个可用的句柄给入参对象obj，并返回分配的句柄信息。一旦对象彻底完成了反序列操作，句柄应该通过finish()方法置为“结束”状态。</p>
+<p>&emsp;&emsp;如果数组空间不够，就执行扩容处理。</p>
+<h4 id="private-void-grow"><a href="#private-void-grow" class="headerlink" title="private void grow()"></a>private void grow()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">grow</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> newCapacity = (entries.length &lt;&lt; <span class="number">1</span>) + <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">byte</span>[] newStatus = <span class="keyword">new</span> <span class="keyword">byte</span>[newCapacity];</span><br><span class="line">    Object[] newEntries = <span class="keyword">new</span> Object[newCapacity];</span><br><span class="line">    HandleList[] newDeps = <span class="keyword">new</span> HandleList[newCapacity];</span><br><span class="line"></span><br><span class="line">    System.arraycopy(status, <span class="number">0</span>, newStatus, <span class="number">0</span>, size);</span><br><span class="line">    System.arraycopy(entries, <span class="number">0</span>, newEntries, <span class="number">0</span>, size);</span><br><span class="line">    System.arraycopy(deps, <span class="number">0</span>, newDeps, <span class="number">0</span>, size);</span><br><span class="line"></span><br><span class="line">    status = newStatus;</span><br><span class="line">    entries = newEntries;</span><br><span class="line">    deps = newDeps;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;按照当前数组容量的两倍进行扩容处理。</p>
+<h4 id="void-markDependency-int-dependent-int-target"><a href="#void-markDependency-int-dependent-int-target" class="headerlink" title="void markDependency(int dependent, int target)"></a>void markDependency(int dependent, int target)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">markDependency</span><span class="params">(<span class="keyword">int</span> dependent, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (dependent == NULL_HANDLE || target == NULL_HANDLE) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">switch</span> (status[dependent]) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">case</span> STATUS_UNKNOWN:</span><br><span class="line">            <span class="keyword">switch</span> (status[target]) &#123;</span><br><span class="line">                <span class="keyword">case</span> STATUS_OK:</span><br><span class="line">                    <span class="comment">// ignore dependencies on objs with no exception</span></span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">case</span> STATUS_EXCEPTION:</span><br><span class="line">                    <span class="comment">// eagerly propagate exception</span></span><br><span class="line">                    markException(dependent,</span><br><span class="line">                                  (ClassNotFoundException) entries[target]);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">case</span> STATUS_UNKNOWN:</span><br><span class="line">                    <span class="comment">// add to dependency list of target</span></span><br><span class="line">                    <span class="keyword">if</span> (deps[target] == <span class="keyword">null</span>) &#123;</span><br><span class="line">                        deps[target] = <span class="keyword">new</span> HandleList();</span><br><span class="line">                    &#125;</span><br><span class="line">                    deps[target].add(dependent);</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// remember lowest unresolved target seen</span></span><br><span class="line">                    <span class="keyword">if</span> (lowDep &lt; <span class="number">0</span> || lowDep &gt; target) &#123;</span><br><span class="line">                        lowDep = target;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">default</span>:</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> InternalError();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">case</span> STATUS_EXCEPTION:</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> InternalError();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;完成句柄依赖绑定。dependent句柄必须是处于“开启”状态的句柄，如果dependent句柄或target句柄都为空，那么直接返回不做处理。</p>
+<p>&emsp;&emsp;如果dependent句柄处于“开启”状态（status = 2），那么检查target句柄。如果target的状态为OK，不做处理，如果状态为STATUS_EXCEPTION，那么需要将target句柄指向的异常传递给dependent句柄，调用的是<strong>markException(int handle, ClassNotFoundException ex)</strong>方法。如果状态为STATUS_UNKNOWN，那么就把dependent指向给target。</p>
+<h4 id="void-markException-int-handle-ClassNotFoundException-ex"><a href="#void-markException-int-handle-ClassNotFoundException-ex" class="headerlink" title="void markException(int handle, ClassNotFoundException ex)"></a>void markException(int handle, ClassNotFoundException ex)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">markException</span><span class="params">(<span class="keyword">int</span> handle, ClassNotFoundException ex)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">switch</span> (status[handle]) &#123;</span><br><span class="line">        <span class="keyword">case</span> STATUS_UNKNOWN:</span><br><span class="line">            status[handle] = STATUS_EXCEPTION;</span><br><span class="line">            entries[handle] = ex;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// propagate exception to dependents</span></span><br><span class="line">            HandleList dlist = deps[handle];</span><br><span class="line">            <span class="keyword">if</span> (dlist != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">int</span> ndeps = dlist.size();</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; ndeps; i++) &#123;</span><br><span class="line">                    markException(dlist.get(i), ex);</span><br><span class="line">                &#125;</span><br><span class="line">                deps[handle] = <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">case</span> STATUS_EXCEPTION:</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> InternalError();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将ClassNotFoundException异常关联到当前活动句柄上。</p>
+<h4 id="void-finish-int-handle"><a href="#void-finish-int-handle" class="headerlink" title="void finish(int handle)"></a>void finish(int handle)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">finish</span><span class="params">(<span class="keyword">int</span> handle)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> end;</span><br><span class="line">    <span class="keyword">if</span> (lowDep &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// no pending unknowns, only resolve current handle</span></span><br><span class="line">        end = handle + <span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (lowDep &gt;= handle) &#123;</span><br><span class="line">        <span class="comment">// pending unknowns now clearable, resolve all upward handles</span></span><br><span class="line">        end = size;</span><br><span class="line">        lowDep = -<span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// unresolved backrefs present, can't resolve anything yet</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// change STATUS_UNKNOWN -&gt; STATUS_OK in selected span of handles</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = handle; i &lt; end; i++) &#123;</span><br><span class="line">        <span class="keyword">switch</span> (status[i]) &#123;</span><br><span class="line">            <span class="keyword">case</span> STATUS_UNKNOWN:</span><br><span class="line">                status[i] = STATUS_OK;</span><br><span class="line">                deps[i] = <span class="keyword">null</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">case</span> STATUS_OK:</span><br><span class="line">            <span class="keyword">case</span> STATUS_EXCEPTION:</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> InternalError();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将指定句柄标记为结束状态，标记完成后不会有新的依赖会指向到当前句柄上。</p>
+<h4 id="void-setObject-int-handle-Object-obj"><a href="#void-setObject-int-handle-Object-obj" class="headerlink" title="void setObject(int handle, Object obj)"></a>void setObject(int handle, Object obj)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">setObject</span><span class="params">(<span class="keyword">int</span> handle, Object obj)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">switch</span> (status[handle]) &#123;</span><br><span class="line">        <span class="keyword">case</span> STATUS_UNKNOWN:</span><br><span class="line">        <span class="keyword">case</span> STATUS_OK:</span><br><span class="line">            entries[handle] = obj;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">case</span> STATUS_EXCEPTION:</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> InternalError();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将handle句柄指向的对象替换为obj。</p>
+<h4 id="Object-lookupObject-int-handle"><a href="#Object-lookupObject-int-handle" class="headerlink" title="Object lookupObject(int handle)"></a>Object lookupObject(int handle)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Object <span class="title">lookupObject</span><span class="params">(<span class="keyword">int</span> handle)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (handle != NULL_HANDLE &amp;&amp;</span><br><span class="line">            status[handle] != STATUS_EXCEPTION) ? entries[handle] : <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;根据handle句柄查找对象。如果存在就从entries数组中返回对应的对象，否则返回null。</p>
+<h4 id="ClassNotFoundException-lookupException-int-handle"><a href="#ClassNotFoundException-lookupException-int-handle" class="headerlink" title="ClassNotFoundException lookupException(int handle)"></a>ClassNotFoundException lookupException(int handle)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ClassNotFoundException <span class="title">lookupException</span><span class="params">(<span class="keyword">int</span> handle)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (handle != NULL_HANDLE &amp;&amp;</span><br><span class="line">            status[handle] == STATUS_EXCEPTION) ?</span><br><span class="line">        (ClassNotFoundException) entries[handle] : <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;根据handle句柄查找对应的异常。如果存在就从entries数组中返回对应的异常，否则返回null。</p>
+<h4 id="void-clear"><a href="#void-clear" class="headerlink" title="void clear()"></a>void clear()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">clear</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Arrays.fill(status, <span class="number">0</span>, size, (<span class="keyword">byte</span>) <span class="number">0</span>);</span><br><span class="line">    Arrays.fill(entries, <span class="number">0</span>, size, <span class="keyword">null</span>);</span><br><span class="line">    Arrays.fill(deps, <span class="number">0</span>, size, <span class="keyword">null</span>);</span><br><span class="line">    lowDep = -<span class="number">1</span>;</span><br><span class="line">    size = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将所有内容全部清空。</p>
+<h4 id="int-size"><a href="#int-size" class="headerlink" title="int size()"></a>int size()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">size</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> size;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回表中存储注册的句柄数量。</p>
+<h4 id="private-static-class-HandleList"><a href="#private-static-class-HandleList" class="headerlink" title="private static class HandleList"></a>private static class HandleList</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">HandleList</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] list = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">4</span>];</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> size = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">HandleList</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> handle)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (size &gt;= list.length) &#123;</span><br><span class="line">            <span class="keyword">int</span>[] newList = <span class="keyword">new</span> <span class="keyword">int</span>[list.length &lt;&lt; <span class="number">1</span>];</span><br><span class="line">            System.arraycopy(list, <span class="number">0</span>, newList, <span class="number">0</span>, list.length);</span><br><span class="line">            list = newList;</span><br><span class="line">        &#125;</span><br><span class="line">        list[size++] = handle;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">get</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (index &gt;= size) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> ArrayIndexOutOfBoundsException();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> list[index];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> size;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;一个内部使用的长度可增长的句柄List集合实现。在HandleTable中用来维护句柄依赖信息。</p>
+<p>&emsp;</p>
+<h2 id="ValidationList"><a href="#ValidationList" class="headerlink" title="ValidationList"></a>ValidationList</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ValidationList</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Callback</span> </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> ObjectInputValidation obj;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> priority;</span><br><span class="line">        Callback next;</span><br><span class="line">        <span class="keyword">final</span> AccessControlContext acc;</span><br><span class="line"></span><br><span class="line">        Callback(ObjectInputValidation obj, <span class="keyword">int</span> priority, Callback next,</span><br><span class="line">                 AccessControlContext acc)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">this</span>.obj = obj;</span><br><span class="line">            <span class="keyword">this</span>.priority = priority;</span><br><span class="line">            <span class="keyword">this</span>.next = next;</span><br><span class="line">            <span class="keyword">this</span>.acc = acc;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** linked list of callbacks */</span></span><br><span class="line">    <span class="keyword">private</span> Callback list;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Creates new (empty) ValidationList.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    ValidationList() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Registers callback.  Throws InvalidObjectException if callback</span></span><br><span class="line"><span class="comment">     * object is null.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">register</span><span class="params">(ObjectInputValidation obj, <span class="keyword">int</span> priority)</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> InvalidObjectException</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (obj == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> InvalidObjectException(<span class="string">"null callback"</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Callback prev = <span class="keyword">null</span>, cur = list;</span><br><span class="line">        <span class="keyword">while</span> (cur != <span class="keyword">null</span> &amp;&amp; priority &lt; cur.priority) &#123;</span><br><span class="line">            prev = cur;</span><br><span class="line">            cur = cur.next;</span><br><span class="line">        &#125;</span><br><span class="line">        AccessControlContext acc = AccessController.getContext();</span><br><span class="line">        <span class="keyword">if</span> (prev != <span class="keyword">null</span>) &#123;</span><br><span class="line">            prev.next = <span class="keyword">new</span> Callback(obj, priority, cur, acc);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            list = <span class="keyword">new</span> Callback(obj, priority, list, acc);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Invokes all registered callbacks and clears the callback list.</span></span><br><span class="line"><span class="comment">     * Callbacks with higher priorities are called first; those with equal</span></span><br><span class="line"><span class="comment">     * priorities may be called in any order.  If any of the callbacks</span></span><br><span class="line"><span class="comment">     * throws an InvalidObjectException, the callback process is terminated</span></span><br><span class="line"><span class="comment">     * and the exception propagated upwards.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">doCallbacks</span><span class="params">()</span> <span class="keyword">throws</span> InvalidObjectException </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">while</span> (list != <span class="keyword">null</span>) &#123;</span><br><span class="line">                AccessController.doPrivileged(</span><br><span class="line">                    <span class="keyword">new</span> PrivilegedExceptionAction&lt;Void&gt;()</span><br><span class="line">                    &#123;</span><br><span class="line">                        <span class="function"><span class="keyword">public</span> Void <span class="title">run</span><span class="params">()</span> <span class="keyword">throws</span> InvalidObjectException </span>&#123;</span><br><span class="line">                            list.obj.validateObject();</span><br><span class="line">                            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;, list.acc);</span><br><span class="line">                list = list.next;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (PrivilegedActionException ex) &#123;</span><br><span class="line">            list = <span class="keyword">null</span>;</span><br><span class="line">            <span class="keyword">throw</span> (InvalidObjectException) ex.getException();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Resets the callback list to its initial (empty) state.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clear</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        list = <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;</p>
+<h2 id="ObjectInputStream-GetField"><a href="#ObjectInputStream-GetField" class="headerlink" title="ObjectInputStream.GetField"></a>ObjectInputStream.GetField</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">GetField</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> ObjectStreamClass <span class="title">getObjectStreamClass</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">boolean</span> <span class="title">defaulted</span><span class="params">(String name)</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">boolean</span> <span class="title">get</span><span class="params">(String name, <span class="keyword">boolean</span> val)</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">byte</span> <span class="title">get</span><span class="params">(String name, <span class="keyword">byte</span> val)</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">char</span> <span class="title">get</span><span class="params">(String name, <span class="keyword">char</span> val)</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">short</span> <span class="title">get</span><span class="params">(String name, <span class="keyword">short</span> val)</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">get</span><span class="params">(String name, <span class="keyword">int</span> val)</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">long</span> <span class="title">get</span><span class="params">(String name, <span class="keyword">long</span> val)</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">float</span> <span class="title">get</span><span class="params">(String name, <span class="keyword">float</span> val)</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">double</span> <span class="title">get</span><span class="params">(String name, <span class="keyword">double</span> val)</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Object <span class="title">get</span><span class="params">(String name, Object val)</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;</p>
+<h2 id="GetFieldImpl"><a href="#GetFieldImpl" class="headerlink" title="GetFieldImpl"></a>GetFieldImpl</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">GetFieldImpl</span> <span class="keyword">extends</span> <span class="title">GetField</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 带有被序列化了的字段内容的类描述符 */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ObjectStreamClass desc;</span><br><span class="line">    <span class="comment">/** 基础数据类型字段 */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">byte</span>[] primVals;</span><br><span class="line">    <span class="comment">/** 对象类型字段 */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Object[] objVals;</span><br><span class="line">    <span class="comment">/** 字段值内容句柄 */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span>[] objHandles;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 构造方法，完成初始化操作 */</span></span><br><span class="line">    GetFieldImpl(ObjectStreamClass desc) &#123;</span><br><span class="line">        <span class="keyword">this</span>.desc = desc;</span><br><span class="line">        primVals = <span class="keyword">new</span> <span class="keyword">byte</span>[desc.getPrimDataSize()];</span><br><span class="line">        objVals = <span class="keyword">new</span> Object[desc.getNumObjFields()];</span><br><span class="line">        objHandles = <span class="keyword">new</span> <span class="keyword">int</span>[objVals.length];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ObjectStreamClass <span class="title">getObjectStreamClass</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> desc;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 如果name字段的值是默认的，那么返回true */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">defaulted</span><span class="params">(String name)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (getFieldOffset(name, <span class="keyword">null</span>) &lt; <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 获取name字段的boolean值，如果没有值，那么就用val替换 */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">get</span><span class="params">(String name, <span class="keyword">boolean</span> val)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> off = getFieldOffset(name, Boolean.TYPE);</span><br><span class="line">        <span class="keyword">return</span> (off &gt;= <span class="number">0</span>) ? Bits.getBoolean(primVals, off) : val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 获取name字段的byte值，如果没有值，那么就用val替换 */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">byte</span> <span class="title">get</span><span class="params">(String name, <span class="keyword">byte</span> val)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> off = getFieldOffset(name, Byte.TYPE);</span><br><span class="line">        <span class="keyword">return</span> (off &gt;= <span class="number">0</span>) ? primVals[off] : val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 获取name字段的char值，如果没有值，那么就用val替换 */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">char</span> <span class="title">get</span><span class="params">(String name, <span class="keyword">char</span> val)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> off = getFieldOffset(name, Character.TYPE);</span><br><span class="line">        <span class="keyword">return</span> (off &gt;= <span class="number">0</span>) ? Bits.getChar(primVals, off) : val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 获取name字段的short值，如果没有值，那么就用val替换 */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">short</span> <span class="title">get</span><span class="params">(String name, <span class="keyword">short</span> val)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> off = getFieldOffset(name, Short.TYPE);</span><br><span class="line">        <span class="keyword">return</span> (off &gt;= <span class="number">0</span>) ? Bits.getShort(primVals, off) : val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 获取name字段的int值，如果没有值，那么就用val替换 */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">get</span><span class="params">(String name, <span class="keyword">int</span> val)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> off = getFieldOffset(name, Integer.TYPE);</span><br><span class="line">        <span class="keyword">return</span> (off &gt;= <span class="number">0</span>) ? Bits.getInt(primVals, off) : val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 获取name字段的float值，如果没有值，那么就用val替换 */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">get</span><span class="params">(String name, <span class="keyword">float</span> val)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> off = getFieldOffset(name, Float.TYPE);</span><br><span class="line">        <span class="keyword">return</span> (off &gt;= <span class="number">0</span>) ? Bits.getFloat(primVals, off) : val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 获取name字段的long值，如果没有值，那么就用val替换 */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">get</span><span class="params">(String name, <span class="keyword">long</span> val)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> off = getFieldOffset(name, Long.TYPE);</span><br><span class="line">        <span class="keyword">return</span> (off &gt;= <span class="number">0</span>) ? Bits.getLong(primVals, off) : val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 获取name字段的double值，如果没有值，那么就用val替换 */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">get</span><span class="params">(String name, <span class="keyword">double</span> val)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> off = getFieldOffset(name, Double.TYPE);</span><br><span class="line">        <span class="keyword">return</span> (off &gt;= <span class="number">0</span>) ? Bits.getDouble(primVals, off) : val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 获取name字段的Object值，如果没有值，那么就用val替换 */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">get</span><span class="params">(String name, Object val)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> off = getFieldOffset(name, Object.class);</span><br><span class="line">        <span class="keyword">if</span> (off &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">int</span> objHandle = objHandles[off];</span><br><span class="line">            handles.markDependency(passHandle, objHandle);</span><br><span class="line">            <span class="keyword">return</span> (handles.lookupException(objHandle) == <span class="keyword">null</span>) ?</span><br><span class="line">                objVals[off] : <span class="keyword">null</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> val;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 从流里读取基本数据类型和对象类型的字段值内容 */</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">readFields</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        bin.readFully(primVals, <span class="number">0</span>, primVals.length, <span class="keyword">false</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> oldHandle = passHandle;</span><br><span class="line">        ObjectStreamField[] fields = desc.getFields(<span class="keyword">false</span>);</span><br><span class="line">        <span class="keyword">int</span> numPrimFields = fields.length - objVals.length;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; objVals.length; i++) &#123;</span><br><span class="line">            objVals[i] = readObject0(fields[numPrimFields + i].isUnshared());</span><br><span class="line">            objHandles[i] = passHandle;</span><br><span class="line">        &#125;</span><br><span class="line">        passHandle = oldHandle;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** 得到指定类型和名字的字段的偏移量 */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">getFieldOffset</span><span class="params">(String name, Class type)</span> </span>&#123;</span><br><span class="line">        ObjectStreamField field = desc.getField(name, type);</span><br><span class="line">        <span class="keyword">if</span> (field != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> field.getOffset();</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (desc.getLocalDesc().getField(name, type) != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"no such field "</span> + name +</span><br><span class="line">                                               <span class="string">" with type "</span> + type);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;</p>
+<h2 id="涉及基础知识点"><a href="#涉及基础知识点" class="headerlink" title="涉及基础知识点"></a>涉及基础知识点</h2><ol>
+<li>NIL</li>
+</ol>
+<p>&emsp;</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>NIL</li>
+</ol>
+<p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-ObjectInputStream-InternalClass.html" target="_blank" title="Java I/O 24 - ObjectInputStream内部类">Java I/O 24 - ObjectInputStream内部类</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-ObjectInputStream-InternalClass.html" target="_blank" title="Java I/O 24 - ObjectInputStream内部类">https://marcuseddie.github.io/2018/java-ObjectInputStream-InternalClass.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2018/java-BlockDataInputStream.html" class="alignleft prev" title="Java I/O 25 - BlockDataInputStream"> 上一篇： Java I/O 25 - BlockDataInputStream</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2018/java-ObjectInputStream.html" class="alignright next" title="Java I/O 23 - ObjectInputStream"> 下一篇： Java I/O 23 - ObjectInputStream</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      Java I/O 08 - PrintStream | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="PrintStream除了可以向目标位置输出内容，还提供了打印输出内容的方法，涉及的方法有newLine、println、print、printf等。开发者可以便捷调用其提供的打印方法来完成输出内容的打印显示。PrintStream不会抛出IOException，通过trouble来判断。">
+<meta name="keywords" content="PrintStream, newLine, println, print, printf, append, flush">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java I&#x2F;O 08 - PrintStream | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/java-PrintStream.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="PrintStream除了可以向目标位置输出内容，还提供了打印输出内容的方法，涉及的方法有newLine、println、print、printf等。开发者可以便捷调用其提供的打印方法来完成输出内容的打印显示。PrintStream不会抛出IOException，通过trouble来判断。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.357Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java I&#x2F;O 08 - PrintStream | Mr.Muzi">
+<meta name="twitter:description" content="PrintStream除了可以向目标位置输出内容，还提供了打印输出内容的方法，涉及的方法有newLine、println、print、printf等。开发者可以便捷调用其提供的打印方法来完成输出内容的打印显示。PrintStream不会抛出IOException，通过trouble来判断。">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>Java I/O 08 - PrintStream</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-10-19" class="post-meta__date date">2018-10-19</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;2.3k&emsp;阅读时长:&nbsp;11&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.io.PrintStream</strong> </em>的部分笔记，这个类除了实现了继承自FilterOutputStream的基本的write方法外，还提供了打印输出内容的方法来打印当前输出的内容。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;PrintStream提供了打印输出内容的便捷方法，这样可以直接调用其提供的方法来完成输出内容的输出和打印显示两个操作。所有通过PrintStream输出打印的内容都会被转成字节流然后输出到目标位置。除此之外，PrintStream也不会抛出IOException，而是通过内置字段<strong>trouble</strong>来判断是否在调用过程中抛出了IOException。</p>
+<p>&emsp;</p>
+<h2 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// PushbackInputStream</span></span><br><span class="line">--java.lang.Object</span><br><span class="line">  --java.io.OutputStream</span><br><span class="line">    --java.io.FilterOutputStream</span><br><span class="line">      --java.io.PrintStream</span><br></pre></td></tr></table></figure>
+<p>&emsp;</p>
+<h2 id="实现接口"><a href="#实现接口" class="headerlink" title="实现接口"></a>实现接口</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">类名</th>
+<th style="text-align:center">实现接口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">PrintStream</td>
+<td style="text-align:center">Closeable, Flushable, Appendable, AutoCloseable</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>&emsp;</p>
+<h2 id="部分方法"><a href="#部分方法" class="headerlink" title="部分方法"></a>部分方法</h2><h4 id="public-boolean-checkError"><a href="#public-boolean-checkError" class="headerlink" title="public boolean checkError()"></a>public boolean checkError()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">checkError</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (out != <span class="keyword">null</span>)</span><br><span class="line">        flush();</span><br><span class="line">    <span class="keyword">if</span> (out <span class="keyword">instanceof</span> java.io.PrintStream) &#123;</span><br><span class="line">        PrintStream ps = (PrintStream) out;</span><br><span class="line">        <span class="keyword">return</span> ps.checkError();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> trouble;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;检查当前时间点之前是否存在过数据输出异常的情况，如果存在，那么返回true。这里仅针对在方法调用过程中抛出的IOException，或者setError方法被显式调用。如果在过程中出现了InterruptedIOException，那么则通过<strong>Thread.currentThread().interrupt()</strong>进行处理。</p>
+<h4 id="protected-void-setError"><a href="#protected-void-setError" class="headerlink" title="protected void setError()"></a>protected void setError()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">setError</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    trouble = <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="protected-void-clearError"><a href="#protected-void-clearError" class="headerlink" title="protected void clearError()"></a>protected void clearError()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">clearError</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    trouble = <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="public-void-write-int-b"><a href="#public-void-write-int-b" class="headerlink" title="public void write(int b)"></a>public void write(int b)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">            ensureOpen();</span><br><span class="line">            out.write(b);</span><br><span class="line">            <span class="keyword">if</span> ((b == <span class="string">'\n'</span>) &amp;&amp; autoFlush)</span><br><span class="line">                out.flush();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (InterruptedIOException x) &#123;</span><br><span class="line">        Thread.currentThread().interrupt();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (IOException x) &#123;</span><br><span class="line">        trouble = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;向底层输出流中写入一个字节。如果入参是换行符，那么就根据autoFlush的值来决定是否需要把写入的数据推到目标输出位置。</p>
+<h4 id="public-void-write-byte-buf-int-off-int-len"><a href="#public-void-write-byte-buf-int-off-int-len" class="headerlink" title="public void write(byte buf[], int off, int len)"></a>public void write(byte buf[], int off, int len)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">byte</span> buf[], <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">            ensureOpen();</span><br><span class="line">            out.write(buf, off, len);</span><br><span class="line">            <span class="keyword">if</span> (autoFlush)</span><br><span class="line">                out.flush();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (InterruptedIOException x) &#123;</span><br><span class="line">        Thread.currentThread().interrupt();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (IOException x) &#123;</span><br><span class="line">        trouble = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;向底层输出流中写入一个字节数组。在向底层输出流无异常写完那么就根据autoFlush的值来决定是否需要把写入的数据推到目标输出位置。</p>
+<h4 id="private-void-write-char-buf"><a href="#private-void-write-char-buf" class="headerlink" title="private void write(char buf[])"></a>private void write(char buf[])</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">char</span> buf[])</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">            ensureOpen();</span><br><span class="line">            textOut.write(buf);</span><br><span class="line">            textOut.flushBuffer();</span><br><span class="line">            charOut.flushBuffer();</span><br><span class="line">            <span class="keyword">if</span> (autoFlush) &#123;</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; buf.length; i++)</span><br><span class="line">                    <span class="keyword">if</span> (buf[i] == <span class="string">'\n'</span>)</span><br><span class="line">                        out.flush();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (InterruptedIOException x) &#123;</span><br><span class="line">        Thread.currentThread().interrupt();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (IOException x) &#123;</span><br><span class="line">        trouble = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将字符数组输出到底层输出流中。首先将内容写入到textOut的缓冲区中（BufferedWriter），然后把数据强制刷新到textOut的底层输出流charOut （OutputStreamWriter）中。最后再把charOut的数据强制刷新到其中包含的底层输出流（StreamEncoder）。采用OutputStreamWriter的目的是因为这是一个字符流转字节流的类，可以实现把各种类型的数据转成对应的字节流输出。而BufferedWriter带有缓冲区，所以其效率相对来说会高一点。如果支持自动刷新，那么就判断入参字符数组中是否含有换行符“\n”，如果有就底层输出流的flush方法，将数据推到目标输出位置。</p>
+<h4 id="private-void-write-String-s"><a href="#private-void-write-String-s" class="headerlink" title="private void write(String s)"></a>private void write(String s)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">            ensureOpen();</span><br><span class="line">            textOut.write(s);</span><br><span class="line">            textOut.flushBuffer();</span><br><span class="line">            charOut.flushBuffer();</span><br><span class="line">            <span class="keyword">if</span> (autoFlush &amp;&amp; (s.indexOf(<span class="string">'\n'</span>) &gt;= <span class="number">0</span>))</span><br><span class="line">                out.flush();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (InterruptedIOException x) &#123;</span><br><span class="line">        Thread.currentThread().interrupt();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (IOException x) &#123;</span><br><span class="line">        trouble = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将字符串输出到底层输出流中。执行逻辑同方法<strong>write(char buf[]) </strong>，故不予赘述。</p>
+<h4 id="private-void-newLine"><a href="#private-void-newLine" class="headerlink" title="private void newLine()"></a>private void newLine()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">newLine</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">            ensureOpen();</span><br><span class="line">            textOut.newLine();</span><br><span class="line">            textOut.flushBuffer();</span><br><span class="line">            charOut.flushBuffer();</span><br><span class="line">            <span class="keyword">if</span> (autoFlush)</span><br><span class="line">                out.flush();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (InterruptedIOException x) &#123;</span><br><span class="line">        Thread.currentThread().interrupt();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (IOException x) &#123;</span><br><span class="line">        trouble = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;跳转到下一行。执行逻辑同方法<strong>write(char buf[]) </strong>，故不予赘述。</p>
+<h4 id="打印方法集合"><a href="#打印方法集合" class="headerlink" title="打印方法集合"></a>打印方法集合</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 打印布尔值</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">boolean</span> b)</span> </span>&#123;</span><br><span class="line">    write(b ? <span class="string">"true"</span> : <span class="string">"false"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个字符</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">    write(String.valueOf(c));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个int型数值</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">    write(String.valueOf(i));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个long型数值</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">long</span> l)</span> </span>&#123;</span><br><span class="line">    write(String.valueOf(l));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个float型数值</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">float</span> f)</span> </span>&#123;</span><br><span class="line">    write(String.valueOf(f));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个double型数值</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">double</span> d)</span> </span>&#123;</span><br><span class="line">    write(String.valueOf(d));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个字符数组</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">char</span> s[])</span> </span>&#123;</span><br><span class="line">    write(s);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个字符串值</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (s == <span class="keyword">null</span>) &#123;</span><br><span class="line">        s = <span class="string">"null"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    write(s);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个对象</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(Object obj)</span> </span>&#123;</span><br><span class="line">    write(String.valueOf(obj));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 另起一行打印</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">println</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    newLine();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个布尔值并换行</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">println</span><span class="params">(<span class="keyword">boolean</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">        print(x);</span><br><span class="line">        newLine();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个字符并换行</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">println</span><span class="params">(<span class="keyword">char</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">        print(x);</span><br><span class="line">        newLine();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个int型数值并换行</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">println</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">        print(x);</span><br><span class="line">        newLine();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个long型数值并换行</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">println</span><span class="params">(<span class="keyword">long</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">        print(x);</span><br><span class="line">        newLine();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个float型数值并换行</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">println</span><span class="params">(<span class="keyword">float</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">        print(x);</span><br><span class="line">        newLine();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个double型数值并换行</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">println</span><span class="params">(<span class="keyword">double</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">        print(x);</span><br><span class="line">        newLine();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个字符数组并换行</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">println</span><span class="params">(<span class="keyword">char</span> x[])</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">        print(x);</span><br><span class="line">        newLine();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个字符串并换行</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">println</span><span class="params">(String x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">        print(x);</span><br><span class="line">        newLine();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个对象并换行</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">println</span><span class="params">(Object x)</span> </span>&#123;</span><br><span class="line">    String s = String.valueOf(x);</span><br><span class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">        print(s);</span><br><span class="line">        newLine();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="public-PrintStream-printf-Locale-l-String-format-Object-…-args"><a href="#public-PrintStream-printf-Locale-l-String-format-Object-…-args" class="headerlink" title="public PrintStream printf(Locale l, String format, Object … args)"></a>public PrintStream printf(Locale l, String format, Object … args)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> PrintStream <span class="title">printf</span><span class="params">(Locale l, String format, Object ... args)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> format(l, format, args);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> PrintStream <span class="title">format</span><span class="params">(Locale l, String format, Object ... args)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">            ensureOpen();</span><br><span class="line">            <span class="keyword">if</span> ((formatter == <span class="keyword">null</span>)</span><br><span class="line">                || (formatter.locale() != l))</span><br><span class="line">                formatter = <span class="keyword">new</span> Formatter(<span class="keyword">this</span>, l);</span><br><span class="line">            formatter.format(l, format, args);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InterruptedIOException x) &#123;</span><br><span class="line">        Thread.currentThread().interrupt();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException x) &#123;</span><br><span class="line">        trouble = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;按照指定的输出格式打印入参内容。printf方法和单独调用format方法的执行结果是一致的。在format方法中，如果指定Locale，那么就会按照该区域的风格打印指定格式的内容。否则就会按照默认的区域风格打印。format字段用来指定具体的打印格式和结构。args则包含了具体填充的实际内容。在format方法中，实际发挥作用的是Formatter.format的方法。其内部处理逻辑如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Formatter <span class="title">format</span><span class="params">(Locale l, String format, Object ... args)</span> </span>&#123;</span><br><span class="line">    ensureOpen();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// index of last argument referenced</span></span><br><span class="line">    <span class="keyword">int</span> last = -<span class="number">1</span>;</span><br><span class="line">    <span class="comment">// last ordinary index</span></span><br><span class="line">    <span class="keyword">int</span> lasto = -<span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    FormatString[] fsa = parse(format);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; fsa.length; i++) &#123;</span><br><span class="line">        FormatString fs = fsa[i];</span><br><span class="line">        <span class="keyword">int</span> index = fs.index();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">switch</span> (index) &#123;</span><br><span class="line">                <span class="keyword">case</span> -<span class="number">2</span>:  <span class="comment">// fixed string, "%n", or "%%"</span></span><br><span class="line">                    fs.print(<span class="keyword">null</span>, l);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> -<span class="number">1</span>:  <span class="comment">// relative index</span></span><br><span class="line">                    <span class="keyword">if</span> (last &lt; <span class="number">0</span> || (args != <span class="keyword">null</span> &amp;&amp; last &gt; args.length - <span class="number">1</span>))</span><br><span class="line">                        <span class="keyword">throw</span> <span class="keyword">new</span> MissingFormatArgumentException(fs.toString());</span><br><span class="line">                    fs.print((args == <span class="keyword">null</span> ? <span class="keyword">null</span> : args[last]), l);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="number">0</span>:  <span class="comment">// ordinary index</span></span><br><span class="line">                    lasto++;</span><br><span class="line">                    last = lasto;</span><br><span class="line">                    <span class="keyword">if</span> (args != <span class="keyword">null</span> &amp;&amp; lasto &gt; args.length - <span class="number">1</span>)</span><br><span class="line">                        <span class="keyword">throw</span> <span class="keyword">new</span> MissingFormatArgumentException(fs.toString());</span><br><span class="line">                    fs.print((args == <span class="keyword">null</span> ? <span class="keyword">null</span> : args[lasto]), l);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">default</span>:  <span class="comment">// explicit index</span></span><br><span class="line">                    last = index - <span class="number">1</span>;</span><br><span class="line">                    <span class="keyword">if</span> (args != <span class="keyword">null</span> &amp;&amp; last &gt; args.length - <span class="number">1</span>)</span><br><span class="line">                        <span class="keyword">throw</span> <span class="keyword">new</span> MissingFormatArgumentException(fs.toString());</span><br><span class="line">                    fs.print((args == <span class="keyword">null</span> ? <span class="keyword">null</span> : args[last]), l);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException x) &#123;</span><br><span class="line">            lastException = x;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> FormatString[] parse(String s) &#123;</span><br><span class="line">    ArrayList&lt;FormatString&gt; al = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    Matcher m = fsPattern.matcher(s);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, len = s.length(); i &lt; len; ) &#123;</span><br><span class="line">        <span class="keyword">if</span> (m.find(i)) &#123;</span><br><span class="line">            <span class="comment">// Anything between the start of the string and the beginning</span></span><br><span class="line">            <span class="comment">// of the format specifier is either fixed text or contains</span></span><br><span class="line">            <span class="comment">// an invalid format string.</span></span><br><span class="line">            <span class="keyword">if</span> (m.start() != i) &#123;</span><br><span class="line">                <span class="comment">// Make sure we didn't miss any invalid format specifiers</span></span><br><span class="line">                checkText(s, i, m.start());</span><br><span class="line">                <span class="comment">// Assume previous characters were fixed text</span></span><br><span class="line">                al.add(<span class="keyword">new</span> FixedString(s.substring(i, m.start())));</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            al.add(<span class="keyword">new</span> FormatSpecifier(m));</span><br><span class="line">            i = m.end();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// No more valid format specifiers.  Check for possible invalid</span></span><br><span class="line">            <span class="comment">// format specifiers.</span></span><br><span class="line">            checkText(s, i, len);</span><br><span class="line">            <span class="comment">// The rest of the string is fixed text</span></span><br><span class="line">            al.add(<span class="keyword">new</span> FixedString(s.substring(i)));</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> al.toArray(<span class="keyword">new</span> FormatString[al.size()]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;format(Locale l, String format, Object … args)方法用来打印一个格式化了的内容。第9行代码用来识别出入参format中含有的有效的和无效的占位符，具体逻辑可浏览第44 ~ 71行代码。第10 ~ 40则遍历识别的占位符结果，并根据每个特定的占位符从参数集合args中取出对应位置的数据放入占位符所处的位置完成内容的格式化和输出打印。</p>
+<h4 id="public-PrintStream-append-CharSequence-csq"><a href="#public-PrintStream-append-CharSequence-csq" class="headerlink" title="public PrintStream append(CharSequence csq)"></a>public PrintStream append(CharSequence csq)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在当前输出内容尾部追加新内容，如果入参为null，那么就输出“null”这四个字符到目标位置。</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> PrintStream <span class="title">append</span><span class="params">(CharSequence csq)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (csq == <span class="keyword">null</span>)</span><br><span class="line">        print(<span class="string">"null"</span>);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        print(csq.toString());</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在当前输出内容尾部追加新内容，如果入参为null，那么就输出“null”这四个字符到目标位置，否则就输出从start开始，end - 1位置结束的子序列到目标输出位置。</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> PrintStream <span class="title">append</span><span class="params">(CharSequence csq, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">    CharSequence cs = (csq == <span class="keyword">null</span> ? <span class="string">"null"</span> : csq);</span><br><span class="line">    write(cs.subSequence(start, end).toString());</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在当前输出内容尾部追加一个新字符。</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> PrintStream <span class="title">append</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">    print(c);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="public-int-flush"><a href="#public-int-flush" class="headerlink" title="public int flush()"></a>public int flush()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">flush</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            ensureOpen();</span><br><span class="line">            out.flush();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (IOException x) &#123;</span><br><span class="line">            trouble = <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;把数据强制刷新到输出流中。这是一个线程安全的方法，需要注意的是，如果在方法调用过程中出现了异常，那么异常不会被向上抛出，而是将trouble字段标记为true，以此来判定方法执行过程中是否出现了异常。</p>
+<p>&emsp;</p>
+<h2 id="涉及基础知识点"><a href="#涉及基础知识点" class="headerlink" title="涉及基础知识点"></a>涉及基础知识点</h2><ol>
+<li>NIL</li>
+</ol>
+<p>&emsp;</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>NIL        </li>
+</ol>
+<p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-PrintStream.html" target="_blank" title="Java I/O 08 - PrintStream">Java I/O 08 - PrintStream</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-PrintStream.html" target="_blank" title="Java I/O 08 - PrintStream">https://marcuseddie.github.io/2018/java-PrintStream.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2018/java-FileInputStream-FileOutputStream.html" class="alignleft prev" title="Java I/O 09 - FileInputStream &amp; FileOutputStream"> 上一篇： Java I/O 09 - FileInputStream &amp; Fil...</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2018/java-PushbackInputStream.html" class="alignright next" title="Java I/O 07 - PushbackInputStream"> 下一篇： Java I/O 07 - PushbackInputStream</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

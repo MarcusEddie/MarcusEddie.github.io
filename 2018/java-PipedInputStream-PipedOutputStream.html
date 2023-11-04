@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      Java I/O 10 - PipedInputStream &amp; PipedOutputStream | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="PipedInputStream和PipedOutputStream需要在不同的线程中同时使用来完成数据读写。借助receive, read, write, flush等方法向缓冲区数组中写入读取数据。">
+<meta name="keywords" content="PipedInputStream, PipedOutputStream, receive, connect, checkStateForReceive, awaitSpace, read, write, flush, close">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java I&#x2F;O 10 - PipedInputStream &amp; PipedOutputStream | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/java-PipedInputStream-PipedOutputStream.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="PipedInputStream和PipedOutputStream需要在不同的线程中同时使用来完成数据读写。借助receive, read, write, flush等方法向缓冲区数组中写入读取数据。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1540899912/BlogImages/PipedInputStream-PipedOutputStream/pipedInputStream_receive_scene-1.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1540899912/BlogImages/PipedInputStream-PipedOutputStream/pipedInputStream_receive_scene-2.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1540899913/BlogImages/PipedInputStream-PipedOutputStream/pipedInputStream_receive_scene-3.png">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.357Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java I&#x2F;O 10 - PipedInputStream &amp; PipedOutputStream | Mr.Muzi">
+<meta name="twitter:description" content="PipedInputStream和PipedOutputStream需要在不同的线程中同时使用来完成数据读写。借助receive, read, write, flush等方法向缓冲区数组中写入读取数据。">
+<meta name="twitter:image" content="https://res.cloudinary.com/jknight/image/upload/v1540899912/BlogImages/PipedInputStream-PipedOutputStream/pipedInputStream_receive_scene-1.png">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>Java I/O 10 - PipedInputStream &amp; PipedOutputStream</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-10-30" class="post-meta__date date">2018-10-30</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;3.6k&emsp;阅读时长:&nbsp;15&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.io.PipedInputStream</strong> </em> 和 <em> <strong>java.io.PipedOutputStream</strong> </em>的部分笔记，这两个类需要在两个不同的线程中同时使用来完成数据的读取和写入操作。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;PipedInputStream和PipedOutputStream两个类需要共同使用才能完成数据的读写操作，且输入流和输出流需要在不同的线程中执行，否则容易发生死锁现象。在PipedInputStream中维护了一个缓冲区数组，PipedOutputStream的写数据操作实际上调用的是PipedInputStream的方法向缓冲区数组中写入数据，PipedInputStream中的read()方法则从缓冲区数组中读取所需要的数据。PipedInputStream中的缓冲区数组按照环形数组的设计来读取和写入，根据读取位置等于写入位置来判断缓冲区数组中是否还有未读取的数据。</p>
+<p>&emsp;</p>
+<h2 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// PipedInputStream</span></span><br><span class="line">--java.lang.Object</span><br><span class="line">  --java.io.InputStream</span><br><span class="line">    --java.io.PipedInputStream</span><br><span class="line"></span><br><span class="line"><span class="comment">// PipedOutputStream</span></span><br><span class="line">--java.lang.Object</span><br><span class="line">  --java.io.InputStream</span><br><span class="line">    --java.io.PipedOutputStream</span><br></pre></td></tr></table></figure>
+<p>&emsp;</p>
+<h2 id="实现接口"><a href="#实现接口" class="headerlink" title="实现接口"></a>实现接口</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">类名</th>
+<th style="text-align:center">实现接口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">PipedInputStream</td>
+<td style="text-align:center">Closeable, AutoCloseable</td>
+</tr>
+<tr>
+<td style="text-align:center">PipedOutputStream</td>
+<td style="text-align:center">Closeable, Flushable, AutoCloseable</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>&emsp;</p>
+<h2 id="PipedInputStream"><a href="#PipedInputStream" class="headerlink" title="PipedInputStream"></a>PipedInputStream</h2><h3 id="Constructor-Summary"><a href="#Constructor-Summary" class="headerlink" title="Constructor Summary"></a>Constructor Summary</h3><h4 id="public-PipedInputStream-PipedOutputStream-src-int-pipeSize"><a href="#public-PipedInputStream-PipedOutputStream-src-int-pipeSize" class="headerlink" title="public PipedInputStream(PipedOutputStream src, int pipeSize)"></a>public PipedInputStream(PipedOutputStream src, int pipeSize)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">PipedInputStream</span><span class="params">(PipedOutputStream src)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(src, DEFAULT_PIPE_SIZE);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">PipedInputStream</span><span class="params">(PipedOutputStream src, <span class="keyword">int</span> pipeSize)</span></span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    initPipe(pipeSize);</span><br><span class="line">    connect(src);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;参数是一个PipedOutputStream的构造函数，在初始化过程中完成了两件事情：初始化缓冲区数组容量大小和建立一个管道输入流和输出流之间的连接，最后会将输入流的<strong>connected</strong>字段标识为true。</p>
+<h4 id="public-PipedInputStream-int-pipeSize"><a href="#public-PipedInputStream-int-pipeSize" class="headerlink" title="public PipedInputStream(int pipeSize)"></a>public PipedInputStream(int pipeSize)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">PipedInputStream</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    initPipe(DEFAULT_PIPE_SIZE);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">PipedInputStream</span><span class="params">(<span class="keyword">int</span> pipeSize)</span> </span>&#123;</span><br><span class="line">    initPipe(pipeSize);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;如果是通过不依赖PipedOutputStream的方式初始化实例，那么在初始化过程中就只负责初始化缓冲区数组容量大小这一件事情了。默认大小是1024。</p>
+<h3 id="部分方法"><a href="#部分方法" class="headerlink" title="部分方法"></a>部分方法</h3><h4 id="private-void-initPipe-int-pipeSize"><a href="#private-void-initPipe-int-pipeSize" class="headerlink" title="private void initPipe(int pipeSize)"></a>private void initPipe(int pipeSize)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initPipe</span><span class="params">(<span class="keyword">int</span> pipeSize)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (pipeSize &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Pipe Size &lt;= 0"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    buffer = <span class="keyword">new</span> <span class="keyword">byte</span>[pipeSize];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化缓冲区数组容量大小。</p>
+<h4 id="public-void-connect-PipedOutputStream-src"><a href="#public-void-connect-PipedOutputStream-src" class="headerlink" title="public void connect(PipedOutputStream src)"></a>public void connect(PipedOutputStream src)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">connect</span><span class="params">(PipedOutputStream src)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    src.connect(<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;这里实际上是通过管道输出流完成连接工作的。在建立连接的过程中，把输入流的写入标志位和读取标志位都归零（in = -1，out = 0），同时将输入流的connected字段标识为true完成连接工作。</p>
+<h4 id="protected-synchronized-void-receive-int-b"><a href="#protected-synchronized-void-receive-int-b" class="headerlink" title="protected synchronized void receive(int b)"></a>protected synchronized void receive(int b)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">receive</span><span class="params">(<span class="keyword">int</span> b)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    checkStateForReceive();</span><br><span class="line">    writeSide = Thread.currentThread();</span><br><span class="line">    <span class="keyword">if</span> (in == out)</span><br><span class="line">        awaitSpace();</span><br><span class="line">    <span class="keyword">if</span> (in &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        in = <span class="number">0</span>;</span><br><span class="line">        out = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    buffer[in++] = (<span class="keyword">byte</span>)(b &amp; <span class="number">0xFF</span>);</span><br><span class="line">    <span class="keyword">if</span> (in &gt;= buffer.length) &#123;</span><br><span class="line">        in = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;接收一个字节的数据，并将之保存在输入流的缓冲区数组中。第2行代码用来检查当前管道的连接状态，需要保证管道的连通性且数据读取是正常的。第3行代码会把当前执行的现成切换到写线程并获取该线程。由于管道输入流中的缓冲区数组被设计成了环形数组，所以在写入数据的下标值逐渐达到读取数据的下标值时，认为缓冲区数组已经被待读取的数据填充完全，此时缓冲区数组中无法容纳新的数据。所以第4 ~ 6行代码表示如果当前缓冲区数组中已经填满了未读取的数据，那么就唤醒读线程来读取缓冲区数组中的数据内容。第6 ~ 9行代码如果发现数据写入位置<strong>in</strong>已经被归零了，那么会将<strong>in</strong>和<strong>out</strong>都归零。第10行代码用来向缓冲区数组中写入一个byte值的数据内容。第11 ~ 13行代码则在in到达缓冲区数组尾部时回到数组首部继续存储新数据（即环形设计）。</p>
+<h4 id="synchronized-void-receive-byte-b-int-off-int-len"><a href="#synchronized-void-receive-byte-b-int-off-int-len" class="headerlink" title="synchronized void receive(byte b[], int off, int len)"></a>synchronized void receive(byte b[], int off, int len)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">receive</span><span class="params">(<span class="keyword">byte</span> b[], <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span>  <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    checkStateForReceive();</span><br><span class="line">    writeSide = Thread.currentThread();</span><br><span class="line">    <span class="keyword">int</span> bytesToTransfer = len;</span><br><span class="line">    <span class="keyword">while</span> (bytesToTransfer &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (in == out)</span><br><span class="line">            awaitSpace();</span><br><span class="line">        <span class="keyword">int</span> nextTransferAmount = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span> (out &lt; in) &#123;</span><br><span class="line">            nextTransferAmount = buffer.length - in;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (in &lt; out) &#123;</span><br><span class="line">            <span class="keyword">if</span> (in == -<span class="number">1</span>) &#123;</span><br><span class="line">                in = out = <span class="number">0</span>;</span><br><span class="line">                nextTransferAmount = buffer.length - in;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                nextTransferAmount = out - in;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (nextTransferAmount &gt; bytesToTransfer)</span><br><span class="line">            nextTransferAmount = bytesToTransfer;</span><br><span class="line">        <span class="keyword">assert</span>(nextTransferAmount &gt; <span class="number">0</span>);</span><br><span class="line">        System.arraycopy(b, off, buffer, in, nextTransferAmount);</span><br><span class="line">        bytesToTransfer -= nextTransferAmount;</span><br><span class="line">        off += nextTransferAmount;</span><br><span class="line">        in += nextTransferAmount;</span><br><span class="line">        <span class="keyword">if</span> (in &gt;= buffer.length) &#123;</span><br><span class="line">            in = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;接收入参数组b的数据，并将之保存在输入流的缓冲区数组中。第2行代码用来检查当前管道的连接状态，需要保证管道的连通性且数据读取是正常的。第3行代码会把当前执行的现成切换到写线程并获取该线程。第5 ~ 29行代码则完成数据的写入操作。第6 ~ 7行代码处理缓冲区数组被写满的情况，此时会暂停写线程并切换到读线程读取缓冲区数组中的数据，之后缓冲区数组就会有新的空间来容纳新数据内容。第9 ~ 10行代码则计算图1情境中可用的可以容纳新数据的缓冲区空间大小。</p>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1540899912/BlogImages/PipedInputStream-PipedOutputStream/pipedInputStream_receive_scene-1.png" alt></p>
+<div align="center">
+<div align="center">图 - 1</div>
+&emsp;
+</div>
+
+<p>第11 ~ 18行代码则计算读取位置在写入位置前面的情境。第12 ~ 15行代码说明在之前的某一步操作中写入和读取位置都被做了归零处理，所以整个缓冲区数组都可以用来容纳新数据。第15 ~ 17行代码则计算图2情境中可以容纳新数据的缓冲区空间大小。</p>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1540899912/BlogImages/PipedInputStream-PipedOutputStream/pipedInputStream_receive_scene-2.png" alt></p>
+<div align="center">
+<div align="center">图 - 2</div>
+&emsp;
+</div>
+
+<p>第19 ~ 20行代码判断当前缓冲区可用空间和入参长度的大小关系，如果可用空间大于入参长度，那么当前入参数据都可以被保存到缓冲区数组中。第22 ~ 25行代码完成数据从入参数组到缓冲区数组之间的复制和结果计算过程。如果in到达了缓冲区数组尾部，那么in会被调整到缓冲区数组头部继续写入新数据。</p>
+<h4 id="synchronized-void-receivedLast"><a href="#synchronized-void-receivedLast" class="headerlink" title="synchronized void receivedLast()"></a>synchronized void receivedLast()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">receivedLast</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    closedByWriter = <span class="keyword">true</span>;</span><br><span class="line">    notifyAll();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;数据写入完成，唤醒读线程开始读取缓冲区数组中的数据。</p>
+<h4 id="private-void-checkStateForReceive"><a href="#private-void-checkStateForReceive" class="headerlink" title="private void checkStateForReceive()"></a>private void checkStateForReceive()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">checkStateForReceive</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!connected) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"Pipe not connected"</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (closedByWriter || closedByReader) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"Pipe closed"</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (readSide != <span class="keyword">null</span> &amp;&amp; !readSide.isAlive()) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"Read end dead"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;检查状态，判断当前管道是否处于连接状态、数据读取侧是否正常。</p>
+<h4 id="private-void-awaitSpace"><a href="#private-void-awaitSpace" class="headerlink" title="private void awaitSpace()"></a>private void awaitSpace()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">awaitSpace</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (in == out) &#123;</span><br><span class="line">        checkStateForReceive();</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* full: kick any waiting readers */</span></span><br><span class="line">        notifyAll();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            wait(<span class="number">1000</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException ex) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> java.io.InterruptedIOException();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;首先检查状态，然后唤醒所有线程。因为管道输入流和管道输出流的使用场景中大多数时候只有两个线程，一个负责写一个负责读。所以如果当前线程是读线程，那么会唤醒写线程，同时将当前（读）线程置于阻塞状态，释放资源，由写线程获得执行机会开始向缓冲区数组中写入新数据，反之亦然。</p>
+<h4 id="public-synchronized-int-read"><a href="#public-synchronized-int-read" class="headerlink" title="public synchronized int read()"></a>public synchronized int read()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">()</span>  <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!connected) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"Pipe not connected"</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (closedByReader) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"Pipe closed"</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (writeSide != <span class="keyword">null</span> &amp;&amp; !writeSide.isAlive()</span><br><span class="line">               &amp;&amp; !closedByWriter &amp;&amp; (in &lt; <span class="number">0</span>)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"Write end dead"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    readSide = Thread.currentThread();</span><br><span class="line">    <span class="keyword">int</span> trials = <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">while</span> (in &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (closedByWriter) &#123;</span><br><span class="line">            <span class="comment">/* closed by writer, return EOF */</span></span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> ((writeSide != <span class="keyword">null</span>) &amp;&amp; (!writeSide.isAlive()) &amp;&amp; (--trials &lt; <span class="number">0</span>)) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"Pipe broken"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">/* might be a writer waiting */</span></span><br><span class="line">        notifyAll();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            wait(<span class="number">1000</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException ex) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> java.io.InterruptedIOException();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> ret = buffer[out++] &amp; <span class="number">0xFF</span>;</span><br><span class="line">    <span class="keyword">if</span> (out &gt;= buffer.length) &#123;</span><br><span class="line">        out = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (in == out) &#123;</span><br><span class="line">        <span class="comment">/* now empty */</span></span><br><span class="line">        in = -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;从缓冲区数组中读取一个字节的新数据。第2 ~ 10行代码用来完成管道的状态校验（管道是否连通、数据读取端是否尚未关闭、缓冲区数组中无内容时数据写入端是否开启）。第11行代码将当前执行线程切换到读线程。第12 ~ 28行代码用来在缓冲区数组中无内容时启用写线程来向缓冲区数组中写入新内容。第14 ~ 17行代码如果数据写入端被关闭了，且缓冲区数组中没有待读取的数据，那么就返回<strong>-1</strong>表示数据读取已经结束。第18 ~ 20行代码则检查写线程的状态，这里做了重复检查，重复两次得到最终判定结果。第22行代码用来唤醒写线程并准备向缓冲区数组中写入新数据。第24行代码则暂停当前读线程，使得写线程获取资源开始工作。第29行代码获取一个字节的数据并返回。第30 ~ 32行代码如果已经读到了缓冲区数组的最后一个位置，那么将out移到缓冲区数组首部继续读取新数据。第33 ~ 36行代码如果out到达了in的位置，那么缓冲区数组中已经不存在任何待读取的数据了，那么就将in和out全部归零。</p>
+<h4 id="public-synchronized-int-read-byte-b-int-off-int-len"><a href="#public-synchronized-int-read-byte-b-int-off-int-len" class="headerlink" title="public synchronized int read(byte b[], int off, int len)"></a>public synchronized int read(byte b[], int off, int len)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">(<span class="keyword">byte</span> b[], <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span>  <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (b == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (off &lt; <span class="number">0</span> || len &lt; <span class="number">0</span> || len &gt; b.length - off) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IndexOutOfBoundsException();</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (len == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* possibly wait on the first character */</span></span><br><span class="line">    <span class="keyword">int</span> c = read();</span><br><span class="line">    <span class="keyword">if</span> (c &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    b[off] = (<span class="keyword">byte</span>) c;</span><br><span class="line">    <span class="keyword">int</span> rlen = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> ((in &gt;= <span class="number">0</span>) &amp;&amp; (len &gt; <span class="number">1</span>)) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> available;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (in &gt; out) &#123;</span><br><span class="line">            available = Math.min((buffer.length - out), (in - out));</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            available = buffer.length - out;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// A byte is read beforehand outside the loop</span></span><br><span class="line">        <span class="keyword">if</span> (available &gt; (len - <span class="number">1</span>)) &#123;</span><br><span class="line">            available = len - <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        System.arraycopy(buffer, out, b, off + rlen, available);</span><br><span class="line">        out += available;</span><br><span class="line">        rlen += available;</span><br><span class="line">        len -= available;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (out &gt;= buffer.length) &#123;</span><br><span class="line">            out = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (in == out) &#123;</span><br><span class="line">            <span class="comment">/* now empty */</span></span><br><span class="line">            in = -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> rlen;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;从缓冲区数组中读出长度为len个字节的内容到数组b中。第2 ~ 8行代码用来完成入参的有效性校验，防止越界。第11 ~ 16行代码“尝试性”的从缓冲区数组中读取一个字节的内容。如果当前缓冲区数组中无内容，那么就会切换到写线程向缓冲区数组中填充新内容，如果成功的读取到了一个字节，那么就将读取到的内容保存到数组b中。第19 ~ 30行代码用来确定最终需要读取的字节数。其中，第19 ~ 26行代码用来确定缓冲区数组中剩余的未读的内容长度，而第28 ~ 30行代码则用来比较缓冲区数组中剩余的未读内容长度和调用请求的长度之间的大小关系并确定最终的需要读取的字节数。第31行代码完成数据在缓冲区数组和入参b之前的复制。第32 ~ 35行代码则维护入参需求长度len、实际读取长度rlen和缓冲区数组下一个读取位置out的值。第36 ~ 38行代码执行时，如果out已经到达缓冲区数组尾部，那么将out置于缓冲区数组头部，循环读取数据。第39 ~ 42行代码如果out已经移动到了in的位置，那么说明缓冲区数组中已经没有未读取的数据了，那么就将写入位置in重新归零。最后返回实际读取的长度rlen。</p>
+<h4 id="public-synchronized-int-available"><a href="#public-synchronized-int-available" class="headerlink" title="public synchronized int available()"></a>public synchronized int available()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">int</span> <span class="title">available</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(in &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(in == out)</span><br><span class="line">        <span class="keyword">return</span> buffer.length;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (in &gt; out)</span><br><span class="line">        <span class="keyword">return</span> in - out;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">return</span> in + buffer.length - out;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;计算当前缓冲区数组中剩余的未读取的字节内容数。第2 ~ 3行代码对应图3中的场景(1)，第 4 ~ 5行代码对应场景(2)， 第6 ~7 行代码对应场景(3)，第8 ~ 9 行代码对应场景(4)。<br><img src="https://res.cloudinary.com/jknight/image/upload/v1540899913/BlogImages/PipedInputStream-PipedOutputStream/pipedInputStream_receive_scene-3.png" alt></p>
+<div align="center">
+<div align="center">图 - 3</div>
+&emsp;
+</div>
+
+<h4 id="public-void-close"><a href="#public-void-close" class="headerlink" title="public void close()"></a>public void close()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span>  <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    closedByReader = <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">        in = -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;关闭当前输入流。</p>
+<p>&emsp;</p>
+<h2 id="PipedOutputStream"><a href="#PipedOutputStream" class="headerlink" title="PipedOutputStream"></a>PipedOutputStream</h2><h3 id="Constructor-Summary-1"><a href="#Constructor-Summary-1" class="headerlink" title="Constructor Summary"></a>Constructor Summary</h3><h4 id="public-PipedOutputStream-PipedInputStream-snk"><a href="#public-PipedOutputStream-PipedInputStream-snk" class="headerlink" title="public PipedOutputStream(PipedInputStream snk)"></a>public PipedOutputStream(PipedInputStream snk)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">PipedOutputStream</span><span class="params">(PipedInputStream snk)</span>  <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    connect(snk);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个输出流并完成输入流和输出流的连接过程。在connect()方法中，会把缓冲区数组的in和out全部归零，同时将输入流标记为连接状态（connect = true）。</p>
+<h3 id="部分方法-1"><a href="#部分方法-1" class="headerlink" title="部分方法"></a>部分方法</h3><h4 id="public-synchronized-void-connect-PipedInputStream-snk"><a href="#public-synchronized-void-connect-PipedInputStream-snk" class="headerlink" title="public synchronized void connect(PipedInputStream snk)"></a>public synchronized void connect(PipedInputStream snk)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">connect</span><span class="params">(PipedInputStream snk)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (snk == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (sink != <span class="keyword">null</span> || snk.connected) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"Already connected"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    sink = snk;</span><br><span class="line">    snk.in = -<span class="number">1</span>;</span><br><span class="line">    snk.out = <span class="number">0</span>;</span><br><span class="line">    snk.connected = <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;完成输入流和输出流的连接过程。</p>
+<h4 id="public-void-write-int-b"><a href="#public-void-write-int-b" class="headerlink" title="public void write(int b)"></a>public void write(int b)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">int</span> b)</span>  <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (sink == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"Pipe not connected"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    sink.receive(b);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;向缓冲区数组中写入一个字节的数据。实际上是通过PipedInputStream的receive()方法来完成的。</p>
+<h4 id="public-void-write-byte-b-int-off-int-len"><a href="#public-void-write-byte-b-int-off-int-len" class="headerlink" title="public void write(byte b[], int off, int len)"></a>public void write(byte b[], int off, int len)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">byte</span> b[], <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (sink == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"Pipe not connected"</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (b == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> ((off &lt; <span class="number">0</span>) || (off &gt; b.length) || (len &lt; <span class="number">0</span>) ||</span><br><span class="line">               ((off + len) &gt; b.length) || ((off + len) &lt; <span class="number">0</span>)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IndexOutOfBoundsException();</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (len == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    sink.receive(b, off, len);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;向缓冲区数组中将入参数组b的数据写入到缓冲区数组中。在方法刚开始便对入参数组b、偏移量off和长度len等参数做了有效性校验，在校验通过后，调用PipedInputStream的receive(b, off, len)方法来完成数据的写入和保存。</p>
+<h4 id="public-synchronized-void-flush"><a href="#public-synchronized-void-flush" class="headerlink" title="public synchronized void flush()"></a>public synchronized void flush()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">flush</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (sink != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (sink) &#123;</span><br><span class="line">            sink.notifyAll();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="public-void-close-1"><a href="#public-void-close-1" class="headerlink" title="public void close()"></a>public void close()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span>  <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (sink != <span class="keyword">null</span>) &#123;</span><br><span class="line">        sink.receivedLast();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;</p>
+<h2 id="涉及基础知识点"><a href="#涉及基础知识点" class="headerlink" title="涉及基础知识点"></a>涉及基础知识点</h2><ol>
+<li><p>管道输入(出)流的典型应用场景：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        PipedOutputStream pipedOutputStream = <span class="keyword">new</span> PipedOutputStream();</span><br><span class="line">        PipedInputStream pipedInputStream = <span class="keyword">new</span> PipedInputStream(pipedOutputStream, <span class="number">1</span>);</span><br><span class="line">        Thread thread1 = <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    String data = <span class="string">"1234567asfa890"</span>;</span><br><span class="line">                    <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">                        pipedOutputStream.write(data.getBytes());</span><br><span class="line">                        pipedOutputStream.flush();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                    <span class="comment">// print error logs</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        Thread thread2 = <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="keyword">byte</span>[] data = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">10</span>];</span><br><span class="line">                    <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">                        pipedInputStream.read(data);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                    <span class="comment">// print error logs</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        thread1.start();</span><br><span class="line">        thread2.start();</span><br><span class="line"></span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        <span class="comment">// print error logs</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>&emsp;</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>ReggieDing. <a href="https://zhuanlan.zhihu.com/p/31352578" target="_blank" rel="noopener">PipedInputStream和PipedOutStream记录</a> [E]</li>
+<li>Asslstne. <a href="https://www.jianshu.com/p/8aefeb3a12cf" target="_blank" rel="noopener">源码分析: PipedInputStream和PipedOutputStream</a> [E]<br>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</li>
+</ol>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-PipedInputStream-PipedOutputStream.html" target="_blank" title="Java I/O 10 - PipedInputStream &amp; PipedOutputStream">Java I/O 10 - PipedInputStream &amp; PipedOutputStream</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-PipedInputStream-PipedOutputStream.html" target="_blank" title="Java I/O 10 - PipedInputStream &amp; PipedOutputStream">https://marcuseddie.github.io/2018/java-PipedInputStream-PipedOutputStream.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2018/java-ByteArrayInputStream-ByteArrayOutputStream.html" class="alignleft prev" title="Java I/O 11 - ByteArrayInputStream &amp; ByteArrayOutputStream"> 上一篇： Java I/O 11 - ByteArrayInputStream ...</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2018/The-Why-of-Agile.html" class="alignright next" title="【译】为什么要实施敏捷"> 下一篇： 【译】为什么要实施敏捷</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

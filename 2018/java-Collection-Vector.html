@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      Java Collection 04 - Vector | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="Vector是线程安全版本的、可变长度的、可用随机访问的方式获取元素的、基于数组实现的集合容器实现类。提供了size,contains,indexOf,lastIndexOf,setElementAt,removeElementAt,insertElementAt,add,addElement,addALL,remove,removeElement,removeAll,clear,get,set等">
+<meta name="keywords" content="Vector,copyInto,size,contains,indexOf,lastIndexOf,setElementAt,removeElementAt,insertElementAt,add,addElement,addALL,remove,removeElement,removeAll,clear,get,set">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java Collection 04 - Vector | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/java-Collection-Vector.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="Vector是线程安全版本的、可变长度的、可用随机访问的方式获取元素的、基于数组实现的集合容器实现类。提供了size,contains,indexOf,lastIndexOf,setElementAt,removeElementAt,insertElementAt,add,addElement,addALL,remove,removeElement,removeAll,clear,get,set等">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1543842373/BlogImages/java-collection/list/Vector-removeRange-example.png">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.357Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java Collection 04 - Vector | Mr.Muzi">
+<meta name="twitter:description" content="Vector是线程安全版本的、可变长度的、可用随机访问的方式获取元素的、基于数组实现的集合容器实现类。提供了size,contains,indexOf,lastIndexOf,setElementAt,removeElementAt,insertElementAt,add,addElement,addALL,remove,removeElement,removeAll,clear,get,set等">
+<meta name="twitter:image" content="https://res.cloudinary.com/jknight/image/upload/v1543842373/BlogImages/java-collection/list/Vector-removeRange-example.png">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>Java Collection 04 - Vector</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-11-20" class="post-meta__date date">2018-11-20</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;5.7k&emsp;阅读时长:&nbsp;25&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java集合/">Java集合</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.util.Vector&lt;E&gt;</strong> </em>的部分笔记。Vector是线程安全版本的、可变长度的、可用随机访问的方式获取元素的、基于数组实现的集合容器实现类。但是由于其主要方法都通过synchronized保证了多线程的线程安全特性，所以其性能相对ArrayList而言会慢很多。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;Vector是一个可变长度的集合容器，底层是基于数组实现的。由于其同样实现了RandomAccess接口，所以可以按照随机访问的方式来访问集合中的元素。</p>
+<p>&emsp;&emsp;Vector生成的iterators同样带有快速失败属性。如果某个迭代器在运行时发现Vector集合最近一次的结构化修改不是由迭代器自身完成的，那么会抛出<strong>ConcurrentModificationException</strong>异常。</p>
+<p>&emsp;&emsp;在List中，支持随机访问存储的集合实现有ArrayList和Vector。二者的底层实现都是依赖于数组完成的。但是ArrayList在多线程环境下无法保证线程安全，而Vector则可以用于多线程环境下的元素存储需要，通过在方法声明中加入synchronized关键字来保证多线程环境的线程安全。所以如果需要在多线程环境下实现可随机访问的List集合，那么需要使用的是Vector而不是ArrayList。需要注意的是，由于Vector的多线程特性，所以其性能会稍逊于ArrayList。所以，如果没有实际的多线程环境需要，可用ArrayList来替换Vector以提高性能。</p>
+<p>&emsp;</p>
+<h2 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Vector&lt;E&gt;</span></span><br><span class="line">--java.lang.Object</span><br><span class="line">  --java.util.AbstractCollection&lt;E&gt;</span><br><span class="line">    --java.util.AbstractList&lt;E&gt;</span><br><span class="line">      --java.util.Vector&lt;E&gt;</span><br></pre></td></tr></table></figure>
+<p>&emsp;</p>
+<h2 id="实现接口"><a href="#实现接口" class="headerlink" title="实现接口"></a>实现接口</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>类名</th>
+<th>实现接口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vector&lt;E&gt;</td>
+<td>Iterable&lt;E&gt;, Collection&lt;E&gt;, List&lt;E&gt;, RandomAccess, Serializable, Cloneable</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>&emsp;</p>
+<h2 id="Vector"><a href="#Vector" class="headerlink" title="Vector"></a>Vector</h2><h3 id="Constructor-Summary"><a href="#Constructor-Summary" class="headerlink" title="Constructor Summary"></a>Constructor Summary</h3><h4 id="public-Vector-int-initialCapacity-int-capacityIncrement"><a href="#public-Vector-int-initialCapacity-int-capacityIncrement" class="headerlink" title="public Vector(int initialCapacity, int capacityIncrement)"></a>public Vector(int initialCapacity, int capacityIncrement)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Vector</span><span class="params">(<span class="keyword">int</span> initialCapacity, <span class="keyword">int</span> capacityIncrement)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>();</span><br><span class="line">    <span class="keyword">if</span> (initialCapacity &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Illegal Capacity: "</span>+</span><br><span class="line">                                           initialCapacity);</span><br><span class="line">    <span class="keyword">this</span>.elementData = <span class="keyword">new</span> Object[initialCapacity];</span><br><span class="line">    <span class="keyword">this</span>.capacityIncrement = capacityIncrement;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;根据入参initialCapacity指定的长度初始化一个Vector空集合实例。capacityIncrement参数指定了Vector在执行扩容操作时依据的扩容规模大小。</p>
+<h4 id="public-Vector-int-initialCapacity"><a href="#public-Vector-int-initialCapacity" class="headerlink" title="public Vector(int initialCapacity)"></a>public Vector(int initialCapacity)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Vector</span><span class="params">(<span class="keyword">int</span> initialCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(initialCapacity, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Vector</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(<span class="number">10</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;根据入参initialCapacity指定的长度初始化一个Vector空集合实例。capacityIncrement默认为0。</p>
+<h4 id="public-Vector-Collection-lt-extends-E-gt-c"><a href="#public-Vector-Collection-lt-extends-E-gt-c" class="headerlink" title="public Vector(Collection&lt;? extends E&gt; c)"></a>public Vector(Collection&lt;? extends E&gt; c)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Vector</span><span class="params">(Collection&lt;? extends E&gt; c)</span> </span>&#123;</span><br><span class="line">    elementData = c.toArray();</span><br><span class="line">    elementCount = elementData.length;</span><br><span class="line">    <span class="comment">// c.toArray might (incorrectly) not return Object[] (see 6260652)</span></span><br><span class="line">    <span class="keyword">if</span> (elementData.getClass() != Object[].class)</span><br><span class="line">        elementData = Arrays.copyOf(elementData, elementCount, Object[].class);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;根据集合c初始化一个Vector集合实例，并将c中的内容复制到实例化后的集合实例中。初始化的实例集合中元素的位置和c一致。</p>
+<p>&emsp;&emsp;<strong>elementCount</strong>是Vector当前已经容纳的元素数，非Vector可以容纳的元素总数，Vector可以容纳的元素总数可以从elementData.length中得到。</p>
+<h3 id="部分方法"><a href="#部分方法" class="headerlink" title="部分方法"></a>部分方法</h3><h4 id="public-void-trimToSize"><a href="#public-void-trimToSize" class="headerlink" title="public void trimToSize()"></a>public void trimToSize()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">trimToSize</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="keyword">if</span> (size &lt; elementData.length) &#123;</span><br><span class="line">        elementData = Arrays.copyOf(elementData, size);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;缩小Vector的存储容量。将暂时尚未存储元素的空间全部释放掉。</p>
+<h4 id="public-synchronized-void-copyInto-Object-anArray"><a href="#public-synchronized-void-copyInto-Object-anArray" class="headerlink" title="public synchronized void copyInto(Object[] anArray)"></a>public synchronized void copyInto(Object[] anArray)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">copyInto</span><span class="params">(Object[] anArray)</span> </span>&#123;</span><br><span class="line">    System.arraycopy(elementData, <span class="number">0</span>, anArray, <span class="number">0</span>, elementCount);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将Vector中的元素复制到数组anArray中。由于System.arraycopy是浅复制，所以对anArray的修改会同步出现在Vector的集合中。</p>
+<h4 id="public-synchronized-void-ensureCapacity-int-minCapacity"><a href="#public-synchronized-void-ensureCapacity-int-minCapacity" class="headerlink" title="public synchronized void ensureCapacity(int minCapacity)"></a>public synchronized void ensureCapacity(int minCapacity)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">ensureCapacity</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (minCapacity &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        modCount++;</span><br><span class="line">        ensureCapacityHelper(minCapacity);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;扩容操作。由于扩容操作会修改Vector集合的空间大小，所以需要记录modCount值。这个方法没有在Vector内部调用，如果在需要用Vector的场景中可以预先估计到可能存储的元素数量，那么可以调用该方法提前完成内存空间的分配进而避免频繁分配存储空间降低执行性能。</p>
+<h4 id="private-void-ensureCapacityHelper-int-minCapacity"><a href="#private-void-ensureCapacityHelper-int-minCapacity" class="headerlink" title="private void ensureCapacityHelper(int minCapacity)"></a>private void ensureCapacityHelper(int minCapacity)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureCapacityHelper</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// overflow-conscious code</span></span><br><span class="line">    <span class="keyword">if</span> (minCapacity - elementData.length &gt; <span class="number">0</span>)</span><br><span class="line">        grow(minCapacity);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MAX_ARRAY_SIZE = Integer.MAX_VALUE - <span class="number">8</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">grow</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// overflow-conscious code</span></span><br><span class="line">    <span class="keyword">int</span> oldCapacity = elementData.length;</span><br><span class="line">    <span class="keyword">int</span> newCapacity = oldCapacity + ((capacityIncrement &gt; <span class="number">0</span>) ?</span><br><span class="line">                                     capacityIncrement : oldCapacity);</span><br><span class="line">    <span class="keyword">if</span> (newCapacity - minCapacity &lt; <span class="number">0</span>)</span><br><span class="line">        newCapacity = minCapacity;</span><br><span class="line">    <span class="keyword">if</span> (newCapacity - MAX_ARRAY_SIZE &gt; <span class="number">0</span>)</span><br><span class="line">        newCapacity = hugeCapacity(minCapacity);</span><br><span class="line">    elementData = Arrays.copyOf(elementData, newCapacity);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">hugeCapacity</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (minCapacity &lt; <span class="number">0</span>) <span class="comment">// overflow</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> OutOfMemoryError();</span><br><span class="line">    <span class="keyword">return</span> (minCapacity &gt; MAX_ARRAY_SIZE) ?</span><br><span class="line">        Integer.MAX_VALUE :</span><br><span class="line">    MAX_ARRAY_SIZE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;扩容底层操作。如果调用时需要的容量大小超过了当前Vector的elementData长度就执行扩容操作。反之不做处理。在计算扩充后容量时，如果指定了capacityIncrement大小，那么就在当前Vector空间容量的基础上增加capacityIncrement个空间。反之，如果未指定capacityIncrement大小，那么扩容后容量是当前容量的两倍大小。如果扩容后数量还是无法满足参数要求，那么就将Vector空间扩容为参数minCapacity指定的大小。</p>
+<h4 id="public-synchronized-void-setSize-int-newSize"><a href="#public-synchronized-void-setSize-int-newSize" class="headerlink" title="public synchronized void setSize(int newSize)"></a>public synchronized void setSize(int newSize)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">setSize</span><span class="params">(<span class="keyword">int</span> newSize)</span> </span>&#123;</span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="keyword">if</span> (newSize &gt; elementCount) &#123;</span><br><span class="line">        ensureCapacityHelper(newSize);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = newSize ; i &lt; elementCount ; i++) &#123;</span><br><span class="line">            elementData[i] = <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    elementCount = newSize;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;重置Vector的存储元素个数。由于该操作会修改Vector集合的存储元素数，所以需要记录modCount值。如果newSize大于Vector集合中存储的元素数，那么就执行扩容处理，空出部分被填充为null。反之，则清除自newSize及以后位置的元素，并释放空间。最后更新elementCount，该字段标记了Vector集合中存储的元素个数。</p>
+<h4 id="public-synchronized-int-capacity"><a href="#public-synchronized-int-capacity" class="headerlink" title="public synchronized int capacity()"></a>public synchronized int capacity()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">int</span> <span class="title">capacity</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> elementData.length;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回Vector集合的空间大小，既可以容纳的元素个数。</p>
+<h4 id="public-synchronized-int-size"><a href="#public-synchronized-int-size" class="headerlink" title="public synchronized int size()"></a>public synchronized int size()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> elementCount;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> elementCount == <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回Vector集合当前存储的元素个数。如果elementCount为0，那么isEmpty()方法就会返回true，否则返回false。</p>
+<h4 id="public-Enumeration-lt-E-gt-elements"><a href="#public-Enumeration-lt-E-gt-elements" class="headerlink" title="public Enumeration&lt;E&gt; elements()"></a>public Enumeration&lt;E&gt; elements()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Enumeration&lt;E&gt; <span class="title">elements</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Enumeration&lt;E&gt;() &#123;</span><br><span class="line">        <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasMoreElements</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> count &lt; elementCount;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> E <span class="title">nextElement</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (Vector.<span class="keyword">this</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (count &lt; elementCount) &#123;</span><br><span class="line">                    <span class="keyword">return</span> elementData(count++);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException(<span class="string">"Vector Enumeration"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;以枚举方式返回Vector集合中的每一个元素。</p>
+<h4 id="public-boolean-contains-Object-o"><a href="#public-boolean-contains-Object-o" class="headerlink" title="public boolean contains(Object o)"></a>public boolean contains(Object o)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">contains</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> indexOf(o, <span class="number">0</span>) &gt;= <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;判断当前Vector集合中是否含有元素o。如果Vector集合存储了一个及以上元素o，那么就返回true，否则返回false。</p>
+<h4 id="public-int-indexOf-Object-o"><a href="#public-int-indexOf-Object-o" class="headerlink" title="public int indexOf(Object o)"></a>public int indexOf(Object o)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">indexOf</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> indexOf(o, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">int</span> <span class="title">indexOf</span><span class="params">(Object o, <span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (o == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = index ; i &lt; elementCount ; i++)</span><br><span class="line">            <span class="keyword">if</span> (elementData[i]==<span class="keyword">null</span>)</span><br><span class="line">                <span class="keyword">return</span> i;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = index ; i &lt; elementCount ; i++)</span><br><span class="line">            <span class="keyword">if</span> (o.equals(elementData[i]))</span><br><span class="line">                <span class="keyword">return</span> i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回元素o在Vector集合中第一次出现的位置（即o在集合中第一次被存储的位置）。如果元素o为null，那么就返回null第一次被存储的位置，否则返回非null元素在Vector集合中第一次出现的位置。如果元素o不存在于集合Vector中，那么返回-1。</p>
+<h4 id="public-synchronized-int-lastIndexOf-Object-o"><a href="#public-synchronized-int-lastIndexOf-Object-o" class="headerlink" title="public synchronized int lastIndexOf(Object o)"></a>public synchronized int lastIndexOf(Object o)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">int</span> <span class="title">lastIndexOf</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> lastIndexOf(o, elementCount-<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">int</span> <span class="title">lastIndexOf</span><span class="params">(Object o, <span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (index &gt;= elementCount)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IndexOutOfBoundsException(index + <span class="string">" &gt;= "</span>+ elementCount);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (o == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = index; i &gt;= <span class="number">0</span>; i--)</span><br><span class="line">            <span class="keyword">if</span> (elementData[i]==<span class="keyword">null</span>)</span><br><span class="line">                <span class="keyword">return</span> i;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = index; i &gt;= <span class="number">0</span>; i--)</span><br><span class="line">            <span class="keyword">if</span> (o.equals(elementData[i]))</span><br><span class="line">                <span class="keyword">return</span> i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回元素o在Vector集合中最后一次出现的位置（即o在集合中最后一次被存储的位置）。将当前Vector集合从尾向首逐个遍历，如果元素o为null，那么就返回null最后一次被存储的位置，否则返回非null元素在Vector集合中最后一次出现的位置。如果元素o不存在于集合Vector中，那么返回-1。</p>
+<h4 id="public-synchronized-E-elementAt-int-index"><a href="#public-synchronized-E-elementAt-int-index" class="headerlink" title="public synchronized E elementAt(int index)"></a>public synchronized E elementAt(int index)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> E <span class="title">elementAt</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (index &gt;= elementCount) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ArrayIndexOutOfBoundsException(index + <span class="string">" &gt;= "</span> + elementCount);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> elementData(index);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回Vector中index位置指定的元素。如果index指示位置大于Vector的元素个数（index &gt;= elementCount）则抛出边界溢出异常。实际调用<strong>elementData(int index)</strong>方法完成所有操作。</p>
+<h4 id="E-elementData-int-index"><a href="#E-elementData-int-index" class="headerlink" title="E elementData(int index)"></a>E elementData(int index)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line"><span class="function">E <span class="title">elementData</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (E) elementData[index];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回Vector中index位置处的元素。</p>
+<h4 id="public-synchronized-E-firstElement"><a href="#public-synchronized-E-firstElement" class="headerlink" title="public synchronized E firstElement()"></a>public synchronized E firstElement()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> E <span class="title">firstElement</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (elementCount == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> elementData(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回Vector集合中第一个元素。</p>
+<h4 id="public-synchronized-E-lastElement"><a href="#public-synchronized-E-lastElement" class="headerlink" title="public synchronized E lastElement()"></a>public synchronized E lastElement()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> E <span class="title">lastElement</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (elementCount == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> elementData(elementCount - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回Vector集合中最后一个元素。</p>
+<h4 id="public-synchronized-void-setElementAt-E-obj-int-index"><a href="#public-synchronized-void-setElementAt-E-obj-int-index" class="headerlink" title="public synchronized void setElementAt(E obj, int index)"></a>public synchronized void setElementAt(E obj, int index)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">setElementAt</span><span class="params">(E obj, <span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (index &gt;= elementCount) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ArrayIndexOutOfBoundsException(index + <span class="string">" &gt;= "</span> +</span><br><span class="line">                                                 elementCount);</span><br><span class="line">    &#125;</span><br><span class="line">    elementData[index] = obj;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将index位置处的元素置换为obj。</p>
+<h4 id="public-synchronized-void-removeElementAt-int-index"><a href="#public-synchronized-void-removeElementAt-int-index" class="headerlink" title="public synchronized void removeElementAt(int index)"></a>public synchronized void removeElementAt(int index)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">removeElementAt</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="keyword">if</span> (index &gt;= elementCount) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ArrayIndexOutOfBoundsException(index + <span class="string">" &gt;= "</span> +</span><br><span class="line">                                                 elementCount);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (index &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ArrayIndexOutOfBoundsException(index);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> j = elementCount - index - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (j &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        System.arraycopy(elementData, index + <span class="number">1</span>, elementData, index, j);</span><br><span class="line">    &#125;</span><br><span class="line">    elementCount--;</span><br><span class="line">    elementData[elementCount] = <span class="keyword">null</span>; <span class="comment">/* to let gc do its work */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;移除index位置处的元素。因为元素移除属于结构化修改，所以需要维护modCount的值。接着需要通过边界检查判定index的合法性以避免边界溢出。然后将index位置之后的元素（不包括index）统一向前移动一个单位，便会覆盖移除掉index位置处的元素。最后维护elementCount并更新其值。</p>
+<h4 id="public-synchronized-void-insertElementAt-E-obj-int-index"><a href="#public-synchronized-void-insertElementAt-E-obj-int-index" class="headerlink" title="public synchronized void insertElementAt(E obj, int index)"></a>public synchronized void insertElementAt(E obj, int index)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">insertElementAt</span><span class="params">(E obj, <span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="keyword">if</span> (index &gt; elementCount) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ArrayIndexOutOfBoundsException(index</span><br><span class="line">                                                 + <span class="string">" &gt; "</span> + elementCount);</span><br><span class="line">    &#125;</span><br><span class="line">    ensureCapacityHelper(elementCount + <span class="number">1</span>);</span><br><span class="line">    System.arraycopy(elementData, index, elementData, index + <span class="number">1</span>, elementCount - index);</span><br><span class="line">    elementData[index] = obj;</span><br><span class="line">    elementCount++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;在index位置处插入元素obj。因为元素插入属于结构化修改，所以需要维护modCount的值。接着需要通过边界检查判定index的合法性以避免边界溢出。然后判断当前集合空间是否足够，如果空间不足的话需要执行扩容操作。最后将index位置之后的元素（包括index）统一向后移动一个单位，加入传入的元素obj，并维护更新elementCount的值。</p>
+<h4 id="public-synchronized-boolean-add-E-e"><a href="#public-synchronized-boolean-add-E-e" class="headerlink" title="public synchronized boolean add(E e)"></a>public synchronized boolean add(E e)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    modCount++;</span><br><span class="line">    ensureCapacityHelper(elementCount + <span class="number">1</span>);</span><br><span class="line">    elementData[elementCount++] = e;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;向Vector集合中加入元素o，返回true表示加入成功。</p>
+<h4 id="public-void-add-int-index-E-element"><a href="#public-void-add-int-index-E-element" class="headerlink" title="public void add(int index, E element)"></a>public void add(int index, E element)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> index, E element)</span> </span>&#123;</span><br><span class="line">    insertElementAt(element, index);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;向Vector集合中index指定的位置处加入元素element。</p>
+<h4 id="public-synchronized-void-addElement-E-obj"><a href="#public-synchronized-void-addElement-E-obj" class="headerlink" title="public synchronized void addElement(E obj)"></a>public synchronized void addElement(E obj)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">addElement</span><span class="params">(E obj)</span> </span>&#123;</span><br><span class="line">    modCount++;</span><br><span class="line">    ensureCapacityHelper(elementCount + <span class="number">1</span>);</span><br><span class="line">    elementData[elementCount++] = obj;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;向Vector集合中加入一个元素obj。因为元素加入属于结构化修改，所以需要维护modCount的值。加入元素之前需要先判断是否有必要执行扩容处理，如果需要的话先完成扩容处理提供足够的空间来容纳新元素。最后在集合尾部将元素obj加入到集合中。</p>
+<h4 id="public-synchronized-boolean-addAll-int-index-Collection-lt-extends-E-gt-c"><a href="#public-synchronized-boolean-addAll-int-index-Collection-lt-extends-E-gt-c" class="headerlink" title="public synchronized boolean addAll(int index, Collection&lt;? extends E&gt; c)"></a>public synchronized boolean addAll(int index, Collection&lt;? extends E&gt; c)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">boolean</span> <span class="title">addAll</span><span class="params">(<span class="keyword">int</span> index, Collection&lt;? extends E&gt; c)</span> </span>&#123;</span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="keyword">if</span> (index &lt; <span class="number">0</span> || index &gt; elementCount)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ArrayIndexOutOfBoundsException(index);</span><br><span class="line"></span><br><span class="line">    Object[] a = c.toArray();</span><br><span class="line">    <span class="keyword">int</span> numNew = a.length;</span><br><span class="line">    ensureCapacityHelper(elementCount + numNew);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> numMoved = elementCount - index;</span><br><span class="line">    <span class="keyword">if</span> (numMoved &gt; <span class="number">0</span>)</span><br><span class="line">        System.arraycopy(elementData, index, elementData, index + numNew,</span><br><span class="line">                         numMoved);</span><br><span class="line"></span><br><span class="line">    System.arraycopy(a, <span class="number">0</span>, elementData, index, numNew);</span><br><span class="line">    elementCount += numNew;</span><br><span class="line">    <span class="keyword">return</span> numNew != <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将集合c中的元素全部加入到Vector集合中自index位置起的空间里。因为元素加入属于结构化修改，所以需要维护modCount的值。获取到c集合中的元素数据内容和元素个数，判断当前Vector集合是否有足够空间存储c中所有元素，如果空间不足则需要执行扩容操作。第11 ~ 13行代码将Vector集合中自index位置起，长度为c中集合元素数的空间里存储的元素统一向后移动，留出的空间被用来存储c中元素。最后将c中元素存储到Vector集合中指定位置的空间里，更新elementCount的值。</p>
+<h4 id="public-synchronized-boolean-addAll-Collection-lt-extends-E-gt-c"><a href="#public-synchronized-boolean-addAll-Collection-lt-extends-E-gt-c" class="headerlink" title="public synchronized boolean addAll(Collection&lt;? extends E&gt; c)"></a>public synchronized boolean addAll(Collection&lt;? extends E&gt; c)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">boolean</span> <span class="title">addAll</span><span class="params">(Collection&lt;? extends E&gt; c)</span> </span>&#123;</span><br><span class="line">    modCount++;</span><br><span class="line">    Object[] a = c.toArray();</span><br><span class="line">    <span class="keyword">int</span> numNew = a.length;</span><br><span class="line">    ensureCapacityHelper(elementCount + numNew);</span><br><span class="line">    System.arraycopy(a, <span class="number">0</span>, elementData, elementCount, numNew);</span><br><span class="line">    elementCount += numNew;</span><br><span class="line">    <span class="keyword">return</span> numNew != <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将集合c中的元素全部加入到Vector集合中。因为元素加入属于结构化修改，所以需要维护modCount的值。获取到c集合中的元素数据内容和元素个数，判断当前Vector集合是否有足够空间存储c中所有元素，如果空间不足则需要执行扩容操作。空间充足时将c中元素存储到Vector集合中，更新elementCount的值。</p>
+<h4 id="public-synchronized-E-remove-int-index"><a href="#public-synchronized-E-remove-int-index" class="headerlink" title="public synchronized E remove(int index)"></a>public synchronized E remove(int index)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> E <span class="title">remove</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="keyword">if</span> (index &gt;= elementCount)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ArrayIndexOutOfBoundsException(index);</span><br><span class="line">    E oldValue = elementData(index);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> numMoved = elementCount - index - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (numMoved &gt; <span class="number">0</span>)</span><br><span class="line">        System.arraycopy(elementData, index+<span class="number">1</span>, elementData, index,</span><br><span class="line">                         numMoved);</span><br><span class="line">    elementData[--elementCount] = <span class="keyword">null</span>; <span class="comment">// Let gc do its work</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> oldValue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;移除index位置处存储的元素并返回被移除的元素。</p>
+<h4 id="public-synchronized-boolean-removeElement-Object-obj"><a href="#public-synchronized-boolean-removeElement-Object-obj" class="headerlink" title="public synchronized boolean removeElement(Object obj)"></a>public synchronized boolean removeElement(Object obj)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">boolean</span> <span class="title">removeElement</span><span class="params">(Object obj)</span> </span>&#123;</span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="keyword">int</span> i = indexOf(obj);</span><br><span class="line">    <span class="keyword">if</span> (i &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">        removeElementAt(i);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;移除Vector集合中删除元素obj。删除原则是先判断obj是否存在于集合中，如果不存在返回false，否则确定obj被存储的下标index最小的位置，并把该位置处存储的obj删除调，返回true标识成功删除元素obj。</p>
+<h4 id="public-boolean-remove-Object-o"><a href="#public-boolean-remove-Object-o" class="headerlink" title="public boolean remove(Object o)"></a>public boolean remove(Object o)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">remove</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> removeElement(o);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;移除Vector集合中删除元素o。</p>
+<h4 id="public-synchronized-void-removeAllElements"><a href="#public-synchronized-void-removeAllElements" class="headerlink" title="public synchronized void removeAllElements()"></a>public synchronized void removeAllElements()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">removeAllElements</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="comment">// Let gc do its work</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; elementCount; i++)</span><br><span class="line">        elementData[i] = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    elementCount = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;清空Vector集合中的所有元素。集合容量重置为0。</p>
+<h4 id="public-synchronized-boolean-removeAll-Collection-lt-gt-c"><a href="#public-synchronized-boolean-removeAll-Collection-lt-gt-c" class="headerlink" title="public synchronized boolean removeAll(Collection&lt;?&gt; c)"></a>public synchronized boolean removeAll(Collection&lt;?&gt; c)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">boolean</span> <span class="title">removeAll</span><span class="params">(Collection&lt;?&gt; c)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">super</span>.removeAll(c);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;移除同时存在于Vector集合和c集合中的元素。调用的是AbstractCollection.removeAll(Collection&lt;?&gt; c)。</p>
+<h4 id="public-void-clear"><a href="#public-void-clear" class="headerlink" title="public void clear()"></a>public void clear()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clear</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    removeAllElements();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;清空Vector集合中的所有元素。集合容量重置为0。</p>
+<h4 id="public-synchronized-Object-clone"><a href="#public-synchronized-Object-clone" class="headerlink" title="public synchronized Object clone()"></a>public synchronized Object clone()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> Object <span class="title">clone</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">        Vector&lt;E&gt; v = (Vector&lt;E&gt;) <span class="keyword">super</span>.clone();</span><br><span class="line">        v.elementData = Arrays.copyOf(elementData, elementCount);</span><br><span class="line">        v.modCount = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">return</span> v;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (CloneNotSupportedException e) &#123;</span><br><span class="line">        <span class="comment">// this shouldn't happen, since we are Cloneable</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> InternalError();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;对象克隆复制。浅度复制，对复制内容的修改会在Vector集合中显现，反之亦然。</p>
+<h4 id="public-synchronized-Object-toArray"><a href="#public-synchronized-Object-toArray" class="headerlink" title="public synchronized Object[] toArray()"></a>public synchronized Object[] toArray()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">synchronized</span> Object[] toArray() &#123;</span><br><span class="line">    <span class="keyword">return</span> Arrays.copyOf(elementData, elementCount);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将Vector集合中的元素按照数组的方式返回。</p>
+<h4 id="public-synchronized-lt-T-gt-T-toArray-T-a"><a href="#public-synchronized-lt-T-gt-T-toArray-T-a" class="headerlink" title="public synchronized &lt;T&gt; T[] toArray(T[] a)"></a>public synchronized &lt;T&gt; T[] toArray(T[] a)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">synchronized</span> &lt;T&gt; T[] toArray(T[] a) &#123;</span><br><span class="line">    <span class="keyword">if</span> (a.length &lt; elementCount)</span><br><span class="line">        <span class="keyword">return</span> (T[]) Arrays.copyOf(elementData, elementCount, a.getClass());</span><br><span class="line"></span><br><span class="line">    System.arraycopy(elementData, <span class="number">0</span>, a, <span class="number">0</span>, elementCount);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (a.length &gt; elementCount)</span><br><span class="line">        a[elementCount] = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将Vector集合中的元素以数组的方式存储到数组a中。如果a的空间小于Vector集合的元素数，那么就返回一个新的数组对象，该对象中以a的类型为基础，且存储的是Vector集合中的元素数据内容。如果a的长度大于集合中存储的元素总数，那么a数组中最后一个元素的下一个存储位置会被置为null，如果集合中没有存储任何null元素，那么这个操作执行完成后便可以非常方便的得到集合中存储的元素总数。</p>
+<h4 id="E-elementData-int-index-1"><a href="#E-elementData-int-index-1" class="headerlink" title="E elementData(int index)"></a>E elementData(int index)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line"><span class="function">E <span class="title">elementData</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (E) elementData[index];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回Vector集合中index位置处的元素。</p>
+<h4 id="public-synchronized-E-get-int-index"><a href="#public-synchronized-E-get-int-index" class="headerlink" title="public synchronized E get(int index)"></a>public synchronized E get(int index)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> E <span class="title">get</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (index &gt;= elementCount)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ArrayIndexOutOfBoundsException(index);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> elementData(index);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回Vector集合中index位置处的元素。在有效使用index之前对index做了边界校验，避免越界溢出发生。</p>
+<h4 id="public-synchronized-E-set-int-index-E-element"><a href="#public-synchronized-E-set-int-index-E-element" class="headerlink" title="public synchronized E set(int index, E element)"></a>public synchronized E set(int index, E element)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> E <span class="title">set</span><span class="params">(<span class="keyword">int</span> index, E element)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (index &gt;= elementCount)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ArrayIndexOutOfBoundsException(index);</span><br><span class="line"></span><br><span class="line">    E oldValue = elementData(index);</span><br><span class="line">    elementData[index] = element;</span><br><span class="line">    <span class="keyword">return</span> oldValue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将Vector集合中index位置处的元素替换为element，并返回被替换的元素。</p>
+<h4 id="public-synchronized-boolean-containsAll-Collection-lt-gt-c"><a href="#public-synchronized-boolean-containsAll-Collection-lt-gt-c" class="headerlink" title="public synchronized boolean containsAll(Collection&lt;?&gt; c)"></a>public synchronized boolean containsAll(Collection&lt;?&gt; c)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">boolean</span> <span class="title">containsAll</span><span class="params">(Collection&lt;?&gt; c)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">super</span>.containsAll(c);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;判断Vector集合中是否包含c中所有元素。如果Vecto集合包含c中所有元素，那么返回true，否则返回false。实际调用AbstractCollection.containsAll(Collection&lt;?&gt; c)完成操作。</p>
+<h4 id="public-synchronized-boolean-retainAll-Collection-lt-gt-c"><a href="#public-synchronized-boolean-retainAll-Collection-lt-gt-c" class="headerlink" title="public synchronized boolean retainAll(Collection&lt;?&gt; c)"></a>public synchronized boolean retainAll(Collection&lt;?&gt; c)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">boolean</span> <span class="title">retainAll</span><span class="params">(Collection&lt;?&gt; c)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">super</span>.retainAll(c);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;保留同时包含在Vector集合和c集合中的元素，对于只存在于Vector集合，不存在于c集合的元素会被删除掉，类似于数学领域内的两个集合取交集操作。实际调用AbstractCollection.retainAll(Collection&lt;?&gt; c)完成操作。</p>
+<h4 id="public-synchronized-boolean-equals-Object-o"><a href="#public-synchronized-boolean-equals-Object-o" class="headerlink" title="public synchronized boolean equals(Object o)"></a>public synchronized boolean equals(Object o)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">super</span>.equals(o);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;判断当前Vector集合是否等于对象o。实际调用AbstractList.equals(Object o)完成操作。</p>
+<h4 id="public-synchronized-int-hashCode"><a href="#public-synchronized-int-hashCode" class="headerlink" title="public synchronized int hashCode()"></a>public synchronized int hashCode()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">super</span>.hashCode();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回当前Vector集合的散列值。实际调用AbstractList.hashCode()完成操作。</p>
+<h4 id="public-synchronized-String-toString"><a href="#public-synchronized-String-toString" class="headerlink" title="public synchronized String toString()"></a>public synchronized String toString()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">super</span>.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回当前Vector集合的字符串表示，内部元素也以字符串形式表示。实际调用AbstractCollection.toString()完成操作。</p>
+<h4 id="public-synchronized-List-lt-E-gt-subList-int-fromIndex-int-toIndex"><a href="#public-synchronized-List-lt-E-gt-subList-int-fromIndex-int-toIndex" class="headerlink" title="public synchronized List&lt;E&gt; subList(int fromIndex, int toIndex)"></a>public synchronized List&lt;E&gt; subList(int fromIndex, int toIndex)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> List&lt;E&gt; <span class="title">subList</span><span class="params">(<span class="keyword">int</span> fromIndex, <span class="keyword">int</span> toIndex)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Collections.synchronizedList(<span class="keyword">super</span>.subList(fromIndex, toIndex), <span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;通过调用AbstractList.subList(int fromIndex, int toIndex)方法获取Vector集合中自fromIndex位置起，到toIndex位置之间的子集合并返回。由于Vector被应用于多线程环境，而subList(int fromIndex, int toIndex)返回的是一个非线程安全的随机访问集合，所以通过Collections.synchronizedList(List<t> list, Object mutex)可以保证返回的subList具有多线程环境的线程安全特性。</t></p>
+<h4 id="protected-synchronized-void-removeRange-int-fromIndex-int-toIndex"><a href="#protected-synchronized-void-removeRange-int-fromIndex-int-toIndex" class="headerlink" title="protected synchronized void removeRange(int fromIndex, int toIndex)"></a>protected synchronized void removeRange(int fromIndex, int toIndex)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">removeRange</span><span class="params">(<span class="keyword">int</span> fromIndex, <span class="keyword">int</span> toIndex)</span> </span>&#123;</span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="keyword">int</span> numMoved = elementCount - toIndex;</span><br><span class="line">    System.arraycopy(elementData, toIndex, elementData, fromIndex,</span><br><span class="line">                     numMoved);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Let gc do its work</span></span><br><span class="line">    <span class="keyword">int</span> newElementCount = elementCount - (toIndex-fromIndex);</span><br><span class="line">    <span class="keyword">while</span> (elementCount != newElementCount)</span><br><span class="line">        elementData[--elementCount] = <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;移除Vector集合中自fromIndex位置起，到toIndex位置之间的所有元素。操作过程可见图1：</p>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1543842373/BlogImages/java-collection/list/Vector-removeRange-example.png" alt="1543839602703"></p>
+<div align="center">
+<div align="center">图 - 1</div>
+&emsp;
+</div>
+
+<p>&emsp;&emsp;在alpha阶段由fromIndex和toIndex指定了需要删除的范围。第3 ~ 5行代码执行完之后则到达bravo阶段。灰色区域为fromIndex之前的元素，无变化。红色区域的元素由alpha阶段toIndex位置及之后的元素向左移动得到。第8行代码重新计算得到了newElementCount，也是从集合尾部删除元素操作的终点位置。在charlie中，elementCount逐个向左移动并删除元素释放空间，直到其到达newElementCount位置便停止操作。</p>
+<h4 id="private-void-writeObject-java-io-ObjectOutputStream-s"><a href="#private-void-writeObject-java-io-ObjectOutputStream-s" class="headerlink" title="private void writeObject(java.io.ObjectOutputStream s)"></a>private void writeObject(java.io.ObjectOutputStream s)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">writeObject</span><span class="params">(java.io.ObjectOutputStream s)</span></span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> java.io.IOException </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> java.io.ObjectOutputStream.PutField fields = s.putFields();</span><br><span class="line">    <span class="keyword">final</span> Object[] data;</span><br><span class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">        fields.put(<span class="string">"capacityIncrement"</span>, capacityIncrement);</span><br><span class="line">        fields.put(<span class="string">"elementCount"</span>, elementCount);</span><br><span class="line">        data = elementData.clone();</span><br><span class="line">    &#125;</span><br><span class="line">    fields.put(<span class="string">"elementData"</span>, data);</span><br><span class="line">    s.writeFields();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;序列化写操作。将当前Vector集合对象的内容以自定义的方式重新实现了其序列化过程。</p>
+<h4 id="public-synchronized-Iterator-lt-E-gt-iterator"><a href="#public-synchronized-Iterator-lt-E-gt-iterator" class="headerlink" title="public synchronized Iterator&lt;E&gt; iterator()"></a>public synchronized Iterator&lt;E&gt; iterator()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> Iterator&lt;E&gt; <span class="title">iterator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Itr();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回一个基于Vector集合的迭代器。该迭代器只能对集合做向后遍历。Itr类的相关实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">Itr</span> <span class="keyword">implements</span> <span class="title">Iterator</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> cursor;       <span class="comment">// index of next element to return</span></span><br><span class="line">    <span class="keyword">int</span> lastRet = -<span class="number">1</span>; <span class="comment">// index of last element returned; -1 if no such</span></span><br><span class="line">    <span class="keyword">int</span> expectedModCount = modCount;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// Racy but within spec, since modifications are checked</span></span><br><span class="line">        <span class="comment">// within or after synchronization in next/previous</span></span><br><span class="line">        <span class="keyword">return</span> cursor != elementCount;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> E <span class="title">next</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (Vector.<span class="keyword">this</span>) &#123;</span><br><span class="line">            checkForComodification();</span><br><span class="line">            <span class="keyword">int</span> i = cursor;</span><br><span class="line">            <span class="keyword">if</span> (i &gt;= elementCount)</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line">            cursor = i + <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">return</span> elementData(lastRet = i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (lastRet == -<span class="number">1</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException();</span><br><span class="line">        <span class="keyword">synchronized</span> (Vector.<span class="keyword">this</span>) &#123;</span><br><span class="line">            checkForComodification();</span><br><span class="line">            Vector.<span class="keyword">this</span>.remove(lastRet);</span><br><span class="line">            expectedModCount = modCount;</span><br><span class="line">        &#125;</span><br><span class="line">        cursor = lastRet;</span><br><span class="line">        lastRet = -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">checkForComodification</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (modCount != expectedModCount)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> ConcurrentModificationException();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="public-synchronized-ListIterator-lt-E-gt-listIterator-int-index"><a href="#public-synchronized-ListIterator-lt-E-gt-listIterator-int-index" class="headerlink" title="public synchronized ListIterator&lt;E&gt; listIterator(int index)"></a>public synchronized ListIterator&lt;E&gt; listIterator(int index)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> ListIterator&lt;E&gt; <span class="title">listIterator</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (index &lt; <span class="number">0</span> || index &gt; elementCount)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IndexOutOfBoundsException(<span class="string">"Index: "</span>+index);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ListItr(index);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> ListIterator&lt;E&gt; <span class="title">listIterator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ListItr(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回一个基于Vector集合的可以从index位置开始遍历的迭代器。如果index参数没有传，那么默认从首部位置开始迭代。该迭代器可以对Vector集合进行双向遍历。ListItr(0)的相关实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ListItr</span> <span class="keyword">extends</span> <span class="title">Itr</span> <span class="keyword">implements</span> <span class="title">ListIterator</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">    ListItr(<span class="keyword">int</span> index) &#123;</span><br><span class="line">        <span class="keyword">super</span>();</span><br><span class="line">        cursor = index;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasPrevious</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> cursor != <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">nextIndex</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> cursor;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">previousIndex</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> cursor - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> E <span class="title">previous</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (Vector.<span class="keyword">this</span>) &#123;</span><br><span class="line">            checkForComodification();</span><br><span class="line">            <span class="keyword">int</span> i = cursor - <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> (i &lt; <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line">            cursor = i;</span><br><span class="line">            <span class="keyword">return</span> elementData(lastRet = i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">set</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (lastRet == -<span class="number">1</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException();</span><br><span class="line">        <span class="keyword">synchronized</span> (Vector.<span class="keyword">this</span>) &#123;</span><br><span class="line">            checkForComodification();</span><br><span class="line">            Vector.<span class="keyword">this</span>.set(lastRet, e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i = cursor;</span><br><span class="line">        <span class="keyword">synchronized</span> (Vector.<span class="keyword">this</span>) &#123;</span><br><span class="line">            checkForComodification();</span><br><span class="line">            Vector.<span class="keyword">this</span>.add(i, e);</span><br><span class="line">            expectedModCount = modCount;</span><br><span class="line">        &#125;</span><br><span class="line">        cursor = i + <span class="number">1</span>;</span><br><span class="line">        lastRet = -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;</p>
+<h2 id="涉及基础知识点"><a href="#涉及基础知识点" class="headerlink" title="涉及基础知识点"></a>涉及基础知识点</h2><ol>
+<li><p><strong>Enumeration和Iterator的联系</strong></p>
+<p>&emsp;&emsp;Enumeration接口是JDK1.0时推出的，在JDK1.5之后为Enumeration接口进行了扩充，增加了泛型的操作应用。Iterator迭代器取代了 Enumeration的功能，同时增添了删除元素的方法，并且对方法的名称进行了改进。为什么还要使用Enumeration？这是因为一些比较古老的系统或者类库中的方法还在使用Enumeration接口，因此为了兼容，继续保留Enumeration相关定义保证代码正常有效。本文中涉及到的Vector就仍有Enumeration的具体实现。还有Iterator 是 Fast-Fail的，但 Enumeration不是，也就是说，Iteartor可以对非自身作出的结构化修改作出响应，而Enumeration没有这方面的判断和操作。</p>
+</li>
+<li><p><strong>Vector实现writeObject(java.io.ObjectOutputStream s)的意义</strong></p>
+<p>&emsp;&emsp;和ArrayList一样，Vector自己实现了writeObject方法用来对elementData、elementCount和capacityIncrement执行序列化操作。Vector通过writeObject把elementData、elementCount和capacityIncrement里的元素写入到输出流ObjectOutputStream )中，通过默认处理从输入流（ObjectInputStream ）读取到被序列化的数据并反序列化之后存储到elementData。</p>
+<p>&emsp;&emsp;需要注意的是，writeObject方法都被声明为私有方法，且在Vector内部没有任何地方调用了该方法。实际上，这两个方法是通过反射的方式出现在了ObjectOutputStream、的方法writeObject()和调用栈中。</p>
+</li>
+<li><p><strong>为什么线程安全的Vector会比非线程安全的ArrayList慢</strong></p>
+<p>&emsp;&emsp;多线程环境中涉及到一个概念—上下文切换。由于CPU同一个时刻只能执行一个任务，所以如果让CPU在不同的任务之间来回切换任务执行的话不可避免的会执行保存当前任务状态、加载下一个任务状态、执行下一个任务等过程。任务的状态保存和再加载过程被称为上下文切换。而上下文切换会导致直接直接的性能消耗：状态和任务的加载、再加载，也包括间接的性能消耗：不同线程之间的数据共享等问题。</p>
+</li>
+</ol>
+<p>&emsp;</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>LINFO. <a href="http://www.linfo.org/context_switch.html" target="_blank" rel="noopener">Context Switch Definition</a> [E]</li>
+<li>Wikipedia. <a href="https://zh.wikipedia.org/wiki/%E4%B8%8A%E4%B8%8B%E6%96%87%E4%BA%A4%E6%8F%9B" target="_blank" rel="noopener">上下文交换</a> [E]</li>
+<li>rhwayfunn. <a href="https://blog.csdn.net/u011116672/article/details/51136044" target="_blank" rel="noopener">Java并发编程系列之三十：多线程的代价</a> [E]</li>
+</ol>
+<p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-Collection-Vector.html" target="_blank" title="Java Collection 04 - Vector">Java Collection 04 - Vector</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-Collection-Vector.html" target="_blank" title="Java Collection 04 - Vector">https://marcuseddie.github.io/2018/java-Collection-Vector.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2018/java-FilterReader-FilterWriter.html" class="alignleft prev" title="Java I/O 19 - FilterReader &amp; FilterWriter"> 上一篇： Java I/O 19 - FilterReader &amp; Filter...</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2018/java-CharArrayReader-CharArrayWriter.html" class="alignright next" title="Java I/O 18 - CharArrayReader &amp; CharArrayWriter"> 下一篇： Java I/O 18 - CharArrayReader &amp; Cha...</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

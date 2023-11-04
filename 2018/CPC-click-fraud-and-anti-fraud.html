@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      CPC作弊与反作弊分析 | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="关于CPC的点击作弊和反作弊的一些论述。首先阐述了网络点击、点击作弊的概念，点击作弊的作弊形式、作弊特征以及如何去发现是否存在作弊现象。最后给出了反作弊的一些理论解决思路，诸如孤立点检测和贝叶斯分类可以满足反作弊的一些基本要求，识别出其中的反作弊数据。">
+<meta name="keywords" content="Pay-per-click,cost per click,CPC,Click fraud,点击作弊,反作弊,作弊形式,作弊特征,孤立点检测,贝叶斯分类">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CPC作弊与反作弊分析 | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/CPC-click-fraud-and-anti-fraud.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="关于CPC的点击作弊和反作弊的一些论述。首先阐述了网络点击、点击作弊的概念，点击作弊的作弊形式、作弊特征以及如何去发现是否存在作弊现象。最后给出了反作弊的一些理论解决思路，诸如孤立点检测和贝叶斯分类可以满足反作弊的一些基本要求，识别出其中的反作弊数据。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.349Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CPC作弊与反作弊分析 | Mr.Muzi">
+<meta name="twitter:description" content="关于CPC的点击作弊和反作弊的一些论述。首先阐述了网络点击、点击作弊的概念，点击作弊的作弊形式、作弊特征以及如何去发现是否存在作弊现象。最后给出了反作弊的一些理论解决思路，诸如孤立点检测和贝叶斯分类可以满足反作弊的一些基本要求，识别出其中的反作弊数据。">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>CPC作弊与反作弊分析</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-05-14" class="post-meta__date date">2018-05-14</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;6k&emsp;阅读时长:&nbsp;21&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/计算广告/">计算广告</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/CPC广告/">CPC广告</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;点击是用户在使用互联网过程中最频繁的操作之一，用户通过点击一个跳转链接来访问非当前页面的网络资源。在广告行业，每点击扣费(Cost Per Click)是一种很常见且受欢迎的计费模式。<br><a id="more"></a><br>在Wikipedia中，对CPC做了如下定义：</p>
+<blockquote>
+<p>Pay-per-click (PPC), also known as cost per click (CPC), is an internet advertising model used to direct traffic to websites, in which an advertiser pays a publisher (typically a website owner or a network of websites) when the ad is clicked.</p>
+</blockquote>
+<p>&emsp;&emsp;在这种模式中，会有三种角色参与其中：广告内容提供者(广告主)、广告内容发布平台、广告内容受众群体。受众群体点击了某个跳转链接(广告)，广告主则向发布平台支付该次点击的费用，而发布平台则需要保证广告主的内容在预算一定的情况下可以得到最大范围的传播和宣传。</p>
+<h2 id="什么是网络点击作弊-Click-fraud"><a href="#什么是网络点击作弊-Click-fraud" class="headerlink" title="什么是网络点击作弊(Click fraud)"></a><b>什么是网络点击作弊(Click fraud)</b></h2><blockquote>
+<p>Click fraud is a type of fraud that occurs on the Internet in pay-per-click (PPC) online advertising. In this type of advertising, the owners of websites that post the ads are paid an amount of money determined by how many visitors to the sites click on the ads. Fraud occurs when a person, automated script or computer program imitates a legitimate user of a web browser, clicking on such an ad without having an actual interest in the target of the ad’s link. Click fraud is the subject of some controversy and increasing litigation due to the advertising networks being a key beneficiary of the fraud.</p>
+</blockquote>
+<p>&emsp;&emsp;点击作弊通常带有一定的金钱目的或者商业竞争目的。作弊者通过一定的不正当的技术手段对网络广告进行大量的恶意点击，而这些点击通常都是无效点击。比较明显的例子就是广告内容发布平台通过点击其平台上的广告来向广告主收取点击费用，或者广告主的同行业竞争者通过点击对方的广告消耗其广告预算进而实现其广告无法继续展示而使得竞争者可以获得更多的展示资源。这里的无效表示这些点击不代表点击操作发生人（真实用户）的兴趣和关注点，不代表真实用户的实际需求，仅仅是为了迎合某种目的，同时这些点击也不能为广告主带来期望回报和收益，相反还会增加广告主的宣传成本。</p>
+<p>&emsp;&emsp;互联网因为其结构的特殊性导致了信任需要通过互联网中每个节点自身保证自身可以被其他节点信任。网络广告也越来越成为最迅速、传播范围最广的广告投放方式之一。网络广告所产生的经济收入逐渐的成为广告行业的重要收入来源和组成部分。而点击作弊的出现会对互联网这个虚拟空间中的相互信任产生很难修复的破坏，成为破坏在线广告生态系统信任度的源泉之一。由此带来了广告主不会再信任并选择互联网平台来发布广告推广自己的产品，广告发布平台不会被得到信任，自身业务和发展受到了限制，相关的技术和理论支撑得不到有效的验证和发展。</p>
+<h2 id="谁会从中受益"><a href="#谁会从中受益" class="headerlink" title="谁会从中受益"></a><b>谁会从中受益</b></h2><p>&emsp;&emsp;如下是前述三种角色的常见出现场景和身份：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">角色</th>
+<th style="text-align:center">场景</th>
+<th style="text-align:center">身份</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">广告内容提供者（广告主）</td>
+<td style="text-align:center">互联网背景</td>
+<td style="text-align:center">希望可以引入流量的站点拥有者</td>
+</tr>
+<tr>
+<td style="text-align:center">广告内容提供者（广告主）</td>
+<td style="text-align:center">电商背景</td>
+<td style="text-align:center">入驻商家或者企业</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>&emsp;&emsp;广告内容提供者还可以分为两类，提供者自身和其他竞争者。这两种身份之间在同一个发布平台中存在一种争夺优秀展示位置和机会的竞争关系，因为同一个发布平台中展示效果最优秀的展示位置总是有限的，可是想要占有这个位置的广告主却有很多，都想占据有利的广告展示位置来实现投入和收益最大化。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">角色</th>
+<th style="text-align:center">场景</th>
+<th style="text-align:center">身份</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">广告内容发布平台</td>
+<td style="text-align:center">互联网背景</td>
+<td style="text-align:center">具有高人气、高流量的网站或者专业平台</td>
+</tr>
+<tr>
+<td style="text-align:center">广告内容发布平台</td>
+<td style="text-align:center">电商背景</td>
+<td style="text-align:center">电商网站平台</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">角色</th>
+<th style="text-align:center">场景</th>
+<th style="text-align:center">身份</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">广告内容受众群体</td>
+<td style="text-align:center">互联网背景</td>
+<td style="text-align:center">任何可上网人群</td>
+</tr>
+<tr>
+<td style="text-align:center">广告内容受众群体</td>
+<td style="text-align:center">电商背景</td>
+<td style="text-align:center">为满足某种购物需求的消费者</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>&emsp;&emsp;首先，广告内容发布平台是最能从点击作弊中获利的角色。发布平台存在的意义就是为了帮助广告主在对如何做广告投放了解不足的情况下利用自身的优势和专业能力帮助广告主最大范围的投放广告。因为CPC模式的特点决定了不管广告点击是否合法有效，只要产生了点击行为，广告主都要支付相应的费用给发布平台。有时为了产生或者增加这种收益，发布平台自身会利用一些方式方法去执行一些点击操作来向广告主收取广告费用。但是这种收益是一种竭泽而渔的收益，其实已经构成了点击欺诈，由此带来的是发布平台和广告主之间的合作关系被破坏，广告主需要为此承担更多的经济损失。</p>
+<p>&emsp;&emsp;其次，广告主的其他竞争者也是点击作弊的获益方。因为优秀的广告展示位置总是有限的，所以其他竞争者通过制造大量点击行为消耗掉广告主的广告预算，增加广告主的广告投放成本，最终让广告主无法继续投放广告。这样其他竞争者相对而言就有了一定的竞争优势可以获得更多的展示机会。</p>
+<h2 id="网络点击欺诈作弊的常见形式-手段-特征"><a href="#网络点击欺诈作弊的常见形式-手段-特征" class="headerlink" title="网络点击欺诈作弊的常见形式\手段\特征"></a><b>网络点击欺诈作弊的常见形式\手段\特征</b></h2><h3 id="作弊方式"><a href="#作弊方式" class="headerlink" title="作弊方式"></a>作弊方式</h3><h4 id="人工作弊"><a href="#人工作弊" class="headerlink" title="人工作弊"></a>人工作弊</h4><ol>
+<li><p>作弊联盟。若干个广告发布平台结成联盟，互相点击联盟中其他成员平台上展示的广告。</p>
+</li>
+<li><p>诱骗点击。这种点击也被称为欺诈流量。这种点击通常并不是由点击获益方发起的，更多时候是由真实用户产生并执行的，但是用户并不清楚在这种情况下他们是在执行带有作弊性质的点击行为。广告内容发布平台在设计广告展示时，会通过一些设计和交互手段让用户大概率的产生一些用户关注度很少的点击，尽管这些点击很有可能是用户不想执行的，或者这些广告内容对用户产生了一定的诱导而使用户执行了点击。更有甚者，点击广告是实现用户目的的必要操作之一。</p>
+</li>
+<li><p>人海点击。某太祖兔在《论持久战》里说过一句话：让敌人陷入人民战争的汪洋大海。通过雇佣大量的廉价人力，在给予一定酬劳的情况下可以对指定广告内容不停的进行点击操作。这些人力不需要技术门槛，只需要一台可以上网的电脑、手机，按照作弊者编写的操作手册按部就班的执行就可以完成操作。由于这种方法近似等同于真实用户的真实点击，所以对于这种类型的作弊点击区分是否为真实用户还是有困难的。</p>
+</li>
+<li><p>代理服务。因为每次请求时服务器都会记录请求的ip地址信息，所以作弊方在通过使用代理服务后可以随时改变自己的ip地址。这样的一个结果就是每次点击都是同一个人，在同一台电脑上完成的，而服务器会认为发过来的每个请求来自于不同的机器，进而不会将这样的点击判定为作弊点击。</p>
+</li>
+<li><p>清空cookie。</p>
+</li>
+</ol>
+<h4 id="机器作弊"><a href="#机器作弊" class="headerlink" title="机器作弊"></a>机器作弊</h4><ol>
+<li><p>使用程序自动重复执行广告的点击过程。</p>
+</li>
+<li><p>肉鸡控制。关于肉鸡(Zombie computer)一词，Wikipedia给出了如下定义：</p>
+<blockquote>
+<p>In computer science, a zombie is a computer connected to the Internet that has been compromised by a hacker, computer virus or trojan horse program and can be used to perform malicious tasks of one sort or another under remote direction. Botnets of zombie computers are often used to spread e-mail spam and launch denial-of-service attacks (DOS attacks). Most owners of “zombie” computers are unaware that their system is being used in this way. Because the owner tends to be unaware, these computers are metaphorically compared to fictional zombies. A coordinated DDoS attack by multiple botnet machines also resembles a “zombie horde attack”, as depicted in fictional zombie films.</p>
+</blockquote>
+</li>
+</ol>
+<p>&emsp;&emsp;这种作弊方式其实已经超出了点击作弊的范畴了，因为一旦获得了肉鸡资源，可以做的事情就远不止点击作弊这一种了，一个非常普遍的用途就是用来发动DDoS攻击。对于作弊者来说，只需要对肉鸡发出控制指令，之后肉鸡机器便会根据指令去执行广告点击操作。和人海点击类似，这也是一种近似于真实点击的作弊点击，会增加服务端判定这种点击是否合法的难度。</p>
+<p>&emsp;3. 爬虫程序。一些爬虫程序在抓取页面数据时，可能会不加区分的将CPC广告的数据一并获取，这种情况下当事人有可能其本意并非要参与作弊，只是为了实现其他目的的同时附带性的执行了一些点击操作。</p>
+<h3 id="常见现象"><a href="#常见现象" class="headerlink" title="常见现象"></a>常见现象</h3><ol>
+<li><p>搜索情境下CPC广告关键词数据异常。某个关键词的相关展示数据在排除掉一些当下热点事件因素外与历史同期相比差异比较悬殊时可以推测是被执行了点击作弊。</p>
+</li>
+<li><p>同一IP访问。最简单的作弊方式，最容易被发现，但是依旧有大量的使用案例。</p>
+</li>
+<li><p>点显比异常。点显比（Click-Through-Rate）过低表示可能点击数过小，说明相关广告信息无法满足用户需求。还有一种可能是展示数过低，表示用户甚至没有多少机会可以看到广告。相反，点显比过高则可以理解成成点击次数的增长速度大于展示次数的增长速度，最终会慢慢趋近于1。这种情况下就意味着有展示必定有点击，然而，这是不正常的，根据Google AdSense的统计，通常情况下的CTR在2%左右。也就是说，平均百次展示才会带来两个点击。</p>
+</li>
+<li><p>展示/点击来源不匹配。作弊者为了满足特征(2)，会使用代理服务器不停的更换IP地址，这么做虽然避免了特征(2)的检测，但是为带来下面的这个问题。有些广告的展示是基于区域的，可能会在A区域展示的广告在B区域就不会展示，代理服务器会动态更新IP地址的时候可能会产生非A区域的IP地址，那么这种情况下根本就不可能会产生点击结果实际上产生了，那么可以判定这种点击是作弊点击了。</p>
+</li>
+<li><p>用户页面停留时间过短。页面停留时间目前通常使用的计算方法是，从用户点击广告链接到达当前页面开始计算，到用户离开当前页面到达下一个页面结束。这段时间正常情况下会由需求转变为寻找和关注，再决定是否有点击的必要。如果时间过短会认为用户在执行了点击操作之后在页面尚未加载完成或者尚未有充足的时间去浏览页面内容就关闭了页面。</p>
+</li>
+<li><p>点击坐标分析。包括点击坐标值是否存在大量的相同值，这种情况下需要判定是否为机器作弊。除此之外，可以考虑建议点击坐标分布热图，依靠一些生物特性来协助判定是否存在作弊点击。如果点击偏离热图集中区域过于严重，则需要检测当前点击是否为作为点击了。</p>
+</li>
+<li><p>时间先后顺序异常。网页加载时间、用户离开时间、用户进入时间、用户点击时间之间的先后关系判定，时间间隔范围是否有效。</p>
+</li>
+</ol>
+<h3 id="数据分析指标"><a href="#数据分析指标" class="headerlink" title="数据分析指标"></a>数据分析指标</h3><p>&emsp;&emsp;可以收集到的一些必要点击属性值（包括但不限于如下）：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">属性</th>
+<th style="text-align:center">描述</th>
+<th style="text-align:center">备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">uuid/guid</td>
+<td style="text-align:center">用户标识</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">IP</td>
+<td style="text-align:center">IP地址</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">refere</td>
+<td style="text-align:center">http请求引用</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">clicktime</td>
+<td style="text-align:center">点击时间</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">click_h</td>
+<td style="text-align:center">点击坐标</td>
+<td style="text-align:center">垂直坐标值</td>
+</tr>
+<tr>
+<td style="text-align:center">click_w</td>
+<td style="text-align:center">点击坐标</td>
+<td style="text-align:center">水平坐标值</td>
+</tr>
+<tr>
+<td style="text-align:center">screen_h</td>
+<td style="text-align:center">屏幕可视区域高度</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">screen_w</td>
+<td style="text-align:center">屏幕可视区域宽度</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">screen_s</td>
+<td style="text-align:center">屏幕分辨率色彩度</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">siteUrl</td>
+<td style="text-align:center">用户访问地址</td>
+<td style="text-align:center">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>。。。</p>
+<h2 id="如何判定网络点击欺诈作弊"><a href="#如何判定网络点击欺诈作弊" class="headerlink" title="如何判定网络点击欺诈作弊"></a><b>如何判定网络点击欺诈作弊</b></h2><h3 id="单一指标根据阈值判定是否作弊"><a href="#单一指标根据阈值判定是否作弊" class="headerlink" title="单一指标根据阈值判定是否作弊"></a>单一指标根据阈值判定是否作弊</h3><p>&emsp;&emsp;最简单的一种判定方法，根据历史经验或者一些得到认可的统计数据设置作弊规则的阈值范围，在获取到点击数据后根据作弊规则和对应阈值判定点击是否正常。如果设计了多条作弊规则，那么依次判定，多个判定结果取或集最终判定点击是否作弊。一些常见的判定如下：</p>
+<ol>
+<li><p>IP判定。判断同一IP连续点击次数和连续点击时间。除此之外，可以根据动态代理生成的IP地址的特点判定当前IP地址是否为代理生成的IP地址，如果是，则可以怀疑该点击有作弊嫌疑，需要进行进一步的判定；</p>
+</li>
+<li><p>通过一些软硬件信息判定。诸如网卡MAC地址、硬盘序列号、移动设备的一些唯一序列号都可以用来进行作弊判定。这些信息的特点是很难去频繁修改，因此这些信息可以和用户形成一种稳定的一一对应关系。但是这些信息在web应用上很难获取得到，所以很难在web应用上得到应用；</p>
+</li>
+<li><p>……</p>
+</li>
+</ol>
+<p>&emsp;&emsp;显然，这种方法的优点是容易实现，而且逻辑简单。但是这种方法的缺点也很明显，那就是非常容易误判和漏判，产生一种非黑即白的判定结果。举例来说，根据同一IP地址来判定是否作弊这个条规则就不适用于企业局域网。在企业局域网里，所有的局域网成员通过有限的几个公网IP与外界进行联系。这种情况下，尽管是同样的IP地址点击了同一个广告，但实际上是由不同的有真实需求的用户进行了点击操作，这种情况下的点击可以为广告主带来真实的有效收益，所以就不能判定该点击为作弊点击。除此之外，由于作弊者可以利用动态代理去随时改变IP地址，这样会使得IP地址黑名单的命中率不够理想，会导致黑名单内容不断增加，但是命中率却没有随着黑名单的增加而得到提升。</p>
+<p>&emsp;&emsp;由于每条指标都有阈值范围，而作弊者会随着作弊判定规则作出一定的改变，所以需要建立一种调节机制来使得阈值可以通过学习历史数据来动态改变进而可以更好的匹配和判定作弊行为。</p>
+<h3 id="根据时间差和连续点击次数判定作弊"><a href="#根据时间差和连续点击次数判定作弊" class="headerlink" title="根据时间差和连续点击次数判定作弊"></a>根据时间差和连续点击次数判定作弊</h3><p>&emsp;&emsp;一种比较常见的算法是根据浏览时间差和点击次数来判断点击是否生效，在具体的实现中需要依赖历史数据来协助判定点击是否有效。该算法的主要思想是根据两次点击之间的时间差和连续点击次数是否同时满足阈值条件来判定作弊。具体逻辑如下：</p>
+<ol>
+<li><p>当前用户点击某个广告后记录点击IP、当前点击的时刻信息，根据用户唯一标识获取点击次数和最近一次点击的时刻；</p>
+</li>
+<li><p>判断点击次数是否小于设定阈值，如果小于阈值则执行下一步，否则判定最近一次点击和当前点击的时间差是否大于阈值，如果大于阈值则认为点击正常通过判定并将点击次数清0重新计数。如果时间差小于阈值，则认为作弊；</p>
+</li>
+<li><p>判定用户在当前页面的停留时间，如果停留时间小于设定阈值，那么认为是用户错点或者是雇佣人力进行的点击，这两种情况都不能判定为正常点击。反之执行作弊判定之后的诸如扣费等后续操作。</p>
+</li>
+</ol>
+<p>&emsp;&emsp;在收到每次点击请求后都需要把响应的点击数据信息保存下来供日后分析使用。这种方法建立在根据IP地址识别用户的基础之上，也就是说这种方法对于IP地址随时变更的情况则基本上无法处理，而会把每个不同的IP地址当做一个不同的用户会执行上述的判断。所以这种方法需要IP地址判定结合在一起公共使用，如果判定当前IP地址是一个正常的IP地址，那么就根据该IP的历史点击次数记录和点击时间差阈值去判定该IP地址发送的点击请求是否正常有效，如果IP地址判定都未通过，那么可以直接认为该点击存在作弊嫌疑。</p>
+<p>&emsp;&emsp;还有一些变异方法和这种方法类似，也是基于连续点击次数和点击时间差来判断是否属于正常点击。现有的一些判定方法是计算在设定时间长度范围内同用户(根据IP地址或者UUID/GUID)产生的点击请求数量是否超过阈值来判定是否存在作弊行为。具体做法是在收到点击请求时根据当时时间往前延伸设定的时间长度，并计算这段时间内当前用户的点击记录数，根据记录数和阈值进行比较判定当前点击是否有效。这种做法相对来说更加简单，每次得到点击请求后只需要记录该次点击请求，然后统计设定的时间长度范围内的点击记录数即可判定当前点击请求是否正常。</p>
+<h3 id="孤立点检测和贝叶斯分类判定"><a href="#孤立点检测和贝叶斯分类判定" class="headerlink" title="孤立点检测和贝叶斯分类判定"></a>孤立点检测和贝叶斯分类判定</h3><p>&emsp;&emsp;在收到用户发出的点击请求之后，首先利用关联聚类建立一个关于当前被点击广告的指定时间段内的疑似点击集合。这个集合中的点击可能是正常用户的真实点击，也可能是作弊者制造的欺诈点击，所以接下来就需要通过孤立点检测和贝叶斯分类分离出其中的作弊点击和有效点击。</p>
+<p>&emsp;&emsp;孤立点指的是在一个数据集合中与大多数数据元素差异很大的元素，差异会大到让人难以用正常误差去解释这种差异。基于关联聚类得到的欺诈点击集合可以根据设定的点击属性维度把作弊点击和正常点击分离开来并把作弊点击看做是一种孤立点，然后根据事先设定的孤立点最大数量阈值N排除掉指定阈值数量的点击数据。根据定义的两条记录属性差异度计算公式，可以计算出任意两条点击记录之间的一个属性差异度，然后可以基于任意两个点击数据之间构建出一个相异度矩阵，计算出矩阵中每行相异度大于相异度阈值的数量。将相异度矩阵根据每行超过相异度阈值的记录个数重新排序，排在最前面的被认定为作弊点击的可能性更大。剔除掉排名前K位的孤立点数据，剩下的就构成了一个候选欺诈群组。</p>
+<p>&emsp;&emsp;采用孤立点检测方法得到候选欺诈组后，其中的点击记录还是会由欺诈点击和正常点击构成。因此为了提出真正的正常点击、分离出所有的欺诈点击，需要采用贝叶斯分类的方法来判定每个点击是否为作弊点击。贝叶斯公式是概率统计中的应用所观察到的现象对有关概率分布的主观判断（即先验概率）进行修正的标准方法。假设有若干个类，C<sub>1</sub>，C<sub>2</sub>，……..C<sub>m</sub>，对于指定数据样本X，且所有的类条件独立，贝叶斯分类将判定X属于C<sub>i</sub>当且仅当：</p>
+<p>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;P(C<sub>i</sub>|X) &gt; P(C<sub>j</sub>|X), 1 ≤ j ≤ m, j ≠ i &emsp;&emsp;&emsp;&emsp;(1)</p>
+<p>&emsp;&emsp;根据贝叶斯公式：</p>
+<p>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;P(C<sub>i</sub>|X) = P(X|C<sub>i</sub>) * P(C<sub>i</sub>) / P(X)&emsp;&emsp;&emsp;&emsp;(2)</p>
+<p>&emsp;&emsp;P(X)对于所有的类都是一个常量，所以只需要计算P(X|C<sub>i</sub>) * P(C<sub>i</sub>)这个算式的结果即可。由于每条数据样本X（此处为每条点击记录）具有若干个属性值，所以假设各属性值之间相互独立，取值概率不会受到其他属性值的影响也不会影响其他属性值的取值，即给定的样本属性值条件独立，则：</p>
+<p>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;P(X|C<sub>i</sub>) = P(x<sub>1</sub>, x<sub>2</sub>……x<sub>k</sub>|C<sub>i</sub>) = P(x<sub>1</sub>|C<sub>i</sub>) × P(x<sub>2</sub>|C<sub>i</sub>) × …… × P(x<sub>k</sub>|C<sub>i</sub>)&emsp;&emsp;&emsp;&emsp;(3)</p>
+<p>&emsp;&emsp;在公式三中，x<sub>k</sub>为点击记录样本X中的第k个属性的属性值。</p>
+<p>&emsp;&emsp;我们基于一定的训练集可以把点击记录分为两个类别，C<sub>1</sub>为正常点击，C<sub>2</sub>为作弊点击。这两个类可分别对应（无先后关系）公式(1)-(3)中C<sub>i</sub>和C<sub>j</sub>，点击事件样本X中包含的属性可参考但不限于表格<b>数据分析指标</b>中提及的属性。基于训练数据集分别计算点击事件样本X中每个属性值的先验概率，获取乘积计算P(X|C<sub>i</sub>)的结果。同一条样本X分别就C<sub>1</sub>和C<sub>2</sub>计算其概率值，如果P(C<sub>1</sub>|X) &gt; P(C<sub>2</sub>|X)，则当前点击样本X可以被认定为一条正常点击，反之则认为是一条作弊点击。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a><b>参考文献</b></h2><ol>
+<li>在线广告投放系统及技术的演变</li>
+<li>网络广告中反CPC点击作弊研究</li>
+<li>一种有效预防点击欺诈的算法</li>
+<li>点击欺诈群体检测与发现</li>
+<li>Web挖掘在网络广告点击欺诈检测中的应用</li>
+<li>Wikipedia<br>&emsp;<br>&emsp;<br>&emsp;</li>
+</ol>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/CPC-click-fraud-and-anti-fraud.html" target="_blank" title="CPC作弊与反作弊分析">CPC作弊与反作弊分析</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/CPC-click-fraud-and-anti-fraud.html" target="_blank" title="CPC作弊与反作弊分析">https://marcuseddie.github.io/2018/CPC-click-fraud-and-anti-fraud.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2018/Linear-algebra-determinant.html" class="alignleft prev" title="线性代数学习笔记01-行列式"> 上一篇： 线性代数学习笔记01-行列式</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2018/Site-Deploy-History.html" class="alignright next" title="Site Deploy History"> 下一篇： Site Deploy History</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

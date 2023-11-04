@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      【译】为什么要实施敏捷 | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="&amp;emsp;&amp;emsp;在我很小的时候，家里人给我起了一个绰号：“Bu’why”，这是因为我总是向周围的人问为什么。大多数时候，他们会尝试解答我的问题，但是后来他们给我的这个绰号中也流露出了他们的挫败感。 &amp;emsp;&amp;emsp;直到现在，我依旧执迷于事物背后的真正原因。因为我想知道交通拥堵背后的真正原因，于是我读完了一整本关于交通模式的书籍。因为我想尝试得到更好的休息，我读完了一本关于睡眠的书籍">
+<meta name="keywords" content="transalate">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【译】为什么要实施敏捷 | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/The-Why-of-Agile.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;在我很小的时候，家里人给我起了一个绰号：“Bu’why”，这是因为我总是向周围的人问为什么。大多数时候，他们会尝试解答我的问题，但是后来他们给我的这个绰号中也流露出了他们的挫败感。 &amp;emsp;&amp;emsp;直到现在，我依旧执迷于事物背后的真正原因。因为我想知道交通拥堵背后的真正原因，于是我读完了一整本关于交通模式的书籍。因为我想尝试得到更好的休息，我读完了一本关于睡眠的书籍">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.353Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【译】为什么要实施敏捷 | Mr.Muzi">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;在我很小的时候，家里人给我起了一个绰号：“Bu’why”，这是因为我总是向周围的人问为什么。大多数时候，他们会尝试解答我的问题，但是后来他们给我的这个绰号中也流露出了他们的挫败感。 &amp;emsp;&amp;emsp;直到现在，我依旧执迷于事物背后的真正原因。因为我想知道交通拥堵背后的真正原因，于是我读完了一整本关于交通模式的书籍。因为我想尝试得到更好的休息，我读完了一本关于睡眠的书籍">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>【译】为什么要实施敏捷</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-10-24" class="post-meta__date date">2018-10-24</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;2.3k&emsp;阅读时长:&nbsp;7&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/外文翻译/">外文翻译</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/协作翻译/">协作翻译</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;在我很小的时候，家里人给我起了一个绰号：“Bu’why”，这是因为我总是向周围的人问为什么。大多数时候，他们会尝试解答我的问题，但是后来他们给我的这个绰号中也流露出了他们的挫败感。</p>
+<p>&emsp;&emsp;直到现在，我依旧执迷于事物背后的真正原因。因为我想知道交通拥堵背后的真正原因，于是我读完了<a href="http://www.amazon.com/gp/product/B001BAGWQE/ref=dp-kindle-redirect?ie=UTF8&amp;btkr=1" target="_blank" rel="noopener">一整本关于交通模式的书籍</a>。因为我想尝试得到更好的休息，我读完了<a href="http://www.amazon.com/gp/product/B008XOG2N4?redirect=true&amp;ref_=kinw_myk_ro_title" target="_blank" rel="noopener">一本关于睡眠的书籍</a>。我坚信，‘为什么’是至关重要的。<br><a id="more"></a></p>
+<h2 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h2><blockquote>
+<p>已经被公认或确定的是正确且最高效的商业、专业流程。（<a href="https://en.wikipedia.org/wiki/Best_practice" target="_blank" rel="noopener">维基百科</a>）</p>
+</blockquote>
+<p>&emsp;&emsp;不幸的是，大多数人想要的是“什么”而不是“为什么”。他们需要处理的事情太多了，他们需要的是能解决他们手上的问题的现成的解决方案：节流、软件模型、制定计划、软件开发方法论、只要你坚持下来，你就能得到承诺于你的一切。</p>
+<p>&emsp;&emsp;“我们上一次尝试的系统因为其自身的先天缺陷被视为一个失败品，而这个新系统比上一个更好，这一次一定非常棒。”， Holy Grail 说。可能借助新系统事物的发展不至于太糟糕，但是对其抱有的期望高的有点不切实际了。没有人变得更开心，因为实际上并没有显著的提升。这到底是为什么？</p>
+<h2 id="软件开发很复杂"><a href="#软件开发很复杂" class="headerlink" title="软件开发很复杂"></a>软件开发很复杂</h2><p>&emsp;&emsp;2012年，当我在<a href="http://www.startuplessonslearned.com/2011/10/case-study-nordstrom-innovation-lab.html" target="_blank" rel="noopener">Nordstorm创新实验室</a>工作时，我第一次知道了<a href="https://en.wikipedia.org/wiki/Cynefin_Framework" target="_blank" rel="noopener">Cynefin框架</a>。它着眼于给定系统的复杂度，然后来决定什么样的方法可以用在这个系统上。它把系统拆成了<a href="https://commons.wikimedia.org/wiki/File:Cynefin_as_of_1st_June_2014.png" target="_blank" rel="noopener">四个类别，通常用四个象限表示</a>：</p>
+<ul>
+<li><p><strong>浅显的</strong></p>
+</li>
+<li><ul>
+<li>系统中拥有的关系通俗易懂的而且简单</li>
+<li>例子：堆放货架、修剪草坪</li>
+<li>方法：确定类别，采用合适的规则集合</li>
+</ul>
+</li>
+<li><p><strong>难懂的</strong></p>
+</li>
+<li><ul>
+<li>需要足够的分析，可以预测到因果关系</li>
+<li>例子：摩天大楼，X光机</li>
+<li>方法：预先分析场景，确定采用的技术</li>
+</ul>
+</li>
+<li><p><strong>复杂的</strong></p>
+</li>
+<li><ul>
+<li>因果关系仅可以在回顾时得到，但是每次都不会重复</li>
+<li>例子：股票市场，天气</li>
+<li>方法：调查问题范围，以适应技术</li>
+</ul>
+</li>
+<li><p><strong>混乱的</strong></p>
+</li>
+<li><ul>
+<li>因果关系是无法去感知的</li>
+<li>例子：自然灾害和其他紧急事件</li>
+<li>方法：应对和适应</li>
+</ul>
+</li>
+</ul>
+<p>&emsp;&emsp;你会注意到，越复杂难预测的系统随着时间的推移，创建的那些尝试预测这个系统的规则需要做的适应修改的地方越多。道理都是类似的。就拿股票市场这个复杂的系统来说吧，他的波动规律就经常性地打脸那些尝试预测他的上涨下跌周期的股票理论的脸，作何理论在他面前都变得无用，要在这种领域有所作为，不能一劳永逸，需要不断学习和适应。</p>
+<p>&emsp;&emsp;问题是:软件开发在这个连续过程中处在什么位置?有人可能会说这只不过是个工程问题，所以这就像设计建造摩天大楼那样按部就班做即可。另一些开发软件的过程中受到挫折的人，可能会说这就像历史中记载的自然灾害那样完全不可预测。</p>
+<p>&emsp;&emsp;有时这很复杂，有时这很混乱无序。大多数时候，这是复杂的。</p>
+<h2 id="处理复杂情况"><a href="#处理复杂情况" class="headerlink" title="处理复杂情况"></a>处理复杂情况</h2><p>&emsp;&emsp;Cynefin告诉我们，没有一套最佳实践可以告诉我们如何在给定的复杂系统中采取行动。它也确实指出一些初始的启发式类的方法是有用的，而我们的重点应该是探索问题领域，并随着时间的推移调整我们的方法。</p>
+<p>&emsp;&emsp;这听起来很熟悉，不是吗?每当开发团队为给定的项目采用一种新类型的功能时，不确定性就会上升。要知道一个给定的解决方案是否有效，唯一的方法是多探索一下。这就是正在开发的软件系统。还有五个复杂的系统在起作用:</p>
+<ul>
+<li>开发团队</li>
+<li>较大的组织</li>
+<li>当前生产环境下的应用</li>
+<li>生产环境下应用的用户</li>
+<li>商务环境</li>
+</ul>
+<p>&emsp;&emsp;上述系统中的任意一个都能轻易地导致一个排期紧密的开发项目出现问题：一堆意料之外的影响了正常业务的线上bug，开发团队成员突然的身体不适，业务方提出的关于发展方向上的改变。</p>
+<p>&emsp;&emsp;这就是为什么要实施<a href="http://agilemethodology.org/" target="_blank" rel="noopener">敏捷</a>。敏捷帮助开发团队来应对前面提到的所有问题，同时建立一个随时间变化而适应当前形势的框架。敏捷向开发团队提供了一套使之变得最棒、最具有生产力的工具。</p>
+<h2 id="关于为什么要实施敏捷的实践"><a href="#关于为什么要实施敏捷的实践" class="headerlink" title="关于为什么要实施敏捷的实践"></a>关于为什么要实施敏捷的实践</h2><p>&emsp;&emsp;接下来会讨论一些特定的“礼仪”以及它们存在的理由。我们需要摆脱“必须”和“应该”的思维模式，我们不这么做是因为它们是必要的，我们这么做是因为我们想从中得到一些我们想要的东西。如果我们没有办法再得到我们想要的，那么我们需要作出一些改变。</p>
+<ul>
+<li><strong>Sprints</strong> - 人类的规划能力还不是特别的强大。通过任务拆分，如果事情走向出现了问题，他们需要应对的问题就不会特别大。同时，在最开始的时候通过明确任务范围也缩小了外力因素带来的影响。</li>
+<li><strong>关于执行完成的严格定义</strong> - 当一个任务已经完成时，确保不会留下任何需要处理的工作来避免“<a href="https://en.wikipedia.org/wiki/Technical_debt" target="_blank" rel="noopener">技术债务</a>”。</li>
+<li><strong>故事点而不是小时数</strong> - 确保估算是一种仅用于团队在一段时间内实现计划和执行一致性的工具。 防止管理层认为“开发团队能力不足”，或试图钻制度的空子。</li>
+<li><strong>Spikes</strong> - 实际上是从Cynefin复杂域中“调查问题域”来提高确定性并且启动规划。</li>
+<li><strong>Sprint 阶段成果</strong> - 开发人员应通过实际完成的产品原型来展示他们的工作成果。庆祝本次Sprint的完成并期待下一个Sprint即将要做的工作。</li>
+<li><strong>回顾总结</strong> - 这是敏捷关于适应机制的核心。如果你仅仅做一件事情，那就去做，但是你必须解决在回顾总结过程中暴露出的困难和其他问题。</li>
+<li><strong>待办事项列表</strong> - 一旦Sprint启动，在业务方和开发人员之间不应该有频繁的需求变动。在准备开始一个新的sprint会议中，主要由业务方决定本次Sprint中需要完成的事项和任务，当然，有时也需要开发人员的参与。</li>
+<li><strong>Sprint计划</strong> - 这个会议的主要目的是开发人员评估任务，同时规划本次Sprint的目标。业务方应该出席会议并对关于本次Sprint中涉及的任务需要最终确认的问题负责解答确认。</li>
+</ul>
+<p>&emsp;&emsp;现在，那些敏捷教练说的诸如“在你接受采用敏捷的早期，你的估算会被停止”的言论是有道理的。这一切都是因为你处在一个逐步适应和提高的过程中。你的估算会更精确，困难阻碍会被解决，团队也会逐步减少历史遗留下来的技术债务问题。</p>
+<h2 id="反馈循环"><a href="#反馈循环" class="headerlink" title="反馈循环"></a>反馈循环</h2><blockquote>
+<p>控制系统的一部分，允许其进行反馈和自我修正，以及可以根据实际输出结果和期望的理想输出结果之间的差异调整其接下来的操作。 (<a href="http://www.thefreedictionary.com/feedback+loop" target="_blank" rel="noopener">American Heritage® Dictionary</a>)</p>
+</blockquote>
+<p>&emsp;&emsp;敏捷可以创建一个引导你走向你的最终目标的反馈循环。每一步都是一个小的胜利，让你感觉良好，给你带来更多的胜利。它就像一个恒温器，只不过你暂时还不知道目标温度是多少。事实证明，反馈循环也是<a href="https://en.wikipedia.org/wiki/Test-driven_development" target="_blank" rel="noopener">测试驱动开发（TTD）</a>和<a href="http://theleanstartup.com/" target="_blank" rel="noopener">精益创业</a>背后的本质。</p>
+<p>&emsp;&emsp;这里留给读者一个问题：如何调整你的软件开发反馈循环来使你的团队成为最棒的那个？在我的<a href="https://blog.scottnonnenberg.com/customizing-agile/" target="_blank" rel="noopener">第二篇敏捷文章：可定制的敏捷</a>中，我会为各位读者提供一些思路和想法。</p>
+<h2 id="致谢"><a href="#致谢" class="headerlink" title="致谢"></a>致谢</h2><p>&emsp;&emsp;本文由<a href="https://my.oschina.net/u/658291" target="_blank" rel="noopener">ZICK_ZEON</a>和作者共同完成，在这里向ZICK_ZEON表示感谢。</p>
+<p>&emsp;</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>原文链接：<a href="https://blog.chromium.org/2018/09/10-years-of-speed-in-chrome_11.html" target="_blank" rel="noopener">10 years of Speed in Chrome</a> </li>
+<li>译文链接：<a href="https://www.oschina.net/translate/the-why-of-agile" target="_blank" rel="noopener">为什么要实施敏捷</a> </li>
+</ol>
+<p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+	  	
+		  	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>参与翻译完成，首发于<a href="https://www.oschina.net/translate?tab=completed">开源中国社区</a>，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/The-Why-of-Agile.html" target="_blank" title="【译】为什么要实施敏捷">【译】为什么要实施敏捷</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/The-Why-of-Agile.html" target="_blank" title="【译】为什么要实施敏捷">https://marcuseddie.github.io/2018/The-Why-of-Agile.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2018/java-PipedInputStream-PipedOutputStream.html" class="alignleft prev" title="Java I/O 10 - PipedInputStream &amp; PipedOutputStream"> 上一篇： Java I/O 10 - PipedInputStream &amp; Pi...</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2018/java-FileInputStream-FileOutputStream.html" class="alignright next" title="Java I/O 09 - FileInputStream &amp; FileOutputStream"> 下一篇： Java I/O 09 - FileInputStream &amp; Fil...</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

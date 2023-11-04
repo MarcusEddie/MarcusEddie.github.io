@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      Java I/O 07 - PushbackInputStream | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="PushbackInputStream提供了unread方法来将已经从底层输入流中读出的字节数据再回退到输入流中，实现回退（push back）或者再读（re-read）操作。涉及到方法有read, unread, skip, available, close。再次调用read方法时，获取的将会是被回退的数据，直到回退的数据被读取完毕。">
+<meta name="keywords" content="PushbackInputStream, read, unread, skip, available, close">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java I&#x2F;O 07 - PushbackInputStream | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/java-PushbackInputStream.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="PushbackInputStream提供了unread方法来将已经从底层输入流中读出的字节数据再回退到输入流中，实现回退（push back）或者再读（re-read）操作。涉及到方法有read, unread, skip, available, close。再次调用read方法时，获取的将会是被回退的数据，直到回退的数据被读取完毕。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.357Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java I&#x2F;O 07 - PushbackInputStream | Mr.Muzi">
+<meta name="twitter:description" content="PushbackInputStream提供了unread方法来将已经从底层输入流中读出的字节数据再回退到输入流中，实现回退（push back）或者再读（re-read）操作。涉及到方法有read, unread, skip, available, close。再次调用read方法时，获取的将会是被回退的数据，直到回退的数据被读取完毕。">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>Java I/O 07 - PushbackInputStream</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-10-15" class="post-meta__date date">2018-10-15</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;1.6k&emsp;阅读时长:&nbsp;6&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.io.PushbackInputStream</strong> </em>的部分笔记，这个类可以完成对输入流数据的回退操作。也就是说，通过read方法从底层输入流中读出的数据可以在被退回到输入流中，这样下次read方法将会首先读取到被退回到输入流中的数据。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;PushbackInputStream提供了unread方法来将已经从底层输入流中读出的字节数据再回退到输入流中，实现回退（push back）或者再读（re-read）操作。在调用unread方法后再次调用read方法时，获取的将会是被回退的数据，直到回退的数据被读取完毕，才会获取到新的输入流数据。</p>
+<p>&emsp;</p>
+<h2 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// PushbackInputStream</span></span><br><span class="line">--java.lang.Object</span><br><span class="line">  --java.io.InputStream</span><br><span class="line">    --java.io.FilterInputStream</span><br><span class="line">      --java.io.PushbackInputStream</span><br></pre></td></tr></table></figure>
+<p>&emsp;</p>
+<h2 id="实现接口"><a href="#实现接口" class="headerlink" title="实现接口"></a>实现接口</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">类名</th>
+<th style="text-align:center">实现接口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">PushbackInputStream</td>
+<td style="text-align:center">Closeable,, AutoCloseable</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>&emsp;</p>
+<h2 id="部分方法"><a href="#部分方法" class="headerlink" title="部分方法"></a>部分方法</h2><h4 id="public-int-read"><a href="#public-int-read" class="headerlink" title="public int read()"></a>public int read()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    ensureOpen();</span><br><span class="line">    <span class="keyword">if</span> (pos &lt; buf.length) &#123;</span><br><span class="line">        <span class="keyword">return</span> buf[pos++] &amp; <span class="number">0xff</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">super</span>.read();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;读取一个字节数据并返回。因为在设计时，如果缓冲区数组buf是空的，那么pos的值等于buf的长度，所以如果第3行的判断满足，那么直接返回缓冲区数组buf中的下一个字节，此时缓冲区中尚有待读取的数据。否则，缓冲区中的数据已经全被读完，那么直接调用底层输入流的read方法返回一个字节数据。</p>
+<h4 id="public-int-read-byte-b-int-off-int-len"><a href="#public-int-read-byte-b-int-off-int-len" class="headerlink" title="public int read(byte[] b, int off, int len)"></a>public int read(byte[] b, int off, int len)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">(<span class="keyword">byte</span>[] b, <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    ensureOpen();</span><br><span class="line">    <span class="keyword">if</span> (b == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (off &lt; <span class="number">0</span> || len &lt; <span class="number">0</span> || len &gt; b.length - off) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IndexOutOfBoundsException();</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (len == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> avail = buf.length - pos;</span><br><span class="line">    <span class="keyword">if</span> (avail &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (len &lt; avail) &#123;</span><br><span class="line">            avail = len;</span><br><span class="line">        &#125;</span><br><span class="line">        System.arraycopy(buf, pos, b, off, avail);</span><br><span class="line">        pos += avail;</span><br><span class="line">        off += avail;</span><br><span class="line">        len -= avail;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (len &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        len = <span class="keyword">super</span>.read(b, off, len);</span><br><span class="line">        <span class="keyword">if</span> (len == -<span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> avail == <span class="number">0</span> ? -<span class="number">1</span> : avail;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> avail + len;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> avail;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;读取数据存储到入参b中。第2行代码用于保证底层输入流可用。第3 ~ 9行代码用于判断各种边界条件和参数校验。第11行代码用来计算缓冲区数组是否还有未读取的数据，如果有，那么第12 ~ 20行代码将首先从缓冲区数组中读取数据。第13 ~ 15行的代码用来判断缓冲区数组的未读取数据量是否满足入参len的需求，如果满足，那么b中的数据将全部来源于缓冲区数组，否则b的数据将从缓冲区数组和底层输入流共同获得。第21 ~ 27行代码会从底层输入流中获取数据。如果未从底层输入流中获得任何数据（即返回-1），那么就根据是否从缓冲区数组中获得了一个及以上字节的数据来判断最终需要返回的已读取字节数。</p>
+<h4 id="public-void-unread-int-b"><a href="#public-void-unread-int-b" class="headerlink" title="public void unread(int b)"></a>public void unread(int b)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unread</span><span class="params">(<span class="keyword">int</span> b)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    ensureOpen();</span><br><span class="line">    <span class="keyword">if</span> (pos == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"Push back buffer is full"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    buf[--pos] = (<span class="keyword">byte</span>)b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将已经读取出来的一个字节再退回到输入流中。这里会将入参数据b存储到缓冲区数组buf中，因为PushbackInputStream的read方法都是首先从缓冲区数组中获取数据，所以将b存储到缓冲区数组后，下一次调用read方法将会首先读取到先前存储到缓冲区数组中的数据b。</p>
+<h4 id="public-void-unread-byte-b-int-off-int-len"><a href="#public-void-unread-byte-b-int-off-int-len" class="headerlink" title="public void unread(byte[] b, int off, int len)"></a>public void unread(byte[] b, int off, int len)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unread</span><span class="params">(<span class="keyword">byte</span>[] b, <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    ensureOpen();</span><br><span class="line">    <span class="keyword">if</span> (len &gt; pos) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"Push back buffer is full"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    pos -= len;</span><br><span class="line">    System.arraycopy(b, off, buf, pos, len);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将数组b的数据回退到输入流中。基本思路和unread(int b)相同，不同的是这里调用了System.arraycopy()方法来完成数组与数组之间的数据复制。</p>
+<h4 id="public-void-unread-byte-b"><a href="#public-void-unread-byte-b" class="headerlink" title="public void unread(byte[] b)"></a>public void unread(byte[] b)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unread</span><span class="params">(<span class="keyword">byte</span>[] b)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    unread(b, <span class="number">0</span>, b.length);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;将数组b的数据回退到输入流中。</p>
+<h4 id="public-int-available"><a href="#public-int-available" class="headerlink" title="public int available()"></a>public int available()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">available</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    ensureOpen();</span><br><span class="line">    <span class="keyword">int</span> n = buf.length - pos;</span><br><span class="line">    <span class="keyword">int</span> avail = <span class="keyword">super</span>.available();</span><br><span class="line">    <span class="keyword">return</span> n &gt; (Integer.MAX_VALUE - avail)</span><br><span class="line">        ? Integer.MAX_VALUE</span><br><span class="line">        : n + avail;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回剩余可读取的字节数。这个结果涵盖了缓冲区数组中的剩余可读取的字节数和底层输入流中剩余刻度的字节数。第5行代码可以理解成如下代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> (n + avail)&gt; Integer.MAX_VALUE</span><br><span class="line">        ? Integer.MAX_VALUE</span><br><span class="line">        : n + avail;</span><br></pre></td></tr></table></figure>
+<h4 id="public-long-skip-long-n"><a href="#public-long-skip-long-n" class="headerlink" title="public long skip(long n)"></a>public long skip(long n)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">skip</span><span class="params">(<span class="keyword">long</span> n)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    ensureOpen();</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">long</span> pskip = buf.length - pos;</span><br><span class="line">    <span class="keyword">if</span> (pskip &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (n &lt; pskip) &#123;</span><br><span class="line">            pskip = n;</span><br><span class="line">        &#125;</span><br><span class="line">        pos += pskip;</span><br><span class="line">        n -= pskip;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (n &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        pskip += <span class="keyword">super</span>.skip(n);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> pskip;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;跳过输入流的指定长度的数据内容。在具体执行时，会首先判断缓冲区数组中是否有待读取的数据，如果有，那么会首先跳过缓冲区数组中的内容，第8 ~ 14行代码执行的便是跳过缓冲区数组内容的操作。如果缓冲区数组的内容都已经被跳过，此时缓冲区数组中已经没有待读取的数据了，而实际跳过字节数尚未达到入参n的要求，那么会直接跳过底层输入流中的数据。第15 ~17行代码则是对底层输入流直接处理。最后返回实际跳过的字节数。需要注意的是，在一些比较特殊的场景中，比如在读到文件结束时，整个输入流中已经没有可供跳过的内容了，从而导致实际跳过的字节数可能小于入参n。</p>
+<h4 id="public-synchronized-void-close"><a href="#public-synchronized-void-close" class="headerlink" title="public synchronized void close()"></a>public synchronized void close()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (in == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    in.close();</span><br><span class="line">    in = <span class="keyword">null</span>;</span><br><span class="line">    buf = <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;在结束调用后需要释放底层输入流的占用，同时释放缓冲区数组。</p>
+<h4 id="其他方法"><a href="#其他方法" class="headerlink" title="其他方法"></a>其他方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// PushbackInputStream不支持标记下一个读取位置</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">markSupported</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// PushbackInputStream的mark方法不做任何事情</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">mark</span><span class="params">(<span class="keyword">int</span> readlimit)</span> </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// PushbackInputStream的reset方法不做任何事情，仅发出异常提示信息</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">reset</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"mark/reset not supported"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;</p>
+<h2 id="涉及基础知识点"><a href="#涉及基础知识点" class="headerlink" title="涉及基础知识点"></a>涉及基础知识点</h2><ol>
+<li>NIL</li>
+</ol>
+<p>&emsp;</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>LIUXUN1993728. <a href="https://blog.csdn.net/u013087513/article/details/52171078" target="_blank" rel="noopener">Java IO操作——回退流PushbackInputStream</a> [E]<br>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</li>
+</ol>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-PushbackInputStream.html" target="_blank" title="Java I/O 07 - PushbackInputStream">Java I/O 07 - PushbackInputStream</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-PushbackInputStream.html" target="_blank" title="Java I/O 07 - PushbackInputStream">https://marcuseddie.github.io/2018/java-PushbackInputStream.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2018/java-PrintStream.html" class="alignleft prev" title="Java I/O 08 - PrintStream"> 上一篇： Java I/O 08 - PrintStream</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2018/java-DataInputStream-DataOutputStream.html" class="alignright next" title="Java I/O 06 - DataInputStream &amp; DataOutputStream"> 下一篇： Java I/O 06 - DataInputStream &amp; Dat...</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      PGP工作原理简述 | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="&amp;emsp;&amp;emsp;PGP（Pretty Good Privacy，中文翻译“优良保密协议”）是一个基于RSA体系、将公开密钥加密与传统密钥加密相结合的用于信息加密、验证的商业应用程序，由菲尔·齐默尔曼 (Philip R. Zimmermann) 于1991年开发完成并发布。自发布以来，PGP凭借其可以运行于多种操作系统平台、其加密算法得到普遍认可、具有广泛的应用场景等特性使得PGP的应用领">
+<meta name="keywords" content="加解密,PGP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PGP工作原理简述 | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2019/PGP-Introduction.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;PGP（Pretty Good Privacy，中文翻译“优良保密协议”）是一个基于RSA体系、将公开密钥加密与传统密钥加密相结合的用于信息加密、验证的商业应用程序，由菲尔·齐默尔曼 (Philip R. Zimmermann) 于1991年开发完成并发布。自发布以来，PGP凭借其可以运行于多种操作系统平台、其加密算法得到普遍认可、具有广泛的应用场景等特性使得PGP的应用领">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1586930445/BlogImages/security/PGP-Introduction-Digital-signature.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1586930445/BlogImages/security/PGP-Introduction-Encryption.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1586930445/BlogImages/security/PGP-Introduction-Digital-signature-And-Encryption.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1586939382/BlogImages/security/PGP-Introduction-How-Radix-64-Works.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1586940334/BlogImages/security/PGP-Introduction-Radix-64-demo.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1586940336/BlogImages/security/PGP-Introduction-Base-64-table.png">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.353Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PGP工作原理简述 | Mr.Muzi">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;PGP（Pretty Good Privacy，中文翻译“优良保密协议”）是一个基于RSA体系、将公开密钥加密与传统密钥加密相结合的用于信息加密、验证的商业应用程序，由菲尔·齐默尔曼 (Philip R. Zimmermann) 于1991年开发完成并发布。自发布以来，PGP凭借其可以运行于多种操作系统平台、其加密算法得到普遍认可、具有广泛的应用场景等特性使得PGP的应用领">
+<meta name="twitter:image" content="https://res.cloudinary.com/jknight/image/upload/v1586930445/BlogImages/security/PGP-Introduction-Digital-signature.png">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>PGP工作原理简述</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2019-09-06" class="post-meta__date date">2019-09-06</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;4.2k&emsp;阅读时长:&nbsp;14&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/Security/">Security</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/PGP/">PGP</a>, <a class="tags-link" href="/tags/加解密/">加解密</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;<strong>PGP</strong>（Pretty Good Privacy，中文翻译“优良保密协议”）是一个基于RSA体系、将公开密钥加密与传统密钥加密相结合的用于信息加密、验证的商业应用程序，由菲尔·齐默尔曼 (Philip R. Zimmermann) 于1991年开发完成并发布。自发布以来，PGP凭借其可以运行于多种操作系统平台、其加密算法得到普遍认可、具有广泛的应用场景等特性使得PGP的应用领域迅速扩大，同时使PGP自身也得到了更好的发展。</p>
+<a id="more"></a>
+<p>&emsp;&emsp;之后，在1997年，菲尔向 <strong>IETF</strong> 提交了<a href="https://www.openpgp.org" target="_blank" rel="noopener"><strong>OpenPGP</strong></a> 加密标准的提案，OpenPGP标准的详细细节可参考文档<a href="https://www.ietf.org/rfc/rfc4880.txt" target="_blank" rel="noopener">RFC 4880</a>。OpenPGP由PGP衍生而来，是在 PGP 基础上定义的开放标准，号称是世界上使用最广泛的邮件加密标准。OpenPGP标准提供了完整的数据完整性服务，用户可以查看、检验、生成和写入加密信息、秘钥以及签名等。由于美国密码技术出口限制的制约，使得在美国境内严禁编写实现公开密钥软件的软件，即使美国公民在境外完成软件实现也不允许。鉴于此，德国人Werner Koch于1997年开始编写一款称为<a href="https://www.gnupg.org" target="_blank" rel="noopener"><strong>GPG</strong>（<strong>GNU Privacy Guard</strong> 或<strong>GnuPG</strong>）</a>的程序，并于于1998年2月发布了第一个版本。经过一系列的开发工作，GPG 1.0.0版于1999年9月7日正式发布。GPG是一个开源的（依照GNU第三版许可），且具有和PGP相同功能的加密应用程序，其按照OpenPGP标准完成相应的设计和实现工作，是 OpenPGP 协议的一种完备的实现方案，目前由德国政府资助其研发工作。</p>
+<blockquote>
+<p>OpenPGP is the most widely used email encryption standard in the world. </p>
+<p>​                                                                                                           —— <a href="http://www.openpgp.org/" target="_blank" rel="noopener">http://www.openpgp.org/</a></p>
+</blockquote>
+<p>&emsp;&emsp;PGP在具体过程中采用了一系列散列、数据压缩、对称密钥加密，以及公钥加密的算法。目前，PGP可以支持的操作类型包括数字签名、消息加密、压缩、电子邮件的兼容性以及分段和重装等，每个步骤均支持若干种算法，可以根据实际的应用场景和需求选择合适的算法完成工作。<br>&emsp;</p>
+<h2 id="基本服务"><a href="#基本服务" class="headerlink" title="基本服务"></a>基本服务</h2><h3 id="数字签名"><a href="#数字签名" class="headerlink" title="数字签名"></a>数字签名</h3><p>&emsp;&emsp;PGP支持消息身份认证和完整性检查。PGP用数字签名来保证接收者收到的信息一定来自于信息所声明的发送者（即身份认证），且信息在发送者和接收者之间没有被第三者修改（即完整性检查）。需要注意的是，数字签名本身不具有加密能力，在信息发送过程中会将信息和基于信息生成的签名一同发送。具体过程如下（PS：仅讨论数字签名的场景，不包含加解密操作）：</p>
+<ol>
+<li>发送者创建需要发送给接收者的原始信息内容；</li>
+<li>发送者基于原始信息用SHA1算法产生一个160bit的散列值（称为消息摘要），然后用发送者自己的私钥对摘要进行加密；</li>
+<li>发送者将第（2）步得到的加密摘要与原始信息封装成报文一同发送给接收者；</li>
+<li>接收者收到发送者发送的报文后，通过从发送者处得到的公钥将报文中包含的摘要进行解密，获得原始未加密的摘要信息；</li>
+<li>接收者使用相同算法针对报文中含有的原始信息生成一个新的散列值，并与第（4）步得到的解密后的摘要信息进行比对，如果两者完全匹配，则接收者收到的信息来自于发送者（因为接收者用发送者给的公钥解密了发送者发送的加密报文，即身份认证），且在发送过程中未被篡改（接收者生成的摘要和发送者发送的摘要完全匹配，即完整性检查）。</li>
+</ol>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1586930445/BlogImages/security/PGP-Introduction-Digital-signature.png" alt></p>
+<div align="center">
+    <div align="center">
+        图 - 1 PGP 数字签名工作流程
+    </div>
+    &emsp;
+</div>
+
+<p>&emsp;&emsp;PGP采用RSA或者DSA完成数字签名的操作。在生成散列值的过程中，除了SHA1外，还支持SHA-2-256，SHA-2-354，SHA-2-512，RIPEMD-160等。</p>
+<p>&emsp;&emsp;在PGP中，数字签名可以仅作用到原始信息上，也就是可以存在若干个独立的，分别对原始信息进行了散列操作的消息摘要。以书面合同为例，如果合同涉及了多个参与方，那么每个参与方都需要在合同上签署自己的签名。如果数字签名不作用在原始信息上，那么将会产生递归签名的现象，即生成第二个签名所需要的信息中包含了第一个签名自身，当接收者收到报文后，必须依次对签名进行解密才能获得其他签名。</p>
+<h3 id="消息加密"><a href="#消息加密" class="headerlink" title="消息加密"></a>消息加密</h3><p>&emsp;&emsp;在PGP的消息加密过程中，同时使用了对称秘钥加密和公钥加密的方法对消息明文进行加密操作。这是为了保证电子邮件传输过程中的信息机密特性而做出的设计方案。对称秘钥加密具有计算量小，加密速度快，加密效率高的特点，但是对称秘钥在使用过程中需要对秘钥进行分发，秘钥的安全性无法得到保障，且秘钥的管理和维护随着秘钥的增多会越发复杂。对于公钥加密而言，其秘钥体系由公钥和私钥两个部分构成，公钥可以分发给任何需要和秘钥所有者通信的人或组织，而私钥则只能由秘钥所有者保管且绝对不能分发给任何人，所以其保密性更好。但是公钥加密由于算法自身的强度过高而导致加解密速度和对称秘钥加密相比不够理想，所以通常用来加密一些少量的、安全级别要求非常高的信息。</p>
+<p>&emsp;&emsp;鉴于二者各自的特性，PGP使用对称秘钥加密对消息明文进行加密，在加密的过程中会需要一个用来加密的秘钥（称为会话秘钥），这个会话秘钥在每次加密时重新生成，所以即使发送者向同一个接收者多次发送加密消息，每条加密消息中包含的会话秘钥都是不同的。之后，发送者利用来自接收者的公钥将会话秘钥进行加密，以此来保证在消息传输过程中会话秘钥、原始信息不会被第三者破解和篡改。最后，发送者将加密后的消息和会话秘钥封装一同发送给接收者。具体过程如下（PS：仅讨论消息加密的场景，不包含数字签名）：</p>
+<ol>
+<li>发送者创建需要发送给接收者的原始信息内容；</li>
+<li>发送者生成用于对称加密的会话秘钥；</li>
+<li>发送者采用对称秘钥算法通过第（2）步生成的会话秘钥对原始信息自身进行加密；</li>
+<li>发送者采用来自接收者的公钥对第（2）步生成的会话秘钥进行加密；</li>
+<li>发送者将加密后的信息和会话秘钥封装成报文一同发送给接收者；</li>
+<li>接收者通过自己的私钥将报文中含有的加密的会话秘钥进行解密得到原始的会话秘钥；</li>
+<li>接收者利用第（6）步得到的会话秘钥采用和发送者相同的对称秘钥算法对加密信息进行解密，得到原始信息内容。</li>
+</ol>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1586930445/BlogImages/security/PGP-Introduction-Encryption.png" alt></p>
+<div align="center">
+    <div align="center">
+        图 - 2 PGP 加密工作流程
+    </div>
+    &emsp;
+</div>
+
+<p>&emsp;&emsp;有一点要注意的是，PGP可以用来自接收者的公钥对会话秘钥进行加密，也可以采用双方事先协商的加密算法或技术对会话秘钥进行加密而无需使用接收者的公钥执行会话秘钥的加密操作。</p>
+<h3 id="加密和签名同时使用"><a href="#加密和签名同时使用" class="headerlink" title="加密和签名同时使用"></a>加密和签名同时使用</h3><p>&emsp;&emsp;PGP可以同时对原始信息做签名和加密操作，具体流程如下：</p>
+<ol>
+<li>发送者创建需要发送给接收者的原始信息内容；</li>
+<li>发送者基于原始信息用SHA1算法产生一个160bit的散列值（称为消息摘要），然后用发送者自己的私钥对摘要进行加密；</li>
+<li>发送者将第（2）步得到的加密摘要与原始信息封装并采用ZIP算法进行压缩；</li>
+<li>发送者生成用于对称加密的会话秘钥；</li>
+<li>发送者采用对称秘钥算法通过第（4）步生成的会话秘钥对第（3）步生成的压缩结果进行加密；</li>
+<li>发送者采用来自接收者的公钥对第（4）步生成的会话秘钥进行加密；</li>
+<li>发送者将加密后的信息和会话秘钥封装成报文一同发送给接收者；</li>
+<li>接收者通过自己的私钥将报文中含有的加密的会话秘钥进行解密得到原始的会话秘钥；</li>
+<li>接收者利用第（8）步得到的会话秘钥采用和发送者相同的对称秘钥算法对加密信息进行解密，得到压缩后的加密摘要和原始信息；</li>
+<li>接收者进行解压缩操作，得到加密摘要和原始信息；</li>
+<li>接收者通过从发送者处得到的公钥将报文中包含的摘要进行解密，获得原始未加密的摘要信息；</li>
+<li>接收者使用与发送者相同的算法针对报文中含有的原始信息生成一个新的散列值，并与第（11）步得到的解密后的摘要信息进行比对，如果两者完全匹配，则接收者收到的信息来自于发送者（因为接收者用发送者给的公钥解密了发送者发送的加密报文，即身份认证），且在发送过程中未被篡改（接收者生成的摘要和发送者发送的摘要完全匹配，即完整性检查）。</li>
+</ol>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1586930445/BlogImages/security/PGP-Introduction-Digital-signature-And-Encryption.png" alt></p>
+<div align="center">
+    <div align="center">
+        图 - 3 PGP 加密和签名工作流程
+    </div>
+    &emsp;
+</div>
+
+<p>&emsp;&emsp;需要注意的是，如果签名和加密都要的话，需要先做签名再做加密，这样可以保证在报文传输过程中发送者的签名信息不会被第三方篡改和替换。如果是先加密，然后对加密后的信息做签名的话，签名信息有可能在传输过程中被第三者替换。</p>
+<h3 id="电子邮件的兼容性"><a href="#电子邮件的兼容性" class="headerlink" title="电子邮件的兼容性"></a>电子邮件的兼容性</h3><p>&emsp;&emsp;由于PGP的执行结果是以二进制数据流的形式呈现的，所以有可能在某些电子邮件系统或者其他无法使用和处理二进制数据流的软件中无法正常的传输PGP的加密数据流，所以PGP提供了二进制数据流与文本数据之间相互转换的功能。当需要进行转换时，PGP会将二进制数据转成ASCII radix-64格式的文本数据。</p>
+<p>&emsp;&emsp;radix-64在base64的基础上额外增加了检测数据错误的校验和部分。radix-64的处理过程如下：</p>
+<ol>
+<li>将二进制数据流按照每24个bit位为一组进行分组，也就是三个字节；</li>
+<li>对于第(1)步的结果，再对每个三字节分组按照每6个bit位为一组分成四个部分；</li>
+<li>每6个bit位的二进制数据可以对应 0 到 $ 2^6 $-1中的任一个值。这个值代表一个可打印的字符。</li>
+</ol>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1586939382/BlogImages/security/PGP-Introduction-How-Radix-64-Works.png" alt></p>
+<div align="center">
+    <div align="center">
+        图 - 4 radix-64 工作示意图
+    </div>
+    &emsp;
+</div>
+
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1586940334/BlogImages/security/PGP-Introduction-Radix-64-demo.png" alt></p>
+<div align="center">
+    <div align="center">
+        图 - 5 radix-64 示例
+    </div>
+    &emsp;
+</div>
+
+<p>&emsp;&emsp;图中”<strong>=njUN</strong>“即为当前PGP消息的校验和内容。</p>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1586940336/BlogImages/security/PGP-Introduction-Base-64-table.png" alt></p>
+<div align="center">
+    <div align="center">
+        图 - 6 Base64 字符集
+    </div>
+    &emsp;
+</div>
+
+<p>&emsp;&emsp;需要注意的是，radix-64会使得消息长度增加三分之一，但是由于在执行radix-64转换之前已经对消息进行了压缩，所以整体来看，消息的长度并未增加太多。</p>
+<h3 id="压缩"><a href="#压缩" class="headerlink" title="压缩"></a>压缩</h3><p>&emsp;&emsp;PGP支持可以在有必要的情况下对数据进行压缩，压缩操作通常在加密前进行，可用的算法和格式包括了ZIP、ZLIB、BZIPZ等。之所以对数据进行压缩，一方面是因为压缩后的数据由于体积更小，减轻了传输过程中的时间和存储空间要求。另一方面，对数据进行压缩后能够提高对明文暴力攻击的抵抗能力。</p>
+<p>&emsp;&emsp;和签名一样，压缩操作也要在加密之前完成，这么做的初衷是寄希望于提高密码强度。因为压缩后的数据相较于压缩前而言，其冗余程度更低，这样当尝试利用原文中的某种规则性进行破译时，压缩由于消除了规则性而使得其强度显著提升。其次，在暴力破解的场景下，破解者需要尝试每一种秘钥来进行解密工作。如果原文为压缩后的数据，那么破解者需要考虑结果是否被压缩的情形。如果破解者在解密过程中考虑了数据被压缩的情况，那么会使得整个破解过程的时间和成本更大。</p>
+<h3 id="分段和重装"><a href="#分段和重装" class="headerlink" title="分段和重装"></a>分段和重装</h3><p>&emsp;&emsp;为了适应最大消息量的限制，PGP可以将一个大文件拆分成若干个文件进行传输（即分段）。同时，也可以将收到的若干个文件重新重装成一个完整的文件。<br>&emsp;</p>
+<h2 id="涉及基础知识点"><a href="#涉及基础知识点" class="headerlink" title="涉及基础知识点"></a>涉及基础知识点</h2><ol>
+<li><p><strong>什么是数字签名？有什么作用？</strong></p>
+<p>数字签名是一种使用了公钥加密算法的技术实现方案，是由发送者生成的一段可以用来鉴别数字信息内容的附加信息。数字签名由公钥加密算法中的私钥生成，通过公钥对签名进行验证和鉴别，因此，数字签名具有身份认证、完整性检查和不可抵赖等特性。通常使用数字签名防止信息在传输过程中可能遇到的伪造、篡改、抵赖等问题。</p>
+</li>
+<li><p><strong>对称加密和非对称加密（公钥加密）的概念</strong></p>
+<p>对称加密指的是加密和解密过程中使用的是同一个秘钥，其主要优点是加密速度快，计算量小，加密效率高的特点，但是对称秘钥在使用过程中需要对秘钥进行分发，秘钥的安全性无法得到保障，且秘钥的管理和维护随着秘钥的增多会越发复杂。</p>
+<p>非对称加密（公钥加密）在加密和解密过程中无需同一个秘钥就能完成相应的工作。一般而言，一个非对称加密算法的秘钥对包含了一个公钥和一个私钥，一个公钥加密只能由其对应的私钥解密，同理，一个私钥加密同样只能由其对应的公钥解密。公钥可以通过多种途径对外分发，而私钥是绝对不能对外分发的，所以其保密性更好。但是公钥加密由于算法自身的强度过高而导致加解密速度较慢，所以通常用来加密少量的信息。</p>
+</li>
+<li><p><strong>散列函数</strong></p>
+<p>散列函数是指将任意数据作为输入，能够输出指定长度的数值结果的函数，这个结果就称为输入数据的散列值。在密码学中，对散列函数的要求包括了取散列值的操作要非常容易，但从散列值恢复原始数据的成本大到不实际，以及输入数据的改变一定会造成散列值的变化，以及不同的信息不会产生相同的散列值等。</p>
+</li>
+</ol>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li><a href="http://www.philzimmermann.com/EN/background/index.html" target="_blank" rel="noopener">Phil Zimmermann</a></li>
+<li>Wikipedia. <a href="https://zh.wikipedia.org/zh-hans/PGP" target="_blank" rel="noopener">PGP</a> [E]</li>
+<li>结城浩 [日]. 图解密码技术 第三版 [M] 北京: 人民邮电出版社. 2016.</li>
+<li>邓惠洁, 姜明富. <a href="https://www.ixueshu.com/document/cb32586ae4e0afa2318947a18e7f9386.html" target="_blank" rel="noopener">电子邮件系统PGP的加密原理与安全性分析</a> [J]. 现代计算机(专业版), 2010(14):33-35+45.</li>
+<li>宋成勇, 胡勇, 陈淑敏, et al. <a href="http://xueshu.baidu.com/usercenter/paper/show?paperid=7b9ea3b2345f685343e226dfe9996329&amp;site=xueshu_se" target="_blank" rel="noopener">PGP工作原理及其安全体制</a> [J]. 电子技术应用, 2004(10):49-51.</li>
+<li>荀殿栋. <a href="https://www.ixueshu.com/document/7963918766fbf393318947a18e7f9386.html" target="_blank" rel="noopener">PGP原理与其服务</a> [J]. 军事通信技术, 1998, 019(003):67-73.</li>
+<li>Ding Cunsheng. <a href="https://www.cse.ust.hk/faculty/cding/CSIT571/SLIDES/Radix-64.pdf" target="_blank" rel="noopener">Radix-64 Conversion in PGP</a> [E]</li>
+</ol>
+<p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2019/PGP-Introduction.html" target="_blank" title="PGP工作原理简述">PGP工作原理简述</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2019/PGP-Introduction.html" target="_blank" title="PGP工作原理简述">https://marcuseddie.github.io/2019/PGP-Introduction.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2021/IP-Subnet-Mask.html" class="alignleft prev" title="IP子网划分方法简述"> 上一篇： IP子网划分方法简述</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2019/Tech-Books.html" class="alignright next" title="技术书籍"> 下一篇： 技术书籍</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

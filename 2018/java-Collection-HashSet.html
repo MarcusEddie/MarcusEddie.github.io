@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      Java Collection 10 - HashSet | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="HashSet集合是一个不会存储重复元素、遍历元素顺序无法保证的集合实现。拥有add,remove,clear,clone,iterator,size,isEmpty,contains,wrtieObject,readObject等方法。">
+<meta name="keywords" content="HashSet,iterator,size,isEmpty,contains,add,remove,clear,clone,wrtieObject,readObject">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java Collection 10 - HashSet | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/java-Collection-HashSet.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="HashSet集合是一个不会存储重复元素、遍历元素顺序无法保证的集合实现。拥有add,remove,clear,clone,iterator,size,isEmpty,contains,wrtieObject,readObject等方法。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.353Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java Collection 10 - HashSet | Mr.Muzi">
+<meta name="twitter:description" content="HashSet集合是一个不会存储重复元素、遍历元素顺序无法保证的集合实现。拥有add,remove,clear,clone,iterator,size,isEmpty,contains,wrtieObject,readObject等方法。">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>Java Collection 10 - HashSet</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-12-02" class="post-meta__date date">2018-12-02</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;1.7k&emsp;阅读时长:&nbsp;7&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java集合/">Java集合</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.util.HashSet&lt;E&gt;</strong> </em>的部分笔记。HashSet集合是一个不会存储重复元素、遍历元素顺序无法保证的集合实现。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;HashSet是一个以HashMap为底层数据结构的集合实现类，该实现类实现了Set接口中规定的集合处理方法API，而且允许存储null元素。HashSet集合具有集合内元素唯一，且无序的特点。由于底层数据结构依赖于散列表，所以HashSet的add(E e)、remove(Object o)、contains(Object o)、size()等方法可以实现常量时间的操作性能。</p>
+<p>&emsp;&emsp;HashSet是一个非线程安全的实现。如果需要在多线程环境使用HashSet进行操作，那么要么使用线程安全的实现类，要么对HashSet集合做一些额外的处理来保证HashSet集合可以满足多线程环境中的使用需求。常见的一种实现方式是：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Set s = Collections.synchronizedSet(<span class="keyword">new</span> HashSet(...));</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;同样，HashSet集合返回的迭代器也含有快速失败检查，如果在遍历当前HashSet集合的过程中对集合做了结构化修改，那么就会抛出<strong>ConcurrentModificationException</strong>。同样的，HashSet集合也无法保证可以捕捉到所有的并发修改操作。</p>
+<p>&emsp;</p>
+<h2 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// HashSet&lt;E&gt;</span></span><br><span class="line">--java.lang.Object</span><br><span class="line">  --java.util.AbstractCollection&lt;E&gt;</span><br><span class="line">    --java.util.AbstractSet&lt;E&gt;</span><br><span class="line">      --java.util.HashSet&lt;E&gt;</span><br></pre></td></tr></table></figure>
+<p>&emsp;</p>
+<h2 id="实现接口"><a href="#实现接口" class="headerlink" title="实现接口"></a>实现接口</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>类名</th>
+<th>实现接口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HashSet&lt;E&gt;</td>
+<td>Iterable&lt;E&gt;, Collection&lt;E&gt;, Set&lt;E&gt;, Serializable, Cloneable</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>&emsp;</p>
+<h2 id="HashSet"><a href="#HashSet" class="headerlink" title="HashSet"></a>HashSet</h2><h3 id="Constructor-Summary"><a href="#Constructor-Summary" class="headerlink" title="Constructor Summary"></a>Constructor Summary</h3><h4 id="public-HashSet"><a href="#public-HashSet" class="headerlink" title="public HashSet()"></a>public HashSet()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashSet</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个空的set集合。底层依赖的hashmap的初始容量为16，加载因子是0.75。</p>
+<h4 id="public-HashSet-Collection-lt-extends-E-gt-c"><a href="#public-HashSet-Collection-lt-extends-E-gt-c" class="headerlink" title="public HashSet(Collection&lt;? extends E&gt; c)"></a>public HashSet(Collection&lt;? extends E&gt; c)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashSet</span><span class="params">(Collection&lt;? extends E&gt; c)</span> </span>&#123;</span><br><span class="line">    map = <span class="keyword">new</span> HashMap&lt;&gt;(Math.max((<span class="keyword">int</span>) (c.size()/.<span class="number">75f</span>) + <span class="number">1</span>, <span class="number">16</span>));</span><br><span class="line">    addAll(c);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个空set集合，并将集合c中的内容存储到set集合中。底层hashmap的初始容量由集合c中存储的元素数量决定。之后调用的<strong>addAll(Collection&lt;? extends E&gt; c)</strong>方法为AbstractCollection中实现的方法，内部调用了HashSet覆盖的父类方法<strong>add(E e)</strong>。</p>
+<h4 id="public-HashSet-int-initialCapacity-float-loadFactor"><a href="#public-HashSet-int-initialCapacity-float-loadFactor" class="headerlink" title="public HashSet(int initialCapacity, float loadFactor)"></a>public HashSet(int initialCapacity, float loadFactor)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashSet</span><span class="params">(<span class="keyword">int</span> initialCapacity, <span class="keyword">float</span> loadFactor)</span> </span>&#123;</span><br><span class="line">    map = <span class="keyword">new</span> HashMap&lt;&gt;(initialCapacity, loadFactor);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个空的set集合。底层依赖的hashmap的初始容量为initialCapacity，加载因子值是loadFactor。</p>
+<h4 id="public-HashSet-int-initialCapacity"><a href="#public-HashSet-int-initialCapacity" class="headerlink" title="public HashSet(int initialCapacity)"></a>public HashSet(int initialCapacity)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashSet</span><span class="params">(<span class="keyword">int</span> initialCapacity)</span> </span>&#123;</span><br><span class="line">    map = <span class="keyword">new</span> HashMap&lt;&gt;(initialCapacity);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个空的set集合。底层依赖的hashmap的初始容量为initialCapacity，加载因子值是默认的0.75。</p>
+<h4 id="HashSet-int-initialCapacity-float-loadFactor-boolean-dummy"><a href="#HashSet-int-initialCapacity-float-loadFactor-boolean-dummy" class="headerlink" title="HashSet(int initialCapacity, float loadFactor, boolean dummy)"></a>HashSet(int initialCapacity, float loadFactor, boolean dummy)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">HashSet(<span class="keyword">int</span> initialCapacity, <span class="keyword">float</span> loadFactor, <span class="keyword">boolean</span> dummy) &#123;</span><br><span class="line">    map = <span class="keyword">new</span> LinkedHashMap&lt;&gt;(initialCapacity, loadFactor);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个空的set集合。底层依赖的hashmap的初始容量为initialCapacity，加载因子值是loadFactor。这个构造方法中多了一个参数dummy，这个参数除了区别构造方法之外没有其他用处，但是该构造方法返回了一个LinkedHashMap，在LinkedHashSet&lt;E&gt;中使用该构造方法来实现一个基于链表的Set集合。</p>
+<h3 id="部分方法"><a href="#部分方法" class="headerlink" title="部分方法"></a>部分方法</h3><h4 id="public-Iterator-lt-E-gt-iterator"><a href="#public-Iterator-lt-E-gt-iterator" class="headerlink" title="public Iterator&lt;E&gt; iterator()"></a>public Iterator&lt;E&gt; iterator()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Iterator&lt;E&gt; <span class="title">iterator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> map.keySet().iterator();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回一个可以遍历当前HashSet集合的迭代器。该迭代器在遍历元素时不保证元素遍历的先后顺序。底层实际调用的是map中keySet集合的迭代器。</p>
+<h4 id="public-int-size"><a href="#public-int-size" class="headerlink" title="public int size()"></a>public int size()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> map.size();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回当前HashSet集合存储的元素数量。底层实际调用的是map的size()方法完成操作。</p>
+<h4 id="public-boolean-isEmpty"><a href="#public-boolean-isEmpty" class="headerlink" title="public boolean isEmpty()"></a>public boolean isEmpty()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> map.isEmpty();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;判断当前HashSet集合是否为空。如果为空返回true，否则返回false。底层实际调用的是map的isEmpty()方法完成操作。</p>
+<h4 id="public-boolean-contains-Object-o"><a href="#public-boolean-contains-Object-o" class="headerlink" title="public boolean contains(Object o)"></a>public boolean contains(Object o)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">contains</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> map.containsKey(o);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;判断当前HashSet集合中是否含有元素o。如果存在返回true，否则返回false。底层实际调用的是map的containsKey(Object key)方法完成操作。</p>
+<h4 id="public-boolean-add-E-e"><a href="#public-boolean-add-E-e" class="headerlink" title="public boolean add(E e)"></a>public boolean add(E e)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> map.put(e, PRESENT)==<span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将元素e加入到当前HashSet集合中。如果元素e是第一次被加入到集合中，那么由于map的<strong>put(E key, Object value)</strong>方法会返回该key在加入之前的value值，所以会返回null，所以第一次加入元素e时当前方法会返回true。如果非第一次加入，那么map的put(E key, Object value)会返回一个非null对象，所以当前方法会返回false。</p>
+<h4 id="public-boolean-remove-Object-o"><a href="#public-boolean-remove-Object-o" class="headerlink" title="public boolean remove(Object o)"></a>public boolean remove(Object o)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">remove</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> map.remove(o)==PRESENT;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将元素o从当前HashSet集合中删除。由于在向map集合中存储元素时，key为当前HashSet集合存储的元素自身，value是一个初始化的Object对象，所以在调用map的<strong>remove(Object key)</strong>方法会返回该key在加入之前的value值，所以第一次删除元素时返回true。如果当前元素o被多次调用了<strong>remove(Object o)</strong>方法，那么第二次及之后就返回false。</p>
+<h4 id="public-void-clear"><a href="#public-void-clear" class="headerlink" title="public void clear()"></a>public void clear()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clear</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    map.clear();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;清空HashSet集合的所有元素。底层实际调用的是map的clear()方法完成操作。</p>
+<h4 id="public-Object-clone"><a href="#public-Object-clone" class="headerlink" title="public Object clone()"></a>public Object clone()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">clone</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        HashSet&lt;E&gt; newSet = (HashSet&lt;E&gt;) <span class="keyword">super</span>.clone();</span><br><span class="line">        newSet.map = (HashMap&lt;E, Object&gt;) map.clone();</span><br><span class="line">        <span class="keyword">return</span> newSet;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (CloneNotSupportedException e) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> InternalError();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;克隆复制一个HashSet集合对象。该过程分两步进行，首先复制一个HashSet集合对象自身，接着复制HashSet集合底层的map结构，最后返回复制得到的对象。</p>
+<h4 id="private-void-writeObject-java-io-ObjectOutputStream-s"><a href="#private-void-writeObject-java-io-ObjectOutputStream-s" class="headerlink" title="private void writeObject(java.io.ObjectOutputStream s)"></a>private void writeObject(java.io.ObjectOutputStream s)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">writeObject</span><span class="params">(java.io.ObjectOutputStream s)</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> java.io.IOException </span>&#123;</span><br><span class="line">    <span class="comment">// Write out any hidden serialization magic</span></span><br><span class="line">    s.defaultWriteObject();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Write out HashMap capacity and load factor</span></span><br><span class="line">    s.writeInt(map.capacity());</span><br><span class="line">    s.writeFloat(map.loadFactor());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Write out size</span></span><br><span class="line">    s.writeInt(map.size());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Write out all elements in the proper order.</span></span><br><span class="line">    <span class="keyword">for</span> (E e : map.keySet())</span><br><span class="line">        s.writeObject(e);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将当前HashSet执行序列化操作并写入到流中。自定义方法，在执行序列化过程时会采用HashSet自己实现的过程来完成序列化操作。</p>
+<h4 id="private-void-readObject-java-io-ObjectInputStream-s"><a href="#private-void-readObject-java-io-ObjectInputStream-s" class="headerlink" title="private void readObject(java.io.ObjectInputStream s)"></a>private void readObject(java.io.ObjectInputStream s)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">readObject</span><span class="params">(java.io.ObjectInputStream s)</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> java.io.IOException, ClassNotFoundException </span>&#123;</span><br><span class="line">    <span class="comment">// Read in any hidden serialization magic</span></span><br><span class="line">    s.defaultReadObject();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Read in HashMap capacity and load factor and create backing HashMap</span></span><br><span class="line">    <span class="keyword">int</span> capacity = s.readInt();</span><br><span class="line">    <span class="keyword">float</span> loadFactor = s.readFloat();</span><br><span class="line">    map = (((HashSet)<span class="keyword">this</span>) <span class="keyword">instanceof</span> LinkedHashSet ?</span><br><span class="line">           <span class="keyword">new</span> LinkedHashMap&lt;E,Object&gt;(capacity, loadFactor) :</span><br><span class="line">           <span class="keyword">new</span> HashMap&lt;E,Object&gt;(capacity, loadFactor));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Read in size</span></span><br><span class="line">    <span class="keyword">int</span> size = s.readInt();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Read in all elements in the proper order.</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;size; i++) &#123;</span><br><span class="line">        E e = (E) s.readObject();</span><br><span class="line">        map.put(e, PRESENT);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;从流中取出序列化的数据内容并反序列化成内存中的一个HashSet对象。自定义方法，在执行反序列的过程时会用HashSet自己实现的过程来完成反序列过程。</p>
+<p>&emsp;</p>
+<h2 id="涉及基础知识点"><a href="#涉及基础知识点" class="headerlink" title="涉及基础知识点"></a>涉及基础知识点</h2><ol>
+<li>NIL</li>
+</ol>
+<p>&emsp;</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>NIL</li>
+</ol>
+<p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-Collection-HashSet.html" target="_blank" title="Java Collection 10 - HashSet">Java Collection 10 - HashSet</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-Collection-HashSet.html" target="_blank" title="Java Collection 10 - HashSet">https://marcuseddie.github.io/2018/java-Collection-HashSet.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2018/java-Collection-LinkedHashSet.html" class="alignleft prev" title="Java Collection 11 - LinkedHashSet"> 上一篇： Java Collection 11 - LinkedHashSet</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2018/java-Collection-AbstractSet.html" class="alignright next" title="Java Collection 09 - AbstractSet"> 下一篇： Java Collection 09 - AbstractSet</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

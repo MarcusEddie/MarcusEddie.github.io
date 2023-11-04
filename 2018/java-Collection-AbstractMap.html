@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      Java Map 02 - AbstractMap | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="AbstractMap提供了关于Map接口的一个最小规模实现,拥有方法containsValue,containsKey,get,put,remove,putAll,keySet,entrySet,equals,hashCode，size,isEmpty。">
+<meta name="keywords" content="AbstractMap,size,isEmpty,containsValue,containsKey,get,put,remove,putAll,keySet,entrySet,equals,hashCode">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java Map 02 - AbstractMap | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/java-Collection-AbstractMap.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="AbstractMap提供了关于Map接口的一个最小规模实现,拥有方法containsValue,containsKey,get,put,remove,putAll,keySet,entrySet,equals,hashCode，size,isEmpty。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.353Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java Map 02 - AbstractMap | Mr.Muzi">
+<meta name="twitter:description" content="AbstractMap提供了关于Map接口的一个最小规模实现,拥有方法containsValue,containsKey,get,put,remove,putAll,keySet,entrySet,equals,hashCode，size,isEmpty。">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>Java Map 02 - AbstractMap</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-12-06" class="post-meta__date date">2018-12-06</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;3.1k&emsp;阅读时长:&nbsp;14&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java集合/">Java集合</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.util.AbstractMap&lt;K, V&gt;</strong> </em>的部分笔记，提供了对Map接口的最小实现。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;AbstractMap提供了关于Map接口的一个最小规模实现。</p>
+<p>&emsp;&emsp;如果需要实现一个不可修改的map集合，开发人员只需要继承AbstractMap类并提供一个entrySet方法的实现。该方法以set集合形式返回了当前map集合的键值对映射，返回的set集合不支持add和remove方法，对应的迭代器也不支持remove操作。</p>
+<p>&emsp;&emsp;如果需要实现一个可修改的map集合，需要额外实现put方法，且返回的迭代器类需要实现remove方法。</p>
+<p>&emsp;&emsp;AbstractMap类的方法可以在需要提升性能的情况下被子类覆盖重新实现。</p>
+<p>&emsp;</p>
+<h2 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// AbstractSet&lt;E&gt;</span></span><br><span class="line">--java.lang.Object</span><br><span class="line">  --java.util.AbstractMap&lt;K,V&gt;</span><br></pre></td></tr></table></figure>
+<p>&emsp;</p>
+<h2 id="实现接口"><a href="#实现接口" class="headerlink" title="实现接口"></a>实现接口</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>类名</th>
+<th>实现接口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AbstractMap&lt;E&gt;</td>
+<td>Map&lt;K,V&gt;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>&emsp;</p>
+<h2 id="AbstractMap"><a href="#AbstractMap" class="headerlink" title="AbstractMap"></a>AbstractMap</h2><h3 id="Constructor-Summary"><a href="#Constructor-Summary" class="headerlink" title="Constructor Summary"></a>Constructor Summary</h3><h4 id="protected-AbstractMap"><a href="#protected-AbstractMap" class="headerlink" title="protected AbstractMap()"></a>protected AbstractMap()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="title">AbstractMap</span><span class="params">()</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;默认构造函数。采用protected修饰的原因是因为AbstractMap不直接用于集合的初始化操作，而是在使用真正可用的Set集合处理类时提供一些基础准备工作。所以这个方法不应该暴露到外界去，所以不能用public修饰。同样的原因，因为AbstractMap不涉及到单例模式的设计，所以也不会是private，这样其子类也没办法继承到父类的无参构造方法。所以综上考虑，protected是最理想的选择。</p>
+<h3 id="部分方法"><a href="#部分方法" class="headerlink" title="部分方法"></a>部分方法</h3><h4 id="public-int-size"><a href="#public-int-size" class="headerlink" title="public int size()"></a>public int size()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> entrySet().size();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回当前map集合中存储的键值对数量，如果超过了Integer的最大值（MAX_VALUE）那么就返回MAX_VALUE。</p>
+<h4 id="public-boolean-isEmpty"><a href="#public-boolean-isEmpty" class="headerlink" title="public boolean isEmpty()"></a>public boolean isEmpty()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> size() == <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;如果当前map集合不包含任何键值对，那么返回true。</p>
+<h4 id="public-boolean-containsValue-Object-value"><a href="#public-boolean-containsValue-Object-value" class="headerlink" title="public boolean containsValue(Object value)"></a>public boolean containsValue(Object value)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">containsValue</span><span class="params">(Object value)</span> </span>&#123;</span><br><span class="line">    Iterator&lt;Entry&lt;K,V&gt;&gt; i = entrySet().iterator();</span><br><span class="line">    <span class="keyword">if</span> (value==<span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">while</span> (i.hasNext()) &#123;</span><br><span class="line">            Entry&lt;K,V&gt; e = i.next();</span><br><span class="line">            <span class="keyword">if</span> (e.getValue()==<span class="keyword">null</span>)</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">while</span> (i.hasNext()) &#123;</span><br><span class="line">            Entry&lt;K,V&gt; e = i.next();</span><br><span class="line">            <span class="keyword">if</span> (value.equals(e.getValue()))</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;判断当前集合是否存储val为value的键值对映射。如果当前集合中存储了一个及以上val为value的键值对，那么就返回true，否则返回false。整个过程需要O（n）time，n为当前集合中存储的元素数量。方法采用equals()方法完成元素相等检查。</p>
+<h4 id="public-boolean-containsKey-Object-key"><a href="#public-boolean-containsKey-Object-key" class="headerlink" title="public boolean containsKey(Object key)"></a>public boolean containsKey(Object key)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">containsKey</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">    Iterator&lt;Map.Entry&lt;K,V&gt;&gt; i = entrySet().iterator();</span><br><span class="line">    <span class="keyword">if</span> (key==<span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">while</span> (i.hasNext()) &#123;</span><br><span class="line">            Entry&lt;K,V&gt; e = i.next();</span><br><span class="line">            <span class="keyword">if</span> (e.getKey()==<span class="keyword">null</span>)</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">while</span> (i.hasNext()) &#123;</span><br><span class="line">            Entry&lt;K,V&gt; e = i.next();</span><br><span class="line">            <span class="keyword">if</span> (key.equals(e.getKey()))</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;判断当前集合是否存储key为入参key的键值对映射。如果当前集合中存储了一个及以上key为入参key的键值对，那么就返回true，否则返回false。整个过程需要O（n）time，n为当前集合中存储的元素数量。方法采用equals()方法完成元素相等检查。</p>
+<h4 id="public-V-get-Object-key"><a href="#public-V-get-Object-key" class="headerlink" title="public V get(Object key)"></a>public V get(Object key)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> V <span class="title">get</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">    Iterator&lt;Entry&lt;K,V&gt;&gt; i = entrySet().iterator();</span><br><span class="line">    <span class="keyword">if</span> (key==<span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">while</span> (i.hasNext()) &#123;</span><br><span class="line">            Entry&lt;K,V&gt; e = i.next();</span><br><span class="line">            <span class="keyword">if</span> (e.getKey()==<span class="keyword">null</span>)</span><br><span class="line">                <span class="keyword">return</span> e.getValue();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">while</span> (i.hasNext()) &#123;</span><br><span class="line">            Entry&lt;K,V&gt; e = i.next();</span><br><span class="line">            <span class="keyword">if</span> (key.equals(e.getKey()))</span><br><span class="line">                <span class="keyword">return</span> e.getValue();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;从当前集合中查找并返回key为入参key的键值对映射中含有的value。如果集合中未存储key为入参key的键值对映射，那么返回null。整个过程需要O（n）time，n为当前集合中存储的元素数量。方法采用equals()方法完成元素相等检查。</p>
+<h4 id="public-V-put-K-key-V-value"><a href="#public-V-put-K-key-V-value" class="headerlink" title="public V put(K key, V value)"></a>public V put(K key, V value)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> V <span class="title">put</span><span class="params">(K key, V value)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;向当前map集合中插入一个key-value键值对。当前类不支持该操作，抛出异常。</p>
+<h4 id="public-V-remove-Object-key"><a href="#public-V-remove-Object-key" class="headerlink" title="public V remove(Object key)"></a>public V remove(Object key)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> V <span class="title">remove</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">    Iterator&lt;Entry&lt;K,V&gt;&gt; i = entrySet().iterator();</span><br><span class="line">    Entry&lt;K,V&gt; correctEntry = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (key==<span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">while</span> (correctEntry==<span class="keyword">null</span> &amp;&amp; i.hasNext()) &#123;</span><br><span class="line">            Entry&lt;K,V&gt; e = i.next();</span><br><span class="line">            <span class="keyword">if</span> (e.getKey()==<span class="keyword">null</span>)</span><br><span class="line">                correctEntry = e;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">while</span> (correctEntry==<span class="keyword">null</span> &amp;&amp; i.hasNext()) &#123;</span><br><span class="line">            Entry&lt;K,V&gt; e = i.next();</span><br><span class="line">            <span class="keyword">if</span> (key.equals(e.getKey()))</span><br><span class="line">                correctEntry = e;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    V oldValue = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (correctEntry !=<span class="keyword">null</span>) &#123;</span><br><span class="line">        oldValue = correctEntry.getValue();</span><br><span class="line">        i.remove();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> oldValue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;从当前map集合中删除入参key的键值对映射，并返回映射对应的value值。第2 ~ 16行代码用来查找集合中对应于入参key的键值对映射，如果找到一个，那么就退出循环执行删除操作。第19 ~ 22行代码得到要删除的键值对映射的value值，并利用迭代器删除该键值对映射，最后返回value值。</p>
+<h4 id="public-void-putAll-Map-lt-extends-K-extends-V-gt-m"><a href="#public-void-putAll-Map-lt-extends-K-extends-V-gt-m" class="headerlink" title="public void putAll(Map&lt;? extends K, ? extends V&gt; m)"></a>public void putAll(Map&lt;? extends K, ? extends V&gt; m)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">putAll</span><span class="params">(Map&lt;? extends K, ? extends V&gt; m)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (Map.Entry&lt;? extends K, ? extends V&gt; e : m.entrySet())</span><br><span class="line">        put(e.getKey(), e.getValue());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;当前集合m中的键值对映射逐个保存到当前map集合中。底层调用的是<strong>put(K key, V value)</strong>方法，在AbstractMap中不支持插入操作，所以会抛出异常。</p>
+<h4 id="public-void-clear"><a href="#public-void-clear" class="headerlink" title="public void clear()"></a>public void clear()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clear</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    entrySet().clear();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;清空当前map集合中存储的所有键值对映射。</p>
+<h4 id="public-Set-lt-K-gt-keySet"><a href="#public-Set-lt-K-gt-keySet" class="headerlink" title="public Set&lt;K&gt; keySet()"></a>public Set&lt;K&gt; keySet()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Set&lt;K&gt; <span class="title">keySet</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (keySet == <span class="keyword">null</span>) &#123;</span><br><span class="line">        keySet = <span class="keyword">new</span> AbstractSet&lt;K&gt;() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> Iterator&lt;K&gt; <span class="title">iterator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> Iterator&lt;K&gt;() &#123;</span><br><span class="line">                    <span class="keyword">private</span> Iterator&lt;Entry&lt;K,V&gt;&gt; i = entrySet().iterator();</span><br><span class="line"></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                        <span class="keyword">return</span> i.hasNext();</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> K <span class="title">next</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                        <span class="keyword">return</span> i.next().getKey();</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                        i.remove();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> AbstractMap.<span class="keyword">this</span>.size();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> AbstractMap.<span class="keyword">this</span>.isEmpty();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clear</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                AbstractMap.<span class="keyword">this</span>.clear();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">contains</span><span class="params">(Object k)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> AbstractMap.<span class="keyword">this</span>.containsKey(k);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> keySet;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回当前map集合中存储的键值对映射的key值集合。该内容会在方法第一次被调用时创建，如果在方法调用时该内容已经存在，那么不做任何处理。</p>
+<p>&emsp;&emsp;对该集合做的操作会同步出现在map集合上，反之亦然。该返回集合支持remove操作，操作后的执行效果是将map集合中对应的键值对删除。</p>
+<h4 id="public-Collection-lt-V-gt-values"><a href="#public-Collection-lt-V-gt-values" class="headerlink" title="public Collection&lt;V&gt; values()"></a>public Collection&lt;V&gt; values()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Collection&lt;V&gt; <span class="title">values</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (values == <span class="keyword">null</span>) &#123;</span><br><span class="line">        values = <span class="keyword">new</span> AbstractCollection&lt;V&gt;() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> Iterator&lt;V&gt; <span class="title">iterator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> Iterator&lt;V&gt;() &#123;</span><br><span class="line">                    <span class="keyword">private</span> Iterator&lt;Entry&lt;K,V&gt;&gt; i = entrySet().iterator();</span><br><span class="line"></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                        <span class="keyword">return</span> i.hasNext();</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> V <span class="title">next</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                        <span class="keyword">return</span> i.next().getValue();</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                        i.remove();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> AbstractMap.<span class="keyword">this</span>.size();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> AbstractMap.<span class="keyword">this</span>.isEmpty();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clear</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                AbstractMap.<span class="keyword">this</span>.clear();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">contains</span><span class="params">(Object v)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> AbstractMap.<span class="keyword">this</span>.containsValue(v);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> values;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回当前map集合中存储的键值对映射的value值集合。该内容会在方法第一次被调用时创建，如果在方法调用时该内容已经存在，那么不做任何处理。</p>
+<p>&emsp;&emsp;对该集合做的操作会同步出现在map集合上，反之亦然。该集合支持remove操作，删除操作后的执行结果是将当前map集合中对应的键值对删除。</p>
+<h4 id="public-abstract-Set-lt-Entry-lt-K-V-gt-gt-entrySet"><a href="#public-abstract-Set-lt-Entry-lt-K-V-gt-gt-entrySet" class="headerlink" title="public abstract Set&lt;Entry&lt;K,V&gt;&gt; entrySet()"></a>public abstract Set&lt;Entry&lt;K,V&gt;&gt; entrySet()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> Set&lt;Entry&lt;K,V&gt;&gt; entrySet();</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;需要子类实现的抽象方法，用来返回当前map集合的键值对映射的set集合。</p>
+<h4 id="public-boolean-equals-Object-o"><a href="#public-boolean-equals-Object-o" class="headerlink" title="public boolean equals(Object o)"></a>public boolean equals(Object o)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (o == <span class="keyword">this</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!(o <span class="keyword">instanceof</span> Map))</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    Map&lt;K,V&gt; m = (Map&lt;K,V&gt;) o;</span><br><span class="line">    <span class="keyword">if</span> (m.size() != size())</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Iterator&lt;Entry&lt;K,V&gt;&gt; i = entrySet().iterator();</span><br><span class="line">        <span class="keyword">while</span> (i.hasNext()) &#123;</span><br><span class="line">            Entry&lt;K,V&gt; e = i.next();</span><br><span class="line">            K key = e.getKey();</span><br><span class="line">            V value = e.getValue();</span><br><span class="line">            <span class="keyword">if</span> (value == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (!(m.get(key)==<span class="keyword">null</span> &amp;&amp; m.containsKey(key)))</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (!value.equals(m.get(key)))</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (ClassCastException unused) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (NullPointerException unused) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;判断对象o和当前map是否相等。如果o也是一个map且两个map拥有相同的键值对（数量一致，内容一致），那么方法返回true。</p>
+<p>&emsp;&emsp;方法会首先检查o是否是当前map自身，如果是，直接返回true。然后检查o是否是一个map，如果不是返回false。如果是，那么检查o存储的键值对数量和当前map集合是否一致，如果不一致返回false。数量校验处理完后检查两个map中的每个键值对的key和value是否存在不一致的结果，如果存在返回false。所有的检查都通过后，认为两个map相等，返回true。</p>
+<p>&emsp;&emsp;在整个过程中通过equals()方法完成相等比较。</p>
+<h4 id="public-int-hashCode"><a href="#public-int-hashCode" class="headerlink" title="public int hashCode()"></a>public int hashCode()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> h = <span class="number">0</span>;</span><br><span class="line">    Iterator&lt;Entry&lt;K,V&gt;&gt; i = entrySet().iterator();</span><br><span class="line">    <span class="keyword">while</span> (i.hasNext())</span><br><span class="line">        h += i.next().hashCode();</span><br><span class="line">    <span class="keyword">return</span> h;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回当前map集合的hashcode值。map的hashcode值由map中所有键值对实例的hashcode值求和得到。Entry对象的hashcode计算规则是：</p>
+<blockquote>
+<p>(e.getKey() == null   ? 0 : e.getKey().hashCode())  ^  </p>
+<p>(e.getValue() == null ? 0 : e.getValue().hashCode())</p>
+</blockquote>
+<p>对key的hashcode和value的hashcode求异或运算。</p>
+<h4 id="public-String-toString"><a href="#public-String-toString" class="headerlink" title="public String toString()"></a>public String toString()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Iterator&lt;Entry&lt;K,V&gt;&gt; i = entrySet().iterator();</span><br><span class="line">    <span class="keyword">if</span> (! i.hasNext())</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"&#123;&#125;"</span>;</span><br><span class="line"></span><br><span class="line">    StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">    sb.append(<span class="string">'&#123;'</span>);</span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        Entry&lt;K,V&gt; e = i.next();</span><br><span class="line">        K key = e.getKey();</span><br><span class="line">        V value = e.getValue();</span><br><span class="line">        sb.append(key   == <span class="keyword">this</span> ? <span class="string">"(this Map)"</span> : key);</span><br><span class="line">        sb.append(<span class="string">'='</span>);</span><br><span class="line">        sb.append(value == <span class="keyword">this</span> ? <span class="string">"(this Map)"</span> : value);</span><br><span class="line">        <span class="keyword">if</span> (! i.hasNext())</span><br><span class="line">            <span class="keyword">return</span> sb.append(<span class="string">'&#125;'</span>).toString();</span><br><span class="line">        sb.append(<span class="string">','</span>).append(<span class="string">' '</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回当前map集合的String表示形式。所有的键值对内容被“{}”包围，每个键值对之间用“，”分隔，单个键值对以“=”连接键和值。</p>
+<h4 id="protected-Object-clone"><a href="#protected-Object-clone" class="headerlink" title="protected Object clone()"></a>protected Object clone()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> Object <span class="title">clone</span><span class="params">()</span> <span class="keyword">throws</span> CloneNotSupportedException </span>&#123;</span><br><span class="line">    AbstractMap&lt;K,V&gt; result = (AbstractMap&lt;K,V&gt;)<span class="keyword">super</span>.clone();</span><br><span class="line">    result.keySet = <span class="keyword">null</span>;</span><br><span class="line">    result.values = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将当前AbstractMap集合复制一份并返回。执行的是浅度复制，且只复制map集合本身，内部的键值对不会被复制。</p>
+<h4 id="private-static-boolean-eq-Object-o1-Object-o2"><a href="#private-static-boolean-eq-Object-o1-Object-o2" class="headerlink" title="private static boolean eq(Object o1, Object o2)"></a>private static boolean eq(Object o1, Object o2)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">eq</span><span class="params">(Object o1, Object o2)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> o1 == <span class="keyword">null</span> ? o2 == <span class="keyword">null</span> : o1.equals(o2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;</p>
+<h2 id="SimpleEntry-lt-K-V-gt"><a href="#SimpleEntry-lt-K-V-gt" class="headerlink" title="SimpleEntry&lt;K,V&gt;"></a>SimpleEntry&lt;K,V&gt;</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleEntry</span>&lt;<span class="title">K</span>, <span class="title">V</span>&gt; <span class="keyword">implements</span> <span class="title">Entry</span>&lt;<span class="title">K</span>, <span class="title">V</span>&gt;, <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = -<span class="number">8499721149061103585L</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> K key;</span><br><span class="line">	<span class="keyword">private</span> V value;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 初始化一个map集合中键值对实体</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">SimpleEntry</span><span class="params">(K key, V value)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.key = key;</span><br><span class="line">		<span class="keyword">this</span>.value = value;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 初始化一个map集合中键值对实体</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">SimpleEntry</span><span class="params">(Entry&lt;? extends K, ? extends V&gt; entry)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.key = entry.getKey();</span><br><span class="line">		<span class="keyword">this</span>.value = entry.getValue();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 获取实体的key值</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> K <span class="title">getKey</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> key;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 获取实体的valu值</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> V <span class="title">getValue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> value;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 设置当前实体的value值并返回被替换的值。</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> V <span class="title">setValue</span><span class="params">(V value)</span> </span>&#123;</span><br><span class="line">		V oldValue = <span class="keyword">this</span>.value;</span><br><span class="line">		<span class="keyword">this</span>.value = value;</span><br><span class="line">		<span class="keyword">return</span> oldValue;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 判断对象o和当前实体是否相等</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (!(o <span class="keyword">instanceof</span> Map.Entry))</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">		Map.Entry e = (Map.Entry) o;</span><br><span class="line">		<span class="keyword">return</span> eq(key, e.getKey()) &amp;&amp; eq(value, e.getValue());</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 计算当前实体的hashcode值，根据key的hashcode和value的hashcode做异或运算。</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> (key == <span class="keyword">null</span> ? <span class="number">0</span> : key.hashCode())</span><br><span class="line">				^ (value == <span class="keyword">null</span> ? <span class="number">0</span> : value.hashCode());</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 返回当前实体的string表示形式。</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> key + <span class="string">"="</span> + value;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;</p>
+<h2 id="SimpleImmutableEntry-lt-K-V-gt"><a href="#SimpleImmutableEntry-lt-K-V-gt" class="headerlink" title="SimpleImmutableEntry&lt;K, V&gt;"></a>SimpleImmutableEntry&lt;K, V&gt;</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleImmutableEntry</span>&lt;<span class="title">K</span>, <span class="title">V</span>&gt;</span></span><br><span class="line"><span class="class">		<span class="keyword">implements</span> <span class="title">Entry</span>&lt;<span class="title">K</span>, <span class="title">V</span>&gt;, <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">7138329143949025153L</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> K key;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> V value;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 初始化一个不可修改value值的键值对实体</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">SimpleImmutableEntry</span><span class="params">(K key, V value)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.key = key;</span><br><span class="line">		<span class="keyword">this</span>.value = value;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 初始化一个不可修改value值的键值对实体</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">SimpleImmutableEntry</span><span class="params">(Entry&lt;? extends K, ? extends V&gt; entry)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.key = entry.getKey();</span><br><span class="line">		<span class="keyword">this</span>.value = entry.getValue();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 获取当前实体的key值</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> K <span class="title">getKey</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> key;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 获取当前实体的value值</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> V <span class="title">getValue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> value;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 实体valu值不可修改，抛出异常</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> V <span class="title">setValue</span><span class="params">(V value)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 计算对象o和当前实体是否相等</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (!(o <span class="keyword">instanceof</span> Map.Entry))</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">		Map.Entry e = (Map.Entry) o;</span><br><span class="line">		<span class="keyword">return</span> eq(key, e.getKey()) &amp;&amp; eq(value, e.getValue());</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 计算当前实体的hashcode值，根据key的hashcode和valu的hashcode求异或运算。</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> (key == <span class="keyword">null</span> ? <span class="number">0</span> : key.hashCode())</span><br><span class="line">				^ (value == <span class="keyword">null</span> ? <span class="number">0</span> : value.hashCode());</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 返回当前实体的String表示形式。</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> key + <span class="string">"="</span> + value;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;</p>
+<h2 id="涉及基础知识点"><a href="#涉及基础知识点" class="headerlink" title="涉及基础知识点"></a>涉及基础知识点</h2><ol>
+<li>NIL</li>
+</ol>
+<p>&emsp;</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>NIL</li>
+</ol>
+<p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-Collection-AbstractMap.html" target="_blank" title="Java Map 02 - AbstractMap">Java Map 02 - AbstractMap</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-Collection-AbstractMap.html" target="_blank" title="Java Map 02 - AbstractMap">https://marcuseddie.github.io/2018/java-Collection-AbstractMap.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2018/java-Collection-HashMap.html" class="alignleft prev" title="Java Map 03 - HashMap"> 上一篇： Java Map 03 - HashMap</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2018/java-Collection-Map.html" class="alignright next" title="Java Map 01 - Map"> 下一篇： Java Map 01 - Map</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

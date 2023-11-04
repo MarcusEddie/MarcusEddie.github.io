@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      Java Collection 08 - Set | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="Set作为Java集合框架中的一员，常用实现有HashSet,LinkedHashSet,TreeSet。其实现机制和特点使得Set是一个无序的，不可存储重复数据的数据结构。">
+<meta name="keywords" content="Set,Collection,AbstractSet,HashSet,LinkedHashSet,TreeSet,SortedSet">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java Collection 08 - Set | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/java-Collection-Set.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="Set作为Java集合框架中的一员，常用实现有HashSet,LinkedHashSet,TreeSet。其实现机制和特点使得Set是一个无序的，不可存储重复数据的数据结构。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1544021679/BlogImages/java-collection/list/Set-guide.png">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.357Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java Collection 08 - Set | Mr.Muzi">
+<meta name="twitter:description" content="Set作为Java集合框架中的一员，常用实现有HashSet,LinkedHashSet,TreeSet。其实现机制和特点使得Set是一个无序的，不可存储重复数据的数据结构。">
+<meta name="twitter:image" content="https://res.cloudinary.com/jknight/image/upload/v1544021679/BlogImages/java-collection/list/Set-guide.png">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>Java Collection 08 - Set</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-12-01" class="post-meta__date date">2018-12-01</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;1.4k&emsp;阅读时长:&nbsp;5&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java集合/">Java集合</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;在Java语言规范中，Set和List同属于Java集合框架中的Collection，是一种可以保证不会出现重复元素的数据结构，类似于数学领域中的集合。提供了对同类型数据进行存储、插入、删除和查找等需求的实现过程。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;Set是Java集合体系中的成员之一，和List接口一样直接继承于Collection。所以，Set本身只是一个接口定义，其定义了对Set集合进行操作的方法API。Set底层依赖的数据结构决定了其无法存储重复元素（如果允许存储null元素的话最多也只能存储一个null元素），而且也无法保证Set集合的元素先后顺序，即在多次重复遍历同一集合的情况下，每次遍历得到的元素返回顺序无法保证一致。Set的特点如下：</p>
+<ol>
+<li>Set的底层实现基于map完成，而且Set暴露出去的方法API大多数都是对map方法的包装。</li>
+<li>Set会限制保存在其中的对象类型，有些实现会限制null元素，而其他一些实现会限制特定的数据对象类型。尝试向这种Set集合实现中加入不满足条件的元素会对外抛出异常。尝试查找不满条件的元素时根据实现的不同可能会对外抛出异常，或者直接返回false标识查找失败。</li>
+</ol>
+<p>&emsp;&emsp;常见的Set实现包括<a href="/2018/java-Collection-AbstractSet.html">AbstractSet</a>、<a href="/2018/java-Collection-HashSet.html">HashSet</a>、<a href="/2018/java-Collection-LinkedHashSet.html">LinkedHashSet</a>、<a href="/2018/java-Collection-TreeSet.html">TreeSet</a>等，而TreeSet还实现了<a href="/2018/java-Collection-SortedSet-NavigableSet.html">SortedSet</a>接口。其结构如图1所以：</p>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1544021679/BlogImages/java-collection/list/Set-guide.png" alt></p>
+<div align="center">
+<div align="center">图 - 1</div>
+&emsp;
+</div>
+
+<p>关于上述几个具体实现类之间，分别有其适应的应用场景和特点：</p>
+<ul>
+<li><p>HashSet</p>
+<p>&emsp;&emsp;直接继承于AbstractSet，实现了Set&lt;E&gt;, Cloneable和Serializable接口；</p>
+<p>&emsp;&emsp;底层数据结构依赖于HashMap，可允许存储null元素。具有集合内元素唯一，元素遍历顺序不确定的特点；</p>
+<p>&emsp;&emsp;HashSet是一个非线程安全的实现。多线程环境下无法保证线程安全。多线程环境下无法保证线程安全。如果需要在多线程环境下使用LinkedHashSet，则需要采用<strong>Collections.synchronizedSet(new HashSet(…));</strong>进行包装。</p>
+</li>
+<li><p>LinkedHashSet</p>
+<p>&emsp;&emsp;直接继承于HashSet，是HashSet的子类。同时实现了Set&lt;E&gt;, Cloneable和Serializable接口；</p>
+<p>&emsp;&emsp;底层数据结构依赖于LinkedHashMap，可允许存储null元素。具有集合内元素唯一，遍历顺序确定的特点；</p>
+<p>&emsp;&emsp;LinkedHashSet同样是一个非线程安全的实现。多线程环境下无法保证线程安全。如果需要在多线程环境下使用LinkedHashSet，则需要采用<strong>Collections.synchronizedSet(new LinkedHashSet(…));</strong>进行包装；</p>
+<p>&emsp;&emsp;LinkedHashSet中加入的元素不必实现Comparable或者Comparator接口，集合元素相等比较依赖的是equals()方法；</p>
+<p>&emsp;&emsp;LinkedHashSet可以保证的遍历顺序基于元素的插入元素产生，且元素插入时既有元素的顺序不会因为新元素的插入而发生变化。</p>
+</li>
+<li><p>TreeSet</p>
+<p>&emsp;&emsp;直接继承于AbstractSet，实现了NavigableSet&lt;E&gt;, Cloneable和Serializable接口；</p>
+<p>&emsp;&emsp;底层数据依赖于TreeMap，具有集合内元素唯一，遍历顺序确定的特点；</p>
+<p>&emsp;&emsp;TreeSet同样是一个非线程安全的实现。多线程环境下无法保证TreeSet使用的线程安全。如果需要在多线程环境下使用LinkedHashSet，则需要采用<strong>Collections.synchronizedSet(new TreeSet(…));</strong>进行包装；</p>
+<p>&emsp;&emsp;TreeSet中加入的元素需要实现Comparable或者Comparator接口，集合元素相等比较依赖的是compareTo()方法。如果未实现上述接口的方法在加入集合中时，会抛出<strong>ClassCastException</strong>，提示“TTTT cannot be cast to java.lang.Comparable”；</p>
+<p>&emsp;&emsp;TreeSet集合维护的元素是基于Comparable或者Comparator接口的compareTo()方法实现的，进行的对象内容上的比较，按照自然排序（升序或者降序）完成元素排序。该集合的元素顺序会随着元素的加入和删除而产生变化。</p>
+</li>
+</ul>
+<p>&emsp;</p>
+<h2 id="部分方法"><a href="#部分方法" class="headerlink" title="部分方法"></a>部分方法</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>int size();</td>
+<td>返回Set集合中的元素总数</td>
+</tr>
+<tr>
+<td>boolean isEmpty();</td>
+<td>判断Set集合是否为空，为空时返回true</td>
+</tr>
+<tr>
+<td>boolean contains(Object o);</td>
+<td>判断Set集合中是否含有元素o</td>
+</tr>
+<tr>
+<td>Iterator&lt;E&gt; iterator();</td>
+<td>返回可以游历Set集合的一个迭代器对象</td>
+</tr>
+<tr>
+<td>Object[] toArray();</td>
+<td>将当前Set集合中的元素以数组方式返回</td>
+</tr>
+<tr>
+<td>&lt;T&gt; T[] toArray(T[] a);</td>
+<td>将当前Set集合中的元素以数组方式存储到参数a中</td>
+</tr>
+<tr>
+<td>boolean add(E e);</td>
+<td>加入一个元素到Set集合尾部</td>
+</tr>
+<tr>
+<td>boolean remove(Object o);</td>
+<td>从Set集合中移除一个元素</td>
+</tr>
+<tr>
+<td>boolean containsAll(Collection&lt;?&gt; c);</td>
+<td>当前Set集合中是否包含集合c的所有元素</td>
+</tr>
+<tr>
+<td>boolean addAll(Collection&lt;? extends E&gt; c);</td>
+<td>将集合c中的元素都加入到Set集合中</td>
+</tr>
+<tr>
+<td>boolean removeAll(Collection&lt;?&gt; c);</td>
+<td>从Set集合中移除c中所有元素</td>
+</tr>
+<tr>
+<td>boolean retainAll(Collection&lt;?&gt; c);</td>
+<td>保留当前Set集合中出现在c中的元素，其他元素都移除</td>
+</tr>
+<tr>
+<td>void clear();</td>
+<td>清空Set集合</td>
+</tr>
+<tr>
+<td>boolean equals(Object o);</td>
+<td>相等性判断</td>
+</tr>
+<tr>
+<td>int hashCode();</td>
+<td>生成Set集合的散列值</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>&emsp;</p>
+<h2 id="涉及基础知识点"><a href="#涉及基础知识点" class="headerlink" title="涉及基础知识点"></a>涉及基础知识点</h2><ol>
+<li>NIL</li>
+</ol>
+<p>&emsp;</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>RUNOOB.COM. <a href="http://www.runoob.com/java/java-collections.html" target="_blank" rel="noopener">Java 集合框架</a> [E]</li>
+<li>J Steven Perry. <a href="https://www.ibm.com/developerworks/cn/java/j-perry-java-collections/index.html" target="_blank" rel="noopener">第 10 单元：Java 集合</a> [E]</li>
+<li>ORACLE. <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/collections/overview.html" target="_blank" rel="noopener">Collections Framework Overview</a> [E]</li>
+</ol>
+<p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-Collection-Set.html" target="_blank" title="Java Collection 08 - Set">Java Collection 08 - Set</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-Collection-Set.html" target="_blank" title="Java Collection 08 - Set">https://marcuseddie.github.io/2018/java-Collection-Set.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2018/java-ObjectOutputStream.html" class="alignleft prev" title="Java I/O 26 - ObjectOutputStream"> 上一篇： Java I/O 26 - ObjectOutputStream</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2018/java-Collection-LinkedList.html" class="alignright next" title="Java Collection 07 - LinkedList"> 下一篇： Java Collection 07 - LinkedList</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

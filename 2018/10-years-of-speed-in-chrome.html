@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      【译】一文了解Chrome的十年“加速”历程 | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="&amp;emsp;&amp;emsp;自十年前 Chrome 浏览器首次推出后，速度已经成为 Chrome 的四个核心原则之一。我们一直都想让 Web 开发者能够向用户提供快速的、优秀的上网体验。在 Chrome 诞生十周年之际，我们认为回顾在这十年中为提高速度所付出的努力，以及我们接下来要进行的尝试将会是一件非常有趣的事情。">
+<meta name="keywords" content="transalate">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【译】一文了解Chrome的十年“加速”历程 | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/10-years-of-speed-in-chrome.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;自十年前 Chrome 浏览器首次推出后，速度已经成为 Chrome 的四个核心原则之一。我们一直都想让 Web 开发者能够向用户提供快速的、优秀的上网体验。在 Chrome 诞生十周年之际，我们认为回顾在这十年中为提高速度所付出的努力，以及我们接下来要进行的尝试将会是一件非常有趣的事情。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1537670868/BlogImages/10-years-of-speed-in-chrome/ba9342523d46d2fbf21fa934cbc6019e2e2.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1537670867/BlogImages/10-years-of-speed-in-chrome/6f489f514ddca1b2242262eda8813bb1900.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1537670868/BlogImages/10-years-of-speed-in-chrome/e4ec482a2bf86f5cba8996785c22cfc009e.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1537670868/BlogImages/10-years-of-speed-in-chrome/d5604c28fd884240f584696049639c2a374.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1537670867/BlogImages/10-years-of-speed-in-chrome/ffe752d7f39eb8592d6cad734b643b8fd7c.png">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.349Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【译】一文了解Chrome的十年“加速”历程 | Mr.Muzi">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;自十年前 Chrome 浏览器首次推出后，速度已经成为 Chrome 的四个核心原则之一。我们一直都想让 Web 开发者能够向用户提供快速的、优秀的上网体验。在 Chrome 诞生十周年之际，我们认为回顾在这十年中为提高速度所付出的努力，以及我们接下来要进行的尝试将会是一件非常有趣的事情。">
+<meta name="twitter:image" content="https://res.cloudinary.com/jknight/image/upload/v1537670868/BlogImages/10-years-of-speed-in-chrome/ba9342523d46d2fbf21fa934cbc6019e2e2.png">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>【译】一文了解Chrome的十年“加速”历程</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-09-23" class="post-meta__date date">2018-09-23</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;2.4k&emsp;阅读时长:&nbsp;8&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/外文翻译/">外文翻译</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/协作翻译/">协作翻译</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;自十年前 Chrome 浏览器首次推出后，速度已经成为 Chrome 的<a href="https://www.chromium.org/developers/core-principles" target="_blank" rel="noopener">四个核心原则</a>之一。我们一直都想让 Web 开发者能够向用户提供快速的、优秀的上网体验。在 Chrome 诞生十周年之际，我们认为回顾在这十年中为提高速度所付出的努力，以及我们接下来要进行的尝试将会是一件非常有趣的事情。<br><a id="more"></a></p>
+<p>&emsp;</p>
+<h2 id="致力于提速的多个浏览器组件"><a href="#致力于提速的多个浏览器组件" class="headerlink" title="致力于提速的多个浏览器组件"></a>致力于提速的多个浏览器组件</h2><p>&emsp;&emsp;<a href="https://v8project.blogspot.com" target="_blank" rel="noopener">V8</a> 是 Chrome 的一个 JavaScript 和 WebAssembly 引擎。随着网页使用 JavaScript 脚本数量的快速增长，一个能够处理这些 JavaScript 脚本的高速引擎成为一个非常重要的基础。这些年，我们为 V8 研发了一个<a href="https://v8project.blogspot.com/2017/05/launching-ignition-and-turbofan.html" target="_blank" rel="noopener">新的 JavaScript 执行管道(pipeline)</a>，启用了 <a href="https://github.com/v8/v8/wiki/Interpreter" target="_blank" rel="noopener">Ignition</a>（一个新的解释器）和 <a href="https://github.com/v8/v8/wiki/TurboFan" target="_blank" rel="noopener">TurboFan</a>(一个优化的编译器)。这些举措使得我们关于速度基准测试方面的性能提升了 5%-10%。<a href="https://blog.chromium.org/2015/03/new-javascript-techniques-for-rapid.html" target="_blank" rel="noopener">脚本流(Script streaming)</a>使得我们在 JavaScript 脚本开始下载的时候就在一个后台线程中解析这些 JavaScript 脚本，而这可以将页面加载速度提高最多 10%。后来加入的<a href="https://v8project.blogspot.com/2018/03/background-compilation.html" target="_blank" rel="noopener">后台编译过程</a>将主线程的编译时间减少了最多 20%。 </p>
+<div align="center"><img src="https://res.cloudinary.com/jknight/image/upload/v1537670868/BlogImages/10-years-of-speed-in-chrome/ba9342523d46d2fbf21fa934cbc6019e2e2.png" width="600" height="346" align="center/"></div>
+
+<p>&emsp;</p>
+<p>&emsp;&emsp;我们在 <a href="https://v8project.blogspot.com/2016/04/jank-busters-part-two-orinoco.html" target="_blank" rel="noopener">Orinoco</a> 项目上的工作启用了并发的垃圾回收处理，释放了主线程的同时也减少了 jank。久而久之，我们也转而专注于<a href="https://blog.chromium.org/2017/04/real-world-javascript-performance.html" target="_blank" rel="noopener">实际的 JavaScript 性能</a>，此举帮助我们将 React 的运行时性能<a href="https://v8project.blogspot.com/2018/01/speedometer-2.html" target="_blank" rel="noopener">提升了一倍</a>，同时也将 Vue，Preact 和 Angular 等库的性能提高了最多 40%。自最初的 V8 提交上线后，并行的、并发的、增量的垃圾回收减少到了因 jank 引起的垃圾回收的百分之一。我们也实现了 <a href="https://webassembly.org/" target="_blank" rel="noopener">WebAssembly</a>，允许开发者在 Web 上凭借可以预测的性能来运行非 JavaScript 代码，同时启用了 <a href="https://v8project.blogspot.com/2018/08/liftoff.html" target="_blank" rel="noopener">Liftoff 基线编译器</a>来保证 WASM 应用的快速启动时间。这些新组件都是<a href="https://v8project.blogspot.com/2018/09/10-years.html" target="_blank" rel="noopener">近十年</a>用来提升 V8 性能的最新成果，而由此带来的性能提升超过了 20 倍。 </p>
+<div align="center"><img src="https://res.cloudinary.com/jknight/image/upload/v1537670867/BlogImages/10-years-of-speed-in-chrome/6f489f514ddca1b2242262eda8813bb1900.png" width="600" height="276" align="center/">
+
+</div>
+
+<div align="center">
+
+<div align="left" style="font-style:italic">
+
+&emsp;&emsp;上图是近几年 V8 平台关于 Chrome 的一系列已发行版本的得分。V8 平台是旧的 Octane 基准的前身，我们在这张图表中使用 V8 平台是因为不同于 Octane，V8 平台可以运行在所有的 Chrome 版本中，包括最新的测试版本。
+
+</div></div>
+
+<p>&emsp;</p>
+<p>&emsp;&emsp;Chrome 在借助 <a href="https://www.chromium.org/spdy" target="_blank" rel="noopener">SPDY</a>, <a href="https://developers.google.com/web/fundamentals/performance/http2/" target="_blank" rel="noopener">HTTP/2</a> 和 <a href="https://www.chromium.org/quic" target="_blank" rel="noopener">QUIC</a> 协助发展更新网络协议和传输层中也扮演了一个关键角色。SPDY 被用来解决 HTTP/1.1 的限制并且成为了 HTTP/2 的基础，而后者现在已经被所有的现代浏览器所支持。与此同时，团队积极地在旨在更好的改善延迟和用户体验的 QUIC 上执行迭代，而在 QUIC 背后，有一个积极的工程任务组(ITEF)在努力。QUIC 的效果在像 YouTube 这样的视频网站上是显而易见的，在借助 QUIC 观看视频时，用户报告的重新缓存率<a href="https://blog.chromium.org/2015/04/a-quic-update-on-googles-experimental.html" target="_blank" rel="noopener">降低了 30%</a>。</p>
+<p>&emsp;&emsp;接下来是 Chrome 的<a href="https://www.chromium.org/developers/the-rendering-critical-path" target="_blank" rel="noopener">渲染管道</a>(rendering pipeline)。这个组件用来确保网页对用户的响应同时保证每秒 60 帧的展示。为了以 60fps 的速率展示内容，Chrome 必须<a href="https://developers.google.com/web/fundamentals/performance/rendering/" target="_blank" rel="noopener">在 16 毫秒内渲染每一帧</a>。这其中包括了 JavaScript 脚本的执行、样式、层叠布局、绘制和向用户屏幕推送像素。在这 16 毫秒内，Chrome 使用的越少，就会留给开发人员更多的时间为用户带来更好的体验效果。我们渲染管道的实现涵盖了<a href="https://blog.chromium.org/2017/01/performance-improvements-in-chromes.html" target="_blank" rel="noopener">优化</a>如何确认页面上需要重新绘制的元素以及更好地追踪视觉上不重叠元素的集合。这个过程使得绘制新的帧图像到屏幕的时间缩短了最高 35%。</p>
+<div align="center"><img src="https://res.cloudinary.com/jknight/image/upload/v1537670868/BlogImages/10-years-of-speed-in-chrome/e4ec482a2bf86f5cba8996785c22cfc009e.png" width="600" height="279" align="center/">
+
+</div>
+
+<div align="center">
+
+<div align="left" style="font-style:italic">
+
+&emsp;&emsp;在 2015 年，Chrome 团队提出了一种名为 <a href="https://www.youtube.com/watch?v=wO9GGY17NXY" target="_blank" rel="noopener">RAIL</a>的以用户为中心的性能模型。我们在近期对其<a href="https://developers.google.com/web/fundamentals/performance/rail" target="_blank" rel="noopener">进行了更新</a>。
+
+</div></div>
+
+<p>&emsp;</p>
+<p>&emsp;&emsp;关于内存消耗，在 Chrome 的 63 到 66 版本之间，渲染器处理的内存使用率提升了大概 20% 到 30%。我们希望在站点隔离已经就绪的情况下继续探索基于 RAIL 的构建途径。Ignition 和 TurboFan 的使用<a href="https://v8project.blogspot.com/2017/05/launching-ignition-and-turbofan.html" target="_blank" rel="noopener">减少</a>了 V8 引擎的整体内存占用，在 V8 支持的所有设备和平台上内存占用降低了 5%-10%。今年，有一些调查发现互联网上 7% 的站点因为内存泄漏受到了影响，而这些问题我们已经完全修复。用来提升 Chrome 浏览器速度的组件涵盖了 DOM，CSS 和诸如 IndexedDB 的存储系统。如果想学习更多的关于我们在性能提升方面的内容，可以持续关注 Chromium 博客。</p>
+<p>&emsp;</p>
+<h2 id="赋予-Web-开发者更多测量及优化网页的能力"><a href="#赋予-Web-开发者更多测量及优化网页的能力" class="headerlink" title="赋予 Web 开发者更多测量及优化网页的能力"></a><strong>赋予 Web 开发者更多测量及优化网页的能力</strong></h2><p>&emsp;&emsp;了解从哪里开始改进你的网站可能是一个单调乏味的过程。为了提供帮助，我们探索了几种工具，用于了解用户感受到的 <a href="https://developers.google.com/web/fundamentals/performance/speed-tools/#lab_data" target="_blank" rel="noopener">lab</a> 信号和<a href="https://developers.google.com/web/fundamentals/performance/speed-tools/#field_data" target="_blank" rel="noopener">真实</a>体验。多年来，<a href="https://developers.google.com/web/tools/chrome-devtools/" target="_blank" rel="noopener">Chrome DevTools</a> 性能面板成为了一种可视化的方式，可直观地了解网页在实验室环境中如何展示的方法。为了继续降低冲突以寻找网站的<a href="https://developers.google.com/web/updates/2018/05/lighthouse" target="_blank" rel="noopener">性能改善的可能性</a>，我们随后致力于 <a href="https://developers.google.com/web/tools/lighthouse/" target="_blank" rel="noopener">Lighthouse</a>—— 一个分析网站质量的工具，为你提供网站性能的明确度量标准以及改善用户体验的具体指南。Lighthouse 可以直接从 DevTools Audits 面板中访问，从命令行运行，或与其他开发产品（如 <a href="http://webpagetest.org/easy" target="_blank" rel="noopener">WebPageTest</a>）集成。 </p>
+<div align="center"><img src="https://res.cloudinary.com/jknight/image/upload/v1537670868/BlogImages/10-years-of-speed-in-chrome/d5604c28fd884240f584696049639c2a374.png" width="600" height="357" align="center/">
+
+</div>
+
+<div align="center" style="font-style:italic">
+
+&emsp;&emsp;运行在 Chrome DevTools Audits 面板中的 Lighthouse
+
+</div>
+
+<p>&emsp;</p>
+<p>&emsp;&emsp;为了补充 Lighthouse 提供的实验数据，我们发布了 <a href="https://developers.google.com/web/tools/chrome-user-experience-report/" target="_blank" rel="noopener">Chrome 用户体验报告</a>来为开发者提供诸如<a href="https://developers.google.com/web/fundamentals/performance/user-centric-performance-metrics" target="_blank" rel="noopener">首次内容绘制</a>和<a href="https://developers.google.com/web/updates/2018/07/first-input-delay-in-crux" target="_blank" rel="noopener">首次输入延迟</a>等关于产品使用人群的真实用户体验的数据信息。如今，开发者可以生成他们自己的个性化网站性能报告，同时可以通过 <a href="https://g.co/chromeuxdash" target="_blank" rel="noopener">CrUX 数据报表</a>关注数百万来源的处理进度。</p>
+<p>&emsp;&emsp;我们同时也引入了一些 Web 平台功能来帮助开发者优化他们的站点加载性能。我们借助资源提示符<a href="https://w3c.github.io/resource-hints/" target="_blank" rel="noopener">(Resource Hints)</a> 和 <a href="https://developers.google.com/web/updates/2016/03/link-rel-preload" target="_blank" rel="noopener"></a>可以让开发者告知浏览器哪些关键资源是需要尽早加载的。Chrome 是最早实现了支持诸如<a href="https://github.com/google/brotli" target="_blank" rel="noopener">应用于压缩方面的 Brotli</a>、<a href="https://developers.googleblog.com/2015/02/smaller-fonts-with-woff-20-and-unicode.html" target="_blank" rel="noopener">小号网页字体的 WOFF2</a> 和<a href="https://caniuse.com/webp" target="_blank" rel="noopener">图片方面的 WebP</a> 等字节保存方案(byte-saving)的浏览器之一。</p>
+<p>&emsp;&emsp;我们很高兴看到支持上述特征的浏览器数量越来越多。Chrome 实现了 <a href="https://developers.google.com/web/fundamentals/primers/service-workers/" target="_blank" rel="noopener">Service Workers</a>，弃用了离线缓存和网络弹性以用于支持重复访问网页。我们也很高兴看到该功能已经<a href="https://caniuse.com/#search=service%20workers" target="_blank" rel="noopener">被大多数的现代浏览器所支持</a>。 </p>
+<div align="center"><img src="https://res.cloudinary.com/jknight/image/upload/v1537670867/BlogImages/10-years-of-speed-in-chrome/ffe752d7f39eb8592d6cad734b643b8fd7c.png" width="600" height="210" align="center/">
+
+</div>
+
+<p>&emsp;</p>
+<p>&emsp;&emsp;事实上，Google 搜索已经将 Servier Worker 和导航预加载(<a href="https://developers.google.com/web/updates/2017/02/navigation-preload" target="_blank" rel="noopener">navigation preload</a>)应用在了重复搜索方面的条件缓存上。而这使得重复访问的页面加载耗时性能提升了两倍。</p>
+<p>&emsp;&emsp;放眼未来，我们也对关于原生的图片和内嵌框架的延迟加载等新兴标准、诸如 <a href="https://en.wikipedia.org/wiki/AV1" target="_blank" rel="noopener">AV1</a> 这样的图像格式有助于高效地向用户提供内容感到兴奋。</p>
+<p>&emsp;</p>
+<h2 id="在你的数据规划中借助-Chrome-更好的享受网络"><a href="#在你的数据规划中借助-Chrome-更好的享受网络" class="headerlink" title="在你的数据规划中借助 Chrome 更好的享受网络"></a><strong>在你的数据规划中借助 Chrome 更好的享受网络</strong></h2><p>&emsp;&emsp;在过去十年，网页的数量发生了前所未有的增长，但很多用户是第一次使用网络，上网流量对于他们来说可能花费巨大，或者上网速度非常慢。鉴于此，Chrome 在近些年推出了像 Data saver 这样的具有数据意识的功能。Data saver 会智能地优化网页，节省了最多 92% 的上网流量消耗。</p>
+<p>&emsp;&emsp;我们也在探索新的可以节省数据的新方法。对那些连接速度最慢的用户来说，我们已经开发出了 Android 平台上的 Chrome，可以让智能网页优化器尽早展示必要的内容。这些页面转换加载相比于整个页面加载而言非常快，除此之外，我们也在持续的提高我们的精确性、覆盖范围和性能。</p>
+<p>&emsp;&emsp;我们也在尝试为数据或者网络受限的用户提供一些支持和协助。例如，我们向 Chrome 中加入了原生的延迟加载机制，以及为用户提供在使用大量数据时停止来自页面的其他请求的选项。</p>
+<p><strong>我们才刚刚开始</strong></p>
+<p>&emsp;&emsp;综上，这些改变帮助开发者和企业可以尽快地向他们的用户投放有用的内容。我们知道这仍需要有很多工作要做，在下一个十年我们也将会做出更多关于页面加载性能的改进和提高。</p>
+<p>&emsp;</p>
+<h2 id="致谢"><a href="#致谢" class="headerlink" title="致谢"></a>致谢</h2><p>&emsp;&emsp;本文由<a href="https://my.oschina.net/tocy" target="_blank" rel="noopener">Tocy</a>和作者共同完成，在这里向Tocy表示感谢并期待下一次的合作。</p>
+<p>&emsp;</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>原文链接：<a href="https://blog.chromium.org/2018/09/10-years-of-speed-in-chrome_11.html" target="_blank" rel="noopener">10 years of Speed in Chrome</a> </li>
+</ol>
+<p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+	  	
+		  	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>参与翻译完成，首发于<a href="https://www.oschina.net/translate?tab=completed">开源中国社区</a>，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/10-years-of-speed-in-chrome.html" target="_blank" title="【译】一文了解Chrome的十年“加速”历程">【译】一文了解Chrome的十年“加速”历程</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/10-years-of-speed-in-chrome.html" target="_blank" title="【译】一文了解Chrome的十年“加速”历程">https://marcuseddie.github.io/2018/10-years-of-speed-in-chrome.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2018/java-InputStream-OutputStream.html" class="alignleft prev" title="Java I/O 05 - InputStream &amp; OutputStream"> 上一篇： Java I/O 05 - InputStream &amp; OutputS...</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2018/Java-source-BufferedInput-OutputStream.html" class="alignright next" title="Java I/O 04 - BufferedInputStream &amp; BufferedOutputStream"> 下一篇： Java I/O 04 - BufferedInputStream &amp;...</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

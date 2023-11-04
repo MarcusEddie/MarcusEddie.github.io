@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      Murmurhash初步学习 | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="Murmurhash是一种简单、非加密的散列函数，具有强混淆性、低冲突风险。Murmurhash包含Murmurhash、Murmurhash2和Murmurhash3三个版本的算法，支持X86、X64体系结构，可以生成32位、64位、128位的散列值">
+<meta name="keywords" content="Murmurhash,Murmurhash,Murmurhash2,Murmurhash3">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Murmurhash初步学习 | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2019/MurMurhash-Learning.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="Murmurhash是一种简单、非加密的散列函数，具有强混淆性、低冲突风险。Murmurhash包含Murmurhash、Murmurhash2和Murmurhash3三个版本的算法，支持X86、X64体系结构，可以生成32位、64位、128位的散列值">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1590126930/BlogImages/Algorithm/hash-related/Murmurhash-Learning-Result-About-Java-Hashcode-And-Murmurhash.png">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.353Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Murmurhash初步学习 | Mr.Muzi">
+<meta name="twitter:description" content="Murmurhash是一种简单、非加密的散列函数，具有强混淆性、低冲突风险。Murmurhash包含Murmurhash、Murmurhash2和Murmurhash3三个版本的算法，支持X86、X64体系结构，可以生成32位、64位、128位的散列值">
+<meta name="twitter:image" content="https://res.cloudinary.com/jknight/image/upload/v1590126930/BlogImages/Algorithm/hash-related/Murmurhash-Learning-Result-About-Java-Hashcode-And-Murmurhash.png">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>Murmurhash初步学习</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2019-08-06" class="post-meta__date date">2019-08-06</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;2.2k&emsp;阅读时长:&nbsp;8&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/散列函数/">散列函数</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+  			
+			  <div class="prev_next clearfix">
+				<div style="width:30%;float:left;">
+					<a href="/en/2019/MurMurhash-Learning.html" target="_blank">Read the English version</a>
+				</div>
+		      </div>
+		  	
+		  
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;Murmurhash是由Austin Appleby在2008年发明的一种非常简单的、不具有加密特性的散列函数，可以非常容易的应用在一般的基于散列的查找场景中。Murmurhash非常简单，在X86体系结构的机器上可以用少于52条指令完成所有的计算，由此带来的性能也是非常优秀的。此外，Murmurhash具有非常好的强混淆性（雪崩效应）和非常低的冲突风险。强混淆性指的是输入数据的微小改变，都会产生一个完全不同的散列值。Murmurhash的强混淆性使得通过Murmurhash计算得到的散列值具有非常的分布性。Murmurhash的当前版本是Murmurhash3，可以用来生成一个32位或128的散列值。如果生成结果是128位结果，那么在X86结构和X64结构上的计算结果是不一样的。本文以Murmurhash2为例进行讨论。</p>
+<a id="more"></a>
+<p>&emsp;&emsp;作者在C版本的代码中对Murmurhash的运行提出了一些假设和解释：</p>
+<ol>
+<li>假设系统可以一次性读取4个字节；</li>
+<li>假设int类型数据的长度是4个字节；</li>
+<li>算法不会按照增量的方式工作；</li>
+<li>算法在大端（big-endian）和小端（little-endian）结构下的执行结果不一致。</li>
+</ol>
+<p>&emsp;&emsp;下面我将以32位版本为例进行学习（下述代码由Jedis 3.2.0实现）：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">hash</span><span class="params">(ByteBuffer buf, <span class="keyword">int</span> seed)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// save byte order for later restoration</span></span><br><span class="line">    ByteOrder byteOrder = buf.order();</span><br><span class="line">    buf.order(ByteOrder.LITTLE_ENDIAN);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> m = <span class="number">0x5bd1e995</span>;</span><br><span class="line">    <span class="keyword">int</span> r = <span class="number">24</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> h = seed ^ buf.remaining();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> k;</span><br><span class="line">    <span class="keyword">while</span> (buf.remaining() &gt;= <span class="number">4</span>) &#123;</span><br><span class="line">      k = buf.getInt();</span><br><span class="line"></span><br><span class="line">      k *= m;</span><br><span class="line">      k ^= k &gt;&gt;&gt; r;</span><br><span class="line">      k *= m;</span><br><span class="line"></span><br><span class="line">      h *= m;</span><br><span class="line">      h ^= k;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (buf.remaining() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">      ByteBuffer finish = ByteBuffer.allocate(<span class="number">4</span>).order(ByteOrder.LITTLE_ENDIAN);</span><br><span class="line">      <span class="comment">// for big-endian version, use this first:</span></span><br><span class="line">      <span class="comment">// finish.position(4-buf.remaining());</span></span><br><span class="line">      finish.put(buf).rewind();</span><br><span class="line">      h ^= finish.getInt();</span><br><span class="line">      h *= m;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    h ^= h &gt;&gt;&gt; <span class="number">13</span>;</span><br><span class="line">    h *= m;</span><br><span class="line">    h ^= h &gt;&gt;&gt; <span class="number">15</span>;</span><br><span class="line"></span><br><span class="line">    buf.order(byteOrder);</span><br><span class="line">    <span class="keyword">return</span> h;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;在32位版本的方法调用中，需要传入一个seed，seed一方面可以起到降低冲突碰撞概率的发生，对于不同的数据内容而言，即使散列算法非常优秀，也还是会有产生相同散列值的可能。通过在计算过程中加入seed完成随机数的生成计算，可以进一步降低冲突碰撞的概率。另一方面，对相同的数据内容计算散列值，不同的seed值会产生不同的结果，可以一定程度上避免HashDos安全问题的发生。当然，由于Murmurhash自身是非加密的，所以后一种解释对Murmurhash来说不具有任何意义，Murmurhash更多是期望可以通过seed值来降低冲突碰撞发生的概率。在Murmurhash2中用来生成64位散列值的方法中，seed值被指定为<strong>0x1234ABCD</strong>。方法调用者只需要关注需要计算散列值的数据内容即可。</p>
+<p>&emsp;&emsp;在hash()方法的第9行代码中，作者基于传入的seed值生成一个随机数，然后按照每4位得到一个int值来多次进行乘法、位移（右移）和异或操作，直至原始的数据内容全部被处理完或者剩余的数据位数不足4位。在操作过程中使用到的<strong>0x5bd1e995</strong>和<strong>24</strong>是事先决定的值，作者之所以取这两个值是因为作者认为这两个值可以产生令人满意的执行结果。作者循环的取出一个int数据（每4位取值），多次执行乘法、位移和异或操作来完成散列值的计算。第23 ~ 30行代码会对剩余的不足4位的数据完成散列值的计算。第32 ~ 34行代码用来保证剩下的最后几位数据在散列之后可以充分的分散在整体的散列结果中。</p>
+<h2 id="Murmurhash2-64位实现"><a href="#Murmurhash2-64位实现" class="headerlink" title="Murmurhash2 64位实现"></a>Murmurhash2 64位实现</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">long</span> <span class="title">hash64A</span><span class="params">(ByteBuffer buf, <span class="keyword">int</span> seed)</span> </span>&#123;</span><br><span class="line">    ByteOrder byteOrder = buf.order();</span><br><span class="line">    buf.order(ByteOrder.LITTLE_ENDIAN);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">long</span> m = <span class="number">0xc6a4a7935bd1e995L</span>;</span><br><span class="line">    <span class="keyword">int</span> r = <span class="number">47</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">long</span> h = seed ^ (buf.remaining() * m);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">long</span> k;</span><br><span class="line">    <span class="keyword">while</span> (buf.remaining() &gt;= <span class="number">8</span>) &#123;</span><br><span class="line">      k = buf.getLong();</span><br><span class="line"></span><br><span class="line">      k *= m;</span><br><span class="line">      k ^= k &gt;&gt;&gt; r;</span><br><span class="line">      k *= m;</span><br><span class="line"></span><br><span class="line">      h ^= k;</span><br><span class="line">      h *= m;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (buf.remaining() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">      ByteBuffer finish = ByteBuffer.allocate(<span class="number">8</span>).order(ByteOrder.LITTLE_ENDIAN);</span><br><span class="line">      <span class="comment">// for big-endian version, do this first:</span></span><br><span class="line">      <span class="comment">// finish.position(8-buf.remaining());</span></span><br><span class="line">      finish.put(buf).rewind();</span><br><span class="line">      h ^= finish.getLong();</span><br><span class="line">      h *= m;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    h ^= h &gt;&gt;&gt; r;</span><br><span class="line">    h *= m;</span><br><span class="line">    h ^= h &gt;&gt;&gt; r;</span><br><span class="line"></span><br><span class="line">    buf.order(byteOrder);</span><br><span class="line">    <span class="keyword">return</span> h;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Murmurhash2的缺陷和修复"><a href="#Murmurhash2的缺陷和修复" class="headerlink" title="Murmurhash2的缺陷和修复"></a>Murmurhash2的缺陷和修复</h2><p>&emsp;&emsp;Murmurhash2的设计中存在一个难以修复的缺陷，我们仍然以32位散列值生成函数来讨论这个缺陷：</p>
+<p>&emsp;&emsp;如果我们修改程序中的m使之等于1，那么在散列值的计算过程中由于m=1导致k的影响被完全抵消进而产生相同的散列值。即使我们清楚这个问题并严禁将m赋值为1，对同一个输入数据的所有可能散列值也无法达到期望的$ 2^{32} $。</p>
+<p>&emsp;&emsp;尽管该缺陷难以修复，但在实际的使用场景中，这个缺陷很难让应用程序运行失败。这个缺陷发生的条件非常苛刻：数据内容中包括重复的4字节值，且数据内容的差异仅存在于这些重复的4字节值上，且重复次数位于4字节的边界。如果真的发生了这种情况，那么散列值的范围将由$ 2^{32} $变成$ 2^{27.4} $。</p>
+<p>&emsp;&emsp;在Murmurhash3中，作者采用了更好的设计来完成散列值的计算，规避了Murmurhash2的设计缺陷，且具有更快的计算速度。</p>
+<h2 id="Murmurhash和Java语言的执行测试"><a href="#Murmurhash和Java语言的执行测试" class="headerlink" title="Murmurhash和Java语言的执行测试"></a>Murmurhash和Java语言的执行测试</h2><p>&emsp;&emsp;下面为一段字符串为例，观察Java提供的String.hashcode()和Murmurhash的执行结果的差异，Murmurhash的实现由Jedis提供。这里对同一个字符串分别用String.hashCode()方法和Murmurhash的算法来生成散列值，需要注意的是，Murmurhash生成的是64位的散列值：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    System.out.println(<span class="string">"LiXiansheng01"</span>.hashCode());</span><br><span class="line">    System.out.println(<span class="string">"LiXiansheng02"</span>.hashCode());</span><br><span class="line">    MurmurHash hash = <span class="keyword">new</span> MurmurHash();</span><br><span class="line">    System.out.println(hash.hash(<span class="string">"LiXiansheng01"</span>));</span><br><span class="line">    System.out.println(hash.hash(<span class="string">"LiXiansheng02"</span>));</span><br><span class="line">    System.out.println(hash.hash(<span class="string">"LiXiansheng03"</span>));</span><br><span class="line">    System.out.println(hash.hash(<span class="string">"LiXiansheng04"</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;代码执行结果如图 - 1所示：</p>
+<div style="text-align: center; width: 100%;">
+<img src="https://res.cloudinary.com/jknight/image/upload/v1590126930/BlogImages/Algorithm/hash-related/Murmurhash-Learning-Result-About-Java-Hashcode-And-Murmurhash.png" style="margin: 0 auto;">
+</div>
+
+<div align="center">
+<div align="center">图 - 1</div>
+&emsp;
+</div>
+
+<p>&emsp;&emsp;可以看到，Java的String类提供的hashCode()方法虽然简单易行，但是对于字符串差异不大的场景来说，其散列值很容易成为连续的散列值，这样带来的一个不足就是散列值的分布性不够均匀和随机，容易造成聚集。反观Murmurhash的执行结果，即使字符串差异不大，其散列值的差别也是非。常大的，这样可以保证散列值具有良好的分布性，尽量减少聚集现象的发生。</p>
+<h2 id="基础知识点"><a href="#基础知识点" class="headerlink" title="基础知识点"></a>基础知识点</h2><ol>
+<li><p><strong>雪崩效应（Avalanche effect）</strong></p>
+<p><strong>雪崩效应</strong>（<strong>Avalanche effect</strong>）是加密算法的一种理想属性，指的是当输入发生最微小的改变时，会导致输出结果发生比较非常明显的变化。该术语最早由Horst Feistel使用，其概念最早可以追溯到克劳德·香农提出的扩散（diffusion）理论。若某种块密码或加密散列函数没有显示出一定程度的雪崩特性，那么它被认为具有较差的随机化特性，从而密码分析者得以仅仅从输出推测输入。这可能导致该算法部分乃至全部被破解。</p>
+</li>
+<li><p><strong>严格雪崩准则</strong>（<strong>Strict Avalanche Criterion</strong>，<strong>SAC</strong>）</p>
+<p><strong>严格雪崩准则</strong>（<strong>Strict Avalanche Criterion</strong>，<strong>SAC</strong>）是雪崩效应的形式化。当任何一个输入位被反转时，输出中的每一位均有50%的概率发生变化。严格雪崩准则建立于密码学的完全性概念上，由Webster和Tavares在1985年提出。</p>
+</li>
+<li><p><strong>String.hashCode()的思想是什么？</strong></p>
+<p>String.hashCode()的实现过程采用了Horner法则（Horner’s rule）的思想，Horner法则也称为秦九韶算法，是一种计算n次多项式的高效算法。Horner法则通过将n次多项式</p>
+<script type="math/tex; mode=display">f\left( x\right) =a_{n}x^{n}+a_{n-1}x^{n-1}+a_{n-2}x^{n-2}+\ldots \ldots +a_{2}x^{2}+a_{1}x+a_{0}</script><p>转换成</p>
+<script type="math/tex; mode=display">f\left( x\right) =\left( \left( \left( \ldots \left( \left( a_{n}x+a_{n-1}\right) \cdot x+a_{n-2}\right) \cdot x+a_{n-3}\right) x+\ldots \ldots +a_{2}\right) x+a_{1}\right) x+a_{0}</script><p>这样乘法和加法的计算次数就从n次多项式的$ \dfrac {n\left( n+1\right) }{2} $和 n次，降低到了n次乘法和n次加法，进而提高计算性能。</p>
+</li>
+</ol>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>Stack Overflow. <a href="https://stackoverflow.com/questions/9241230/what-is-murmurhash3-seed-parameter" target="_blank" rel="noopener">What is MurmurHash3 seed parameter?</a> [E]</li>
+<li>spacewander. <a href="https://segmentfault.com/a/1190000010990136" target="_blank" rel="noopener">漫谈非加密哈希算法</a> [E]</li>
+<li>aappleby. <a href="https://github.com/aappleby/smhasher/wiki" target="_blank" rel="noopener">SMHasher</a> [E]</li>
+<li>Anderson Dadario. <a href="https://dadario.com.br/cryptographic-and-non-cryptographic-hash-functions/" target="_blank" rel="noopener">Cryptographic and Non-Cryptographic Hash Functions</a> [E]</li>
+<li>Wikipedia. <a href="http://en.wikipedia.org/wiki/MurmurHash" target="_blank" rel="noopener">MurmurHash</a> [E]</li>
+</ol>
+<p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2019/MurMurhash-Learning.html" target="_blank" title="Murmurhash初步学习">Murmurhash初步学习</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2019/MurMurhash-Learning.html" target="_blank" title="Murmurhash初步学习">https://marcuseddie.github.io/2019/MurMurhash-Learning.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2019/Tech-Books.html" class="alignleft prev" title="技术书籍"> 上一篇： 技术书籍</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2019/For-Tony.html" class="alignright next" title="I am Iron Man"> 下一篇： I am Iron Man</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      Java I/O 06 - DataInputStream &amp; DataOutputStream | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="DataInputStream和DataOutputStream以一种不依赖平台的方式完成数据的读取和输出操作，可以读取Javaava基本数据类型（primitive data types）的数据，其中包含方法readFully、readUTF、writeUTF等。">
+<meta name="keywords" content="DataInputStream, DataOutputStream, readFully, readUTF, writeUTF, writeBytes, writeChars, readShort">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java I&#x2F;O 06 - DataInputStream &amp; DataOutputStream | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/java-DataInputStream-DataOutputStream.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="DataInputStream和DataOutputStream以一种不依赖平台的方式完成数据的读取和输出操作，可以读取Javaava基本数据类型（primitive data types）的数据，其中包含方法readFully、readUTF、writeUTF等。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.357Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java I&#x2F;O 06 - DataInputStream &amp; DataOutputStream | Mr.Muzi">
+<meta name="twitter:description" content="DataInputStream和DataOutputStream以一种不依赖平台的方式完成数据的读取和输出操作，可以读取Javaava基本数据类型（primitive data types）的数据，其中包含方法readFully、readUTF、writeUTF等。">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>Java I/O 06 - DataInputStream &amp; DataOutputStream</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-10-10" class="post-meta__date date">2018-10-10</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;5.2k&emsp;阅读时长:&nbsp;22&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.io.DataInputStream</strong> </em> 和 <em> <strong>java.io.DataOutputStream</strong> </em>的部分笔记，这两个类共同实现对数据类型为Java原生数据类型的数据的字节输入、输出流操作。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;DataInputStream和DataOutputStream这两个类实现了Java原生数据类型的写入和读取操作。DataInputStream以一种不依赖于特定运行平台的方式从底层输入流中将Java类型的数据读出进行计算处理。但是DataInputStream不保证多线程环境下的安全性，需要开发人员自己来保证多线程环境下可以正确无误的使用该类中的方法。</p>
+<p>&emsp;&emsp;DataOutputStream则用来将Java的原生数据类型数据写入到底层的输出流中。</p>
+<p>&emsp;</p>
+<h2 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// DataInputStream</span></span><br><span class="line">--java.lang.Object</span><br><span class="line">  --java.io.InputStream</span><br><span class="line">    --java.io.FilterInputStream</span><br><span class="line">      --java.io.DataInputStream</span><br><span class="line"></span><br><span class="line"><span class="comment">// DataOutputStream</span></span><br><span class="line">--java.lang.Object</span><br><span class="line">  --java.io.OutputStream</span><br><span class="line">    --java.io.FilterOutputStream</span><br><span class="line">      --java.io.DataOutputStream</span><br></pre></td></tr></table></figure>
+<p>&emsp;</p>
+<h2 id="实现接口"><a href="#实现接口" class="headerlink" title="实现接口"></a>实现接口</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">类名</th>
+<th style="text-align:center">实现接口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">DataInputStream</td>
+<td style="text-align:center">Closeable, DataInput, AutoCloseable</td>
+</tr>
+<tr>
+<td style="text-align:center">DataOutputStream</td>
+<td style="text-align:center">Closeable, DataOutput, Flushable, AutoCloseable</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>&emsp;</p>
+<h2 id="DataInputStream"><a href="#DataInputStream" class="headerlink" title="DataInputStream"></a>DataInputStream</h2><h3 id="部分方法"><a href="#部分方法" class="headerlink" title="部分方法"></a>部分方法</h3><h4 id="public-final-void-readFully-byte-b-int-off-int-len"><a href="#public-final-void-readFully-byte-b-int-off-int-len" class="headerlink" title="public final void readFully(byte b[], int off, int len)"></a>public final void readFully(byte b[], int off, int len)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">readFully</span><span class="params">(<span class="keyword">byte</span> b[], <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (len &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IndexOutOfBoundsException();</span><br><span class="line">    <span class="keyword">int</span> n = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (n &lt; len) &#123;</span><br><span class="line">        <span class="keyword">int</span> count = in.read(b, off + n, len - n);</span><br><span class="line">        <span class="keyword">if</span> (count &lt; <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> EOFException();</span><br><span class="line">        n += count;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">readFully</span><span class="params">(<span class="keyword">byte</span> b[])</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    readFully(b, <span class="number">0</span>, b.length);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;读取字节流数据并保存到入参缓存数组b中，直到把入参b填充完全时才会结束。第2 ~ 3行代码用来做参数校验，如果长度小于0，那么会返回一个异常信息给方法调用方，防止越界。第5 ~ 10行代码执行具体的字节数据读取，第6行返回当前读取完成后实际成功读取的字节数，如果实际读取的字节数小于0，那么返回一个文件结束异常，此时b中包含实际读取的内容数据。第9行用于记录累计读取的字节数，如果累计读取字节数达到了入参读取长度，那么结束循环读取操作，b中包含长度为len的实际读取的内容。由于这个方法是个阻塞方法，因此如果因为一些原因导致当前底层输入流在没有到达流结束位置但暂时无法提供新的数据时，这个方法会一直等待，直到新的数据到达被读取保存到b中或者一个IOException、EOFException异常被返回。</p>
+<p>&emsp;&emsp;在浏览代码时发现，DataInputStream含有继承自父类InputStream的方法<strong>read(byte b[], int off, int len)</strong>和<strong>read(byte b[])</strong>。这两个方法和对应的readFully方法的入参完全一致，最终实现的效果也是一样的，都是从底层输入流中读取字节内容并保存到入参字节数组b中。但是这两个方法有一些区别：</p>
+<ol>
+<li>readFully在无异常执行结束后，数组b中实际填充的字节长度等于入参长度值（默认为数组b的长度），而read方法执行后数组b实际填充的字节长度小于等于入参长度值；</li>
+<li>readFully方法通过抛出EOFException标识已经到达结束位置，而read方法则通过返回-1（int类型）来标识结束；</li>
+<li>readFully方法如果入参缓存数组长度大于底层输入流的完整长度，那么最后会返回一个EOFException异常来结束方法调用，而read方法会正常结束调用；</li>
+<li>通过使用readFully可以保证读取到长度明确的流内容，这可以保证读取内容的完整性。而read方法则无法保证实际读取的内容长度，需要方法调用方执行另外的判断操作来保证。</li>
+</ol>
+<h4 id="public-final-int-skipBytes-int-n"><a href="#public-final-int-skipBytes-int-n" class="headerlink" title="public final int skipBytes(int n)"></a>public final int skipBytes(int n)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">skipBytes</span><span class="params">(<span class="keyword">int</span> n)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> total = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> cur = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> ((total&lt;n) &amp;&amp; ((cur = (<span class="keyword">int</span>) in.skip(n-total)) &gt; <span class="number">0</span>)) &#123;</span><br><span class="line">        total += cur;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> total;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;跳过底层输入流中指定长度的字节内容，并将下次开始读取的位置从当前位置向后偏移n个单位长度。需要注意的是，实际调用时，实际跳过的长度可能小于n，因为当输入流中剩余未读的数据长度可能小于入参跳过长度n。</p>
+<h4 id="public-final-short-readShort"><a href="#public-final-short-readShort" class="headerlink" title="public final short readShort()"></a>public final short readShort()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">short</span> <span class="title">readShort</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ch1 = in.read();</span><br><span class="line">    <span class="keyword">int</span> ch2 = in.read();</span><br><span class="line">    <span class="keyword">if</span> ((ch1 | ch2) &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> EOFException();</span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">short</span>)((ch1 &lt;&lt; <span class="number">8</span>) + (ch2 &lt;&lt; <span class="number">0</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;读出一个有符号short型数据。借鉴参考的数学公式是：</p>
+<blockquote>
+<p> (short)((a &lt;&lt; 8) | (b &amp; 0xff))</p>
+</blockquote>
+<p>&emsp;&emsp;在依次读出两个字节的数据后，将第一次读出的数据（即左高八位）向左移动8个进制位，至此完成了左高八位数据的处理，然后将第二次读出的数据（即右低八位）与<strong>11111111（共32位，左高24位均为0）</strong>按位求与。这样执行后，第二次读出的数据将只保留低八位的二进制位，也就是右低八位的数据。最后将左移后的左高八位数据和按位求与后的右低八位数据按位求或（这两个数据都是以32位形式存在），得到最终的32位比特数值，最后的强制转换执行高位截取，只保留右低十六位的比特位，即最终需要返回的short型数据。</p>
+<h4 id="public-final-int-readUnsignedShort"><a href="#public-final-int-readUnsignedShort" class="headerlink" title="public final int readUnsignedShort()"></a>public final int readUnsignedShort()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">readUnsignedShort</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ch1 = in.read();</span><br><span class="line">    <span class="keyword">int</span> ch2 = in.read();</span><br><span class="line">    <span class="keyword">if</span> ((ch1 | ch2) &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> EOFException();</span><br><span class="line">    <span class="keyword">return</span> (ch1 &lt;&lt; <span class="number">8</span>) + (ch2 &lt;&lt; <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;读出一个无符号short型数据。借鉴参考的数学公式是：</p>
+<blockquote>
+<p> (((a &amp; 0xff) &lt;&lt; 8) | (b &amp; 0xff))</p>
+</blockquote>
+<p>&emsp;&emsp;和readShort方法不同的是，readUnsignedShort将第一次读出的数据也和0xff做了按位求与操作。因为在java中int型数据不存在有符号无符号这一说法，所以这么做以后就把第一次读出的数据的高24位全部置为0，消除了符号位可能带来的影响。紧接着将其左移8位完成左高八位数据的处理。然后将第二次读出的数据执行和readShort方法一样的操作，最后将两个数据按位求或，即得到最终需要返回的无符号的short型数据。</p>
+<h4 id="public-final-long-readLong"><a href="#public-final-long-readLong" class="headerlink" title="public final long readLong()"></a>public final long readLong()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">long</span> <span class="title">readLong</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    readFully(readBuffer, <span class="number">0</span>, <span class="number">8</span>);</span><br><span class="line">    <span class="keyword">return</span> (((<span class="keyword">long</span>)readBuffer[<span class="number">0</span>] &lt;&lt; <span class="number">56</span>) +</span><br><span class="line">            ((<span class="keyword">long</span>)(readBuffer[<span class="number">1</span>] &amp; <span class="number">255</span>) &lt;&lt; <span class="number">48</span>) +</span><br><span class="line">            ((<span class="keyword">long</span>)(readBuffer[<span class="number">2</span>] &amp; <span class="number">255</span>) &lt;&lt; <span class="number">40</span>) +</span><br><span class="line">            ((<span class="keyword">long</span>)(readBuffer[<span class="number">3</span>] &amp; <span class="number">255</span>) &lt;&lt; <span class="number">32</span>) +</span><br><span class="line">            ((<span class="keyword">long</span>)(readBuffer[<span class="number">4</span>] &amp; <span class="number">255</span>) &lt;&lt; <span class="number">24</span>) +</span><br><span class="line">            ((readBuffer[<span class="number">5</span>] &amp; <span class="number">255</span>) &lt;&lt; <span class="number">16</span>) +</span><br><span class="line">            ((readBuffer[<span class="number">6</span>] &amp; <span class="number">255</span>) &lt;&lt;  <span class="number">8</span>) +</span><br><span class="line">            ((readBuffer[<span class="number">7</span>] &amp; <span class="number">255</span>) &lt;&lt;  <span class="number">0</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;读出一个无符号short型数据。借鉴参考的数学公式是：</p>
+<blockquote>
+<p>(((long)(a &amp; 0xff) &lt;&lt; 56) | ((long)(b &amp; 0xff) &lt;&lt; 48) |  ((long)(c &amp; 0xff) &lt;&lt; 40) | ((long)(d &amp; 0xff) &lt;&lt; 32) |<br>  ((long)(e &amp; 0xff) &lt;&lt; 24) |  ((long)(f &amp; 0xff) &lt;&lt; 16) |  ((long)(g &amp; 0xff) &lt;&lt;  8) |  ((long)(h &amp; 0xff)))</p>
+</blockquote>
+<p>&emsp;&emsp;读出一个long类型数据并返回。第2行代码首先一次读出8个长度的byte数组内容，然后由第3 ~ 10行代码完成数据类型的转换。在代码中，都有一个操作，那就是readBuffer[n] &amp; 255。这是因为readBuffer数组中存储的是byte类型的数据，而底层依赖调用的read方法返回的int类型数据，也就是说，在从底层输入流中读出一个int类型的数据后，会转成byte存入readBuffer数组中。如果从底层输入流中读出的是一个大于127的int值，这个值在完成byte转换后就变成了一个负数而不是转换前的大于127的值，所以为了保持一致性，就将byte类型的数据首先与255（也就是0XFF）按位相与，这样就可以正确的将一个byte类型的数据转成int类型。由于int和long类型数据都不存在有无符号这一说法，所以int可以正确无误的转成long型。最后按照从左到右的顺序依次构建long型数据的二进制表示并返回最终转换后的结果。</p>
+<h4 id="public-final-static-String-readUTF-DataInput-in"><a href="#public-final-static-String-readUTF-DataInput-in" class="headerlink" title="public final static String readUTF(DataInput in)"></a>public final static String readUTF(DataInput in)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String <span class="title">readUTF</span><span class="params">(DataInput in)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> utflen = in.readUnsignedShort();</span><br><span class="line">    <span class="keyword">byte</span>[] bytearr = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">char</span>[] chararr = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (in <span class="keyword">instanceof</span> DataInputStream) &#123;</span><br><span class="line">        DataInputStream dis = (DataInputStream)in;</span><br><span class="line">        <span class="keyword">if</span> (dis.bytearr.length &lt; utflen)&#123;</span><br><span class="line">            dis.bytearr = <span class="keyword">new</span> <span class="keyword">byte</span>[utflen*<span class="number">2</span>];</span><br><span class="line">            dis.chararr = <span class="keyword">new</span> <span class="keyword">char</span>[utflen*<span class="number">2</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        chararr = dis.chararr;</span><br><span class="line">        bytearr = dis.bytearr;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        bytearr = <span class="keyword">new</span> <span class="keyword">byte</span>[utflen];</span><br><span class="line">        chararr = <span class="keyword">new</span> <span class="keyword">char</span>[utflen];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> c, char2, char3;</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> chararr_count=<span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    in.readFully(bytearr, <span class="number">0</span>, utflen);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (count &lt; utflen) &#123;</span><br><span class="line">        c = (<span class="keyword">int</span>) bytearr[count] &amp; <span class="number">0xff</span>;</span><br><span class="line">        <span class="keyword">if</span> (c &gt; <span class="number">127</span>) <span class="keyword">break</span>;</span><br><span class="line">        count++;</span><br><span class="line">        chararr[chararr_count++]=(<span class="keyword">char</span>)c;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (count &lt; utflen) &#123;</span><br><span class="line">        c = (<span class="keyword">int</span>) bytearr[count] &amp; <span class="number">0xff</span>;</span><br><span class="line">        <span class="keyword">switch</span> (c &gt;&gt; <span class="number">4</span>) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">0</span>: <span class="keyword">case</span> <span class="number">1</span>: <span class="keyword">case</span> <span class="number">2</span>: <span class="keyword">case</span> <span class="number">3</span>: <span class="keyword">case</span> <span class="number">4</span>: <span class="keyword">case</span> <span class="number">5</span>: <span class="keyword">case</span> <span class="number">6</span>: <span class="keyword">case</span> <span class="number">7</span>:</span><br><span class="line">                <span class="comment">/* 0xxxxxxx*/</span></span><br><span class="line">                count++;</span><br><span class="line">                chararr[chararr_count++]=(<span class="keyword">char</span>)c;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">12</span>: <span class="keyword">case</span> <span class="number">13</span>:</span><br><span class="line">                <span class="comment">/* 110x xxxx   10xx xxxx*/</span></span><br><span class="line">                count += <span class="number">2</span>;</span><br><span class="line">                <span class="keyword">if</span> (count &gt; utflen)</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> UTFDataFormatException(</span><br><span class="line">                    <span class="string">"malformed input: partial character at end"</span>);</span><br><span class="line">                char2 = (<span class="keyword">int</span>) bytearr[count-<span class="number">1</span>];</span><br><span class="line">                <span class="keyword">if</span> ((char2 &amp; <span class="number">0xC0</span>) != <span class="number">0x80</span>)</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> UTFDataFormatException(</span><br><span class="line">                    <span class="string">"malformed input around byte "</span> + count);</span><br><span class="line">                chararr[chararr_count++]=(<span class="keyword">char</span>)(((c &amp; <span class="number">0x1F</span>) &lt;&lt; <span class="number">6</span>) |</span><br><span class="line">                                                (char2 &amp; <span class="number">0x3F</span>));</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">14</span>:</span><br><span class="line">                <span class="comment">/* 1110 xxxx  10xx xxxx  10xx xxxx */</span></span><br><span class="line">                count += <span class="number">3</span>;</span><br><span class="line">                <span class="keyword">if</span> (count &gt; utflen)</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> UTFDataFormatException(</span><br><span class="line">                    <span class="string">"malformed input: partial character at end"</span>);</span><br><span class="line">                char2 = (<span class="keyword">int</span>) bytearr[count-<span class="number">2</span>];</span><br><span class="line">                char3 = (<span class="keyword">int</span>) bytearr[count-<span class="number">1</span>];</span><br><span class="line">                <span class="keyword">if</span> (((char2 &amp; <span class="number">0xC0</span>) != <span class="number">0x80</span>) || ((char3 &amp; <span class="number">0xC0</span>) != <span class="number">0x80</span>))</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> UTFDataFormatException(</span><br><span class="line">                    <span class="string">"malformed input around byte "</span> + (count-<span class="number">1</span>));</span><br><span class="line">                chararr[chararr_count++]=(<span class="keyword">char</span>)(((c     &amp; <span class="number">0x0F</span>) &lt;&lt; <span class="number">12</span>) |</span><br><span class="line">                                                ((char2 &amp; <span class="number">0x3F</span>) &lt;&lt; <span class="number">6</span>)  |</span><br><span class="line">                                                ((char3 &amp; <span class="number">0x3F</span>) &lt;&lt; <span class="number">0</span>));</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="comment">/* 10xx xxxx,  1111 xxxx */</span></span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> UTFDataFormatException(</span><br><span class="line">                    <span class="string">"malformed input around byte "</span> + count);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// The number of chars produced may be less than utflen</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> String(chararr, <span class="number">0</span>, chararr_count);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;读出一段指定长度的UTF-8格式的字符串并返回。第2行代码从输入流中读出一个无符号short型数值，这个数值表示接下来需要从底层输入流中读取的数据量。第22行代码执行后，就会从底层输入流中读取确定长度的数据。第24 ~ 29行代码把数值小于128的数据转成了基础的ASCII码字符。第31 ~ 72行数据用来把数据转换成Unicode格式的字符，采用的是修订版的UTF-8标准。每次遍历一个数组元素，将其转成int型数值后右移4位判断转换关系：第34 ~ 38行代码将码值在U+0000 - U+007F之间的字符转换成了对应的UTF格式，这部分数据只需要用一个字节即可存储。第39 ~ 51行用来处理码值在U+0080 - U+07FF之间的字符，第46行的判断用来检查第二个字节是否满足10XXXXXX的格式。第52 ~ 66行代码用来处理码值在U+0800 - U+FFFF之间的字符。如果不满足上述三种情况，那么认为读取的数据是异常的并抛出异常。在最后将转换后的char字符数组转成一个完整的String字符串并返回。</p>
+<p>&emsp;</p>
+<h2 id="DataOutputStream"><a href="#DataOutputStream" class="headerlink" title="DataOutputStream"></a>DataOutputStream</h2><h3 id="部分方法-1"><a href="#部分方法-1" class="headerlink" title="部分方法"></a>部分方法</h3><h4 id="private-void-incCount-int-value"><a href="#private-void-incCount-int-value" class="headerlink" title="private void incCount(int value)"></a>private void incCount(int value)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">incCount</span><span class="params">(<span class="keyword">int</span> value)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> temp = written + value;</span><br><span class="line">    <span class="keyword">if</span> (temp &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        temp = Integer.MAX_VALUE;</span><br><span class="line">    &#125;</span><br><span class="line">    written = temp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;记录更新已经写入的字节数。因为written的类型是int，所以如果发生了溢出以后，那么就一律标定为int类型的最大值。</p>
+<h4 id="public-synchronized-void-write-int-b"><a href="#public-synchronized-void-write-int-b" class="headerlink" title="public synchronized void write(int b)"></a>public synchronized void write(int b)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">int</span> b)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    out.write(b);</span><br><span class="line">    incCount(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">byte</span> b[], <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> IOException</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    out.write(b, off, len);</span><br><span class="line">    incCount(len);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;继承自OutputStream的write方法，如果写入完成后无异常，那么就更新已经写入的字节数信息。</p>
+<h4 id="基本类型写入方法"><a href="#基本类型写入方法" class="headerlink" title="基本类型写入方法"></a>基本类型写入方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//写入一个boolean值，1 - true ，0 - false</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">writeBoolean</span><span class="params">(<span class="keyword">boolean</span> v)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    out.write(v ? <span class="number">1</span> : <span class="number">0</span>);</span><br><span class="line">    incCount(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//写入一个byte值</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">writeByte</span><span class="params">(<span class="keyword">int</span> v)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    out.write(v);</span><br><span class="line">    incCount(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//写入一个short值，每个short值由两个字节构成</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">writeShort</span><span class="params">(<span class="keyword">int</span> v)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    out.write((v &gt;&gt;&gt; <span class="number">8</span>) &amp; <span class="number">0xFF</span>);</span><br><span class="line">    out.write((v &gt;&gt;&gt; <span class="number">0</span>) &amp; <span class="number">0xFF</span>);</span><br><span class="line">    incCount(<span class="number">2</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//写入一个char值，每个char值由两个字节构成</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">writeChar</span><span class="params">(<span class="keyword">int</span> v)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    out.write((v &gt;&gt;&gt; <span class="number">8</span>) &amp; <span class="number">0xFF</span>);</span><br><span class="line">    out.write((v &gt;&gt;&gt; <span class="number">0</span>) &amp; <span class="number">0xFF</span>);</span><br><span class="line">    incCount(<span class="number">2</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//写入一个int值，每个int值由四个字节构成</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">writeInt</span><span class="params">(<span class="keyword">int</span> v)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    out.write((v &gt;&gt;&gt; <span class="number">24</span>) &amp; <span class="number">0xFF</span>);</span><br><span class="line">    out.write((v &gt;&gt;&gt; <span class="number">16</span>) &amp; <span class="number">0xFF</span>);</span><br><span class="line">    out.write((v &gt;&gt;&gt;  <span class="number">8</span>) &amp; <span class="number">0xFF</span>);</span><br><span class="line">    out.write((v &gt;&gt;&gt;  <span class="number">0</span>) &amp; <span class="number">0xFF</span>);</span><br><span class="line">    incCount(<span class="number">4</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//写入一个long值，每个long值由八个字节构成</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">writeLong</span><span class="params">(<span class="keyword">long</span> v)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    writeBuffer[<span class="number">0</span>] = (<span class="keyword">byte</span>)(v &gt;&gt;&gt; <span class="number">56</span>);</span><br><span class="line">    writeBuffer[<span class="number">1</span>] = (<span class="keyword">byte</span>)(v &gt;&gt;&gt; <span class="number">48</span>);</span><br><span class="line">    writeBuffer[<span class="number">2</span>] = (<span class="keyword">byte</span>)(v &gt;&gt;&gt; <span class="number">40</span>);</span><br><span class="line">    writeBuffer[<span class="number">3</span>] = (<span class="keyword">byte</span>)(v &gt;&gt;&gt; <span class="number">32</span>);</span><br><span class="line">    writeBuffer[<span class="number">4</span>] = (<span class="keyword">byte</span>)(v &gt;&gt;&gt; <span class="number">24</span>);</span><br><span class="line">    writeBuffer[<span class="number">5</span>] = (<span class="keyword">byte</span>)(v &gt;&gt;&gt; <span class="number">16</span>);</span><br><span class="line">    writeBuffer[<span class="number">6</span>] = (<span class="keyword">byte</span>)(v &gt;&gt;&gt;  <span class="number">8</span>);</span><br><span class="line">    writeBuffer[<span class="number">7</span>] = (<span class="keyword">byte</span>)(v &gt;&gt;&gt;  <span class="number">0</span>);</span><br><span class="line">    out.write(writeBuffer, <span class="number">0</span>, <span class="number">8</span>);</span><br><span class="line">    incCount(<span class="number">8</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//写入一个float值</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">writeFloat</span><span class="params">(<span class="keyword">float</span> v)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    writeInt(Float.floatToIntBits(v));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//写入一个double值</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">writeDouble</span><span class="params">(<span class="keyword">double</span> v)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    writeLong(Double.doubleToLongBits(v));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="public-final-void-writeBytes-String-s"><a href="#public-final-void-writeBytes-String-s" class="headerlink" title="public final void writeBytes(String s)"></a>public final void writeBytes(String s)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">writeBytes</span><span class="params">(String s)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> len = s.length();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; len ; i++) &#123;</span><br><span class="line">        out.write((<span class="keyword">byte</span>)s.charAt(i));</span><br><span class="line">    &#125;</span><br><span class="line">    incCount(len);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;写入一个String到底层输出流中，需要注意的是，这个方法仅适用于单字节字符，即构成String的每个字符都是单字节的。如果是写入类似于Unicode这样的多字节字符，那么由于writeBytes()仅写入了低八位数据，所以会导致写入和读取的内容不一致的问题。除此之外，在DataInputStream中，并没有对应的读取方法来获取一个写入的String字符串，所以该方法需要慎用。</p>
+<h4 id="public-final-void-writeChars-String-s"><a href="#public-final-void-writeChars-String-s" class="headerlink" title="public final void writeChars(String s)"></a>public final void writeChars(String s)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">writeChars</span><span class="params">(String s)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> len = s.length();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; len ; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> v = s.charAt(i);</span><br><span class="line">        out.write((v &gt;&gt;&gt; <span class="number">8</span>) &amp; <span class="number">0xFF</span>);</span><br><span class="line">        out.write((v &gt;&gt;&gt; <span class="number">0</span>) &amp; <span class="number">0xFF</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    incCount(len * <span class="number">2</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;依次将入参String的每个字符写入到底层输出流中。如果执行过程无异常抛出，那么更新当前写入的字节数，需要注意的是，本次方法调用实际写入的字节数为入参String长度的两倍。</p>
+<h4 id="static-int-writeUTF-String-str-DataOutput-out"><a href="#static-int-writeUTF-String-str-DataOutput-out" class="headerlink" title="static int writeUTF(String str, DataOutput out)"></a>static int writeUTF(String str, DataOutput out)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">writeUTF</span><span class="params">(String str, DataOutput out)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> strlen = str.length();</span><br><span class="line">    <span class="keyword">int</span> utflen = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> c, count = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* use charAt instead of copying String to char array */</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; strlen; i++) &#123;</span><br><span class="line">        c = str.charAt(i);</span><br><span class="line">        <span class="keyword">if</span> ((c &gt;= <span class="number">0x0001</span>) &amp;&amp; (c &lt;= <span class="number">0x007F</span>)) &#123;</span><br><span class="line">            utflen++;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c &gt; <span class="number">0x07FF</span>) &#123;</span><br><span class="line">            utflen += <span class="number">3</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            utflen += <span class="number">2</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (utflen &gt; <span class="number">65535</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> UTFDataFormatException(</span><br><span class="line">        <span class="string">"encoded string too long: "</span> + utflen + <span class="string">" bytes"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">byte</span>[] bytearr = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (out <span class="keyword">instanceof</span> DataOutputStream) &#123;</span><br><span class="line">        DataOutputStream dos = (DataOutputStream)out;</span><br><span class="line">        <span class="keyword">if</span>(dos.bytearr == <span class="keyword">null</span> || (dos.bytearr.length &lt; (utflen+<span class="number">2</span>)))</span><br><span class="line">            dos.bytearr = <span class="keyword">new</span> <span class="keyword">byte</span>[(utflen*<span class="number">2</span>) + <span class="number">2</span>];</span><br><span class="line">        bytearr = dos.bytearr;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        bytearr = <span class="keyword">new</span> <span class="keyword">byte</span>[utflen+<span class="number">2</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    bytearr[count++] = (<span class="keyword">byte</span>) ((utflen &gt;&gt;&gt; <span class="number">8</span>) &amp; <span class="number">0xFF</span>);</span><br><span class="line">    bytearr[count++] = (<span class="keyword">byte</span>) ((utflen &gt;&gt;&gt; <span class="number">0</span>) &amp; <span class="number">0xFF</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> i=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;strlen; i++) &#123;</span><br><span class="line">        c = str.charAt(i);</span><br><span class="line">        <span class="keyword">if</span> (!((c &gt;= <span class="number">0x0001</span>) &amp;&amp; (c &lt;= <span class="number">0x007F</span>))) <span class="keyword">break</span>;</span><br><span class="line">        bytearr[count++] = (<span class="keyword">byte</span>) c;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (;i &lt; strlen; i++)&#123;</span><br><span class="line">        c = str.charAt(i);</span><br><span class="line">        <span class="keyword">if</span> ((c &gt;= <span class="number">0x0001</span>) &amp;&amp; (c &lt;= <span class="number">0x007F</span>)) &#123;</span><br><span class="line">            bytearr[count++] = (<span class="keyword">byte</span>) c;</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c &gt; <span class="number">0x07FF</span>) &#123;</span><br><span class="line">            bytearr[count++] = (<span class="keyword">byte</span>) (<span class="number">0xE0</span> | ((c &gt;&gt; <span class="number">12</span>) &amp; <span class="number">0x0F</span>));</span><br><span class="line">            bytearr[count++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> | ((c &gt;&gt;  <span class="number">6</span>) &amp; <span class="number">0x3F</span>));</span><br><span class="line">            bytearr[count++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> | ((c &gt;&gt;  <span class="number">0</span>) &amp; <span class="number">0x3F</span>));</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            bytearr[count++] = (<span class="keyword">byte</span>) (<span class="number">0xC0</span> | ((c &gt;&gt;  <span class="number">6</span>) &amp; <span class="number">0x1F</span>));</span><br><span class="line">            bytearr[count++] = (<span class="keyword">byte</span>) (<span class="number">0x80</span> | ((c &gt;&gt;  <span class="number">0</span>) &amp; <span class="number">0x3F</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    out.write(bytearr, <span class="number">0</span>, utflen+<span class="number">2</span>);</span><br><span class="line">    <span class="keyword">return</span> utflen + <span class="number">2</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将一段String字符串以修订版的UTF-8格式写入输出流中，并返回实际写入的字节长度。第7 ~ 16行代码用于统计容纳入参String字符串需要的字节长度。第22 ~ 30行代码用于初始化bytearr数组，这个数组用来存储最后需要写入到输出流中的内容。如果bytearr数组长度不容容纳入参String字符串，那么就需要执行扩容操作，将bytearr数组长度扩展为容纳入参String字符串需要的字节长度的两倍。第32、33行用来存储实际写入的字节长度，长度最大是65535，即$ 2^{16} $。第36 ~ 40行向bytearr写入单字节长度的字符串，在遇到第一个非单字节长度字符时结束。第42 ~ 55行用来向bytearr写入变长字节长度的字符。其中，第44 ~ 46行向bytearr写入单字节长度的字符，第47 ~ 51行向bytearr写入三个字节长度的字符，通过按位与、或操作将单个字符转换成 “<strong>1110xxxx&nbsp;10yyyyyy&nbsp;10zzzzzz</strong>”的格式，有效数据位都存储在了x，y，z占据的二进制位中。第52 ~ 53行向bytearr写入两个字节长度的字符，将当前字符转换成“<strong>110yyyyy&nbsp;10zzzzzz</strong>”的格式，有效数据位都存储在了x，y占据的二进制位中。第56行代码用于将转换后的bytearr中存储的内容写入到输出流中。第57行返回实际写入的字节数，因为utflen代表的是存储入参String需要的字节数，而在写入过程中还向输出流中写入了两个字节长度的实际写入内容长度值，所以需要将utflen的值加2作为最终返回值。</p>
+<h4 id="public-final-int-size"><a href="#public-final-int-size" class="headerlink" title="public final int size()"></a>public final int size()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> written;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回当前已经写入的字节数。</p>
+<p>&emsp;</p>
+<h2 id="涉及基础知识点"><a href="#涉及基础知识点" class="headerlink" title="涉及基础知识点"></a>涉及基础知识点</h2><ol>
+<li><p>byte转int的标准操作：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">byte</span> b = (<span class="keyword">byte</span>)<span class="number">255</span>;</span><br><span class="line"><span class="keyword">int</span> i = b &amp; <span class="number">255</span>;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;byte的有符号数范围是[-128， 127]，无符号数范围是[0， 255]。所以第1行代码中，将255强转成byte类型后，就由32比特的<strong>00000000 00000000 00000000 11111111</strong>被截断成了<strong>11111111</strong>，所以变量b存储的是二进制为<strong>11111111</strong>的值（转成十进制为-1），这种情况在将十进制数值大于127的数字转成byte时普遍存在。所以在将byte转成int时，先将byte类型的数值转成int类型，然后再与255（0XFF）按位相与，这样就保证了数值在不同类型中的不变性。</p>
+</li>
+<li><p>UTF-8标准的数据结构：</p>
+<p>&emsp;&emsp;在UTF-8标准中，一个Unicode字符的比特会被分隔成多个部分，并分配到UTF-8的字符串中保存。可参考如下表格：</p>
+<p>表1：UTF-8和Unicode的部分对应关系</p>
+<table><tr><td>码点范围 (十六进制) </td><td>UTF-8 (二进制) </td><td>注释 </td></tr>
+<tr><td>000000 - 00007F </td><td>0zzzzzzz </td><td>ASCII字符范围，字节由零开始  </td></tr>
+<tr><td>000080 - 0007FF </td><td>110yyyyy 10zzzzzz </td><td>第一个字节由110开始，接着的字节由10开始 </td></tr>
+<tr><td>000800 - 00D7FF <br>00E000 - 00FFFF</td><td>1110xxxx 10yyyyyy 10zzzzzz </td><td>第一个字节由1110开始，接着的字节由10开始 </td></tr>
+<tr><td>010000 - 10FFFF</td><td>11110www 10xxxxxx 10yyyyyy 10zzzzzz </td><td>将由11110开始，接着的字节由10开始 </td></tr>
+</table>
+
+<p>一个Unicode字符的二进制序列会被存储在UTF编码的实际存储空间中，对应表1中x，y，z，w标识的二进制位。如果Unicode字符的码值在000000 - 00007F 之间，那么UTF-8会用8个比特位表示一个Unicode字符，其中，最高位固定为0，剩余7位用来存储实际内容。如果Unicode字符的码值在000080 - 0007FF之间，UTF-8会用16个比特位（即两个字节）表示一个Unicode字符，第一个字节的高3位固定为110，第二个字节的高2位固定为10，两个字节的剩余11个比特位用来存储实际内容。如果Unicode字符的码值在000800 - 00D7FF和00E000 - 00FFFF之间，则UTF-8会用24个比特位（即三个字节）来标识一个Unicode字符，第一个字节的高4位固定为1110，后续字节的高2位均固定为10，三个字节剩余的16个比特位用来存储实际内容。</p>
+</li>
+<li><p>Java int的溢出处理：</p>
+<p>&emsp;&emsp;在java语言中，一个int值由四个字节（32个比特位）组成，而计算机中数值是用补码表示的，所以在执行计算时会出现溢出的情况。如果执行的加法运算，那么发生溢出时会执行刷新最左边的符号位，运算前的正数在计算后会变成最小负数，运算前如果是负数计算后会变成最大正数。如果执行的是乘法运算，那么在计算时如果认为可能会发生溢出，那么在计算时会用long型来存储中间计算结果。在最终计算完成后，采取高位截取的方式返回一个int结果，该结果可能并不等于实际的计算结果。</p>
+</li>
+</ol>
+<p>&emsp;</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>Stack Overflow. <a href="https://stackoverflow.com/questions/25897627/datainputstream-read-vs-datainputstream-readfully" target="_blank" rel="noopener">DataInputStream.read() vs DataInputStream.readFully()</a> [E]</li>
+<li>Stack Overflow. <a href="https://stackoverflow.com/questions/9581530/converting-from-byte-to-int-in-java" target="_blank" rel="noopener">Converting from byte to int in java</a> [E]</li>
+<li>Stack Overflow. <a href="https://stackoverflow.com/questions/3911536/utf-8-unicode-whats-with-0xc0-and-0x80" target="_blank" rel="noopener">UTF-8 &amp; Unicode, what’s with 0xC0 and 0x80?</a> [E]</li>
+<li>牛奋Debug. <a href="https://my.oschina.net/andyfeng/blog/1621012" target="_blank" rel="noopener">byte &amp; 0xff</a> [E]</li>
+<li>陈奎. <a href="http://ckjava.com/2018/05/03/java-byte-0XFF/" target="_blank" rel="noopener">对 byte &amp; 0xFF 的理解</a> [E]</li>
+<li>Wikipedia. <a href="https://zh.wikipedia.org/zh/UTF-8" target="_blank" rel="noopener">UTF-8</a> [E]</li>
+<li>njuCZ. <a href="https://njucz.github.io/2017/08/16/java-int%E6%BA%A2%E5%87%BA%E6%80%BB%E7%BB%93/" target="_blank" rel="noopener">java int溢出总结</a> [E]</li>
+<li>James Gosling等. The Java Language Specification (Java SE 7 Edition) [M]</li>
+<li>许令波. <a href="https://www.ibm.com/developerworks/cn/java/j-lo-chinesecoding/" target="_blank" rel="noopener">深入分析 Java 中的中文编码问题</a> [E]<br>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</li>
+</ol>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-DataInputStream-DataOutputStream.html" target="_blank" title="Java I/O 06 - DataInputStream &amp; DataOutputStream">Java I/O 06 - DataInputStream &amp; DataOutputStream</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-DataInputStream-DataOutputStream.html" target="_blank" title="Java I/O 06 - DataInputStream &amp; DataOutputStream">https://marcuseddie.github.io/2018/java-DataInputStream-DataOutputStream.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2018/java-PushbackInputStream.html" class="alignleft prev" title="Java I/O 07 - PushbackInputStream"> 上一篇： Java I/O 07 - PushbackInputStream</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2018/java-InputStream-OutputStream.html" class="alignright next" title="Java I/O 05 - InputStream &amp; OutputStream"> 下一篇： Java I/O 05 - InputStream &amp; OutputS...</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

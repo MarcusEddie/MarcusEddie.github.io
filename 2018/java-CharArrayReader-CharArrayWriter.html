@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      Java I/O 18 - CharArrayReader &amp; CharArrayWriter | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="CharArrayReader和CharArrayWriter是内存流，参考流的思想操作内存空间中的数组内容。常用方法有read,skip,ready,close,write,append。">
+<meta name="keywords" content="CharArrayReader,CharArrayWriter,read,skip,ready,close,write,append,toString,flush,toCharArray,reset,mark">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java I&#x2F;O 18 - CharArrayReader &amp; CharArrayWriter | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/java-CharArrayReader-CharArrayWriter.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="CharArrayReader和CharArrayWriter是内存流，参考流的思想操作内存空间中的数组内容。常用方法有read,skip,ready,close,write,append。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.353Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java I&#x2F;O 18 - CharArrayReader &amp; CharArrayWriter | Mr.Muzi">
+<meta name="twitter:description" content="CharArrayReader和CharArrayWriter是内存流，参考流的思想操作内存空间中的数组内容。常用方法有read,skip,ready,close,write,append。">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>Java I/O 18 - CharArrayReader &amp; CharArrayWriter</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-11-20" class="post-meta__date date">2018-11-20</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;2.5k&emsp;阅读时长:&nbsp;11&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.io.CharArrayReader</strong> </em> 和 <em> <strong>java.io.CharArrayWriter</strong> </em>的部分笔记，这两个类属于内存流的一种，参考流的思想操作内存空间中的数组内容。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;CharArrayReader和CharArrayWriter是典型的内存流，这两个类在内存中维护了一个char数组，把char数组视为输入/输出流的位置并实现了一套对char数组进行读写的方法API。可以在一些需要Reader/Writer作为参数，且实际内容是char数组的场合中使用CharArrayReader和CharArrayWriter。因为没有调用过除了内存之外的其他系统资源，所以这两个类的close()方法除了释放char数组占用的资源外无其他操作。</p>
+<p>&emsp;</p>
+<h2 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// CharArrayReader</span></span><br><span class="line">--java.lang.Object</span><br><span class="line">  --java.io.Reader</span><br><span class="line">    --java.io.CharArrayReader</span><br><span class="line"></span><br><span class="line"><span class="comment">// CharArrayWriter</span></span><br><span class="line">--java.lang.Object</span><br><span class="line">  --java.io.Writer</span><br><span class="line">    --java.io.CharArrayWriter</span><br></pre></td></tr></table></figure>
+<p>&emsp;</p>
+<h2 id="实现接口"><a href="#实现接口" class="headerlink" title="实现接口"></a>实现接口</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">类名</th>
+<th style="text-align:center">实现接口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">CharArrayReader</td>
+<td style="text-align:center">Closeable, AutoCloseable,Readable</td>
+</tr>
+<tr>
+<td style="text-align:center">CharArrayWriter</td>
+<td style="text-align:center">Closeable, Flushable, AutoCloseable, Appendable</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>&emsp;</p>
+<h2 id="CharArrayReader"><a href="#CharArrayReader" class="headerlink" title="CharArrayReader"></a>CharArrayReader</h2><h3 id="Constructor-Summary"><a href="#Constructor-Summary" class="headerlink" title="Constructor Summary"></a>Constructor Summary</h3><h4 id="public-CharArrayReader-char-buf"><a href="#public-CharArrayReader-char-buf" class="headerlink" title="public CharArrayReader(char buf[])"></a>public CharArrayReader(char buf[])</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">CharArrayReader</span><span class="params">(<span class="keyword">char</span> buf[])</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.buf = buf;</span><br><span class="line">    <span class="keyword">this</span>.pos = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">this</span>.count = buf.length;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个字符数组输入流。该输入流的数据来源是字符数组buf，同时初始化pos值和数据长度count。</p>
+<h4 id="public-CharArrayReader-char-buf-int-offset-int-length"><a href="#public-CharArrayReader-char-buf-int-offset-int-length" class="headerlink" title="public CharArrayReader(char buf[], int offset, int length)"></a>public CharArrayReader(char buf[], int offset, int length)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">CharArrayReader</span><span class="params">(<span class="keyword">char</span> buf[], <span class="keyword">int</span> offset, <span class="keyword">int</span> length)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> ((offset &lt; <span class="number">0</span>) || (offset &gt; buf.length) || (length &lt; <span class="number">0</span>) ||</span><br><span class="line">        ((offset + length) &lt; <span class="number">0</span>)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">this</span>.buf = buf;</span><br><span class="line">    <span class="keyword">this</span>.pos = offset;</span><br><span class="line">    <span class="keyword">this</span>.count = Math.min(offset + length, buf.length);</span><br><span class="line">    <span class="keyword">this</span>.markedPos = offset;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个字符数组输入流。第2 ~ 5行代码用来完成参数的有效性校验。第8行代码用来计算实际的数组结束边界。第9行代码用来标识数据重读的起始边界，因为offset可能不为0，也就意味着offset之前的内容永远不会读到，通过设置markedPos可以保证这一点不会发生。</p>
+<h3 id="部分方法"><a href="#部分方法" class="headerlink" title="部分方法"></a>部分方法</h3><h4 id="private-void-ensureOpen"><a href="#private-void-ensureOpen" class="headerlink" title="private void ensureOpen()"></a>private void ensureOpen()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureOpen</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (buf == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"Stream closed"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;检查当前buf是否有效且是否含有内容。</p>
+<h4 id="public-int-read"><a href="#public-int-read" class="headerlink" title="public int read()"></a>public int read()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        ensureOpen();</span><br><span class="line">        <span class="keyword">if</span> (pos &gt;= count)</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="keyword">return</span> buf[pos++];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;从buf中读取一个字符的内容并返回。通过synchronized关键字保证了多线程环境下的线程安全。如果pos到达了数组边界，则认为数组内容已经全部读取完毕，返回EOF标识给方法调用方。</p>
+<h4 id="public-int-read-char-b-int-off-int-len"><a href="#public-int-read-char-b-int-off-int-len" class="headerlink" title="public int read(char b[], int off, int len)"></a>public int read(char b[], int off, int len)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">(<span class="keyword">char</span> b[], <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        ensureOpen();</span><br><span class="line">        <span class="keyword">if</span> ((off &lt; <span class="number">0</span>) || (off &gt; b.length) || (len &lt; <span class="number">0</span>) ||</span><br><span class="line">            ((off + len) &gt; b.length) || ((off + len) &lt; <span class="number">0</span>)) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IndexOutOfBoundsException();</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (len == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (pos &gt;= count) &#123;</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (pos + len &gt; count) &#123;</span><br><span class="line">            len = count - pos;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (len &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        System.arraycopy(buf, pos, b, off, len);</span><br><span class="line">        pos += len;</span><br><span class="line">        <span class="keyword">return</span> len;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;从buf中读取长度为len的内容并保存到数组b中起始位置为off的空间中。通过synchronized关键字保证了多线程环境下的线程安全。第4 ~ 9行代码完成了参数的有效性校验。如果pos到达了数组边界，则认为数组内容已经全部读取完毕，返回EOF标识给方法调用方。第14 ~ 16行代码计算实际可以读取的长度值。</p>
+<p>&emsp;&emsp;第20行代码则将buf中自pos位置起长度为len的内容复制到数组b中起始位置为off的空间里。之后计算更新后的pos值并返回实际读取的内容长度。</p>
+<h4 id="public-long-skip-long-n"><a href="#public-long-skip-long-n" class="headerlink" title="public long skip(long n)"></a>public long skip(long n)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">skip</span><span class="params">(<span class="keyword">long</span> n)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        ensureOpen();</span><br><span class="line">        <span class="keyword">if</span> (pos + n &gt; count) &#123;</span><br><span class="line">            n = count - pos;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (n &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        pos += n;</span><br><span class="line">        <span class="keyword">return</span> n;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;跳过buf中数组中指定长度的内容。通过synchronized关键字保证了多线程环境下的线程安全。第4 ~ 6行代码计算实际需要跳过的长度。如果入参n是一个负数，那么什么操作都不执行，直接返回0。第10行代码计算跳过后的pos值，并返回实际跳过的长度值给方法调用方。</p>
+<h4 id="public-boolean-ready"><a href="#public-boolean-ready" class="headerlink" title="public boolean ready()"></a>public boolean ready()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">ready</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        ensureOpen();</span><br><span class="line">        <span class="keyword">return</span> (count - pos) &gt; <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;通知方法调用方当前输入流是否可以通过read方法提供字符内容。通过synchronized关键字保证了多线程环境下的线程安全。如果count - pos &gt; 0 则认为当前底层buf中还有未读取的内容可供read方法读取获得。</p>
+<h4 id="public-boolean-markSupported"><a href="#public-boolean-markSupported" class="headerlink" title="public boolean markSupported()"></a>public boolean markSupported()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">markSupported</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;CharArrayReader支持标记重读操作，所以返回true。</p>
+<h4 id="public-void-mark-int-readAheadLimit"><a href="#public-void-mark-int-readAheadLimit" class="headerlink" title="public void mark(int readAheadLimit)"></a>public void mark(int readAheadLimit)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">mark</span><span class="params">(<span class="keyword">int</span> readAheadLimit)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        ensureOpen();</span><br><span class="line">        markedPos = pos;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;标记重读起始位置。当前方法调用后如果执行reset()方法，下一个读取位置pos值会变成当前执行mark方法时的pos值，实现重读功能。</p>
+<h4 id="public-void-reset"><a href="#public-void-reset" class="headerlink" title="public void reset()"></a>public void reset()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">reset</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        ensureOpen();</span><br><span class="line">        pos = markedPos;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;重置下一个读取位置值。如果在调用reset()方法之前从未调用过mark()方法，那么调用reset()方法后会将pos重置为0，即从头读取。</p>
+<h4 id="public-void-close"><a href="#public-void-close" class="headerlink" title="public void close()"></a>public void close()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    buf = <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;关闭当前输入流。</p>
+<p>&emsp;</p>
+<h2 id="CharArrayWriter"><a href="#CharArrayWriter" class="headerlink" title="CharArrayWriter"></a>CharArrayWriter</h2><h3 id="Constructor-Summary-1"><a href="#Constructor-Summary-1" class="headerlink" title="Constructor Summary"></a>Constructor Summary</h3><h4 id="public-CharArrayWriter"><a href="#public-CharArrayWriter" class="headerlink" title="public CharArrayWriter()"></a>public CharArrayWriter()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">CharArrayWriter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(<span class="number">32</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个字符数组输出流，底层字符数组的长度为32。</p>
+<h4 id="public-CharArrayWriter-int-initialSize"><a href="#public-CharArrayWriter-int-initialSize" class="headerlink" title="public CharArrayWriter(int initialSize)"></a>public CharArrayWriter(int initialSize)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">CharArrayWriter</span><span class="params">(<span class="keyword">int</span> initialSize)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (initialSize &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Negative initial size: "</span></span><br><span class="line">                                           + initialSize);</span><br><span class="line">    &#125;</span><br><span class="line">    buf = <span class="keyword">new</span> <span class="keyword">char</span>[initialSize];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个字符数组输出流，底层字符数组的长度为入参initialSize。因为在初始化时需要依赖initialSize，所以该字段的值不能小于0。</p>
+<h3 id="部分方法-1"><a href="#部分方法-1" class="headerlink" title="部分方法"></a>部分方法</h3><h4 id="public-void-writeTo-Writer-out"><a href="#public-void-writeTo-Writer-out" class="headerlink" title="public void writeTo(Writer out)"></a>public void writeTo(Writer out)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">writeTo</span><span class="params">(Writer out)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        out.write(buf, <span class="number">0</span>, count);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将当前缓冲区buffer中的内容写入到另一个字符输出流中。</p>
+<h4 id="public-void-write-int-c"><a href="#public-void-write-int-c" class="headerlink" title="public void write(int c)"></a>public void write(int c)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">int</span> c)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        <span class="keyword">int</span> newcount = count + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (newcount &gt; buf.length) &#123;</span><br><span class="line">            buf = Arrays.copyOf(buf, Math.max(buf.length &lt;&lt; <span class="number">1</span>, newcount));</span><br><span class="line">        &#125;</span><br><span class="line">        buf[count] = (<span class="keyword">char</span>)c;</span><br><span class="line">        count = newcount;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;向缓冲区buf中写入一个字符。通过使用synchronized关键字可以保证多线程环境下的线程安全。在操作时，首先计算新的buf尾部边界，如果新的尾部边界大于当前buf的长度，那么执行扩容处理。扩容原则是新的buf数组长度是当前buf长度的两倍。然后将入参字符c写入保存到底层缓冲区buf中，同时更新buf的count值。</p>
+<h4 id="public-void-write-char-c-int-off-int-len"><a href="#public-void-write-char-c-int-off-int-len" class="headerlink" title="public void write(char c[], int off, int len)"></a>public void write(char c[], int off, int len)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">char</span> c[], <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> ((off &lt; <span class="number">0</span>) || (off &gt; c.length) || (len &lt; <span class="number">0</span>) ||</span><br><span class="line">        ((off + len) &gt; c.length) || ((off + len) &lt; <span class="number">0</span>)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IndexOutOfBoundsException();</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (len == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        <span class="keyword">int</span> newcount = count + len;</span><br><span class="line">        <span class="keyword">if</span> (newcount &gt; buf.length) &#123;</span><br><span class="line">            buf = Arrays.copyOf(buf, Math.max(buf.length &lt;&lt; <span class="number">1</span>, newcount));</span><br><span class="line">        &#125;</span><br><span class="line">        System.arraycopy(c, off, buf, count, len);</span><br><span class="line">        count = newcount;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将字符数组c中的内容写入到缓冲区buf中。第2 ~ 7行代码用来完成参数的有效性校验，避免发生越界溢出。通过使用synchronized关键字可以保证多线程环境下的线程安全。第9行代码计算存储数组c需要的空间，如果空间不足，需要对buf进行扩容处理。扩容原则是新的buf数组长度是当前buf长度的两倍。接着通过调用System.arraycopy(Object src, int srcPos, Object dest, int destPos, int length)方法将数组c中的内容写入到buf中，最后更新count值。</p>
+<h4 id="public-void-write-String-str-int-off-int-len"><a href="#public-void-write-String-str-int-off-int-len" class="headerlink" title="public void write(String str, int off, int len)"></a>public void write(String str, int off, int len)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(String str, <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        <span class="keyword">int</span> newcount = count + len;</span><br><span class="line">        <span class="keyword">if</span> (newcount &gt; buf.length) &#123;</span><br><span class="line">            buf = Arrays.copyOf(buf, Math.max(buf.length &lt;&lt; <span class="number">1</span>, newcount));</span><br><span class="line">        &#125;</span><br><span class="line">        str.getChars(off, off + len, buf, count);</span><br><span class="line">        count = newcount;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将字符串str中自off位置起长度为len的内容写入到缓冲区buf中。通过使用synchronized关键字可以保证多线程环境下的线程安全。第3行计算需要的存储空间，如果空间不足，需要对buf进行扩容处理。扩容原则是新的buf数组长度是当前buf长度的两倍。然后将str自off位置起长度为len的内容写入到缓冲区buf中，最后更新count值。</p>
+<h4 id="public-CharArrayWriter-append-CharSequence-csq"><a href="#public-CharArrayWriter-append-CharSequence-csq" class="headerlink" title="public CharArrayWriter append(CharSequence csq)"></a>public CharArrayWriter append(CharSequence csq)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> CharArrayWriter <span class="title">append</span><span class="params">(CharSequence csq)</span> </span>&#123;</span><br><span class="line">    String s = (csq == <span class="keyword">null</span> ? <span class="string">"null"</span> : csq.toString());</span><br><span class="line">    write(s, <span class="number">0</span>, s.length());</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将CharSequence中包含的内容写入到缓冲区buf中，如果csq为null，那么就将“null”这四个字符写入到buf中。底层调用的方法是<strong>write(String str, int off, int len)</strong>。</p>
+<h4 id="public-CharArrayWriter-append-CharSequence-csq-int-start-int-end"><a href="#public-CharArrayWriter-append-CharSequence-csq-int-start-int-end" class="headerlink" title="public CharArrayWriter append(CharSequence csq, int start, int end)"></a>public CharArrayWriter append(CharSequence csq, int start, int end)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> CharArrayWriter <span class="title">append</span><span class="params">(CharSequence csq, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">    String s = (csq == <span class="keyword">null</span> ? <span class="string">"null"</span> : csq).subSequence(start, end).toString();</span><br><span class="line">    write(s, <span class="number">0</span>, s.length());</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将CharSequence中包含的内容写入到缓冲区buf中。实际需要写入的内容包含在start位置到end位置之间。底层调用的方法是<strong>write(String str, int off, int len)</strong>。</p>
+<h4 id="public-CharArrayWriter-append-char-c"><a href="#public-CharArrayWriter-append-char-c" class="headerlink" title="public CharArrayWriter append(char c)"></a>public CharArrayWriter append(char c)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> CharArrayWriter <span class="title">append</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">    write(c);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将一个字符写入到底层缓冲区buf中。底层调用的方法是<strong>write(int c)</strong>。</p>
+<h4 id="public-void-reset-1"><a href="#public-void-reset-1" class="headerlink" title="public void reset()"></a>public void reset()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">reset</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    count = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将count值归零。可以直接通过覆盖的方式存储新的数据内容而不用重复分配新的数组空间。</p>
+<h4 id="public-char-toCharArray"><a href="#public-char-toCharArray" class="headerlink" title="public char toCharArray()[]"></a>public char toCharArray()[]</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">char</span> <span class="title">toCharArray</span><span class="params">()</span>[] </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        <span class="keyword">return</span> Arrays.copyOf(buf, count);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将当前缓冲区buf中的内容复制一份并返回其复制内容。</p>
+<h4 id="public-int-size"><a href="#public-int-size" class="headerlink" title="public int size()"></a>public int size()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回当前缓冲区buf中的数据长度。</p>
+<h4 id="public-String-toString"><a href="#public-String-toString" class="headerlink" title="public String toString()"></a>public String toString()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> String(buf, <span class="number">0</span>, count);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将当前缓冲区buf中的内容转换成一个String字符串并返回。</p>
+<h4 id="public-void-flush"><a href="#public-void-flush" class="headerlink" title="public void flush()"></a>public void flush()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">flush</span><span class="params">()</span> </span>&#123; &#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将缓冲区buf中的内容推到目标输出位置上。方法体是个空方法，不执行任何操作。</p>
+<h4 id="public-void-close-1"><a href="#public-void-close-1" class="headerlink" title="public void close()"></a>public void close()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> </span>&#123; &#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;关闭当前输出流。方法体是个空方法，不执行任何操作。</p>
+<p>&emsp;</p>
+<h2 id="涉及基础知识点"><a href="#涉及基础知识点" class="headerlink" title="涉及基础知识点"></a>涉及基础知识点</h2><ol>
+<li>NIL</li>
+</ol>
+<p>&emsp;</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>NIL</li>
+</ol>
+<p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-CharArrayReader-CharArrayWriter.html" target="_blank" title="Java I/O 18 - CharArrayReader &amp; CharArrayWriter">Java I/O 18 - CharArrayReader &amp; CharArrayWriter</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-CharArrayReader-CharArrayWriter.html" target="_blank" title="Java I/O 18 - CharArrayReader &amp; CharArrayWriter">https://marcuseddie.github.io/2018/java-CharArrayReader-CharArrayWriter.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2018/java-Collection-Vector.html" class="alignleft prev" title="Java Collection 04 - Vector"> 上一篇： Java Collection 04 - Vector</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2018/java-PipedReader-PipedWriter.html" class="alignright next" title="Java I/O 17 - PipedReader &amp; PipedWriter"> 下一篇： Java I/O 17 - PipedReader &amp; PipedWr...</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

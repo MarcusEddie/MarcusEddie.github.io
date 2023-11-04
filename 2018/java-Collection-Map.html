@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      Java Map 01 - Map | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="Map作为Java集合框架中的一员，具有无序的（部分实现可以保证顺序），不可存储相同key的特点，实现有AbstractMap,HashMap,LinkedHashMap,Hashtable,TreeMap。">
+<meta name="keywords" content="Map,AbstractMap,HashMap,LinkedHashMap,Hashtable,TreeMap,SortedMap,NavigableMap">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java Map 01 - Map | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/java-Collection-Map.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="Map作为Java集合框架中的一员，具有无序的（部分实现可以保证顺序），不可存储相同key的特点，实现有AbstractMap,HashMap,LinkedHashMap,Hashtable,TreeMap。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1544529859/BlogImages/java-collection/map/Map-guide.png">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.353Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java Map 01 - Map | Mr.Muzi">
+<meta name="twitter:description" content="Map作为Java集合框架中的一员，具有无序的（部分实现可以保证顺序），不可存储相同key的特点，实现有AbstractMap,HashMap,LinkedHashMap,Hashtable,TreeMap。">
+<meta name="twitter:image" content="https://res.cloudinary.com/jknight/image/upload/v1544529859/BlogImages/java-collection/map/Map-guide.png">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>Java Map 01 - Map</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-12-06" class="post-meta__date date">2018-12-06</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;2.1k&emsp;阅读时长:&nbsp;8&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java集合/">Java集合</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;在Java语言规范中，Map作为Java集合框架中的一员，提供了对同类型数据进行存储、插入、删除和查找等需求的实现过程。其实现机制和特点使得Map是一个无序的（部分实现可以保证顺序），不可存储相同key的数据结构。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;Map是Java集合框架体系中的成员之一，和Collection相互独立且两者地位平等。Map本身只是一个接口定义，其定义了对Map进行操作的方法API，且所有的map实现类都会实现Map接口定义的方法。</p>
+<p>&emsp;&emsp;Map是一个保存键值对映射的数据结构，map不允许维护重复的key，且每个key最多只能映射一个value。Map接口完全取代了抽象类Dictionary类。Map提供了三种浏览集合内数据的方式：键集合、值集合和键值对集合。像TreeMap这样的实现类可以保证元素遍历的顺序，而像HashMap这样的实现类则无法保证元素遍历的顺序，也就是说其是一个无序结构。需要注意的是，Map的key如果存储的是可变的对象，那么由于equals()方法的影响无法保证根据可变对象可以正确的存储和获取Map集合中的元素。除此之外，也不允许map集合以其自身作为key存储到map集合中（equals()和hashCode()方法无法保证）。</p>
+<p>&emsp;&emsp;通用的map实现需要提供两种标准的构造器：一个是无参构造器，用来构建一个空map集合。另一个是只含有一个以map作为参数的构造器，这个构造方法允许用户实现map复制。</p>
+<p>&emsp;&emsp;有些实现类对维护的key和value值会有一些限制。例如，有的实现禁止null类型的key和value值，有的实现则限制了key的类型。尝试加入key-value映射会抛出NullPointerException或者ClassCastException异常。尝试查找违反规则的key或者value会抛出异常或者直接返回false。</p>
+<p>&emsp;&emsp;Map接口的常见实现有<a href="/2018/java-Collection-AbstractMap.html">AbstractMap</a>、<a href="/2018/java-Collection-HashMap.html">HashMap</a>、<a href="/2018/java-Collection-ConcurrentHashMap.html">ConcurrentHashMap</a>、<a href="/2018/java-Collection-LinkedHashMap.html">LinkedHashMap</a>、<a href="/2018/java-Collection-Hashtable.html">Hashtable</a>、TreeMap，而TreeMap则实现了NavigableMap和SortedMap声明的一系列方法。其结构如图1所示：</p>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1544529859/BlogImages/java-collection/map/Map-guide.png" alt></p>
+<div align="center">
+<div align="center">图 - 1</div>
+&emsp;
+</div>
+
+
+<p>关于上述几个具体实现类之间，分别有其适应的应用场景和特点：</p>
+<ul>
+<li><strong>HashMap</strong>：<ol>
+<li>HashMap是一个key不可重复的集合结构；</li>
+<li>遍历HashMap时，从底层数组首部依次向后遍历；</li>
+<li>底层实现依赖于数组，查找元素可以保证常量时间的性能，插入和删除需要的时间和集合存储的键值对数量成比例；</li>
+<li>HashMap需要考虑扩容情况，扩容规则是按照当前容量的两倍进行扩容；</li>
+<li>HashMap不是一个线程安全的集合实现；</li>
+<li>HashMap可以允许key、value为null，如果key为null，那么该键值对会存储在内部数组的第一个下标位置上；</li>
+<li>加入到HashMap的元素只需要保证hashcode()和equals()方法被实现即可（默认实现或者自定义实现）。不需要实现Comparable或者Comparator接口；</li>
+</ol>
+</li>
+<li><strong>LinkedHashMap</strong>：<ol>
+<li>LinkedHashMap是一个有序的，key不可重复的集合结构。其顺序默认为元素插入顺序，但是也具有访问顺序的特性（最近被访问的元素位于集合的尾部位置，即LRU）；</li>
+<li>底层依赖于链表，查找元素时需要逐个遍历，时间开销和链表长度成比例，元素插入和移除可以保证常量时间内完成；</li>
+<li>LinkedHashMap同样存在扩容过程；</li>
+<li>LinkedHashMap同样也不是一个线程安全的集合实现；</li>
+<li>LinkedHashMap允许key、value为null；</li>
+<li>加入到LinkedHashMap的元素只需要保证hashcode()和equals()方法被实现即可（默认实现或者自定义实现）。不需要实现Comparable或者Comparator接口；</li>
+</ol>
+</li>
+<li><strong>Hashtable</strong>：<ol>
+<li>Hashtable是一个key不可重复的集合；</li>
+<li>遍历Hashtable时，从底层数组尾部依次向前遍历；</li>
+<li>底层实现依赖于数组，具体实现和HashMap类似；</li>
+<li>Hashtable需要考虑扩容情况，扩容规则是按照当前容量的两倍与1的和进行扩容；</li>
+<li>Hashtable是HashMap的线程安全版本；</li>
+<li>Hashtable的key和value均不允许为null；</li>
+<li>加入到Hashtable的元素只需要保证hashcode()和equals()方法被实现即可（默认实现或者自定义实现）。不需要实现Comparable或者Comparator接口；</li>
+</ol>
+</li>
+<li><strong>TreeMap</strong>：<ol>
+<li>TreeMap是一个key不可重复的集合；</li>
+<li>遍历TreeMap的元素时，要么按照自然排序进行遍历（集合内元素实现的Comparable接口），要么按照特定的规则进行遍历（集合内元素实现的Comparator接口）；</li>
+<li>底层实现依赖于红黑树结构，查找、插入和删除性能都可以达到O($ \lg n $)；</li>
+<li>TreeMap不需要考虑扩容。但是在元素插入后需要重新调整树结构以保持红黑树的性质；</li>
+<li>TreeMap也不是一个线程安全的集合实现；</li>
+<li>TreeMap不允许key为null，但是value可以为null；</li>
+<li>加入到TreeMap的元素需要实现Comparable或者Comparator接口，否则元素无法正常加入到集合中；</li>
+</ol>
+</li>
+<li><strong>ConcurrentHashMap</strong>：<ol>
+<li>ConcurrentHashMap是一个key不可重复的集合；</li>
+<li>遍历ConcurrentHashMap时，从底层数组尾部依次向前遍历;</li>
+<li>底层实现依赖于数组，数组元素是Segment实例，每个Segment实例内部又维护了一个HashEntry数组。类似于书本分页设计，一个Segment实例类似于一本书的一页，而Segment实例内部的HashEntry数组类似于每页中的每一行；</li>
+<li>ConcurrentHashMap需要考虑扩容，在扩容时针对的是某个具体的segment实例内部的HashEntry数组进行扩容；</li>
+<li>ConcurrentHashMap是HashMap的另一个线程安全的实现版本；</li>
+<li>ConcurrentHashMap可以允许多个线程同时对集合内的不同元素进行锁定和处理，如果是对同一个键值对实体或者同一个Segment实例内部的键值对实体进行处理，那么依旧存在锁抢占，即同一时刻只有线程可以访问一个键值对实体或者一个特定的segment内部的HashEntry数组；</li>
+<li>加入到ConcurrentHashMap的元素只需要保证hashcode()和equals()方法被实现即可（默认实现或者自定义实现）。不需要实现Comparable或者Comparator接口；</li>
+</ol>
+</li>
+</ul>
+<p>&emsp;</p>
+<h2 id="部分方法"><a href="#部分方法" class="headerlink" title="部分方法"></a>部分方法</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Map.Entry&lt;K,V&gt; lowerEntry(K key)</td>
+<td>返回严格小于key的最大key的键值对映射</td>
+</tr>
+<tr>
+<td>K lowerKey(K key)</td>
+<td>返回严格小于key的最大key</td>
+</tr>
+<tr>
+<td>Map.Entry&lt;K,V&gt; floorEntry(K key)</td>
+<td>返回小于等于key的最大key的键值对映射</td>
+</tr>
+<tr>
+<td>K floorKey(K key)</td>
+<td>返回小于等于key的最大key</td>
+</tr>
+<tr>
+<td>Map.Entry&lt;K,V&gt; ceilingEntry(K key)</td>
+<td>返回大于等于key的最小key的键值对映射</td>
+</tr>
+<tr>
+<td>K ceilingKey(K key)</td>
+<td>返回大于等于key的最小key</td>
+</tr>
+<tr>
+<td>Map.Entry&lt;K,V&gt; higherEntry(K key)</td>
+<td>返回严格大于key的最小key的键值对映射</td>
+</tr>
+<tr>
+<td>K higherKey(K key)</td>
+<td>返回严格大于key的最小key</td>
+</tr>
+<tr>
+<td>Map.Entry&lt;K,V&gt; firstEntry()</td>
+<td>返回当前map集合中key最小的键值对映射</td>
+</tr>
+<tr>
+<td>Map.Entry&lt;K,V&gt; lastEntry()</td>
+<td>返回当前map集合中key最大的键值对映射</td>
+</tr>
+<tr>
+<td>Map.Entry&lt;K,V&gt; pollFirstEntry()</td>
+<td>取出并返回当前map集合中key最小的键值对映射</td>
+</tr>
+<tr>
+<td>Map.Entry&lt;K,V&gt; pollLastEntry()</td>
+<td>取出并返回当前map集合中key最大的键值对映射</td>
+</tr>
+<tr>
+<td>NavigableMap&lt;K,V&gt; descendingMap()</td>
+<td>返回当前map集合的一个逆序集合</td>
+</tr>
+<tr>
+<td>NavigableMap&lt;K,V&gt; navigableKeySet()</td>
+<td>返回当前map集合的key值集合</td>
+</tr>
+<tr>
+<td>NavigableMap&lt;K,V&gt; descendingKeySet()</td>
+<td>返回当前map集合的key值一个逆序集合</td>
+</tr>
+<tr>
+<td>NavigableMap&lt;K,V&gt; subMap(K fromKey, boolean fromInclusive, K toKey,   boolean toInclusive)</td>
+<td>返回当前map集合中自fromKey到toKey的子集合，由fromInclusive和toInclusive指定是否包含fronKey和toKey</td>
+</tr>
+<tr>
+<td>NavigableMap&lt;K,V&gt; headMap(K toKey, boolean inclusive)</td>
+<td>返回小于等于toKey的集合，由inclusive指定是否等于toKey</td>
+</tr>
+<tr>
+<td>NavigableMap&lt;K,V&gt; tailMap(K fromKey, boolean inclusive)</td>
+<td>返回大于等于fromKey的集合，由inclusive指定是否等于fromKey</td>
+</tr>
+<tr>
+<td>SortedMap&lt;K,V&gt; subMap(K fromKey, K toKey)</td>
+<td>返回当前map集合中自fromKey（包含）到toKey（不包含）的子集合。</td>
+</tr>
+<tr>
+<td>SortedMap&lt;K,V&gt; headMap(K toKey)</td>
+<td>返回小于toKey的集合</td>
+</tr>
+<tr>
+<td>SortedMap&lt;K,V&gt; tailMap(K fromKey)</td>
+<td>返回大于fromKey的集合</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>&emsp;</p>
+<h2 id="涉及基础知识点"><a href="#涉及基础知识点" class="headerlink" title="涉及基础知识点"></a>涉及基础知识点</h2><ol>
+<li>NIL</li>
+</ol>
+<p>&emsp;</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>RUNOOB.COM. <a href="http://www.runoob.com/java/java-collections.html" target="_blank" rel="noopener">Java 集合框架</a> [E]</li>
+<li>J Steven Perry. <a href="https://www.ibm.com/developerworks/cn/java/j-perry-java-collections/index.html" target="_blank" rel="noopener">第 10 单元：Java 集合</a> [E]</li>
+<li>ORACLE. <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/collections/overview.html" target="_blank" rel="noopener">Collections Framework Overview</a> [E]</li>
+</ol>
+<p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-Collection-Map.html" target="_blank" title="Java Map 01 - Map">Java Map 01 - Map</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-Collection-Map.html" target="_blank" title="Java Map 01 - Map">https://marcuseddie.github.io/2018/java-Collection-Map.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2018/java-Collection-AbstractMap.html" class="alignleft prev" title="Java Map 02 - AbstractMap"> 上一篇： Java Map 02 - AbstractMap</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2018/java-Collection-TreeSet.html" class="alignright next" title="Java Collection 13 - TreeSet"> 下一篇： Java Collection 13 - TreeSet</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

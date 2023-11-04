@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      Java源码阅读笔记01 - Integer | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="关于Integer源码的笔记，其中涉及getChars,decode,reverse,reverseBytes,IntegerCache等方法的设计实现原理。在Integer的实现中，对数字的计算机处理涉及很多，诸如原码、反码、补码和位移操作等都是Integer常用手段。">
+<meta name="keywords" content="Integer,getChars,decode,reverse,reverseBytes,IntegerCache">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java源码阅读笔记01 - Integer | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/Java-source-Integer.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="关于Integer源码的笔记，其中涉及getChars,decode,reverse,reverseBytes,IntegerCache等方法的设计实现原理。在Integer的实现中，对数字的计算机处理涉及很多，诸如原码、反码、补码和位移操作等都是Integer常用手段。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1533028543/Integer_bitCount_binary_tree_demo.png">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.349Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java源码阅读笔记01 - Integer | Mr.Muzi">
+<meta name="twitter:description" content="关于Integer源码的笔记，其中涉及getChars,decode,reverse,reverseBytes,IntegerCache等方法的设计实现原理。在Integer的实现中，对数字的计算机处理涉及很多，诸如原码、反码、补码和位移操作等都是Integer常用手段。">
+<meta name="twitter:image" content="https://res.cloudinary.com/jknight/image/upload/v1533028543/Integer_bitCount_binary_tree_demo.png">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>Java源码阅读笔记01 - Integer</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-08-01" class="post-meta__date date">2018-08-01</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;2.4k&emsp;阅读时长:&nbsp;10&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.lang.Integer</strong> </em>的部分笔记，基于JDK版本<strong>1.7</strong>。<br><a id="more"></a></p>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;Java语言中关于基础数据类型<strong>int</strong>的封装类型，包含了一些类型之间的相互转换封装方法，除此之外还有一些关于机器数操作的封装API供开发人员使用。</p>
+<h2 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">--java.lang.Object</span><br><span class="line">  --java.lang.Number</span><br><span class="line">    --java.lang.Integer</span><br></pre></td></tr></table></figure>
+<h2 id="部分方法"><a href="#部分方法" class="headerlink" title="部分方法"></a>部分方法</h2><h3 id="getChars-int-i-int-index-char-buf"><a href="#getChars-int-i-int-index-char-buf" class="headerlink" title="getChars(int i, int index, char[] buf)"></a>getChars(int i, int index, char[] buf)</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">getChars</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> index, <span class="keyword">char</span>[] buf)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> q, r;</span><br><span class="line">    <span class="keyword">int</span> charPos = index;</span><br><span class="line">    <span class="keyword">char</span> sign = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (i &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        sign = <span class="string">'-'</span>;</span><br><span class="line">        i = -i;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Generate two digits per iteration</span></span><br><span class="line">    <span class="keyword">while</span> (i &gt;= <span class="number">65536</span>) &#123;</span><br><span class="line">        q = i / <span class="number">100</span>;</span><br><span class="line">        <span class="comment">// really: r = i - (q * 100);</span></span><br><span class="line">        r = i - ((q &lt;&lt; <span class="number">6</span>) + (q &lt;&lt; <span class="number">5</span>) + (q &lt;&lt; <span class="number">2</span>));</span><br><span class="line">        i = q;</span><br><span class="line">        buf [--charPos] = DigitOnes[r];</span><br><span class="line">        buf [--charPos] = DigitTens[r];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Fall thru to fast mode for smaller numbers</span></span><br><span class="line">    <span class="comment">// assert(i &lt;= 65536, i);</span></span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        q = (i * <span class="number">52429</span>) &gt;&gt;&gt; (<span class="number">16</span>+<span class="number">3</span>);</span><br><span class="line">        r = i - ((q &lt;&lt; <span class="number">3</span>) + (q &lt;&lt; <span class="number">1</span>));  <span class="comment">// r = i-(q*10) ...</span></span><br><span class="line">        buf [--charPos] = digits [r];</span><br><span class="line">        i = q;</span><br><span class="line">        <span class="keyword">if</span> (i == <span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (sign != <span class="number">0</span>) &#123;</span><br><span class="line">        buf [--charPos] = sign;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;这个方法是Integer转String 的核心方法，目的是为了将一个整数存入一个char数组中。如果传入的i是个负数，那么需要继续正负号并将入参转成正数去处理。关于乘除法和位运算的效率，<strong>位运算的效率高于乘法，乘法的效率高于除法</strong>，所以坚持尽可能优先使用位运算的原则。但是整型数int的范围最大为 $ 2^{31-1} $ ,所以使用位运算和乘法时入参<strong>i</strong>实际上有一个上界。接着将行24的代码抽象为等式： </p>
+<script type="math/tex; mode=display">
+q = (i * num1) >>> num2,</script><p>行25的等式说明行24需要计算入参i除以10后得到的商值。 行24可以继续转换成</p>
+<script type="math/tex; mode=display">
+q = i * (num1 / 2^{num2}).</script><p>根据上述两个等式，要保证i * num1不能超过int的范围，同时num1 / $ 2^{num2} $ 在保证精度的情况下尽可能等于0.1。所以对num2遍历取值判断，发现当num2=19，num1=52429时，小数后六位0可以满足精度要求，所以选定num1为52429，num2=19。因为i $*$ num1有最大值限制，而且行24的等式采用的是无符号右移方案，所以int的最大值可以是 $ 2^{32} $ ，因为num1为52429接近 $ 2^{15} $ ，所以i采用了65536( $ 2^{16} $ )作为判断边界。</p>
+<h3 id="decode-String-nm"><a href="#decode-String-nm" class="headerlink" title="decode(String nm)"></a>decode(String nm)</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Integer <span class="title">decode</span><span class="params">(String nm)</span> <span class="keyword">throws</span> NumberFormatException </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> radix = <span class="number">10</span>;</span><br><span class="line">    <span class="keyword">int</span> index = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">boolean</span> negative = <span class="keyword">false</span>;</span><br><span class="line">    Integer result;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (nm.length() == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NumberFormatException(<span class="string">"Zero length string"</span>);</span><br><span class="line">    <span class="keyword">char</span> firstChar = nm.charAt(<span class="number">0</span>);</span><br><span class="line">    <span class="comment">// Handle sign, if present</span></span><br><span class="line">    <span class="keyword">if</span> (firstChar == <span class="string">'-'</span>) &#123;</span><br><span class="line">        negative = <span class="keyword">true</span>;</span><br><span class="line">        index++;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (firstChar == <span class="string">'+'</span>)</span><br><span class="line">        index++;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Handle radix specifier, if present</span></span><br><span class="line">    <span class="keyword">if</span> (nm.startsWith(<span class="string">"0x"</span>, index) || nm.startsWith(<span class="string">"0X"</span>, index)) &#123;</span><br><span class="line">        index += <span class="number">2</span>;</span><br><span class="line">        radix = <span class="number">16</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (nm.startsWith(<span class="string">"#"</span>, index)) &#123;</span><br><span class="line">        index ++;</span><br><span class="line">        radix = <span class="number">16</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (nm.startsWith(<span class="string">"0"</span>, index) &amp;&amp; nm.length() &gt; <span class="number">1</span> + index) &#123;</span><br><span class="line">        index ++;</span><br><span class="line">        radix = <span class="number">8</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (nm.startsWith(<span class="string">"-"</span>, index) || nm.startsWith(<span class="string">"+"</span>, index))</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NumberFormatException(<span class="string">"Sign character in wrong position"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        result = Integer.valueOf(nm.substring(index), radix);</span><br><span class="line">        result = negative ? Integer.valueOf(-result.intValue()) : result;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (NumberFormatException e) &#123;</span><br><span class="line">        <span class="comment">// If number is Integer.MIN_VALUE, we'll end up here. The next line</span></span><br><span class="line">        <span class="comment">// handles this case, and causes any genuine format error to be</span></span><br><span class="line">        <span class="comment">// rethrown.</span></span><br><span class="line">        String constant = negative ? (<span class="string">"-"</span> + nm.substring(index))</span><br><span class="line">            : nm.substring(index);</span><br><span class="line">        result = Integer.valueOf(constant, radix);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;这个方法是将一个没有指定进制的字符串转换成响应进制的整型数字，具体采用的进制通过入参字符串前两位（前一位）字符判断得到。在行26中，有一个判断入参字符串长度的操作，这个操作只出现在了八进制中。这个判断的目的是确定是否应该采用八进制作为转换标准，因为八进制表示法的第一位是0，单纯通过第一位无法判断该采用八进制还是十进制。所以加入了长度的判断操作，如果第一位为0且之后还有数据，那么就采用八进制作为转换依据。</p>
+<h3 id="reverse-int-i"><a href="#reverse-int-i" class="headerlink" title="reverse(int i)"></a>reverse(int i)</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">reverse</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// HD, Figure 7-1</span></span><br><span class="line">    i = (i &amp; <span class="number">0x55555555</span>) &lt;&lt; <span class="number">1</span> | (i &gt;&gt;&gt; <span class="number">1</span>) &amp; <span class="number">0x55555555</span>;</span><br><span class="line">    i = (i &amp; <span class="number">0x33333333</span>) &lt;&lt; <span class="number">2</span> | (i &gt;&gt;&gt; <span class="number">2</span>) &amp; <span class="number">0x33333333</span>;</span><br><span class="line">    i = (i &amp; <span class="number">0x0f0f0f0f</span>) &lt;&lt; <span class="number">4</span> | (i &gt;&gt;&gt; <span class="number">4</span>) &amp; <span class="number">0x0f0f0f0f</span>;</span><br><span class="line">    i = (i &lt;&lt; <span class="number">24</span>) | ((i &amp; <span class="number">0xff00</span>) &lt;&lt; <span class="number">8</span>) |</span><br><span class="line">        ((i &gt;&gt;&gt; <span class="number">8</span>) &amp; <span class="number">0xff00</span>) | (i &gt;&gt;&gt; <span class="number">24</span>);</span><br><span class="line">    <span class="keyword">return</span> i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;实现入参int数值（以下简称为入参）的二进制补码的逆序返回。借鉴了分治的思想，首先将入参数值的补码每两位一组，左右交换码值。在行3中，0x55555555的二进制值是01010101010101010101010101010101，与入参执行按位与操作，再向左移动一位，低位补0，这样入参按两位分组后的低位码值即移到了左边。同时将入参向右移动一位，高位补0，与0x55555555执行按位与操作取得入参按两位分组后的高位码值即移动了右边，两个结果按位或执行后，即为入参按照两位分组后逆序交换后的结果。同理，在行4中，0x33333333的二进制值是00110011001100110011001100110011，会将行3执行后的补码序列按照每四位一组进行分组，每组中的高两位和低两位依次交换先后顺序。在行5中，则对行4操作执行完毕后的补码每八位一组，按照高四位和低四位依次交换先后顺序。至此，就已经完成了4个字节内部的补码逆序操作。行6 ~ 7以字节为单位，分别将低位第四字节左移到高位第一位，低位第三字节左移到高位第二位，高位第一字节右移到低位第四位，高位第二字节右移到低位第三位，四个结果按位取或结果，返回最后逆序的结果。</p>
+<p>&emsp;&emsp;<strong>同理论方法：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">reverseBytes</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> ((i &gt;&gt;&gt; <span class="number">24</span>)        ) |</span><br><span class="line">        ((i &gt;&gt;   <span class="number">8</span>) &amp;   <span class="number">0xFF00</span>) |</span><br><span class="line">        ((i &lt;&lt;   <span class="number">8</span>) &amp; <span class="number">0xFF0000</span>) |</span><br><span class="line">        ((i &lt;&lt; <span class="number">24</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="bitCount-int-i"><a href="#bitCount-int-i" class="headerlink" title="bitCount(int i)"></a>bitCount(int i)</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">bitCount</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// HD, Figure 5-2</span></span><br><span class="line">    i = i - ((i &gt;&gt;&gt; <span class="number">1</span>) &amp; <span class="number">0x55555555</span>);</span><br><span class="line">    i = (i &amp; <span class="number">0x33333333</span>) + ((i &gt;&gt;&gt; <span class="number">2</span>) &amp; <span class="number">0x33333333</span>);</span><br><span class="line">    i = (i + (i &gt;&gt;&gt; <span class="number">4</span>)) &amp; <span class="number">0x0f0f0f0f</span>;</span><br><span class="line">    i = i + (i &gt;&gt;&gt; <span class="number">8</span>);</span><br><span class="line">    i = i + (i &gt;&gt;&gt; <span class="number">16</span>);</span><br><span class="line">    <span class="keyword">return</span> i &amp; <span class="number">0x3f</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;统计入参int数值（以下简称为入参）补码表示中值为1的二进制位的个数。如下图：</p>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1533028543/Integer_bitCount_binary_tree_demo.png" alt></p>
+<div align="center">
+<div align="center">图 - 1</div>
+&emsp;
+</div>
+
+<p>第一行是入参的补码表示，接着将补码两两分组，分别统计每个分组中二进制位为1的个数，并用两位二进制替换原来的分组，该两位二进制的值标识对应分组中二进制位为1的个数，于是得到第二行的补码序列。</p>
+<p>&emsp;&emsp;根据第一行和第二行的补码序列，我们可以观察到：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">二进制位input</th>
+<th style="text-align:center">用来标识1的个数的新二进制位output</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">00</td>
+<td style="text-align:center">00</td>
+<td style="text-align:center">没有1</td>
+</tr>
+<tr>
+<td style="text-align:center">01</td>
+<td style="text-align:center">01</td>
+<td style="text-align:center">一个1</td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">01</td>
+<td style="text-align:center">一个1</td>
+</tr>
+<tr>
+<td style="text-align:center">11</td>
+<td style="text-align:center">10</td>
+<td style="text-align:center">两个1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>现在需要通过input列的二进制序列计算出output序列。发现等式output = input - （input &gt;&gt;&gt; 1）。如果input不是两位二进制，例如四位、八位、十六位、三十二位，上述等式并不成立，原因在于左两位二进制的移动影响了后两位二进制中的高位，于是把高位全部记为0，即源码中行3的表述。</p>
+<p>&emsp;&emsp;同理，图1中将第二行得到的补码序列两两相加构成一个四位二进制序列，之后再将新生成的四位二进制序列两两相加，构成一个八位二进制序列，直至最后得到一个32位的补码序列，该序列的值即为入参的补码表示中二进制位为1的个数。</p>
+<p>&emsp;&emsp;关于源码实现，行4首先计算低两位与11的与和，然后将序列右移两位计算高两位与11的与和，结果相加构成若干个四位二进制序列分组。行5将序列右移四位计算高四位与1111的与和，然后与原序列相加，结果为若干八位二进制序列分组。行6将序列右移八位后，高八位和低八位可做加法操作，得到16位二进制序列。行7计算序列高十六位和低十六位的和得到一个三十二位序列。因为一个int数值的二进制长度是32($ 2^6 $)位，所以高于六位的二进制位都是无效的，所以通过0x3F将高于六位的二进制位清零计算最后结果。</p>
+<h3 id="IntegerCache"><a href="#IntegerCache" class="headerlink" title="IntegerCache"></a>IntegerCache</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">IntegerCache</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> low = -<span class="number">128</span>;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> high;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> Integer cache[];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        <span class="comment">// high value may be configured by property</span></span><br><span class="line">        <span class="keyword">int</span> h = <span class="number">127</span>;</span><br><span class="line">        String integerCacheHighPropValue =</span><br><span class="line">            sun.misc.VM.getSavedProperty(<span class="string">"java.lang.Integer.IntegerCache.high"</span>);</span><br><span class="line">        <span class="keyword">if</span> (integerCacheHighPropValue != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">int</span> i = parseInt(integerCacheHighPropValue);</span><br><span class="line">            i = Math.max(i, <span class="number">127</span>);</span><br><span class="line">            <span class="comment">// Maximum array size is Integer.MAX_VALUE</span></span><br><span class="line">            h = Math.min(i, Integer.MAX_VALUE - (-low) -<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        high = h;</span><br><span class="line"></span><br><span class="line">        cache = <span class="keyword">new</span> Integer[(high - low) + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">int</span> j = low;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; cache.length; k++)</span><br><span class="line">            cache[k] = <span class="keyword">new</span> Integer(j++);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">IntegerCache</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;原作者之所以设计这段代码，可能是出于性能的考虑。这段代码缓存了从-128到127共256个int型数值。如果在需要创建Integer实例的时候，如果值在-128到127之间，那么会直接从缓存里取值而不是重新创建对象。</p>
+<h2 id="涉及基础知识点"><a href="#涉及基础知识点" class="headerlink" title="涉及基础知识点"></a>涉及基础知识点</h2><ol>
+<li>原码、反码、补码概念及相互转换；</li>
+<li>左移、有符号右移和无符号右移。</li>
+</ol>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li><a href="https://segmentfault.com/a/1190000015763941" target="_blank" rel="noopener">java源码Integer.bitCount算法解析，分析原理（统计二进制bit位）</a></li>
+<li><a href="https://blog.csdn.net/cor_twi/article/details/53720640" target="_blank" rel="noopener">Java源码 Integer.bitCount实现过程</a></li>
+<li><a href="https://hk.saowen.com/a/0c5dd532a4a10d79ad70ba2c4f765036db1dcc02e6d4e8d23b500ceda367f661" target="_blank" rel="noopener">JDK源碼 Integer.bitCount(i)</a></li>
+<li>白中英 (2013)。《计算机组成原理》。北京：科学出版社   </li>
+</ol>
+<p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/Java-source-Integer.html" target="_blank" title="Java源码阅读笔记01 - Integer">Java源码阅读笔记01 - Integer</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/Java-source-Integer.html" target="_blank" title="Java源码阅读笔记01 - Integer">https://marcuseddie.github.io/2018/Java-source-Integer.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2018/Java-source-String.html" class="alignleft prev" title="Java源码阅读笔记02 - String"> 上一篇： Java源码阅读笔记02 - String</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2018/Linear-algebra-determinant.html" class="alignright next" title="线性代数学习笔记01-行列式"> 下一篇： 线性代数学习笔记01-行列式</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

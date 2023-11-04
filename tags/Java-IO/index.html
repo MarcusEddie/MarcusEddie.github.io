@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      标签: Java IO 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="JAVA、Python">
+<meta name="keywords" content="Java、Python">
+<meta property="og:type" content="website">
+<meta property="og:title" content="标签: Java IO">
+<meta property="og:url" content="https://marcuseddie.github.io/tags/Java-IO/index.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="JAVA、Python">
+<meta property="og:locale" content="zh-CN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="标签: Java IO">
+<meta name="twitter:description" content="JAVA、Python">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+
+  <h1 class="archive-title">标签: Java IO</h1>
+  <hr class="post-list__divider">
+
+
+<div class="main-post-list">
+    <ol class="post-list">
+    
+    
+    <li>
+
+      <h2 class="post-list__post-title post-title">
+        <a href="/2018/java-ObjectOutputStream.html" title="link to Java I/O 26 - ObjectOutputStream">Java I/O 26 - ObjectOutputStream</a>
+      </h2>
+
+      <div class="post-list__meta">
+
+        <time datetime="2018-12-01" class="post-list__meta--date date">2018-12-01</time> 
+      		<span class="post-meta__count count">字数统计:&nbsp;0&emsp;阅读时长:&nbsp;1&nbsp;mins</span>
+	  </div>
+
+      <div class="excerpt">
+	
+      </div>
+	<span class="post-meta__tags tags">
+	  
+		<font class="categories">
+		<img src="/images/cat.png" title="categories">
+		<a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+		&nbsp&nbsp&nbsp&nbsp
+		</font>
+	  
+	  
+		<img src="/images/tag.png" title="tags">
+		<font class="categories">
+		<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
+		</font>
+	  
+	</span>
+      <hr class="post-list__divider">
+    </li>
+    
+    <li>
+
+      <h2 class="post-list__post-title post-title">
+        <a href="/2018/java-BlockDataInputStream.html" title="link to Java I/O 25 - BlockDataInputStream">Java I/O 25 - BlockDataInputStream</a>
+      </h2>
+
+      <div class="post-list__meta">
+
+        <time datetime="2018-11-29" class="post-list__meta--date date">2018-11-29</time> 
+      		<span class="post-meta__count count">字数统计:&nbsp;3.7k&emsp;阅读时长:&nbsp;20&nbsp;mins</span>
+	  </div>
+
+      <div class="excerpt">
+	
+          <p>&emsp;&emsp;关于<em> <strong>java.io.ObjectInputStream.BlockDataInputStream</strong> </em>的部分笔记，该类是ObjectInputStream的底层数据读取类，用来完成从流中读取数据的所有操作。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+		
+			  <p class="article-more-link">
+			      <a href="/2018/java-BlockDataInputStream.html" style="color:black;font-weight:bold;">Read More...</a>
+			  </p>
+		  
+	
+      </div>
+	<span class="post-meta__tags tags">
+	  
+		<font class="categories">
+		<img src="/images/cat.png" title="categories">
+		<a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+		&nbsp&nbsp&nbsp&nbsp
+		</font>
+	  
+	  
+		<img src="/images/tag.png" title="tags">
+		<font class="categories">
+		<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
+		</font>
+	  
+	</span>
+      <hr class="post-list__divider">
+    </li>
+    
+    <li>
+
+      <h2 class="post-list__post-title post-title">
+        <a href="/2018/java-ObjectInputStream-InternalClass.html" title="link to Java I/O 24 - ObjectInputStream内部类">Java I/O 24 - ObjectInputStream内部类</a>
+      </h2>
+
+      <div class="post-list__meta">
+
+        <time datetime="2018-11-29" class="post-list__meta--date date">2018-11-29</time> 
+      		<span class="post-meta__count count">字数统计:&nbsp;2.6k&emsp;阅读时长:&nbsp;12&nbsp;mins</span>
+	  </div>
+
+      <div class="excerpt">
+	
+          <p>&emsp;&emsp;关于<em> <strong>java.io.ObjectInputStream</strong> </em>内部类的部分笔记，里面涉及到了HandleTable、ValidationList、GetField及其实现等几个内部类的声明和实现。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+		
+			  <p class="article-more-link">
+			      <a href="/2018/java-ObjectInputStream-InternalClass.html" style="color:black;font-weight:bold;">Read More...</a>
+			  </p>
+		  
+	
+      </div>
+	<span class="post-meta__tags tags">
+	  
+		<font class="categories">
+		<img src="/images/cat.png" title="categories">
+		<a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+		&nbsp&nbsp&nbsp&nbsp
+		</font>
+	  
+	  
+		<img src="/images/tag.png" title="tags">
+		<font class="categories">
+		<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
+		</font>
+	  
+	</span>
+      <hr class="post-list__divider">
+    </li>
+    
+    <li>
+
+      <h2 class="post-list__post-title post-title">
+        <a href="/2018/java-ObjectInputStream.html" title="link to Java I/O 23 - ObjectInputStream">Java I/O 23 - ObjectInputStream</a>
+      </h2>
+
+      <div class="post-list__meta">
+
+        <time datetime="2018-11-28" class="post-list__meta--date date">2018-11-28</time> 
+      		<span class="post-meta__count count">字数统计:&nbsp;9.5k&emsp;阅读时长:&nbsp;43&nbsp;mins</span>
+	  </div>
+
+      <div class="excerpt">
+	
+          <p>&emsp;&emsp;关于<em> <strong>java.io.ObjectInputStream</strong> </em>的部分笔记，ObjectInputStream是Java反序列化操作的实现类，通过该类可以完成默认的或者自定义的对象反序列化操作。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+		
+			  <p class="article-more-link">
+			      <a href="/2018/java-ObjectInputStream.html" style="color:black;font-weight:bold;">Read More...</a>
+			  </p>
+		  
+	
+      </div>
+	<span class="post-meta__tags tags">
+	  
+		<font class="categories">
+		<img src="/images/cat.png" title="categories">
+		<a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+		&nbsp&nbsp&nbsp&nbsp
+		</font>
+	  
+	  
+		<img src="/images/tag.png" title="tags">
+		<font class="categories">
+		<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
+		</font>
+	  
+	</span>
+      <hr class="post-list__divider">
+    </li>
+    
+    <li>
+
+      <h2 class="post-list__post-title post-title">
+        <a href="/2018/java-BufferedReader-BufferedWriter.html" title="link to Java I/O 22 - BufferedReader &amp; BufferedWriter">Java I/O 22 - BufferedReader &amp; BufferedWriter</a>
+      </h2>
+
+      <div class="post-list__meta">
+
+        <time datetime="2018-11-25" class="post-list__meta--date date">2018-11-25</time> 
+      		<span class="post-meta__count count">字数统计:&nbsp;5.2k&emsp;阅读时长:&nbsp;22&nbsp;mins</span>
+	  </div>
+
+      <div class="excerpt">
+	
+          <p>&emsp;&emsp;关于<em> <strong>java.io.BufferedReader</strong> </em> 和<em> <strong>java.io.BufferedWriter</strong> </em> 的部分笔记，对字符读写提供了一个缓冲区作为中间媒介，以此降低读写操作与物理存储的交互次数并提高其读写效率和性能。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+		
+			  <p class="article-more-link">
+			      <a href="/2018/java-BufferedReader-BufferedWriter.html" style="color:black;font-weight:bold;">Read More...</a>
+			  </p>
+		  
+	
+      </div>
+	<span class="post-meta__tags tags">
+	  
+		<font class="categories">
+		<img src="/images/cat.png" title="categories">
+		<a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+		&nbsp&nbsp&nbsp&nbsp
+		</font>
+	  
+	  
+		<img src="/images/tag.png" title="tags">
+		<font class="categories">
+		<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
+		</font>
+	  
+	</span>
+      <hr class="post-list__divider">
+    </li>
+    
+    <li>
+
+      <h2 class="post-list__post-title post-title">
+        <a href="/2018/java-PrintWriter.html" title="link to Java I/O 21 - PrintWriter">Java I/O 21 - PrintWriter</a>
+      </h2>
+
+      <div class="post-list__meta">
+
+        <time datetime="2018-11-23" class="post-list__meta--date date">2018-11-23</time> 
+      		<span class="post-meta__count count">字数统计:&nbsp;3.1k&emsp;阅读时长:&nbsp;14&nbsp;mins</span>
+	  </div>
+
+      <div class="excerpt">
+	
+          <p>&emsp;&emsp;关于<em> <strong>java.io.PrintWriter</strong> </em> 的部分笔记，PrintWriter属于处理流的一种，提供了丰富的打印方法用来向目标位置打印输出字符内容。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+		
+			  <p class="article-more-link">
+			      <a href="/2018/java-PrintWriter.html" style="color:black;font-weight:bold;">Read More...</a>
+			  </p>
+		  
+	
+      </div>
+	<span class="post-meta__tags tags">
+	  
+		<font class="categories">
+		<img src="/images/cat.png" title="categories">
+		<a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+		&nbsp&nbsp&nbsp&nbsp
+		</font>
+	  
+	  
+		<img src="/images/tag.png" title="tags">
+		<font class="categories">
+		<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
+		</font>
+	  
+	</span>
+      <hr class="post-list__divider">
+    </li>
+    
+    <li>
+
+      <h2 class="post-list__post-title post-title">
+        <a href="/2018/java-PushbackReader.html" title="link to Java I/O 20 - PushbackReader">Java I/O 20 - PushbackReader</a>
+      </h2>
+
+      <div class="post-list__meta">
+
+        <time datetime="2018-11-22" class="post-list__meta--date date">2018-11-22</time> 
+      		<span class="post-meta__count count">字数统计:&nbsp;1.6k&emsp;阅读时长:&nbsp;7&nbsp;mins</span>
+	  </div>
+
+      <div class="excerpt">
+	
+          <p>&emsp;&emsp;关于<em> <strong>java.io.PushbackReader</strong> </em> 的部分笔记。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+		
+			  <p class="article-more-link">
+			      <a href="/2018/java-PushbackReader.html" style="color:black;font-weight:bold;">Read More...</a>
+			  </p>
+		  
+	
+      </div>
+	<span class="post-meta__tags tags">
+	  
+		<font class="categories">
+		<img src="/images/cat.png" title="categories">
+		<a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+		&nbsp&nbsp&nbsp&nbsp
+		</font>
+	  
+	  
+		<img src="/images/tag.png" title="tags">
+		<font class="categories">
+		<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
+		</font>
+	  
+	</span>
+      <hr class="post-list__divider">
+    </li>
+    
+    <li>
+
+      <h2 class="post-list__post-title post-title">
+        <a href="/2018/java-FilterReader-FilterWriter.html" title="link to Java I/O 19 - FilterReader &amp; FilterWriter">Java I/O 19 - FilterReader &amp; FilterWriter</a>
+      </h2>
+
+      <div class="post-list__meta">
+
+        <time datetime="2018-11-21" class="post-list__meta--date date">2018-11-21</time> 
+      		<span class="post-meta__count count">字数统计:&nbsp;1k&emsp;阅读时长:&nbsp;4&nbsp;mins</span>
+	  </div>
+
+      <div class="excerpt">
+	
+          <p>&emsp;&emsp;关于<em> <strong>java.io.FilterReader</strong> </em> 和 <em> <strong>java.io.FilterWriter</strong> </em>的部分笔记，自身实现了完整的输入输出流操作，继承这两个类的子类应该重写其拥有的操作方法API。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+		
+			  <p class="article-more-link">
+			      <a href="/2018/java-FilterReader-FilterWriter.html" style="color:black;font-weight:bold;">Read More...</a>
+			  </p>
+		  
+	
+      </div>
+	<span class="post-meta__tags tags">
+	  
+		<font class="categories">
+		<img src="/images/cat.png" title="categories">
+		<a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+		&nbsp&nbsp&nbsp&nbsp
+		</font>
+	  
+	  
+		<img src="/images/tag.png" title="tags">
+		<font class="categories">
+		<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
+		</font>
+	  
+	</span>
+      <hr class="post-list__divider">
+    </li>
+    
+    <li>
+
+      <h2 class="post-list__post-title post-title">
+        <a href="/2018/java-CharArrayReader-CharArrayWriter.html" title="link to Java I/O 18 - CharArrayReader &amp; CharArrayWriter">Java I/O 18 - CharArrayReader &amp; CharArrayWriter</a>
+      </h2>
+
+      <div class="post-list__meta">
+
+        <time datetime="2018-11-20" class="post-list__meta--date date">2018-11-20</time> 
+      		<span class="post-meta__count count">字数统计:&nbsp;2.5k&emsp;阅读时长:&nbsp;11&nbsp;mins</span>
+	  </div>
+
+      <div class="excerpt">
+	
+          <p>&emsp;&emsp;关于<em> <strong>java.io.CharArrayReader</strong> </em> 和 <em> <strong>java.io.CharArrayWriter</strong> </em>的部分笔记，这两个类属于内存流的一种，参考流的思想操作内存空间中的数组内容。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+		
+			  <p class="article-more-link">
+			      <a href="/2018/java-CharArrayReader-CharArrayWriter.html" style="color:black;font-weight:bold;">Read More...</a>
+			  </p>
+		  
+	
+      </div>
+	<span class="post-meta__tags tags">
+	  
+		<font class="categories">
+		<img src="/images/cat.png" title="categories">
+		<a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+		&nbsp&nbsp&nbsp&nbsp
+		</font>
+	  
+	  
+		<img src="/images/tag.png" title="tags">
+		<font class="categories">
+		<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
+		</font>
+	  
+	</span>
+      <hr class="post-list__divider">
+    </li>
+    
+    <li>
+
+      <h2 class="post-list__post-title post-title">
+        <a href="/2018/java-PipedReader-PipedWriter.html" title="link to Java I/O 17 - PipedReader &amp; PipedWriter">Java I/O 17 - PipedReader &amp; PipedWriter</a>
+      </h2>
+
+      <div class="post-list__meta">
+
+        <time datetime="2018-11-18" class="post-list__meta--date date">2018-11-18</time> 
+      		<span class="post-meta__count count">字数统计:&nbsp;2.7k&emsp;阅读时长:&nbsp;12&nbsp;mins</span>
+	  </div>
+
+      <div class="excerpt">
+	
+          <p>&emsp;&emsp;关于<em> <strong>java.io.PipedReader</strong> </em> 和 <em> <strong>java.io.PipedWriter</strong> </em>的部分笔记，用来完成不同线程间的数据传送和通信。读写操作分别在不同的线程中向缓冲区buffer中写入数据、读取数据。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+		
+			  <p class="article-more-link">
+			      <a href="/2018/java-PipedReader-PipedWriter.html" style="color:black;font-weight:bold;">Read More...</a>
+			  </p>
+		  
+	
+      </div>
+	<span class="post-meta__tags tags">
+	  
+		<font class="categories">
+		<img src="/images/cat.png" title="categories">
+		<a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+		&nbsp&nbsp&nbsp&nbsp
+		</font>
+	  
+	  
+		<img src="/images/tag.png" title="tags">
+		<font class="categories">
+		<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
+		</font>
+	  
+	</span>
+      <hr class="post-list__divider">
+    </li>
+    
+  </ol>
+
+  <hr class="post-list__divider ">
+
+<nav class="pagination" role="navigation">
+    
+
+    <span class="pagination__page-number"> 1 / 3</span>
+    
+    
+        <a class="older-posts pagination__older btn btn-small btn-tertiary" href="/tags/Java-IO/page/2/">下一页 &rarr;</a>
+    
+</nav>
+
+
+</div>
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

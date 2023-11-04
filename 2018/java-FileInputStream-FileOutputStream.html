@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      Java I/O 09 - FileInputStream &amp; FileOutputStream | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="FileInputStream和FileOutputStream用来完成对文件的字节流操作。其中借助read,FileDescriptor,FileChannel,write等方法和对象完成文件操作。">
+<meta name="keywords" content="FileInputStream, FileOutputStream，read,FileDescriptor,FileChannel,write">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java I&#x2F;O 09 - FileInputStream &amp; FileOutputStream | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/java-FileInputStream-FileOutputStream.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="FileInputStream和FileOutputStream用来完成对文件的字节流操作。其中借助read,FileDescriptor,FileChannel,write等方法和对象完成文件操作。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1540392586/BlogImages/FileInputStream-FileOutputStream/File_table_and_inode_table.png">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.357Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java I&#x2F;O 09 - FileInputStream &amp; FileOutputStream | Mr.Muzi">
+<meta name="twitter:description" content="FileInputStream和FileOutputStream用来完成对文件的字节流操作。其中借助read,FileDescriptor,FileChannel,write等方法和对象完成文件操作。">
+<meta name="twitter:image" content="https://res.cloudinary.com/jknight/image/upload/v1540392586/BlogImages/FileInputStream-FileOutputStream/File_table_and_inode_table.png">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>Java I/O 09 - FileInputStream &amp; FileOutputStream</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-10-22" class="post-meta__date date">2018-10-22</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;3.8k&emsp;阅读时长:&nbsp;15&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.io.FileInputStream</strong> </em>和 <em> <strong>java.io.FileOutputStream</strong> </em>的部分笔记，这两个类完成的是对文件的输入输出的字节流操作。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;FileInputStream和FileOutputStream用来完成对文件的字节流操作。FileInputStream从文件系统的某个文件中获取数据并读取到内存中，FileOutputStream则将内存中的数据写到某个特定的文件中去。这两个类处理的是诸如图像数据这样的原始字节流，如果需要读取写入类似于字符这样的数据流，需要用FileReader和FileWriter。</p>
+<h2 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// FileInputStream</span></span><br><span class="line">--java.lang.Object</span><br><span class="line">  --java.io.InputStream</span><br><span class="line">    --java.io.FileInputStream </span><br><span class="line"></span><br><span class="line"><span class="comment">// FileOutputStream</span></span><br><span class="line">--java.lang.Object</span><br><span class="line">  --java.io.OutputStream</span><br><span class="line">    --java.io.FileOutputStream</span><br></pre></td></tr></table></figure>
+<p>&emsp;</p>
+<h2 id="实现接口"><a href="#实现接口" class="headerlink" title="实现接口"></a>实现接口</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">类名</th>
+<th style="text-align:center">实现接口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">FileInputStream</td>
+<td style="text-align:center">Closeable, AutoCloseable</td>
+</tr>
+<tr>
+<td style="text-align:center">FileOutputStream</td>
+<td style="text-align:center">Closeable, Flushable, AutoCloseable</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>&emsp;</p>
+<h2 id="FileInputStream"><a href="#FileInputStream" class="headerlink" title="FileInputStream"></a>FileInputStream</h2><h3 id="主要字段"><a href="#主要字段" class="headerlink" title="主要字段"></a>主要字段</h3><h4 id="fd"><a href="#fd" class="headerlink" title="fd"></a>fd</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> FileDescriptor fd;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;当前输入流中维护的文件描述符。用来标识进程中打开的一个文件。</p>
+<h4 id="channel"><a href="#channel" class="headerlink" title="channel"></a>channel</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> FileChannel channel = <span class="keyword">null</span>;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;文件管道，用来读、写、映射、操作某个文件。</p>
+<h4 id="path"><a href="#path" class="headerlink" title="path"></a>path</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> String path;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;维护当前打开的文件路径。</p>
+<h3 id="构造方法"><a href="#构造方法" class="headerlink" title="构造方法"></a>构造方法</h3><h4 id="FileInputStream-String-name"><a href="#FileInputStream-String-name" class="headerlink" title="FileInputStream(String name)"></a>FileInputStream(String name)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">FileInputStream</span><span class="params">(String name)</span> <span class="keyword">throws</span> FileNotFoundException </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(name != <span class="keyword">null</span> ? <span class="keyword">new</span> File(name) : <span class="keyword">null</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;根据一个系统相关的字符串来获取一个文件并创建一个输入流，该输入流会从入参name文件中读取数据到内存中。实际调用的是下面的构造方法public FileInputStream(File file)。</p>
+<h4 id="FileInputStream-File-file"><a href="#FileInputStream-File-file" class="headerlink" title="FileInputStream(File file)"></a>FileInputStream(File file)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">FileInputStream</span><span class="params">(File file)</span> <span class="keyword">throws</span> FileNotFoundException </span>&#123;</span><br><span class="line">    String name = (file != <span class="keyword">null</span> ? file.getPath() : <span class="keyword">null</span>);</span><br><span class="line">    SecurityManager security = System.getSecurityManager();</span><br><span class="line">    <span class="keyword">if</span> (security != <span class="keyword">null</span>) &#123;</span><br><span class="line">        security.checkRead(name);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (name == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (file.isInvalid()) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> FileNotFoundException(<span class="string">"Invalid file path"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    fd = <span class="keyword">new</span> FileDescriptor();</span><br><span class="line">    fd.incrementAndGetUseCount();</span><br><span class="line">    <span class="keyword">this</span>.path = name;</span><br><span class="line">    open(name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;根据一个入参file创建一个输入流，该输入流将从入参file中获取数据。第3 ~ 6行代码如果存在安全管理器，那么就需要检查是否拥有对该文件进行操作和管理的权限。第7 ~ 12行代码完成一些有效性校验。第13行维护了一个文件描述符，该描述符记录了当前打开的文件。第16行代码则通过调用底层的<strong>private native void open(String name)</strong>方法来打开特定路径下的文件。</p>
+<h4 id="FileInputStream-FileDescriptor-fdObj"><a href="#FileInputStream-FileDescriptor-fdObj" class="headerlink" title="FileInputStream(FileDescriptor fdObj)"></a>FileInputStream(FileDescriptor fdObj)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">FileInputStream</span><span class="params">(FileDescriptor fdObj)</span> </span>&#123;</span><br><span class="line">    SecurityManager security = System.getSecurityManager();</span><br><span class="line">    <span class="keyword">if</span> (fdObj == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (security != <span class="keyword">null</span>) &#123;</span><br><span class="line">        security.checkRead(fdObj);</span><br><span class="line">    &#125;</span><br><span class="line">    fd = fdObj;</span><br><span class="line">    path = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    fd.incrementAndGetUseCount();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;通过一个文件描述符来初始化一个文件输入流。因为文件描述符fdObj记录了一个打开的文件，所以输入流中的字段fd与入参fdObj记录的是同样的文件。第2 ~ 8行代码如果存在安全管理器，那么就需要检查是否拥有对该文件进行操作和管理的权限。</p>
+<h3 id="部分方法"><a href="#部分方法" class="headerlink" title="部分方法"></a>部分方法</h3><h4 id="public-int-read"><a href="#public-int-read" class="headerlink" title="public int read()"></a>public int read()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    Object traceContext = IoTrace.fileReadBegin(path);</span><br><span class="line">    <span class="keyword">int</span> b = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        b = read0();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        IoTrace.fileReadEnd(traceContext, b == -<span class="number">1</span> ? <span class="number">0</span> : <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;从path指定的文件中读取一个字节的内容并返回。第2行和第7行的代码用来完成I/O文件操作的一个跟踪记录，所以这两个方法是配对使用的，用来标记文件操作的开始和结束（具体使用场景和实现还有待考证）。底层调用的是<strong>private native int read0()</strong>，通过该方法完成从文件中读取数据的操作。</p>
+<h4 id="public-int-read-byte-b-int-off-int-len"><a href="#public-int-read-byte-b-int-off-int-len" class="headerlink" title="public int read(byte b[], int off, int len)"></a>public int read(byte b[], int off, int len)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">(<span class="keyword">byte</span> b[], <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    Object traceContext = IoTrace.fileReadBegin(path);</span><br><span class="line">    <span class="keyword">int</span> bytesRead = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        bytesRead = readBytes(b, off, len);</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        IoTrace.fileReadEnd(traceContext, bytesRead == -<span class="number">1</span> ? <span class="number">0</span> : bytesRead);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> bytesRead;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">(<span class="keyword">byte</span> b[])</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    Object traceContext = IoTrace.fileReadBegin(path);</span><br><span class="line">    <span class="keyword">int</span> bytesRead = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        bytesRead = readBytes(b, <span class="number">0</span>, b.length);</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        IoTrace.fileReadEnd(traceContext, bytesRead == -<span class="number">1</span> ? <span class="number">0</span> : bytesRead);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> bytesRead;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;从path指定的文件中读取指定长度的内容到入参数组b中。可能因为已经读到了文件尾部、异常抛出等原因会导致实际返回的b的长度有可能小于入参len。底层调用的是<strong>private native int readBytes(byte b[], int off, int len)</strong>，通过该方法完成从文件中读取数据的操作。</p>
+<h4 id="public-void-close"><a href="#public-void-close" class="headerlink" title="public void close()"></a>public void close()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (closeLock) &#123;</span><br><span class="line">        <span class="keyword">if</span> (closed) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        closed = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (channel != <span class="keyword">null</span>) &#123;</span><br><span class="line">        fd.decrementAndGetUseCount();</span><br><span class="line">        channel.close();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> useCount = fd.decrementAndGetUseCount();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ((useCount &lt;= <span class="number">0</span>) || !isRunningFinalize()) &#123;</span><br><span class="line">        close0();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;关闭当前输入流并释放所有相关的资源。如果在期间创建了文件管道，那么首先需要把该管道占用的资源释放，同时更新文件描述符的信息。在第15 ~ 17行代码中有两个条件来控制是否执行close方法释放输入流的资源。<strong>useCount &lt;= 0</strong>表示当前文件描述符已经没有其他对象使用了，所以如果该条件满足的话就可以执行释放操作了。<strong>!isRunningFinalize()</strong>的值由方法finalize()负责维护。在finalize()方法中，首先向线程本地变量中传入一个true值，然后调用close()方法释放资源。此时，如果文件描述符fd还有其他流在使用，那么就不会执行close0()方法。在finalize()方法的最后将线程本地变量的值变成了false，那么当下次直接调用close方法的时候，不管fd是否还有其他流在使用，都会执行第16行代码，释放所有资源。</p>
+<h4 id="protected-void-finalize"><a href="#protected-void-finalize" class="headerlink" title="protected void finalize()"></a>protected void finalize()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">finalize</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> ((fd != <span class="keyword">null</span>) &amp;&amp;  (fd != FileDescriptor.in)) &#123;</span><br><span class="line">        runningFinalize.set(Boolean.TRUE);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            close();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            runningFinalize.set(Boolean.FALSE);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;finalize()方法不会释放仍被其他流使用的文件描述符fd，所以第3行代码向线程本地变量中存入了一个true，这样在第5行代码调用close()方法时就不会释放当前资源。最后向线程本地变量中存入了false，所以那当下次直接调用close方法的时候，不管fd是否还有其他流在使用，都会释放所有资源。</p>
+<h4 id="public-final-FileDescriptor-getFD"><a href="#public-final-FileDescriptor-getFD" class="headerlink" title="public final FileDescriptor getFD()"></a>public final FileDescriptor getFD()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> FileDescriptor <span class="title">getFD</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (fd != <span class="keyword">null</span>) <span class="keyword">return</span> fd;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> IOException();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;获取并返回一个文件描述符的引用，否则抛出一个IOException给调用方。</p>
+<h4 id="public-FileChannel-getChannel"><a href="#public-FileChannel-getChannel" class="headerlink" title="public FileChannel getChannel()"></a>public FileChannel getChannel()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> FileChannel <span class="title">getChannel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (channel == <span class="keyword">null</span>) &#123;</span><br><span class="line">            channel = FileChannelImpl.open(fd, path, <span class="keyword">true</span>, <span class="keyword">false</span>, <span class="keyword">this</span>);</span><br><span class="line">            fd.incrementAndGetUseCount();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> channel;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;获取一个文件管道。该管道可以用来完成文件复制等一系列操作。每次创建文件管道时需要维护文件描述符的信息。</p>
+<p>&emsp;</p>
+<h2 id="FileOutputStream"><a href="#FileOutputStream" class="headerlink" title="FileOutputStream"></a>FileOutputStream</h2><h3 id="主要字段-1"><a href="#主要字段-1" class="headerlink" title="主要字段"></a>主要字段</h3><h4 id="fd-1"><a href="#fd-1" class="headerlink" title="fd"></a>fd</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> FileDescriptor fd;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;当前输入流中维护的文件描述符。用来标识进程中打开的一个文件。</p>
+<h4 id="path-1"><a href="#path-1" class="headerlink" title="path"></a>path</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> String path;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;维护当前打开的文件路径。</p>
+<h4 id="append"><a href="#append" class="headerlink" title="append"></a>append</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">boolean</span> append;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;写文件的模式，true 为从文件尾部追加写，false为从文件开头写并覆盖当前文件已有内容。</p>
+<h4 id="channel-1"><a href="#channel-1" class="headerlink" title="channel"></a>channel</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> FileChannel channel;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;文件管道，用来读、写、映射、操作某个文件。</p>
+<h3 id="构造方法-1"><a href="#构造方法-1" class="headerlink" title="构造方法"></a>构造方法</h3><h4 id="public-FileOutputStream-String-name"><a href="#public-FileOutputStream-String-name" class="headerlink" title="public FileOutputStream(String name)"></a>public FileOutputStream(String name)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">FileOutputStream</span><span class="params">(String name)</span> <span class="keyword">throws</span> FileNotFoundException </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(name != <span class="keyword">null</span> ? <span class="keyword">new</span> File(name) : <span class="keyword">null</span>, <span class="keyword">false</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;根据一个系统相关的字符串来获取一个文件并创建一个输出流，该输出流会把数据写入到入参指定路径下的文件中。因为在写文件时有追加模式和覆盖模式可供选择，所以该方法默认写文件是覆盖当前已有内容从头开始写文件。实际调用的是下面的构造方法FileOutputStream(File file)。</p>
+<h4 id="public-FileOutputStream-String-name-boolean-append"><a href="#public-FileOutputStream-String-name-boolean-append" class="headerlink" title="public FileOutputStream(String name, boolean append)"></a>public FileOutputStream(String name, boolean append)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">FileOutputStream</span><span class="params">(String name, <span class="keyword">boolean</span> append)</span></span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> FileNotFoundException</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(name != <span class="keyword">null</span> ? <span class="keyword">new</span> File(name) : <span class="keyword">null</span>, append);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;根据一个系统相关的字符串来获取一个文件并创建一个输出流，该输出流会把数据写入到入参指定路径下的文件中。因为在写文件时有追加模式和覆盖模式可供选择，由入参append决定该方法采用哪种模式写文件。实际调用的是下面的构造方法FileOutputStream(File file, boolean append)。</p>
+<h4 id="public-FileOutputStream-File-file"><a href="#public-FileOutputStream-File-file" class="headerlink" title="public FileOutputStream(File file)"></a>public FileOutputStream(File file)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">FileOutputStream</span><span class="params">(File file)</span> <span class="keyword">throws</span> FileNotFoundException </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>(file, <span class="keyword">false</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;根据一个入参file创建一个输出流，该输出流会把数据写到入参file指定的文件中。该方法默认写文件是覆盖当前已有内容从头开始写文件。</p>
+<h4 id="public-FileOutputStream-File-file-boolean-append"><a href="#public-FileOutputStream-File-file-boolean-append" class="headerlink" title="public FileOutputStream(File file, boolean append)"></a>public FileOutputStream(File file, boolean append)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">FileOutputStream</span><span class="params">(File file, <span class="keyword">boolean</span> append)</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> FileNotFoundException</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    String name = (file != <span class="keyword">null</span> ? file.getPath() : <span class="keyword">null</span>);</span><br><span class="line">    SecurityManager security = System.getSecurityManager();</span><br><span class="line">    <span class="keyword">if</span> (security != <span class="keyword">null</span>) &#123;</span><br><span class="line">        security.checkWrite(name);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (name == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (file.isInvalid()) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> FileNotFoundException(<span class="string">"Invalid file path"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">this</span>.fd = <span class="keyword">new</span> FileDescriptor();</span><br><span class="line">    <span class="keyword">this</span>.append = append;</span><br><span class="line">    <span class="keyword">this</span>.path = name;</span><br><span class="line">    fd.incrementAndGetUseCount();</span><br><span class="line">    open(name, append);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;根据一个入参file创建一个输出流，该输出流会把数据写到入参file指定的文件中。第5 ~ 8行代码如果存在安全管理器，那么就需要检查是否拥有对该文件进行操作和管理的权限。第9 ~ 14行代码完成一些有效性校验。第15行维护了一个文件描述符，该描述符记录了当前打开的文件。第19行代码则通过调用底层的<strong>private native void open(String name, boolean append)</strong>方法来打开特定路径下的文件。</p>
+<h4 id="public-FileOutputStream-FileDescriptor-fdObj"><a href="#public-FileOutputStream-FileDescriptor-fdObj" class="headerlink" title="public FileOutputStream(FileDescriptor fdObj)"></a>public FileOutputStream(FileDescriptor fdObj)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">FileOutputStream</span><span class="params">(FileDescriptor fdObj)</span> </span>&#123;</span><br><span class="line">    SecurityManager security = System.getSecurityManager();</span><br><span class="line">    <span class="keyword">if</span> (fdObj == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (security != <span class="keyword">null</span>) &#123;</span><br><span class="line">        security.checkWrite(fdObj);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">this</span>.fd = fdObj;</span><br><span class="line">    <span class="keyword">this</span>.path = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">this</span>.append = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">    fd.incrementAndGetUseCount();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;通过一个文件描述符来初始化一个文件输出流。因为文件描述符fdObj记录了一个打开的文件，所以输出流中的字段fd与入参fdObj记录的是同样的文件。第2 ~ 8行代码如果存在安全管理器，那么就需要检查是否拥有对该文件进行操作和管理的权限。</p>
+<h3 id="部分方法-1"><a href="#部分方法-1" class="headerlink" title="部分方法"></a>部分方法</h3><h4 id="public-void-write-int-b"><a href="#public-void-write-int-b" class="headerlink" title="public void write(int b)"></a>public void write(int b)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">int</span> b)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    Object traceContext = IoTrace.fileWriteBegin(path);</span><br><span class="line">    <span class="keyword">int</span> bytesWritten = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        write(b, append);</span><br><span class="line">        bytesWritten = <span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        IoTrace.fileWriteEnd(traceContext, bytesWritten);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;向path指定的文件中以append指定的写入方式写入一个字节的内容。第2行和第8行的代码用来完成I/O文件操作的一个跟踪记录，所以这两个方法是配对使用的，用来标记文件操作的开始和结束（具体使用场景和实现还有待考证）。底层调用的是<strong>private native void write(int b, boolean append)</strong>，通过该方法完成向文件中写入数据的操作。</p>
+<h4 id="public-void-write-byte-b-int-off-int-len"><a href="#public-void-write-byte-b-int-off-int-len" class="headerlink" title="public void write(byte b[], int off, int len)"></a>public void write(byte b[], int off, int len)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">byte</span> b[], <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    Object traceContext = IoTrace.fileWriteBegin(path);</span><br><span class="line">    <span class="keyword">int</span> bytesWritten = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        writeBytes(b, off, len, append);</span><br><span class="line">        bytesWritten = len;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        IoTrace.fileWriteEnd(traceContext, bytesWritten);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;向path指定的文件中以append指定的写入方式写入数组b中包含的内容。第2行和第8行的代码用来完成I/O文件操作的一个跟踪记录，所以这两个方法是配对使用的，用来标记文件操作的开始和结束（具体使用场景和实现还有待考证）。底层调用的是<strong>private native void write(byte b[], int off, int len, boolean append)</strong>，通过该方法完成向文件中写入数据的操作。</p>
+<h4 id="public-void-close-1"><a href="#public-void-close-1" class="headerlink" title="public void close()"></a>public void close()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (closeLock) &#123;</span><br><span class="line">        <span class="keyword">if</span> (closed) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        closed = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (channel != <span class="keyword">null</span>) &#123;</span><br><span class="line">        fd.decrementAndGetUseCount();</span><br><span class="line">        channel.close();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> useCount = fd.decrementAndGetUseCount();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ((useCount &lt;= <span class="number">0</span>) || !isRunningFinalize()) &#123;</span><br><span class="line">        close0();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;执行逻辑同FileInputStream.close()，故不予赘述。</p>
+<h4 id="protected-void-finalize-1"><a href="#protected-void-finalize-1" class="headerlink" title="protected void finalize()"></a>protected void finalize()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">finalize</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (fd != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (fd == FileDescriptor.out || fd == FileDescriptor.err) &#123;</span><br><span class="line">            flush();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            runningFinalize.set(Boolean.TRUE);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                close();</span><br><span class="line">            &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                runningFinalize.set(Boolean.FALSE);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;执行逻辑同FileInputStream.finalize()，故不予赘述。</p>
+<h4 id="public-final-FileDescriptor-getFD-1"><a href="#public-final-FileDescriptor-getFD-1" class="headerlink" title="public final FileDescriptor getFD()"></a>public final FileDescriptor getFD()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> FileDescriptor <span class="title">getFD</span><span class="params">()</span>  <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (fd != <span class="keyword">null</span>) <span class="keyword">return</span> fd;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> IOException();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;获取并返回一个文件描述符的引用，否则抛出一个IOException给调用方。</p>
+<h4 id="public-FileChannel-getChannel-1"><a href="#public-FileChannel-getChannel-1" class="headerlink" title="public FileChannel getChannel()"></a>public FileChannel getChannel()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> FileChannel <span class="title">getChannel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (channel == <span class="keyword">null</span>) &#123;</span><br><span class="line">            channel = FileChannelImpl.open(fd, path, <span class="keyword">false</span>, <span class="keyword">true</span>, append, <span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line">            fd.incrementAndGetUseCount();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> channel;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;获取一个文件管道。该管道可以用来完成文件复制等一系列操作。每次创建文件管道时需要维护文件描述符的信息。</p>
+<p>&emsp;</p>
+<h2 id="涉及基础知识点"><a href="#涉及基础知识点" class="headerlink" title="涉及基础知识点"></a>涉及基础知识点</h2><ol>
+<li><p>FileDescriptor:<br>&emsp;&emsp;文件描述符，简称fd。文件描述符在形式上是一个非负整数。实际上，它是一个索引值，指向内核为每一个进程所维护的该进程打开文件的记录表。操作系统使用文件描述符来指代一个打开的文件，对文件的读写操作，都需要文件描述符作为参数。当程序打开一个现有文件或者创建一个新文件时，内核向进程返回一个文件描述符。在程序设计中，一些涉及底层的程序编写往往会围绕着文件描述符展开。但是文件描述符这一概念往往只适用于UNIX、Linux这样的操作系统。</p>
+<p>&emsp;&emsp;在Unix或者Linux系统中，文件描述符标识了内核中一个特定进程正在访问的文件。当打开一个现有文件或创建一个新文件时，内核向进程返回一个文件描述符。当读、写一个文件时，将fd作为参数传送给 read 或 write。在UNIX的传统实现中，文件描述符会被加入到一个内核维护的列表中，该列表中的每个元素指向了一个文件表（file table），这个文件表中维护了当前进程中所有的被打开的文件信息，包括一个指向文件的Inode对象的指针、相关元数据，如当前文件格式、读取模式（read，write，append，read-write……）等信息。file table中的每个元素会指向一个真实文件的物理存储地址。可参考如下图1所示：</p>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1540392586/BlogImages/FileInputStream-FileOutputStream/File_table_and_inode_table.png" alt></p>
+<div align="center"><div align="center">图 - 1</div>&emsp;</div>
+
+<p>最左边为维护文件描述符的列表，其中0（标准输入）,1（标准输出）,2（标准异常输出）为标准的POSIX文件描述符。每个文件描述符会指向File table中的某个文件操作模式，多个文件描述符可以指向同一个文件操作模式。最右边维护了当前进程中打开的所有的真实文件信息，由file table中的某个元素指向其中的某个打开的文件来完成对应的文件操作。</p>
+<p>&emsp;&emsp;总结下来，fd只是一个int型的数值，用来标定一个打开的文件，类似于索引的作用。在需要操作文件时，通过fd来指向其标定的那个文件。 </p>
+</li>
+</ol>
+<p>&emsp;</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>Wikipedia. <a href="https://en.wikipedia.org/wiki/File_descriptor" target="_blank" rel="noopener">文件描述符</a> [E]</li>
+<li>木杉. <a href="http://imushan.com/2018/05/29/java/language/JDK%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB-FileDescriptor/" target="_blank" rel="noopener">JDK源码阅读-FileDescriptor</a> [E]</li>
+<li>WIKIMEDIA COMMONS. <a href="https://commons.wikimedia.org/wiki/File:File_table_and_inode_table.svg" target="_blank" rel="noopener">File table and inode table</a> [E]</li>
+<li>鸡蛋卷啊卷. <a href="https://blog.csdn.net/zhjali123/article/details/72566685" target="_blank" rel="noopener">FileDescriptor文件描述符与Linux文件系统</a>  [E]</li>
+<li>平林新袖. <a href="https://www.cnblogs.com/plxx/p/5322635.html" target="_blank" rel="noopener">FileDescriptor</a> [E]</li>
+<li>mm_hh. <a href="https://blog.csdn.net/mm_hh/article/details/71374474?utm_source=blogkpcl7" target="_blank" rel="noopener">Linux下 文件描述符（fd）与 文件指针（FILE*）</a> [E]</li>
+<li>Axtaxt. <a href="https://axtaxt.wordpress.com/2013/09/19/experimenting-with-sun-misc-iotrace/" target="_blank" rel="noopener">IO trace generation in java: experimenting with sun.misc.IoTrace</a> [E]</li>
+</ol>
+<p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-FileInputStream-FileOutputStream.html" target="_blank" title="Java I/O 09 - FileInputStream &amp; FileOutputStream">Java I/O 09 - FileInputStream &amp; FileOutputStream</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-FileInputStream-FileOutputStream.html" target="_blank" title="Java I/O 09 - FileInputStream &amp; FileOutputStream">https://marcuseddie.github.io/2018/java-FileInputStream-FileOutputStream.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2018/The-Why-of-Agile.html" class="alignleft prev" title="【译】为什么要实施敏捷"> 上一篇： 【译】为什么要实施敏捷</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2018/java-PrintStream.html" class="alignright next" title="Java I/O 08 - PrintStream"> 下一篇： Java I/O 08 - PrintStream</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

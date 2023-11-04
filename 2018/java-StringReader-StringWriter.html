@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      Java I/O 16 - StringReader &amp; StringWriter | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="StringReader和StringWriter用于对String/ StringBuffer的流操作，可以用在一些需要字符流作为参数，且内容单纯的只有String的场景中，涉及方法包括read, skip, ready, close,reset, write, append,flush。">
+<meta name="keywords" content="StringReader, StringWriter, read, skip, ready, close,reset, write, append,flush">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java I&#x2F;O 16 - StringReader &amp; StringWriter | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/java-StringReader-StringWriter.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="StringReader和StringWriter用于对String/ StringBuffer的流操作，可以用在一些需要字符流作为参数，且内容单纯的只有String的场景中，涉及方法包括read, skip, ready, close,reset, write, append,flush。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.357Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java I&#x2F;O 16 - StringReader &amp; StringWriter | Mr.Muzi">
+<meta name="twitter:description" content="StringReader和StringWriter用于对String/ StringBuffer的流操作，可以用在一些需要字符流作为参数，且内容单纯的只有String的场景中，涉及方法包括read, skip, ready, close,reset, write, append,flush。">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>Java I/O 16 - StringReader &amp; StringWriter</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-11-15" class="post-meta__date date">2018-11-15</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;2.4k&emsp;阅读时长:&nbsp;10&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.io.StringReader</strong> </em> 和 <em> <strong>java.io.StringWriter</strong> </em>的部分笔记，这两个类维护了一套对于String/ StringBuffer的流操作集合。其底层的流内容来源和最终存储位置也是String/StringBuffer而非其他第三方的输入输出流位置。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;StringReader和StringWriter的底层输入输出位置是String/StringBuffer，事实上是把String/StringBuffer当做了一个虚拟的输入输出流来对待处理而不依赖第三个真正意义上的输入输出流。所有的操作都是围绕着String/ StringBuffer进行。这两个类可以用在一些需要字符流作为参数，且内容单纯的只有String的场景中。</p>
+<p>&emsp;</p>
+<h2 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// StringReader</span></span><br><span class="line">--java.lang.Object</span><br><span class="line">  --java.io.Reader</span><br><span class="line">    --java.io.StringReader</span><br><span class="line"></span><br><span class="line"><span class="comment">// StringWriter</span></span><br><span class="line">--java.lang.Object</span><br><span class="line">  --java.io.Writer</span><br><span class="line">    --java.io.StringWriter</span><br></pre></td></tr></table></figure>
+<p>&emsp;</p>
+<h2 id="实现接口"><a href="#实现接口" class="headerlink" title="实现接口"></a>实现接口</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">类名</th>
+<th style="text-align:center">实现接口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">StringReader</td>
+<td style="text-align:center">Closeable, AutoCloseable,Readable</td>
+</tr>
+<tr>
+<td style="text-align:center">StringWriter</td>
+<td style="text-align:center">Closeable, Flushable, AutoCloseable, Appendable</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>&emsp;</p>
+<h2 id="StringReader"><a href="#StringReader" class="headerlink" title="StringReader"></a>StringReader</h2><h3 id="Constructor-Summary"><a href="#Constructor-Summary" class="headerlink" title="Constructor Summary"></a>Constructor Summary</h3><h4 id="public-StringReader-String-s"><a href="#public-StringReader-String-s" class="headerlink" title="public StringReader(String s)"></a>public StringReader(String s)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">StringReader</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.str = s;</span><br><span class="line">    <span class="keyword">this</span>.length = s.length();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个String内容的输入流，流的源头是入参字符串<strong>s</strong>。输入流的内容的长度是<strong>s</strong>的字符串长度。</p>
+<h3 id="部分方法"><a href="#部分方法" class="headerlink" title="部分方法"></a>部分方法</h3><h4 id="public-int-read"><a href="#public-int-read" class="headerlink" title="public int read()"></a>public int read()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        ensureOpen();</span><br><span class="line">        <span class="keyword">if</span> (next &gt;= length)</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> str.charAt(next++);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;读取一个字符的内容并返回。通过synchronized关键字保证了多线程环境下的线程安全。如果底层的字符串不为空，那么返回下一个字符串。如果已经到达了字符串尾部，那么就返回-1标识文件已经读取完毕。第3行代码中的ensureOpen()方法则用来判断底层的字符串是否有效。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureOpen</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (str == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"Stream closed"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;如果字符为空，那么向上抛出一个异常提示当前流已关闭。</p>
+<h4 id="public-int-read-char-cbuf-int-off-int-len"><a href="#public-int-read-char-cbuf-int-off-int-len" class="headerlink" title="public int read(char cbuf[], int off, int len)"></a>public int read(char cbuf[], int off, int len)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">(<span class="keyword">char</span> cbuf[], <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        ensureOpen();</span><br><span class="line">        <span class="keyword">if</span> ((off &lt; <span class="number">0</span>) || (off &gt; cbuf.length) || (len &lt; <span class="number">0</span>) ||</span><br><span class="line">            ((off + len) &gt; cbuf.length) || ((off + len) &lt; <span class="number">0</span>)) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IndexOutOfBoundsException();</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (len == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (next &gt;= length)</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> n = Math.min(length - next, len);</span><br><span class="line">        str.getChars(next, next + n, cbuf, off);</span><br><span class="line">        next += n;</span><br><span class="line">        <span class="keyword">return</span> n;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;从底层读取长度为len的字符内容并保存到字符数组cbuf中。通过synchronized关键字保证了多线程环境下的线程安全。第3行代码用来判断底层字符串内容是否存在且可用。第4 ~ 6行代码用来完成参数的边界校验，防止越界溢出。第10 ~ 11行代码如果已经读到了字符串尾部，那么返回-1。第12行代码用来判断当前剩余未读取的字符串长度和入参长度len之间的大小关系，如果剩余未读取的字符串长度小于len，那么剩余未读取的字符串会全部返回，否则就返回长度为len的字符串内容。第13行代码完成实际的读取操作。之后计算实际读取的字符串长度并返回。</p>
+<h4 id="public-long-skip-long-ns"><a href="#public-long-skip-long-ns" class="headerlink" title="public long skip(long ns)"></a>public long skip(long ns)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">skip</span><span class="params">(<span class="keyword">long</span> ns)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        ensureOpen();</span><br><span class="line">        <span class="keyword">if</span> (next &gt;= length)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="comment">// Bound skip by beginning and end of the source</span></span><br><span class="line">        <span class="keyword">long</span> n = Math.min(length - next, ns);</span><br><span class="line">        n = Math.max(-next, n);</span><br><span class="line">        next += n;</span><br><span class="line">        <span class="keyword">return</span> n;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;跳过流底层字符串中指定长度的字符数。下一个读取的位置会是当前next+ns位置。如果ns为负数，那么执行的实际效果是会前推到next-ns位置。通过synchronized关键字保证了多线程环境下的线程安全。第3行代码用来判断底层字符串内容是否存在且可用。第4 ~ 5行代码如果当前字符串已经到达字符串尾部（正常读取或者跳过）那么直接返回0。第7 ~ 9行代码计算实际需要跳过的字符长度，具体如下分析：</p>
+<ol>
+<li>ns &gt; 0。第7行代码会返回两个计算值的较小值作为实际跳过长度值。第8行代码由于next永远为正，所以得到的较大值是第7行代码的计算结果。第9行代码执行正数加法，计算后的next值大于计算前的next值，下一个读取位置后移：</li>
+<li>ns &lt; 0，|ns| &lt; next。第7行代码永远返回负数值ns。第8行代码由于 |ns| &lt; next，所以ns &gt; -next，所以实际返回ns。第9行代码执行负数加法，计算后的next小于计算前的next值但next依然大于0。下一个读取位置前移；</li>
+<li>ns &lt; 0，|ns| &gt; next。第7行代码永远返回负数值ns。第8行代码由于 |ns| &gt; next，所以ns &lt; -next，所以实际返回 -next。第9行代码执行负数加法，计算后的next值等于0。下一个读取位置归零到字符串第一个位置。</li>
+</ol>
+<p>最后返回实际跳过的位置，综上分析，该返回值可能为负数。</p>
+<h4 id="public-boolean-ready"><a href="#public-boolean-ready" class="headerlink" title="public boolean ready()"></a>public boolean ready()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">ready</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        ensureOpen();</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;通知方法调用方当前输入流可以对外提供数据读取操作。如果ensureOpen()没有抛出异常，那么底层字符串不为空，那么返回true表示有内容可供读取。</p>
+<h4 id="public-boolean-markSupported"><a href="#public-boolean-markSupported" class="headerlink" title="public boolean markSupported()"></a><span id="publicBooleanMarkSupported">public boolean markSupported()</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">markSupported</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;是否支持标记重读。StringReader支持标记重读，所以返回true。</p>
+<h4 id="public-void-mark-int-readAheadLimit"><a href="#public-void-mark-int-readAheadLimit" class="headerlink" title="public void mark(int readAheadLimit)"></a>public void mark(int readAheadLimit)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">mark</span><span class="params">(<span class="keyword">int</span> readAheadLimit)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (readAheadLimit &lt; <span class="number">0</span>)&#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Read-ahead limit &lt; 0"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        ensureOpen();</span><br><span class="line">        mark = next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;记录当前读取位置。该位置值会在下次调用reset()方法时重新赋值给next完成重读操作。在StringReader中流数据来自于String字符串，所以没有实际的关于mark方法调用之后可读的字符长度的限制，所以入参readAheadLimit必须大于0。</p>
+<h4 id="public-void-reset"><a href="#public-void-reset" class="headerlink" title="public void reset()"></a><span id="publicVoidReset">public void reset()</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">reset</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        ensureOpen();</span><br><span class="line">        next = mark;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;重置下一个读取位置。如果在调用该方法之前没有调用过mark()方法，mark一直保持初始值（即mark = 0）状态，那么该方法调用后下一个读取位置会回归到字符串首部。</p>
+<h4 id="public-void-close"><a href="#public-void-close" class="headerlink" title="public void close()"></a>public void close()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    str = <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;关闭流并释放占用资源。在StringReader中直接将底层字符串置为null。</p>
+<p>&emsp;</p>
+<h2 id="StringWriter"><a href="#StringWriter" class="headerlink" title="StringWriter"></a>StringWriter</h2><h3 id="Constructor-Summary-1"><a href="#Constructor-Summary-1" class="headerlink" title="Constructor Summary"></a>Constructor Summary</h3><h4 id="public-StringWriter"><a href="#public-StringWriter" class="headerlink" title="public StringWriter()"></a>public StringWriter()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">StringWriter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    buf = <span class="keyword">new</span> StringBuffer();</span><br><span class="line">    lock = buf;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个String输出流。底层输出位置是一个StringBuffer，写入的数据会存储到StringBuffer中。之所以使用StringBuffer是因为StringWriter可能用于多线程环境，而StringBuffer可以保证多线程环境下的线程安全。</p>
+<h4 id="public-StringWriter-int-initialSize"><a href="#public-StringWriter-int-initialSize" class="headerlink" title="public StringWriter(int initialSize)"></a>public StringWriter(int initialSize)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">StringWriter</span><span class="params">(<span class="keyword">int</span> initialSize)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (initialSize &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Negative buffer size"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    buf = <span class="keyword">new</span> StringBuffer(initialSize);</span><br><span class="line">    lock = buf;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个String输出流。底层输出位置是一个StringBuffer，写入的数据会存储到StringBuffer中。通过参数initialSize来指定StringBuffer的长度。</p>
+<h3 id="部分方法-1"><a href="#部分方法-1" class="headerlink" title="部分方法"></a>部分方法</h3><h4 id="public-void-write-int-c"><a href="#public-void-write-int-c" class="headerlink" title="public void write(int c)"></a><span id="publicVoidWriteIC">public void write(int c)</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">int</span> c)</span> </span>&#123;</span><br><span class="line">    buf.append((<span class="keyword">char</span>) c);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;向缓冲区buf中写入一个字符数据。</p>
+<h4 id="public-void-write-char-cbuf-int-off-int-len"><a href="#public-void-write-char-cbuf-int-off-int-len" class="headerlink" title="public void write(char cbuf[], int off, int len)"></a>public void write(char cbuf[], int off, int len)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">char</span> cbuf[], <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> ((off &lt; <span class="number">0</span>) || (off &gt; cbuf.length) || (len &lt; <span class="number">0</span>) ||</span><br><span class="line">        ((off + len) &gt; cbuf.length) || ((off + len) &lt; <span class="number">0</span>)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IndexOutOfBoundsException();</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (len == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    buf.append(cbuf, off, len);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;向缓冲区buf中写入数组cbuf中的字符数据。第2 ~ 4行代码完成入参的有效性校验，避免发生越界溢出。第8行代码则将cbuf中的内容追加到buf中。</p>
+<h4 id="public-void-write-String-str"><a href="#public-void-write-String-str" class="headerlink" title="public void write(String str)"></a>public void write(String str)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(String str)</span> </span>&#123;</span><br><span class="line">    buf.append(str);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将一个String字符串写入到缓冲区buf中。</p>
+<h4 id="public-void-write-String-str-int-off-int-len"><a href="#public-void-write-String-str-int-off-int-len" class="headerlink" title="public void write(String str, int off, int len)"></a>public void write(String str, int off, int len)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(String str, <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span>  </span>&#123;</span><br><span class="line">    buf.append(str.substring(off, off + len));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将一个String字符串写入到缓冲区buf中，由参数off指定写入的起始位置，由参数len指定实际写入的字符长度。</p>
+<h4 id="public-StringWriter-append-CharSequence-csq"><a href="#public-StringWriter-append-CharSequence-csq" class="headerlink" title="public StringWriter append(CharSequence csq)"></a>public StringWriter append(CharSequence csq)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> StringWriter <span class="title">append</span><span class="params">(CharSequence csq)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (csq == <span class="keyword">null</span>)</span><br><span class="line">        write(<span class="string">"null"</span>);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        write(csq.toString());</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将一个CharSequence对象中包含的内容写入到底层的缓冲区buf中。该方法的实际效果等同于<strong>write(String str)</strong>。</p>
+<h4 id="public-StringWriter-append-CharSequence-csq-int-start-int-end"><a href="#public-StringWriter-append-CharSequence-csq-int-start-int-end" class="headerlink" title="public StringWriter append(CharSequence csq, int start, int end)"></a>public StringWriter append(CharSequence csq, int start, int end)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> StringWriter <span class="title">append</span><span class="params">(CharSequence csq, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">    CharSequence cs = (csq == <span class="keyword">null</span> ? <span class="string">"null"</span> : csq);</span><br><span class="line">    write(cs.subSequence(start, end).toString());</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将一个CharSequence对象中从起始位置start到结束end之间的内容写入到底层输出流的缓冲区buf中。</p>
+<h4 id="public-StringWriter-append-char-c"><a href="#public-StringWriter-append-char-c" class="headerlink" title="public StringWriter append(char c)"></a>public StringWriter append(char c)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> StringWriter <span class="title">append</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">    write(c);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将一个字符写入到底层输出了的缓冲区buf中。该方法的实际效果等同于<strong>write(int c)</strong>。</p>
+<h4 id="public-String-toString"><a href="#public-String-toString" class="headerlink" title="public String toString()"></a>public String toString()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> buf.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将底层StringBuffer中的内容转换成String字符串并输出给方法调用方。</p>
+<h4 id="public-StringBuffer-getBuffer"><a href="#public-StringBuffer-getBuffer" class="headerlink" title="public StringBuffer getBuffer()"></a>public StringBuffer getBuffer()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> StringBuffer <span class="title">getBuffer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> buf;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回底层StringBuffer自身给方法调用方。</p>
+<h4 id="public-void-flush"><a href="#public-void-flush" class="headerlink" title="public void flush()"></a>public void flush()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">flush</span><span class="params">()</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将buf缓冲区中保存的数据推到底层输出流中。该方法的方法体中不含有任何代码段，因为底层输出位置就是一个StringBuffer，所以无需做任何操作。</p>
+<h4 id="public-void-close-throws-IOException"><a href="#public-void-close-throws-IOException" class="headerlink" title="public void close() throws IOException"></a>public void close() throws IOException</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;关闭当前输出流。该方法的方法体中不含有任何操作，同时该方法可以多次重复调用而不会抛出异常。</p>
+<p>&emsp;</p>
+<h2 id="涉及基础知识点"><a href="#涉及基础知识点" class="headerlink" title="涉及基础知识点"></a>涉及基础知识点</h2><ol>
+<li>NIL</li>
+</ol>
+<p>&emsp;</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>NIL</li>
+</ol>
+<p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-StringReader-StringWriter.html" target="_blank" title="Java I/O 16 - StringReader &amp; StringWriter">Java I/O 16 - StringReader &amp; StringWriter</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-StringReader-StringWriter.html" target="_blank" title="Java I/O 16 - StringReader &amp; StringWriter">https://marcuseddie.github.io/2018/java-StringReader-StringWriter.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2018/java-Collection-ArrayList.html" class="alignleft prev" title="Java Collection 03 - ArrayList"> 上一篇： Java Collection 03 - ArrayList</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2018/java-Reader-Writer.html" class="alignright next" title="Java I/O 15 - Reader &amp; Writer"> 下一篇： Java I/O 15 - Reader &amp; Writer</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

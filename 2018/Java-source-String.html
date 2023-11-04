@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      Java源码阅读笔记02 - String | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="关于String源码设计的一些学习笔记，其中涉及到了常用方法hashCode,intern等方法的设计和实现原理。除此之外，还解释了String字符串常量池，String constants pool，String的不可变性的原理以及String的拼接字符串“+”的实现原理。">
+<meta name="keywords" content="String,hashCode,intern,String 不可变性,+,字符串常量池">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java源码阅读笔记02 - String | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/Java-source-String.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="关于String源码设计的一些学习笔记，其中涉及到了常用方法hashCode,intern等方法的设计和实现原理。除此之外，还解释了String字符串常量池，String constants pool，String的不可变性的原理以及String的拼接字符串“+”的实现原理。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1534926029/BlogImages/14568162018/note_string_intern_jdk_6_model_part_1.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1534926029/BlogImages/14568162018/note_string_intern_jdk_6_model_part_2.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1534926028/BlogImages/14568162018/note_string_intern_jdk_6_model_part_3.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1534926030/BlogImages/14568162018/note_string_intern_jdk_7_model_part_1.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1534926029/BlogImages/14568162018/note_string_intern_jdk_7_model_part_2.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1534926030/BlogImages/14568162018/note_string_intern_jdk_7_model_part_3.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1534927162/BlogImages/14568162018/note_string_intern_jdk_6_model_part_11.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1534927159/BlogImages/14568162018/note_string_intern_jdk_6_model_part_12.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1534927161/BlogImages/14568162018/note_string_intern_jdk_7_model_part_11.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1534927160/BlogImages/14568162018/note_string_intern_jdk_7_model_part_12.png">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.349Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java源码阅读笔记02 - String | Mr.Muzi">
+<meta name="twitter:description" content="关于String源码设计的一些学习笔记，其中涉及到了常用方法hashCode,intern等方法的设计和实现原理。除此之外，还解释了String字符串常量池，String constants pool，String的不可变性的原理以及String的拼接字符串“+”的实现原理。">
+<meta name="twitter:image" content="https://res.cloudinary.com/jknight/image/upload/v1534926029/BlogImages/14568162018/note_string_intern_jdk_6_model_part_1.png">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>Java源码阅读笔记02 - String</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-08-16" class="post-meta__date date">2018-08-16</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;3.8k&emsp;阅读时长:&nbsp;15&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.lang.String </strong> </em> 的部分笔记，基于JDK版本<strong>1.7</strong>。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;Java语言中关于基础数据类型<strong>char</strong>的封装类型，包含了一些类型之间的字符串查找比较、相互转换封装方法，除此之外还有一些非String类型数据转换String的封装方法API供开发人员使用。</p>
+<h2 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">--java.lang.Object</span><br><span class="line">    --java.lang.String</span><br></pre></td></tr></table></figure>
+<h2 id="实现接口"><a href="#实现接口" class="headerlink" title="实现接口"></a>实现接口</h2><p>&emsp;&emsp;<strong>Serializable, CharSequence, Comparable&lt;String&gt;</strong></p>
+<h2 id="部分方法"><a href="#部分方法" class="headerlink" title="部分方法"></a>部分方法</h2><h3 id="hashCode"><a href="#hashCode" class="headerlink" title="hashCode()"></a>hashCode()</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> h = hash;</span><br><span class="line">    <span class="keyword">if</span> (h == <span class="number">0</span> &amp;&amp; value.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">char</span> val[] = value;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; value.length; i++) &#123;</span><br><span class="line">            h = <span class="number">31</span> * h + val[i];</span><br><span class="line">        &#125;</span><br><span class="line">        hash = h;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> h;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;该方法计算每个string字符串的hash值。计算过程中，代码行6-8遵循公式 <strong>s[0]*31^(n-1) + s[1]*31^(n-2) + … + s[n-1]</strong>进行计算，最终算出整个string字符串的hash值。关于计算公式中底数的选择，原作者采用<strong>31</strong>作为指数计算的底数参与计算，对于这一选择，做如下分析和讨论：</p>
+<p>&emsp;&emsp;首先，在散列表的设计中有一个概念是冲突率，也就是采用相同的散列函数对不同的数据值进行计算会获取到相同的散列值，于是这些拥有相同散列值的数据会存储在同一个散列表队列中，这样会降低散列查找时的性能。于是在设计散列函数时会尽可能的降低冲突率，使得全域数据值可以尽可能平均的散列在每个散列表中以保证查找效率。鉴于此，在设计散列函数时会考虑选择一些质数来参与计算，诸如2，31，33，37，41，43，101等，这样可以一定程度上保证数据值能均匀分布以降低冲突率（经过数学证明）。</p>
+<p>&emsp;&emsp;那么为什么会选择31参与计算而不是2或者其他质数呢？在上述公式中，我们假设n=6，那么 $ 2^{6-1} = 32 $ 得出的散列值集中在一个小的区间里，当数据量逐渐增大时，冲突率也会逐渐上升。所以不会采用2参与散列计算。同理，31，33，37，41，43，101等值与n做幂运算会得到一个相对大的散列区间。但是需要注意的是，101求出的散列区间可能会产生溢出（如果用int表示散列值的话），这样会导致数据丢失，所以101也不是一个好的选择。至于31，33，37，41，43这几个质数应该是比较合理的选择，在这里我们引用《Effective Java》中的一段话：</p>
+<blockquote>
+<p>The value 31 was chosen because it is an odd prime. If it were even and the multiplication overflowed, information would be lost, as multiplication by 2 is equivalent to shifting. The advantage of using a prime is less clear, but it is traditional. A nice property of 31 is that the multiplication can be replaced by a shift and a subtraction for better performance: <code>31 * i == (i &lt;&lt; 5) - i</code>. Modern VMs do this sort of optimization automatically. </p>
+</blockquote>
+<p>其中提及到了现代虚拟机对于 31 * i 的一个优化，因为31相对于其他质数来说可以更简单的通过移位和减法操作来实现，所以源码作者最终采用31这个质数参与散列函数的计算。</p>
+<h3 id="public-native-String-intern"><a href="#public-native-String-intern" class="headerlink" title="public native String intern()"></a>public native String intern()</h3><blockquote>
+<p>Returns a canonical representation for the string object.<br>A pool of strings, initially empty, is maintained privately by the class <code>String</code>.<br> When the intern method is invoked, if the pool already contains a string equal to this <code>String</code> object as determined by the <code>equals(Object)</code> method, then the string from the pool is returned. Otherwise, this <code>String</code> object is added to the pool and a reference to this <code>String</code> object is returned.<br> It follows that for any two strings <code>s</code> and <code>t</code>,  <code>s.intern() == t.intern()</code> is <code>true</code> if and only if <code>s.equals(t)</code> is <code>true</code>.<br> All literal strings and string-valued constant expressions are interned. String literals are defined in section 3.10.5 of the  The Java™ Language Specification.<br>Returns:<br>a string that has the same contents as this string, but is guaranteed to be from a pool of unique strings.  </p>
+</blockquote>
+<p>&emsp;&emsp;这个方法在java语言中没有对应实现，具体实现是通过其他语言在底层实现具体逻辑的。这个方法的作用是当调用intern()方法时，如果常量池中已经存在该字符串，则返回池中的字符串引用；否则将此字符串添加到常量池中，并返回字符串的引用。关于在常量池中维护字符串的具体细节，JDK1.6 和JDK1.7之间有一点差别，在1.6中，如果常量池中不存在指定的字符串，那么就实例化一个字符串，并维护到常量池中。但是在1.7中，如果常量池中不存在指定的字符串，那么就把堆内存中该字符串的引用（地址）维护到常量池中，不再单独创建新的字符串对象了。这里通过一段网络上比较流行的示例来了解和学习 intern() 这个方法在JDK1.6和1.7之间的区别（更详细的论述可参考文章《<a href="https://tech.meituan.com/in_depth_understanding_string_intern.html" target="_blank" rel="noopener">深入解析String#intern</a>》)：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">String s = <span class="keyword">new</span> String(<span class="string">"1"</span>);</span><br><span class="line">s.intern();</span><br><span class="line">String s2 = <span class="string">"1"</span>;</span><br><span class="line">System.out.println(s == s2);</span><br><span class="line"><span class="comment">//JDK1.6下打印false，JDK1.7下打印false</span></span><br><span class="line"></span><br><span class="line">String s3 = <span class="keyword">new</span> String(<span class="string">"1"</span>) + <span class="keyword">new</span> String(<span class="string">"1"</span>);</span><br><span class="line">s3.intern();</span><br><span class="line">String s4 = <span class="string">"11"</span>;</span><br><span class="line">System.out.println(s3 == s4);</span><br><span class="line"><span class="comment">//JDK1.6下打印false，JDK1.7下打印true</span></span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;图 -1 到图 - 3展示的是JDK1.6环境下代码的执行过程和数据变化。在该环境下，字符串常量池被维护在了持久区，该区域和Java堆内存是相互独立的。(在代码执行的过程中，不可避免的会生成一些辅助对象实例，这里为了简化解释，故这些辅助对象都不予展示和讨论。)</p>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1534926029/BlogImages/14568162018/note_string_intern_jdk_6_model_part_1.png" alt></p>
+<div align="center">
+<div align="center">图 - 1</div>
+&emsp;
+</div>
+
+<p>&emsp;&emsp;图 - 1展示了代码行1-4的执行过程。在代码编译阶段，常量池中便维护了字符串”1”这个值，所以常量池中会有一份”1”的引用。行1代码执行完之后，堆内存中创建了一个String对象实例，其值为1。行2代码执行后，判断常量池中是否有值为”1”的字符串，发现有，那么直接返回常量池中的引用给堆内存中实例。行3代码直接将常量池中的字符串对象赋给引用s2。</p>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1534926029/BlogImages/14568162018/note_string_intern_jdk_6_model_part_2.png" alt></p>
+<div align="center">
+<div align="center">图 - 2</div>
+&emsp;
+</div>
+
+<p>&emsp;&emsp;在代码行7执行后，则会在堆内存中创建一个String对象实例，其值为”11”。</p>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1534926028/BlogImages/14568162018/note_string_intern_jdk_6_model_part_3.png" alt></p>
+<div align="center">
+<div align="center">图 - 3</div>
+&emsp;
+</div>
+
+<p>&emsp;&emsp;在代码行8执行后，发现字符串常量池中并没有值为”11”的字符串，所以在持久区创建了一个同值的字符串。并将该字符串的地址返回给了堆内存中的obj2。代码行9执行完后，直接将s4的引用指向了字符串常量池中的字符串”11”。</p>
+<p>&emsp;&emsp;图 - 4到图 - 6展示的是JDK1.7环境下代码的执行过程和数据变化。在该环境下，字符串常量池从持久区中迁移到了堆内存中。</p>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1534926030/BlogImages/14568162018/note_string_intern_jdk_7_model_part_1.png" alt></p>
+<div align="center">
+<div align="center">图 - 4</div>
+&emsp;
+</div>
+
+<p>&emsp;&emsp;图 - 4的执行过程和图 - 1相似，在代码编译阶段维护了字符串”1”在常量池中，创建实例在堆内存中并通过intern()方法指向常量池中的同值字符串。如果是通过<strong>String str = “”</strong>的形式则直接指向字符串常量池中的同值字符串。</p>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1534926029/BlogImages/14568162018/note_string_intern_jdk_7_model_part_2.png" alt></p>
+<div align="center">
+<div align="center">图 - 5</div>
+&emsp;
+</div>
+
+<p>&emsp;&emsp;在代码行7执行后，则会在堆内存中创建一个String对象实例，其值为”11”。</p>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1534926030/BlogImages/14568162018/note_string_intern_jdk_7_model_part_3.png" alt></p>
+<div align="center">
+<div align="center">图 - 6</div>
+&emsp;
+</div>
+
+<p>&emsp;&emsp;<strong>这里期末考试会考！这里期末考试会考！这里期末考试会考！</strong>在行8代码执行完以后，不再单独创建值为”11”的字符串对象并维护到常量池中，而是直接将堆中实例obj2的地址维护到了常量池中。于是在行9代码执行完之后，最终实际指向的也是obj2。</p>
+<p>&emsp;&emsp;将上述代码中调用intern()方法做一下顺序调整，最终得到如下代码段，判定结果又会不一样，就问你意不意外，惊不惊喜！</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">String s = <span class="keyword">new</span> String(<span class="string">"1"</span>);</span><br><span class="line">String s2 = <span class="string">"1"</span>;</span><br><span class="line">s.intern();</span><br><span class="line">System.out.println(s == s2);</span><br><span class="line"><span class="comment">//JDK1.6下打印false，JDK1.7下打印false</span></span><br><span class="line"></span><br><span class="line">String s3 = <span class="keyword">new</span> String(<span class="string">"1"</span>) + <span class="keyword">new</span> String(<span class="string">"1"</span>);</span><br><span class="line">String s4 = <span class="string">"11"</span>;</span><br><span class="line">s3.intern();</span><br><span class="line">System.out.println(s3 == s4);</span><br><span class="line"><span class="comment">//JDK1.6下打印false，JDK1.7下打印false</span></span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;图 - 7到图 - 8还是先从JDK1.6环境开始说起。图 - 9到图 - 10则基于环境JDK1.7。</p>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1534927162/BlogImages/14568162018/note_string_intern_jdk_6_model_part_11.png" alt></p>
+<div align="center">
+<div align="center">图 - 7</div>
+&emsp;
+</div>
+
+<p>&emsp;&emsp;图 - 7的过程和图 -1 相似，只是行2和行3的执行顺序不一致，但是最终结果相同。</p>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1534927159/BlogImages/14568162018/note_string_intern_jdk_6_model_part_12.png" alt></p>
+<div align="center">
+<div align="center">图 - 8</div>
+&emsp;
+</div>
+
+<p>&emsp;&emsp;由于字符串”11”在编译阶段就被维护到了常量池中，所以行8直接指向了常量池中的同值字符串”11”。在行9代码执行时，由于常量池中存在同值字符串，所以直接获取其引用。</p>
+<p>&emsp;&emsp;图 - 9到图 - 10展示的是JDK1.7环境下代码的执行过程和数据变化。在该环境下，字符串常量池从持久区中迁移到了堆内存中。</p>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1534927161/BlogImages/14568162018/note_string_intern_jdk_7_model_part_11.png" alt></p>
+<div align="center">
+<div align="center">图 - 9</div>
+&emsp;
+</div>
+
+<p>&emsp;&emsp;图 - 9执行过程和图 - 7相同，这里不予赘述。</p>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1534927160/BlogImages/14568162018/note_string_intern_jdk_7_model_part_12.png" alt></p>
+<div align="center">
+<div align="center">图 - 10</div>
+&emsp;
+</div>
+
+<p>&emsp;&emsp;由于常量池中已经维护了字符串”11”，所以在行9调用intern()方法时直接获取了字符串”11”的引用。</p>
+<p>&emsp;&emsp;这里需要注意的是，只有在调用了intern()后，才会在常量池中判断并维护字符串，如果通过<strong>new</strong>的方式创建的字符串对象一直未曾调用过intern()方法，那么该对象包含的值也就不会被维护到常量池中。</p>
+<h2 id="String-不可变性"><a href="#String-不可变性" class="headerlink" title="String 不可变性"></a>String 不可变性</h2><p>&emsp;&emsp;String类型的对象一旦创建了就无法修改，这个特性称为不可变性。如下述代码声明：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">String</span></span></span><br><span class="line"><span class="class">    <span class="keyword">implements</span> <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span>, <span class="title">Comparable</span>&lt;<span class="title">String</span>&gt;, <span class="title">CharSequence</span> </span>&#123;</span><br><span class="line">    <span class="comment">/** The value is used for character storage. */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">char</span> value[];</span><br></pre></td></tr></table></figure>
+<p>作者采用关键字<strong>final</strong>来修饰String类型和value数组。对于String类型来说，final意味着String不可被继承，因此也就不会有子类会重写父类的相关方法，对内容赋值做到了有效控制。对于类中私有变量value来说，这意味着String对象一旦创建并对value数组赋值之后，不会有API去修改value数组的值。关于String的不可变性，《Java核心技术 卷I》 有一个论述：</p>
+<blockquote>
+<p>将方法或类声明为final主要目的是：确保它们不会再子类中改变语义。String类是final类，这意味着不允许任何人定义String的子类。换言之，如果有一个String的引用，它引用的一定是一个String对象，而不可能是其他类的对象。 </p>
+<p>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; ——《Java核心技术 卷 I》 </p>
+</blockquote>
+<p>&emsp;&emsp;关于String字符串，JVM为了提高性能和降低内存消耗设计了一个字符串常量池。每当创建一个字符串对象时，JVM首先会在常量池中寻找是否有已存在的具有相同内容值的字符串，如果有，就返回常量池中的引用给到对象，反之则创建一个新的字符串实例并维护到常量池中。</p>
+<p>&emsp;&emsp;关于字符串常量池，JDK1.6和JDK1.7有一些不一致的地方。如上文陈述，在1.6中，常量池被分配在了永久代中，所以在1.6环境中常量池的数量会有一个上限。这也是为什么在1.6环境中不建议使用String.intern()方法，因为这会导致OOM（Out of memory）。除此之外，在永久代中的常量池也不会参与垃圾回收过程，一旦创建便会一直存在。而在1.7中，常量池被分配在了堆内存中，鉴于此，常量池的容量通过配置<strong>-XX:StringTableSize</strong>参数得到了大幅提升。所以在1.7环境中，因为常量池被分配到了堆内存的缘故，常量池中的失效内容所占据的内存资源会被垃圾回收过程释放。</p>
+<h2 id="连接符号”-”"><a href="#连接符号”-”" class="headerlink" title="连接符号”+”"></a>连接符号”+”</h2><p>&emsp;&emsp;Java中String对象可以通过”+”来拼接两个字符串，底层原理是通过创建一个Stringbuilder实例对象来完成字符串的拼接，也就是说，通过”+”完成一次字符串拼接会产生一个Stringbuilder对象实例，该实例的值等于拼接操作执行后的预期结果，并通过Stringbuilder对象的toString方法返回执行结果。在JDK1.5之前，底层创建的是Stringbuffer对象，之所以在1.5之后采用Stringbuilder是因为Stringbuilder相对于Stringbuffer来说更有效率。相关代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 源代码如下：</span></span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">10</span>;</span><br><span class="line">        String s = <span class="string">"abc"</span>;</span><br><span class="line">        System.out.println(s + i);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//经过反编译操作后获取的底层代码段</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span> </span>&#123;    <span class="comment">//删除了默认构造函数和字节码</span></span><br><span class="line">        <span class="keyword">byte</span> byte0 = <span class="number">10</span>;      </span><br><span class="line">        String s = <span class="string">"abc"</span>;      </span><br><span class="line">        System.out.println((<span class="keyword">new</span> StringBuilder()).append(s).append(byte0).toString());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="涉及基础知识点"><a href="#涉及基础知识点" class="headerlink" title="涉及基础知识点"></a>涉及基础知识点</h2><ol>
+<li>String的初始化方式及区别：<ol>
+<li>String string = “helloworld”；<br>直接在字符串常量池中创建字符串常量并将地址赋给对象。</li>
+<li>String STR = new String(“RT”):<br>先在堆中创建对象，然后把对象引用赋给变量。</li>
+</ol>
+</li>
+<li>字符串相加：<ol>
+<li>字符串如果是变量相加，先开空间，在拼接。除非变量是用final修饰的，那么可以把用final修饰的变量视为常量处理；</li>
+<li>字符串如果是常量相加，是先加，然后在常量池找，如果有就直接返回，否则，就创建。</li>
+</ol>
+</li>
+<li><p>Java语言规范(The Java Language Specification Java SE 7 Edition)关于字符串常量的一些论述如下:</p>
+<blockquote>
+<p>Literal strings within the same class in the same package represent references to the same String object.<br>Literal strings within different classes in the same package represent references to the same String object.<br>Literal strings within different classes in different packages likewise represent references to the same String object.<br>Strings computed by constant expressions are computed at compile time and then treated as if they were literals.<br>Strings computed by concatenation at run time are newly created and therefore distinct.<br>The result of explicitly interning a computed string is the same string as any pre-existing literal string with the same contents.</p>
+</blockquote>
+<p>同一个包下同一个类中的字符串常量的引用指向同一个字符串对象；<br>同一个包下不同的类中的字符串常量的引用指向同一个字符串对象；<br>不同的包下不同的类中的字符串常量的引用仍然指向同一个字符串对象；</p>
+</li>
+</ol>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>[美] Joshua Bloch. Effective Java 2nd Edition[M]. Boston:Addison-Wesley Professional, 2008.</li>
+<li>[美] James Gosling, etc. The Java Language Specification Java SE 7 Edition[M]. Boston:Addison-Wesley Professional, 2013.</li>
+<li>coolblog. <a href="https://segmentfault.com/a/1190000010799123" target="_blank" rel="noopener">科普：为什么 String hashCode 方法选择数字31作为乘子</a>[E]</li>
+<li>ScienJus. <a href="https://blog.csdn.net/sinat_19425927/article/details/38663461" target="_blank" rel="noopener">[Java]String中“+”的实现原理及效率</a>[E]</li>
+<li>SEU_Calvin. <a href="https://blog.csdn.net/SEU_Calvin/article/details/52291082" target="_blank" rel="noopener">Java技术——你真的了解String类的intern()方法吗</a>[E]</li>
+<li>Mikhail Vorontsov. <a href="http://java-performance.info/string-intern-in-java-6-7-8/" target="_blank" rel="noopener">String.intern in Java 6, 7 and 8 – string pooling</a>[E]</li>
+<li>lumeng689. <a href="http://www.importnew.com/10756.html" target="_blank" rel="noopener">什么是字符串常量池？</a> [E]</li>
+<li>美团技术团队. <a href="https://tech.meituan.com/in_depth_understanding_string_intern.html" target="_blank" rel="noopener">深入解析String#intern</a> [E]<br>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</li>
+</ol>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/Java-source-String.html" target="_blank" title="Java源码阅读笔记02 - String">Java源码阅读笔记02 - String</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/Java-source-String.html" target="_blank" title="Java源码阅读笔记02 - String">https://marcuseddie.github.io/2018/Java-source-String.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2018/Java-source-String-StringBuilder-StringBuffer.html" class="alignleft prev" title="Java源码阅读笔记03 - 字符串三剑客"> 上一篇： Java源码阅读笔记03 - 字符串三剑客</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2018/Java-source-Integer.html" class="alignright next" title="Java源码阅读笔记01 - Integer"> 下一篇： Java源码阅读笔记01 - Integer</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

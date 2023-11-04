@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      Java Map 08 - Segment | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="Segment是ConcurrentHashMap的内部类，也是ConcurrentHashMap集合中存储键值对实体的底层数据结构.具有方法put,rehash,remove,replace,clear。">
+<meta name="keywords" content="ConcurrentHashMap,Segment,put,rehash,remove,replace,clear">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java Map 08 - Segment | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/java-Collection-Segment.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="Segment是ConcurrentHashMap的内部类，也是ConcurrentHashMap集合中存储键值对实体的底层数据结构.具有方法put,rehash,remove,replace,clear。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1545100740/BlogImages/java-collection/map/ConcurrentHashMap-Segment-demo-example.png">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.353Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java Map 08 - Segment | Mr.Muzi">
+<meta name="twitter:description" content="Segment是ConcurrentHashMap的内部类，也是ConcurrentHashMap集合中存储键值对实体的底层数据结构.具有方法put,rehash,remove,replace,clear。">
+<meta name="twitter:image" content="https://res.cloudinary.com/jknight/image/upload/v1545100740/BlogImages/java-collection/map/ConcurrentHashMap-Segment-demo-example.png">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>Java Map 08 - Segment</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-12-09" class="post-meta__date date">2018-12-09</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;2.7k&emsp;阅读时长:&nbsp;12&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java集合/">Java集合</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.util.concurrent.ConcurrentHashMap.Segment&lt;K, V&gt;</strong> </em>的部分笔记，Segment是ConcurrentHashMap的内部类，也是ConcurrentHashMap集合中存储键值对实体的底层数据结构。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;Segment是一个特殊的散列表。这个类继承了ReentrantLock，因此Segment自身具有锁和解锁的特性，可以在希望的场景中取得锁和释放锁，以此来保证多线程环境下的线程安全。</p>
+<p>&emsp;&emsp;在ConcurrentHashMap的底层是一个Segment数组，每个元素都是一个Segment节点。而每个Segment节点内部维护了一个HashEntry对象，ConcurrentHashMap中的键值对都是存储在某个具体的Segment节点的HashEntry数组内。每个线程会对一个特定的Segment元素获取锁，也就是说，不同的线程会操作不同的Segment元素。在读取元素时，不会对Segment元素加锁，只有向集合中写入数据时才会尝试获取锁。Segment结构如图1所示：</p>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1545100740/BlogImages/java-collection/map/ConcurrentHashMap-Segment-demo-example.png" alt></p>
+<div align="center">
+<div align="center">图 - 1</div>
+&emsp;
+</div>
+
+<p>&emsp;</p>
+<h2 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ConcurrentHashMap&lt;E&gt;</span></span><br><span class="line">--java.lang.Object</span><br><span class="line">  --java.util.AbstractMap&lt;K,V&gt;</span><br><span class="line">    --java.util.concurrent.ConcurrentHashMap&lt;K,V&gt;</span><br><span class="line">      --java.util.concurrent.ConcurrentHashMap.Segment&lt;K,V&gt;</span><br></pre></td></tr></table></figure>
+<p>&emsp;</p>
+<h2 id="实现接口"><a href="#实现接口" class="headerlink" title="实现接口"></a>实现接口</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>类名</th>
+<th>实现接口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Segment&lt;E, V&gt;</td>
+<td>Serializable, Lock</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>&emsp;</p>
+<h2 id="Segment"><a href="#Segment" class="headerlink" title="Segment"></a>Segment</h2><h3 id="Constructor-Summary"><a href="#Constructor-Summary" class="headerlink" title="Constructor Summary"></a>Constructor Summary</h3><h4 id="Segment-float-lf-int-threshold-HashEntry-lt-K-V-gt-tab"><a href="#Segment-float-lf-int-threshold-HashEntry-lt-K-V-gt-tab" class="headerlink" title="Segment(float lf, int threshold, HashEntry&lt;K,V&gt;[] tab)"></a>Segment(float lf, int threshold, HashEntry&lt;K,V&gt;[] tab)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Segment(<span class="keyword">float</span> lf, <span class="keyword">int</span> threshold, HashEntry&lt;K,V&gt;[] tab) &#123;</span><br><span class="line">    <span class="keyword">this</span>.loadFactor = lf;</span><br><span class="line">    <span class="keyword">this</span>.threshold = threshold;</span><br><span class="line">    <span class="keyword">this</span>.table = tab;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个空Segment实例，指定加载因子、扩容限制阈值和内部的HashEntry数组。</p>
+<h3 id="部分方法"><a href="#部分方法" class="headerlink" title="部分方法"></a>部分方法</h3><h4 id="final-V-put-K-key-int-hash-V-value-boolean-onlyIfAbsent"><a href="#final-V-put-K-key-int-hash-V-value-boolean-onlyIfAbsent" class="headerlink" title="final V put(K key, int hash, V value, boolean onlyIfAbsent)"></a>final V put(K key, int hash, V value, boolean onlyIfAbsent)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> V <span class="title">put</span><span class="params">(K key, <span class="keyword">int</span> hash, V value, <span class="keyword">boolean</span> onlyIfAbsent)</span> </span>&#123;</span><br><span class="line">    HashEntry&lt;K,V&gt; node = tryLock() ? <span class="keyword">null</span> : scanAndLockForPut(key, hash, value);</span><br><span class="line">    V oldValue;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        HashEntry&lt;K,V&gt;[] tab = table;</span><br><span class="line">        <span class="keyword">int</span> index = (tab.length - <span class="number">1</span>) &amp; hash;</span><br><span class="line">        HashEntry&lt;K,V&gt; first = entryAt(tab, index);</span><br><span class="line">        <span class="keyword">for</span> (HashEntry&lt;K,V&gt; e = first;;) &#123;</span><br><span class="line">            <span class="keyword">if</span> (e != <span class="keyword">null</span>) &#123;</span><br><span class="line">                K k;</span><br><span class="line">                <span class="keyword">if</span> ((k = e.key) == key ||</span><br><span class="line">                    (e.hash == hash &amp;&amp; key.equals(k))) &#123;</span><br><span class="line">                    oldValue = e.value;</span><br><span class="line">                    <span class="keyword">if</span> (!onlyIfAbsent) &#123;</span><br><span class="line">                        e.value = value;</span><br><span class="line">                        ++modCount;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                e = e.next;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (node != <span class="keyword">null</span>)</span><br><span class="line">                    node.setNext(first);</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                    node = <span class="keyword">new</span> HashEntry&lt;K,V&gt;(hash, key, value, first);</span><br><span class="line">                <span class="keyword">int</span> c = count + <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">if</span> (c &gt; threshold &amp;&amp; tab.length &lt; MAXIMUM_CAPACITY)</span><br><span class="line">                    rehash(node);</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                    setEntryAt(tab, index, node);</span><br><span class="line">                ++modCount;</span><br><span class="line">                count = c;</span><br><span class="line">                oldValue = <span class="keyword">null</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        unlock();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> oldValue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将key=value键值对存储到当前segment实体的HashEntry集合中。第2行代码会尝试对当前segment获取锁控制。如果成功得到了锁，那么就直接执行后续后续代码，如果当前方法被其他锁占有，那么等待，直到当前线程得到锁并返回一个node对象（有可能是其他线程插入的，也有可能是当前线程自己生成的）。</p>
+<p>&emsp;&emsp;根据hash值计算出node在当前HashEntry数组中的下标位置，如果该下标位置尚未存储HashEntry实体，且node已经生成（如果没有生成的话，第26行代码负责生成一个），那么首先通过rehash()方法判断是否需要执行扩容操作，之后将新生成的node节点存入当前segment的HashEntry数组中。如果该下标位置已经存储了HashEntry实体，那么循环遍历该链表集合，检查是否存在可以匹配key的键值对映射，如果存在，根据onlyIfAbsent字段决定是否需要替换。</p>
+<p>&emsp;&emsp;最后释放当前线程对方法的占用。</p>
+<h4 id="private-void-rehash-HashEntry-lt-K-V-gt-node"><a href="#private-void-rehash-HashEntry-lt-K-V-gt-node" class="headerlink" title="private void rehash(HashEntry&lt;K,V&gt; node)"></a>private void rehash(HashEntry&lt;K,V&gt; node)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">rehash</span><span class="params">(HashEntry&lt;K,V&gt; node)</span> </span>&#123;</span><br><span class="line">    HashEntry&lt;K,V&gt;[] oldTable = table;</span><br><span class="line">    <span class="keyword">int</span> oldCapacity = oldTable.length;</span><br><span class="line">    <span class="keyword">int</span> newCapacity = oldCapacity &lt;&lt; <span class="number">1</span>;</span><br><span class="line">    threshold = (<span class="keyword">int</span>)(newCapacity * loadFactor);</span><br><span class="line">    HashEntry&lt;K,V&gt;[] newTable =</span><br><span class="line">        (HashEntry&lt;K,V&gt;[]) <span class="keyword">new</span> HashEntry[newCapacity];</span><br><span class="line">    <span class="keyword">int</span> sizeMask = newCapacity - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; oldCapacity ; i++) &#123;</span><br><span class="line">        HashEntry&lt;K,V&gt; e = oldTable[i];</span><br><span class="line">        <span class="keyword">if</span> (e != <span class="keyword">null</span>) &#123;</span><br><span class="line">            HashEntry&lt;K,V&gt; next = e.next;</span><br><span class="line">            <span class="keyword">int</span> idx = e.hash &amp; sizeMask;</span><br><span class="line">            <span class="keyword">if</span> (next == <span class="keyword">null</span>)   <span class="comment">//  Single node on list</span></span><br><span class="line">                newTable[idx] = e;</span><br><span class="line">            <span class="keyword">else</span> &#123; <span class="comment">// Reuse consecutive sequence at same slot</span></span><br><span class="line">                HashEntry&lt;K,V&gt; lastRun = e;</span><br><span class="line">                <span class="keyword">int</span> lastIdx = idx;</span><br><span class="line">                <span class="keyword">for</span> (HashEntry&lt;K,V&gt; last = next;</span><br><span class="line">                     last != <span class="keyword">null</span>;</span><br><span class="line">                     last = last.next) &#123;</span><br><span class="line">                    <span class="keyword">int</span> k = last.hash &amp; sizeMask;</span><br><span class="line">                    <span class="keyword">if</span> (k != lastIdx) &#123;</span><br><span class="line">                        lastIdx = k;</span><br><span class="line">                        lastRun = last;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                newTable[lastIdx] = lastRun;</span><br><span class="line">                <span class="comment">// Clone remaining nodes</span></span><br><span class="line">                <span class="keyword">for</span> (HashEntry&lt;K,V&gt; p = e; p != lastRun; p = p.next) &#123;</span><br><span class="line">                    V v = p.value;</span><br><span class="line">                    <span class="keyword">int</span> h = p.hash;</span><br><span class="line">                    <span class="keyword">int</span> k = h &amp; sizeMask;</span><br><span class="line">                    HashEntry&lt;K,V&gt; n = newTable[k];</span><br><span class="line">                    newTable[k] = <span class="keyword">new</span> HashEntry&lt;K,V&gt;(h, p.key, v, n);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> nodeIndex = node.hash &amp; sizeMask; <span class="comment">// add the new node</span></span><br><span class="line">    node.setNext(newTable[nodeIndex]);</span><br><span class="line">    newTable[nodeIndex] = node;</span><br><span class="line">    table = newTable;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;对当前segment的HashEntry数组进行扩容并完成元素迁移。第3 ~ 6行代码完成新数组容量、扩容限制阈值的计算，并在第7行代码中完成数组初始化操作。</p>
+<p>&emsp;&emsp;第10 ~ 40行代码遍历整个数组，完成数组中元素向新数组的迁移。第11行代码取得数组中不为null的元素，如果该元素的链表集合中仅有一个元素，那么计算该元素在新数组的下标并保存到新数组中。反之，如果当前数组元素的链表集合中有多个元素，那么首先遍历该链表集合，找到这样的一个节点：1）该节点及之后的所有节点在新数组的同一个下标位置，2）满足条件（1）的节点是当前数组元素的链表集合中最后一个满足条件（1）的节点。之后在第29行代码会把找到的节点及其之后的所有节点移到新数组的对应下标中。第31 ~ 36行代码则遍历当前数组元素的链表集合中剩余的元素，循环计算它们在新数组的下标并保存到新数组的对应位置中。</p>
+<p>&emsp;&emsp;最后，第41 ~ 44行代码计算新元素节点在新数组中的下标位置，并把新元素节点放到该下标位置的链表集合的首部位置。</p>
+<h4 id="private-HashEntry-lt-K-V-gt-scanAndLockForPut-K-key-int-hash-V-value"><a href="#private-HashEntry-lt-K-V-gt-scanAndLockForPut-K-key-int-hash-V-value" class="headerlink" title="private HashEntry&lt;K,V&gt; scanAndLockForPut(K key, int hash, V value)"></a>private HashEntry&lt;K,V&gt; scanAndLockForPut(K key, int hash, V value)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> HashEntry&lt;K,V&gt; <span class="title">scanAndLockForPut</span><span class="params">(K key, <span class="keyword">int</span> hash, V value)</span> </span>&#123;</span><br><span class="line">    HashEntry&lt;K,V&gt; first = entryForHash(<span class="keyword">this</span>, hash);</span><br><span class="line">    HashEntry&lt;K,V&gt; e = first;</span><br><span class="line">    HashEntry&lt;K,V&gt; node = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">int</span> retries = -<span class="number">1</span>; <span class="comment">// negative while locating node</span></span><br><span class="line">    <span class="keyword">while</span> (!tryLock()) &#123;</span><br><span class="line">        HashEntry&lt;K,V&gt; f; <span class="comment">// to recheck first below</span></span><br><span class="line">        <span class="keyword">if</span> (retries &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (e == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (node == <span class="keyword">null</span>) <span class="comment">// speculatively create node</span></span><br><span class="line">                    node = <span class="keyword">new</span> HashEntry&lt;K,V&gt;(hash, key, value, <span class="keyword">null</span>);</span><br><span class="line">                retries = <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (key.equals(e.key))</span><br><span class="line">                retries = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                e = e.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (++retries &gt; MAX_SCAN_RETRIES) &#123;</span><br><span class="line">            lock();</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> ((retries &amp; <span class="number">1</span>) == <span class="number">0</span> &amp;&amp;</span><br><span class="line">                 (f = entryForHash(<span class="keyword">this</span>, hash)) != first) &#123;</span><br><span class="line">            e = first = f; <span class="comment">// re-traverse if entry changed</span></span><br><span class="line">            retries = -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> node;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;当前线程等待其他线程释放对当前segment的控制，并返回（生成）一个node节点，该node的key等于入参key，node的hash等于入参hash，node的value等于入参value。</p>
+<p>&emsp;&emsp;这个方法可能会在两个地方获得锁，第6行代码和第20行代码，在任何一个地方得到锁以后都会退出循环且得到一个node对象，最后返回到put方法。</p>
+<h4 id="private-void-scanAndLock-Object-key-int-hash"><a href="#private-void-scanAndLock-Object-key-int-hash" class="headerlink" title="private void scanAndLock(Object key, int hash)"></a>private void scanAndLock(Object key, int hash)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">scanAndLock</span><span class="params">(Object key, <span class="keyword">int</span> hash)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// similar to but simpler than scanAndLockForPut</span></span><br><span class="line">    HashEntry&lt;K,V&gt; first = entryForHash(<span class="keyword">this</span>, hash);</span><br><span class="line">    HashEntry&lt;K,V&gt; e = first;</span><br><span class="line">    <span class="keyword">int</span> retries = -<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (!tryLock()) &#123;</span><br><span class="line">        HashEntry&lt;K,V&gt; f;</span><br><span class="line">        <span class="keyword">if</span> (retries &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (e == <span class="keyword">null</span> || key.equals(e.key))</span><br><span class="line">                retries = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                e = e.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (++retries &gt; MAX_SCAN_RETRIES) &#123;</span><br><span class="line">            lock();</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> ((retries &amp; <span class="number">1</span>) == <span class="number">0</span> &amp;&amp;</span><br><span class="line">                 (f = entryForHash(<span class="keyword">this</span>, hash)) != first) &#123;</span><br><span class="line">            e = first = f;</span><br><span class="line">            retries = -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;当前线程尝试对当前segment对象获取锁控制。</p>
+<h4 id="final-V-remove-Object-key-int-hash-Object-value"><a href="#final-V-remove-Object-key-int-hash-Object-value" class="headerlink" title="final V remove(Object key, int hash, Object value)"></a>final V remove(Object key, int hash, Object value)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> V <span class="title">remove</span><span class="params">(Object key, <span class="keyword">int</span> hash, Object value)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!tryLock())</span><br><span class="line">        scanAndLock(key, hash);</span><br><span class="line">    V oldValue = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        HashEntry&lt;K,V&gt;[] tab = table;</span><br><span class="line">        <span class="keyword">int</span> index = (tab.length - <span class="number">1</span>) &amp; hash;</span><br><span class="line">        HashEntry&lt;K,V&gt; e = entryAt(tab, index);</span><br><span class="line">        HashEntry&lt;K,V&gt; pred = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">while</span> (e != <span class="keyword">null</span>) &#123;</span><br><span class="line">            K k;</span><br><span class="line">            HashEntry&lt;K,V&gt; next = e.next;</span><br><span class="line">            <span class="keyword">if</span> ((k = e.key) == key ||</span><br><span class="line">                (e.hash == hash &amp;&amp; key.equals(k))) &#123;</span><br><span class="line">                V v = e.value;</span><br><span class="line">                <span class="keyword">if</span> (value == <span class="keyword">null</span> || value == v || value.equals(v)) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (pred == <span class="keyword">null</span>)</span><br><span class="line">                        setEntryAt(tab, index, next);</span><br><span class="line">                    <span class="keyword">else</span></span><br><span class="line">                        pred.setNext(next);</span><br><span class="line">                    ++modCount;</span><br><span class="line">                    --count;</span><br><span class="line">                    oldValue = v;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            pred = e;</span><br><span class="line">            e = next;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        unlock();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> oldValue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;从当前segment实体中删除key=value映射实体。</p>
+<p>&emsp;&emsp;第2 ~ 3行代码执行时当前线程会尝试获取对方法的锁控制，如果得到锁以后，第7行代码会计算入参key=value键值对在当前segment的HashEntry数组中的下标位置。得到该下标位置处的链表集合后，遍历该集合中的每个键值对实体。如果存在key相同且value相同的记录，那么如果该节点是链表的第一个节点，那么执行第18行代码用该节点的后继节点完成删除操作。如果该节点不是链表的第一个节点，那么就采用第20行代码的方式完成删除操作。如果没有找到key相同的记录，那么向后遍历直至整个链表集合全部被遍历过。</p>
+<p>&emsp;&emsp;最后释放对方法的锁控制并返回被删除的键值对实体的value值。</p>
+<h4 id="final-boolean-replace-K-key-int-hash-V-oldValue-V-newValue"><a href="#final-boolean-replace-K-key-int-hash-V-oldValue-V-newValue" class="headerlink" title="final boolean replace(K key, int hash, V oldValue, V newValue)"></a>final boolean replace(K key, int hash, V oldValue, V newValue)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">replace</span><span class="params">(K key, <span class="keyword">int</span> hash, V oldValue, V newValue)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!tryLock())</span><br><span class="line">        scanAndLock(key, hash);</span><br><span class="line">    <span class="keyword">boolean</span> replaced = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        HashEntry&lt;K,V&gt; e;</span><br><span class="line">        <span class="keyword">for</span> (e = entryForHash(<span class="keyword">this</span>, hash); e != <span class="keyword">null</span>; e = e.next) &#123;</span><br><span class="line">            K k;</span><br><span class="line">            <span class="keyword">if</span> ((k = e.key) == key ||</span><br><span class="line">                (e.hash == hash &amp;&amp; key.equals(k))) &#123;</span><br><span class="line">                <span class="keyword">if</span> (oldValue.equals(e.value)) &#123;</span><br><span class="line">                    e.value = newValue;</span><br><span class="line">                    ++modCount;</span><br><span class="line">                    replaced = <span class="keyword">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        unlock();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> replaced;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;用key=value键值对替换当前segment实体中HashEntry数组中可以匹配的键值对实体。第2 ~ 3行代码会尝试得到锁控制。在得到锁以后，根据hash计算出键值对在HashEntry数组中的下标位置并遍历该下标处的链表集合，找到可以匹配入参key、value和hash的键值对实体。如果有，那么完成value替换。替换完成或者遍历完成后释放锁控制，返回替换结果（true - 替换完成，false - 替换未执行）。</p>
+<h4 id="final-V-replace-K-key-int-hash-V-value"><a href="#final-V-replace-K-key-int-hash-V-value" class="headerlink" title="final V replace(K key, int hash, V value)"></a>final V replace(K key, int hash, V value)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> V <span class="title">replace</span><span class="params">(K key, <span class="keyword">int</span> hash, V value)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!tryLock())</span><br><span class="line">        scanAndLock(key, hash);</span><br><span class="line">    V oldValue = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        HashEntry&lt;K,V&gt; e;</span><br><span class="line">        <span class="keyword">for</span> (e = entryForHash(<span class="keyword">this</span>, hash); e != <span class="keyword">null</span>; e = e.next) &#123;</span><br><span class="line">            K k;</span><br><span class="line">            <span class="keyword">if</span> ((k = e.key) == key ||</span><br><span class="line">                (e.hash == hash &amp;&amp; key.equals(k))) &#123;</span><br><span class="line">                oldValue = e.value;</span><br><span class="line">                e.value = value;</span><br><span class="line">                ++modCount;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        unlock();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> oldValue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;用key=value键值对替换当前segment实体中HashEntry数组中可以匹配的键值对实体。第2 ~ 3行代码会尝试得到锁控制。在得到锁以后，根据hash计算出键值对在HashEntry数组中的下标位置并遍历该下标处的链表集合，找到可以匹配入参key、value和hash的键值对实体。如果有，那么完成value替换。替换完成或者遍历完成后释放锁控制，返回被替换value值。</p>
+<h4 id="final-void-clear"><a href="#final-void-clear" class="headerlink" title="final void clear()"></a>final void clear()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">clear</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    lock();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        HashEntry&lt;K,V&gt;[] tab = table;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; tab.length ; i++)</span><br><span class="line">            setEntryAt(tab, i, <span class="keyword">null</span>);</span><br><span class="line">        ++modCount;</span><br><span class="line">        count = <span class="number">0</span>;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;清空当前Segment实体的HashEntry集合。</p>
+<p>&emsp;</p>
+<h2 id="涉及基础知识点"><a href="#涉及基础知识点" class="headerlink" title="涉及基础知识点"></a>涉及基础知识点</h2><ol>
+<li>NIL</li>
+</ol>
+<p>&emsp;</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>NIL</li>
+</ol>
+<p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-Collection-Segment.html" target="_blank" title="Java Map 08 - Segment">Java Map 08 - Segment</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-Collection-Segment.html" target="_blank" title="Java Map 08 - Segment">https://marcuseddie.github.io/2018/java-Collection-Segment.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2018/Java-source-IO-guide.html" class="alignleft prev" title="Java I/O  - JAVA I/O概述"> 上一篇： Java I/O  - JAVA I/O概述</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2018/java-Collection-ConcurrentHashMap.html" class="alignright next" title="Java Map 07 - ConcurrentHashMap"> 下一篇： Java Map 07 - ConcurrentHashMap</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

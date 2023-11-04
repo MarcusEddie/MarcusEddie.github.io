@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      K8s network之二：Kubernetes的域名解析、服务发现和外部访问 | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="&amp;emsp;&amp;emsp;在《K8s network之一：K8s网络模型与网络策略》中我们大概了解了Kubernetes的IP-Per-Pod模型和CNI接口规范，以及如何配置网络策略来限制出入Pod的流量。本篇会继续了解和学习Kubernetes集群如何向集群外提供服务访问以及服务之间如何相互发现这两个重要问题。出于篇幅考虑，相关的yaml配置不会在文章中出现，特殊情况除外，相关的yaml配置可以">
+<meta name="keywords" content="Ingress,Nginx-Ingress,Cluster DNS,CoreDNS,kube-dns,NodeLocal DNSCache,Kubernetes">
+<meta property="og:type" content="article">
+<meta property="og:title" content="K8s network之二：Kubernetes的域名解析、服务发现和外部访问 | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2021/K8s-Network-Architecture-section-two.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;在《K8s network之一：K8s网络模型与网络策略》中我们大概了解了Kubernetes的IP-Per-Pod模型和CNI接口规范，以及如何配置网络策略来限制出入Pod的流量。本篇会继续了解和学习Kubernetes集群如何向集群外提供服务访问以及服务之间如何相互发现这两个重要问题。出于篇幅考虑，相关的yaml配置不会在文章中出现，特殊情况除外，相关的yaml配置可以">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1623922539/BlogImages/CloudSerials/Ingress-demo.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1623807541/BlogImages/CloudSerials/Ingress-controller-sync-arch.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1623807178/BlogImages/CloudSerials/Nginx-HAProxy-Traefik-compare.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1623807878/BlogImages/CloudSerials/Nginx-Ingress-sync-workflow-arch.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1623481973/BlogImages/CloudSerials/Ingress-Workflow-General.webp">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1623565544/BlogImages/CloudSerials/Ingress-controller-alb-to-pod.webp">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1623567520/BlogImages/CloudSerials/Ingress-controller-alb-to-nodeport.webp">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1623563636/BlogImages/CloudSerials/Ingress-in-cluster-mode.webp">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1623760005/BlogImages/CloudSerials/coredns-general-arch.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1623760583/BlogImages/CloudSerials/kubedns-general-arch.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1623851508/BlogImages/CloudSerials/coredns-corefile-demo.webp">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1623912290/BlogImages/CloudSerials/nodelocal-dns-cache-arch.png">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.353Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="K8s network之二：Kubernetes的域名解析、服务发现和外部访问 | Mr.Muzi">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;在《K8s network之一：K8s网络模型与网络策略》中我们大概了解了Kubernetes的IP-Per-Pod模型和CNI接口规范，以及如何配置网络策略来限制出入Pod的流量。本篇会继续了解和学习Kubernetes集群如何向集群外提供服务访问以及服务之间如何相互发现这两个重要问题。出于篇幅考虑，相关的yaml配置不会在文章中出现，特殊情况除外，相关的yaml配置可以">
+<meta name="twitter:image" content="https://res.cloudinary.com/jknight/image/upload/v1623922539/BlogImages/CloudSerials/Ingress-demo.png">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>K8s network之二：Kubernetes的域名解析、服务发现和外部访问</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2021-04-29" class="post-meta__date date">2021-04-29</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;8.4k&emsp;阅读时长:&nbsp;33&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/Cloud-Computing/">Cloud Computing</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/CoreDNS/">CoreDNS</a>, <a class="tags-link" href="/tags/Ingress/">Ingress</a>, <a class="tags-link" href="/tags/Kubernetes/">Kubernetes</a>, <a class="tags-link" href="/tags/network/">network</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;在《<a href="/2021/K8s-Network-Architecture-section-one.html">K8s network之一：K8s网络模型与网络策略</a>》中我们大概了解了Kubernetes的<strong>IP-Per-Pod</strong>模型和CNI接口规范，以及如何配置网络策略来限制出入Pod的流量。本篇会继续了解和学习Kubernetes集群如何向集群外提供服务访问以及服务之间如何相互发现这两个重要问题。出于篇幅考虑，相关的yaml配置不会在文章中出现，特殊情况除外，相关的yaml配置可以参考<a href="https://kubernetes.io/" target="_blank" rel="noopener">Kubernetes</a>官方文档。</p>
+<a id="more"></a>
+<p>&emsp;&emsp;<a href="/2021/K8s-Network-Architecture-section-one.html">1. K8s network之一：K8s网络模型与网络策略</a></p>
+<p>&emsp;&emsp;<a href="/404.html">3.Linux网络在Kubernetes集群中的应用</a>  </p>
+<p>&emsp;&emsp;<a href="/2021/K8s-Network-Architecture-section-four.html">4.K8s network之四：Kubernetes集群通信的实现原理</a> </p>
+<p>&emsp;&emsp;<a href="/2021/K8s-Network-Architecture-section-five.html">5.K8s network之五：Kubernetes集群Pod和Service之间通信的实现原理</a> </p>
+<h2 id="集群边界路由器Ingress"><a href="#集群边界路由器Ingress" class="headerlink" title="集群边界路由器Ingress"></a>集群边界路由器Ingress</h2><p>&emsp;&emsp;Kubernetes集群内部默认通过Service提供服务，通过Kube-proxy实现Service和Pod之间的负载均衡和转发功能。如果需要将服务暴露到集群外部，可以使用类型为<strong>NodePort</strong>和<strong>LoadBalancer</strong>的Service来对外提供服务，此外，你也可以使用Ingress来履行类型为<strong>NodePort</strong>和<strong>LoadBalancer</strong>的Service所承担的职责，相较于Service而言，使用Ingress暴露服务会更便利、更有优势。</p>
+<p>&emsp;&emsp;<a href="https://kubernetes.io/docs/concepts/services-networking/ingress/" target="_blank" rel="noopener">Ingress</a>专注于集群服务的对外暴露、负载均衡、L7转发、基于名称的virtual hosting等职责，它暴露了从集群外部到内部服务之间的HTTP/HTTPS路由，通过一个IP地址就可以暴露多个服务到集群外部，流量路由由在Ingress资源文件中定义的规则决定。需要注意的是，Ingress资源对象仅仅是转发规则的集合，并不负责具体功能的执行，要想真正完成对应的功能，需要Ingress控制器的加入。当使用Ingress进行负载分发时，Ingress 控制器基于Ingress规则会跳过Kube-Proxy直接将客户端请求直接转发到Service所属的某个Pod上。如果Ingress 控制器提供的是对外服务，则其实质就是一个边界路由器。</p>
+<div style="text-align: center; width: 100%;">
+<img src="https://res.cloudinary.com/jknight/image/upload/v1623922539/BlogImages/CloudSerials/Ingress-demo.png" style="margin: 0 auto;">
+</div>
+<div align="center">
+    <div align="center">图 - 1 Ingress 工作示例<sup id="fnref:1" style="font-size:80%;line-height:80%;"><a href="#fn:1" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[1]</span></a></sup></div>
+&emsp;
+</div>
+
+<p>&emsp;&emsp;目前Kubernetes官方提供了<a href="https://github.com/kubernetes-sigs/aws-load-balancer-controller#readme" target="_blank" rel="noopener">AWS</a>, <a href="https://git.k8s.io/ingress-gce/README.md#readme" target="_blank" rel="noopener">GCE</a>, 和<a href="https://git.k8s.io/ingress-nginx/README.md#readme" target="_blank" rel="noopener">ingress-nginx</a> 控制器三种类型供用户根据自己的的实际情况进行选择，也正是因为这个原因，Ingress控制器不会像其他控制器那样随集群自动开启。换句话说，Ingress控制器不是kube-controller-manager的组成部分，它仅仅是Kubernetes集群的一个附件，需要在集群上单独部署。如果这三种实现方案无法满足需要，还有诸多第三方开源产品提供了对Ingress控制器的个性化实现，常见的产品包括但不限于可以配置<a href="https://docs.microsoft.com/azure/application-gateway/overview" target="_blank" rel="noopener">Azure 应用网关</a>的<a href="https://azure.github.io/application-gateway-kubernetes-ingress/" target="_blank" rel="noopener">AKS Application Gateway Ingress Controller</a>、适用于<a href="https://www.haproxy.org/#desc" target="_blank" rel="noopener">HAProxy</a>的<a href="https://haproxy-ingress.github.io/" target="_blank" rel="noopener">HAProxy Ingress</a>、<a href="https://github.com/haproxytech/kubernetes-ingress#readme" target="_blank" rel="noopener">HAProxy Ingress Controller for Kubernetes</a>、<a href="https://appscode.com/products/voyager" target="_blank" rel="noopener">Voyager</a>、适用于<a href="https://traefik.io/traefik/" target="_blank" rel="noopener">Traefik</a>的<a href="https://doc.traefik.io/traefik/providers/kubernetes-ingress/" target="_blank" rel="noopener">Traefik Kubernetes Ingress provider</a>、适用于<a href="https://istio.io/" target="_blank" rel="noopener">Istio</a>的<a href="https://istio.io/latest/docs/tasks/traffic-management/ingress/kubernetes-ingress/" target="_blank" rel="noopener">Istio Ingress</a>、可以配置F5 BIG-IP 虚拟服务的<a href="https://clouddocs.f5.com/containers/latest/userguide/kubernetes/" target="_blank" rel="noopener">F5 BIG-IP Container Ingress Services for Kubernetes</a>、借助 <a href="https://avinetworks.com/" target="_blank" rel="noopener">VMware NSX Advanced Load Balancer</a>提供L4-L7层负载均衡的<a href="https://github.com/vmware/load-balancer-and-ingress-services-for-kubernetes" target="_blank" rel="noopener">Avi Kubernetes Operator</a>等，实际上可供用户选择的产品还是非常丰富的。</p>
+<p>&emsp;&emsp;传统的反向代理（例如Nginx和HAProxy）对服务的动态变化是带有滞后性的，也就是说服务发生变更后，反向代理可能会需要一些时间来改变配置和重新加载。在微服务的开发模式下，这个问题会进一步放大，影响了微服务效能的最大化。Ingress控制器的出现使得这个问题得到了极大改善，它不仅继承了反向代理的职能，还可以通过关注服务注册、编排随时感知后端服务的变更，将服务变更同步到负载均衡器的配置中，如有必要甚至自动重新热加载。这整个过程对用户来说是透明的，整个同步和热加载期间服务也不会停止对外提供服务。以Kubernetes维护的<a href="https://github.com/ kubernetes/ingress-nginx" target="_blank" rel="noopener">ingress-nginx控制器</a>为例，它以Kubernetes集群和负载均衡器之间的适配器的身份发挥职能，不仅要与Kubernetes集群交互，还要根据需要对Nginx配置进行热更新和重载。而<a href="https://traefik.io" target="_blank" rel="noopener">Traefik</a>在设计之初就坚持了云原生的思想，它在提供反向代理职能的同时，原生支持Kubernetes的Ingress，可以感知集群服务的变化并进行更新。</p>
+<div style="text-align: center; width: 100%;">
+<img src="https://res.cloudinary.com/jknight/image/upload/v1623807541/BlogImages/CloudSerials/Ingress-controller-sync-arch.png" style="margin: 0 auto;">
+</div>
+<div align="center">
+    <div align="center">图 - 2 Ingress控制器同步服务变更架构</div>
+&emsp;
+</div>
+
+<p>Nginx、HAProxy、Traefik三种方案的特点如表1所示：</p>
+<div style="text-align: left; width: 100%;">
+    &emsp;&emsp;&emsp;表 - 1：Nginx、HAProxy、Traefik特点和优势
+    <div style="text-align: center; width: 100%;">
+<img src="https://res.cloudinary.com/jknight/image/upload/v1623807178/BlogImages/CloudSerials/Nginx-HAProxy-Traefik-compare.png" style="margin: 0 auto;">
+</div></div>
+
+<p>&emsp;&emsp;以Kubernetes官方维护的ingress-nginx为例，ingress-nginx借助于三个组件完成Ingress的职责：控制器NginxController、协程Store和队列SyncQueue，其整体工作模式架构图如图所示：</p>
+<div style="text-align: center; width: 100%;">
+<img src="https://res.cloudinary.com/jknight/image/upload/v1623807878/BlogImages/CloudSerials/Nginx-Ingress-sync-workflow-arch.png" style="margin: 0 auto;">
+</div>
+<div align="center">
+    <div align="center">图 - 3 Nginx-Ingress配置更新工作流程<sup id="fnref:2" style="font-size:80%;line-height:80%;"><a href="#fn:2" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[2]</span></a></sup></div>
+&emsp;
+</div>
+
+<p>&emsp;&emsp;Store监控Kubernetes APIServer的运行状态，收集服务资源的变化信息，然后会将这些变化写入一个updateChannel。NginxController会将写入的更新事件同步到队列syncQueue中。协程SyncQueue从syncQueue中取出更新任务并生成新的nginx配置数据，并根据更新的性质决定是否重载nginx配置，最后构建POST数据通知本地Lua Server执行配置的动态更新操作。</p>
+<p>&emsp;&emsp;前面提到Ingress的存在会使得Kube-Proxy失去作用，实际是因为Ingress控制器会从Service所属的EndPoints集合中选择一个Pod，并将请求直接发送到当前被选中的Pod上。换句话说，请求不再经过Service层面即可到达Pod上，只是借助Service所掌握的endpoints信息选择一个Pod而已。但是如果使用Ingress以应用负载器的身份作用于Node Port上时，还是需要Kube-Proxy将HTTP请求转发到某个Pod上。这整个过程的执行过程如图4所示：</p>
+<div style="text-align: center; width: 100%;">
+<img src="https://res.cloudinary.com/jknight/image/upload/v1623481973/BlogImages/CloudSerials/Ingress-Workflow-General.webp" style="margin: 0 auto;">
+</div>
+<div align="center">
+  <div align="center"><br>图 - 4 Ingress工作流程</div>
+&emsp;
+</div>
+<div style="text-align: center; width: 100%;">
+<img src="https://res.cloudinary.com/jknight/image/upload/v1623565544/BlogImages/CloudSerials/Ingress-controller-alb-to-pod.webp" style="margin: 0 auto;">
+</div>
+<div align="center">
+    <div align="center"><br>图 - 5 Ingress以应用负载均衡器（ALB）直接作用于Pod上</div>
+&emsp;
+</div>
+
+
+<p>&emsp;&emsp;在某些场景下，Ingress控制器可以作用于NodePort上。这种场景下，Ingress控制器根据Ingress配置决定由哪个服务来处理当前的HTTP请求，并将请求转发到一个NodePort上，由该节点的Kube-Proxy完成到后端Pod的转发工作。</p>
+<div style="text-align: center; width: 100%;">
+<img src="https://res.cloudinary.com/jknight/image/upload/v1623567520/BlogImages/CloudSerials/Ingress-controller-alb-to-nodeport.webp" style="margin: 0 auto;">
+</div>
+<div align="center">
+    <div align="center"><br>图 - 6 Ingress以应用负载均衡器（ALB）直接作用于NodePort上</div>
+&emsp;
+</div>
+
+
+<p>&emsp;&emsp;在一些产品实现中，Ingress控制器也可以以网络负载均衡器的身份在OSI第4层发挥作用。在这种应用模式下，Ingress以服务的方式对外集群外暴露，同时配置外部网络负载均衡器（Network Load Balancer，NLB），接入所有来自NLB的流量，之后根据Ingress配置将HTTP请求直接转发到某个Pod上，这种场景同样不需要Kube-Proxy的参与。如图6所示：</p>
+<div style="text-align: center; width: 100%;">
+<img src="https://res.cloudinary.com/jknight/image/upload/v1623563636/BlogImages/CloudSerials/Ingress-in-cluster-mode.webp" style="margin: 0 auto;">
+</div>
+<div align="center">
+    <div align="center"><br>图 - 7 Ingress以网络负载均衡器的身份工作</div>
+&emsp;
+</div>
+
+<p>&emsp;&emsp;有了Ingress，我们可以在对外提供服务的同时满足Service无法提供的诸多特性。你可以根据二者的特性在实际使用过程中进行选择来更好的满足需要。这里对二者进行了一个简单的比较：</p>
+<ul>
+<li>二者流量方向不同。Kube-Proxy主导下的Service专注的是出站流量，Ingress关注的入站流量（出站、入站指的是出入Pod）</li>
+<li>二者在OSI模型中位置不同。Service工作在OSI模型4层，而Ingress工作在7层。针对Ingress控制器的不同实现，有的产品除了7层外还可以根据需要在4层发挥作用</li>
+<li>二者功能存在差异。Service无法提供诸如HTTP路由、URL转发等功能，而Ingress提供了负载平衡器的典型特性：HTTP路由、黏性会话、SSL终止、SSL直通、TCP和UDP负载平衡等</li>
+<li>二者服务对外暴露实现方案不同。多个Service对外暴露需要多个相互独立的公网IP地址和端口，Ingress可以在一个公网IP地址上完成对多个服务的暴露和路由功能。</li>
+</ul>
+<h2 id="域名解析和服务发现"><a href="#域名解析和服务发现" class="headerlink" title="域名解析和服务发现"></a>域名解析和服务发现</h2><p>&emsp;&emsp;Kubernetes是可以支持IP地址加端口的形式来完成相互通信和访问的，但是这样会带来一个问题，Kubernetes内部Pod和Service的迭代速度是比较高的，每次迭代都可能导致Pod和Service的IP地址和端口发生变化。但是Service名字等一些标识信息是不会经常变动的，所以Kubernetes更推荐通过Service的名字来访问服务。这就需要一个高效可靠的服务发现机制来支持借助Service名字完成服务访问的功能。</p>
+<p>&emsp;&emsp;服务发现的基本实现思想一般是事先部署好一个网络位置稳定的服务注册中心，由服务提供方向注册中心上报自己的相关信息，同时还要及时的向注册中心同步自己的状态变更。服务请求方在发起服务请求时会通过注册中心获取对应的服务提供方的相关信息，从而与提供方建立连接请求服务。根据发现过程的实现方式，服务发现可分为两种类型：</p>
+<ul>
+<li>客户端发现。客户端自身到注册中心查询其依赖服务的相关信息，因此客户端需要实现一套服务发现程序和发现逻辑</li>
+<li>服务端发现。服务请求方将请求发往一个独立的中央路由器或者负载均衡器的组件，这个中央路由器或者负载均衡器负责到注册中心查询服务提供方的相关信息并将客户端请求转发到对应的服务提供方</li>
+</ul>
+<p>&emsp;&emsp;服务发现和域名（名称）解析是Kubernetes的基础服务之一。Kubernetes集群上的每个Service资源对象在创建时都会被自动委派一个格式为<strong>&lt;service&gt;.&lt;ns&gt;.svc.&lt;zone&gt;</strong>格式的名称，并由ClusterDNS为该名称自动生成资源记录，其中，service、ns、zone分别标识服务的名称、命名空间和集群域名。无论具体采用哪种实现方案，每个Service对象都会拥有如下3种类型的DNS资源记录。</p>
+<ol>
+<li><p>普通Service对象</p>
+<ol>
+<li><p>A/AAAA记录</p>
+<p>如果是Service的Cluster IP是IPv4地址，会生成一条如下格式的记录：</p>
+<p>&lt;service&gt;.&lt;ns&gt;.svc.&lt;zone&gt;. &lt;ttl&gt; IN A &lt;cluster-ip&gt;</p>
+<p>如果是Service的Cluster IP是IPv6地址，会生成一条如下格式的记录：</p>
+<p>&lt;service&gt;.&lt;ns&gt;.svc.&lt;zone&gt;. &lt;ttl&gt; IN AAAA &lt;cluster-ip&gt;</p>
+<p>上述格式中，&lt;service&gt;指的是Service的名称，&lt;ns&gt;为命名空间，&lt;zone&gt;为集群域名，&lt;ttl&gt;为DNS记录的存活时间，&lt;cluster-ip&gt;为Service的Cluster IP</p>
+</li>
+<li><p>如果存在被定义了名称的端口，那么就为这个端口生成一条SRV记录。未命名的端口则不会有该记录。</p>
+<p>_&lt;port&gt;._&lt;proto&gt;.&lt;service&gt;.&lt;ns&gt;.svc.&lt;zone&gt;. &lt;ttl&gt; IN SRV &lt;weight&gt; &lt;priority&gt; &lt;port-number&gt; &lt;service&gt;.&lt;ns&gt;.svc.&lt;zone&gt;.</p>
+<p>上述格式中，_&lt;port&gt;为端口名称，_&lt;proto&gt;为端口遵循的协议，&lt;service&gt;为服务名称，&lt;ns&gt;为命名空间，&lt;zone&gt;为集群域名，&lt;ttl&gt;为DNS记录的存活时间，&lt;priority&gt;为目标域名的优先级，值越小越优先，&lt;weight&gt;为相同优先级记录的相对权重，值越大越优先 ，&lt;port-number&gt;为端口号。当有多个server提供服务时，通过priority和weight可以设置由哪个server优先提供服务。换句话，哪个server可以接受并处理更多的请求。如果一个server的priority值越小，那么这个server会接受更多的流量请求。如果几个server的priority值相同，那么server的weight值越高，这个server就会接受更多的流量请求。这两个值看似作用相同，实际上还是有点区别的：在判定由哪个server来处理请求时，会先使用priority进行判定，如果判定成功，那么不论weight值如何，都不会影响判定结果。但如果使用priority无法判定出一个server，此时weight就会介入判定过程。关于&lt;priority&gt;和&lt;weight&gt;的详细定义，可浏览<a href="https://www.rfc-editor.org/rfc/pdfrfc/rfc2782.txt.pdf" target="_blank" rel="noopener">RFC 2782</a>。</p>
+</li>
+<li><p>针对为每个Service分配的Cluster IP，会生成一条PTR记录。格式如下：</p>
+<p>如果Cluster IP为IPv4版本：</p>
+<p>&lt;D&gt;.&lt;C&gt;.&lt;B&gt;.&lt;A&gt;.in-addr.arpa. &lt;ttl&gt; IN PTR &lt;service&gt;.&lt;ns&gt;.svc.&lt;zone&gt;.</p>
+<p>如果Cluster IP为IPv6版本a1a2a3a4:b1b2b3b4:c1c2c3c4:d1d2d3d4:e1e2e3e4:f1f2f3f4:g1g2g3g4:h1h2h3h4：</p>
+<p>h4.h3.h2.h1.g4.g3.g2.g1.f4.f3.f2.f1.e4.e3.e2.e1.d4.d3.d2.d1.c4.c3.c2.c1.b4.b3.b2.b1.a4.a3.a2.a1.ip6.arpa &lt;ttl&gt; IN PTR &lt;service&gt;.&lt;ns&gt;.svc.&lt;zone&gt;.</p>
+</li>
+</ol>
+</li>
+<li><p>Headless Service对象</p>
+<ol>
+<li><p>A/AAAA记录</p>
+<p>如果Endpoints的IP是IPv4地址，会生成一条如下记录：</p>
+<p>&lt;service&gt;.&lt;ns&gt;.svc.&lt;zone&gt;. &lt;ttl&gt; IN A &lt;endpoint-ip&gt;</p>
+<p>上述格式中，&lt;service&gt;指的是Service的名称，&lt;ns&gt;为命名空间，&lt;zone&gt;为集群域名，&lt;ttl&gt;为DNS记录的存活时间，&lt;endpoint-ip&gt;为endpoint的IP地址</p>
+<p>如果Endpoints的IP是IPv6地址，会生成一条如下记录：</p>
+<p>&lt;service&gt;.&lt;ns&gt;.svc.&lt;zone&gt;. &lt;ttl&gt; IN AAAA &lt;endpoint-ip&gt;</p>
+<p>如果Endpoints不仅有IPv4的endpoint-ip，还有域名，那么记录格式如下：</p>
+<p>&lt;hostname&gt;.&lt;service&gt;.&lt;ns&gt;.svc.&lt;zone&gt;. &lt;ttl&gt; IN A &lt;endpoint-ip&gt;</p>
+<p>如果Endpoints不仅有IPv6的endpoint-ip，还有域名，那么记录格式如下：</p>
+<p>&lt;hostname&gt;.&lt;service&gt;.&lt;ns&gt;.svc.&lt;zone&gt;. &lt;ttl&gt; IN AAAA &lt;endpoint-ip&gt;</p>
+</li>
+<li><p>同普通Service一样，如果存在被定义了名称的端口，那么就为这个端口生成一条SRV记录。未命名的端口则不会有该记录。</p>
+<p>_&lt;port&gt;._&lt;proto&gt;.&lt;service&gt;.&lt;ns&gt;.svc.&lt;zone&gt;. &lt;ttl&gt; IN SRV &lt;weight&gt; &lt;priority&gt; &lt;port-number&gt; &lt;hostname&gt;.&lt;service&gt;.&lt;ns&gt;.svc.&lt;zone&gt;.</p>
+</li>
+<li><p>给定一个分配了域名和IP地址的endpoint，会有一条PTR记录，格式如下：</p>
+<p>如果IP地址为IPv4格式&lt;a&gt;.&lt;b&gt;.&lt;c&gt;.&lt;d&gt;：</p>
+<p>&lt;d&gt;.&lt;c&gt;.&lt;b&gt;.&lt;a&gt;.in-addr.arpa. &lt;ttl&gt; IN PTR &lt;hostname&gt;.&lt;service&gt;.&lt;ns&gt;.svc.&lt;zone&gt;.</p>
+<p>如果IP地址为IPv6格式&lt;a1a2a3a4:b1b2b3b4:c1c2c3c4:d1d2d3d4:e1e2e3e4:f1f2f3f4:g1g2g3g4:h1h2h3h4&gt;：</p>
+<p>h4.h3.h2.h1.g4.g3.g2.g1.f4.f3.f2.f1.e4.e3.e2.e1.d4.d3.d2.d1.c4.c3.c2.c1.b4.b3.b2.b1.a4.a3.a2.a1.ip6.arpa &lt;ttl&gt; IN PTR &lt;hostname&gt;.&lt;service&gt;.&lt;ns&gt;.svc.&lt;zone&gt;.</p>
+</li>
+</ol>
+</li>
+<li><p>外部服务</p>
+<p>如果一个服务被分配了一个外部服务名称，那么会生成一条CNAME记录。格式如下：</p>
+<p>&lt;service&gt;.&lt;ns&gt;.svc.&lt;zone&gt;. &lt;ttl&gt; IN CNAME &lt;extname&gt;.</p>
+<p>需要注意的是，IPv4和IPv6地址的CNAME记录的格式是一致，需要在查询和解析的时候指明IP地址的版本号：</p>
+<p><strong>foo.default.svc.cluster.local. IN A</strong> 会尝试解析域名并得到一条IPv4格式的响应：</p>
+<p>​    - foo.default.svc.cluster.local. 10 IN CNAME www.example.com.<br>​    - www.example.com. 28715 IN A 192.0.2.53</p>
+<p><strong>foo.default.svc.cluster.local. IN AAAA</strong> 则会尝试解析域名并得到一条IPv6格式的响应：</p>
+<p>​    - foo.default.svc.cluster.local. 10 IN CNAME www.example.com.<br>​    - www.example.com. 28715 IN AAAA 2001:db8::1</p>
+</li>
+<li><p>Pod</p>
+<p>在Kubernetes中，Pod也会执行DNS记录的插入和维护工作。如果要为Pod生成一条DNS记录，则其格式如下：</p>
+<p>&lt;pod-ip-address&gt;.&lt;my-namespace&gt;.pod.&lt;cluster-domain.example&gt;</p>
+<p>例如，给定一个在“dns-test”命名空间里的IP地址为172.172.0.3的Pod，这个Pod所在集群的域名是cluster.dns.test.local，那么生成的记录如下：</p>
+<p>172-172-0-3.dnsTest.pod.cluster.dns.test.local</p>
+<p>如果Pod是被deployment或者通过Service暴露的daemonSet创建的，那么其对应的DNS记录格式如下：</p>
+<p>&lt;pod-ip-address&gt;.&lt;deployment-name&gt;.&lt;my-namespace&gt;.svc.&lt;cluster-domain.example&gt;</p>
+</li>
+</ol>
+<h3 id="集群内DNS"><a href="#集群内DNS" class="headerlink" title="集群内DNS"></a>集群内DNS</h3><p>&emsp;&emsp;在Kubernetes集群内，DNS作为系统级服务，主要用于解析集群内各个Service的服务名，完成从服务名到对应的Cluster IP的解析，因此需要在集群内设置一个相对固定的网络IP地址，还要保证这个IP不能和真实的DNS服务器发生冲突。可以在每台Node的Kubelet启动参数上指定<strong>—cluster-dns=X.X.X.X —cluster-domain= cluster.local</strong>来通知节点内每个Pod关于DNS服务的具体信息，这些信息会在容器的配置文件<strong>/etc/resolv.conf</strong>中得以体现。接下来就需要通过插件来启动集群内的DNS服务了，Kubernetes的DNS服务提供产品也从v1.3之间的SkyDNS、v1.3之后的kube-dns过渡到了v1.10之后的CoreDNS，同时在Kubernetes的v1.21版本中，官方已经停止了对kube-dns的支持。<a href="https://coredns.io" target="_blank" rel="noopener">CoreDNS</a>是CoreOS公司用Go语言开发的Kubernetes DNS服务框架，在Kubernetes v1.10版本中作为beta版集群DNS服务，希望可以逐步替代kube-dns服务。CoreDNS具有高性能、非常灵活、可扩展的插件式模型，各种插件根据请求提供不同的操作，例如日志记录、重定向、自定义DNS记录等。CoreDNS解决了kube-dns的一些问题，例如dnsmasq的安全漏洞、externalName不能使用stubDomains设置，等等。CoreDNS的一般架构如图8所示：</p>
+<div style="text-align: center; width: 100%;">
+<img src="https://res.cloudinary.com/jknight/image/upload/v1623760005/BlogImages/CloudSerials/coredns-general-arch.png" style="margin: 0 auto;">
+</div>
+<div align="center">
+    <div align="center">图 - 8 CoreDNS一般架构</div>
+&emsp;
+</div>
+
+
+<p>&emsp;&emsp;相较于kube-dns，CoreDNS只用一个容器就完成了DNS服务的所有工作，在可用性和效率上会比kube-dns优秀很多。kube-dns中，kubedns用于监控Service和endpoints的变更并建立和更新DNS记录，并将相关记录保存在内存中，dnsmasq则提供具体的DNS解析服务，数据均来自kubedns。sidecar则负责kubedns和dnsmasq的健康状态监测。</p>
+<div style="text-align: center; width: 100%;">
+<img src="https://res.cloudinary.com/jknight/image/upload/v1623760583/BlogImages/CloudSerials/kubedns-general-arch.png" style="margin: 0 auto;">
+</div>
+<div align="center">
+    <div align="center">图 - 9 kube-dns一般架构</div>
+&emsp;
+</div>
+
+
+
+<p>&emsp;&emsp;CoreDNS服务的相关配置都在corefile文件中得到体现，并且向用户提供了一种简单易懂的DSL来定义满足用户需求的DNS服务实现。DSL的具体语法结构如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">label &#123;</span><br><span class="line">		definition</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//如果不需要换行，那么可以考虑用空格</span><br><span class="line">label1 label2 &#123;</span><br><span class="line">		definition</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//如果需要换行，那么就需要逗号分隔。</span><br><span class="line">//可以只在每行的最后一个label后面加一个逗号，但是不推荐。</span><br><span class="line">label1, label2,</span><br><span class="line">label3, label4,</span><br><span class="line">label5 &#123;</span><br><span class="line">		definition</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在DSL的支持下，corefile的典型格式如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//ZONE 定义server负责的zone</span><br><span class="line">//PORT 定义server监听的端口，不填则默认监听53号</span><br><span class="line">//PLUGIN 定义server要加载的插件，插件可以按需填写参数</span><br><span class="line">ZONE:[PORT] &#123;</span><br><span class="line">	[PLUGIN]</span><br><span class="line">  [PLUGIN]</span><br><span class="line">  [PLUGIN]</span><br><span class="line">   ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;在corefile中，借助上述语法格式可以定义若干个server block，每个block有一个标签label和紧随其后的一对花括号及括号内的内容构成。每个server block定义了DNS server以什么协议在哪个端口上监听DNS请求、DNS server会用到哪些插件来构建插件链以及DNS server负责哪个zone（可以理解为域名）的DNS解析工作。一个简单的corefile文件定义（部分）如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">coredns.io:5300 &#123;</span><br><span class="line">    file db.coredns.io</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">tls://core.corp &#123; # on default port 853 for DNS</span><br><span class="line">	errors</span><br><span class="line">	cache 30</span><br><span class="line">	loop</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">example.io:53 &#123;</span><br><span class="line">    log</span><br><span class="line">    errors</span><br><span class="line">    file db.example.io</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">example.net:53 &#123;</span><br><span class="line">    file db.example.net</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.:53 &#123;</span><br><span class="line">    kubernetes</span><br><span class="line">    forward . 8.8.8.8</span><br><span class="line">    log</span><br><span class="line">    errors</span><br><span class="line">    health</span><br><span class="line">    cache</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;在CoreDNS中，每个端口会指向一个dnsserver.Server，所以尽管上述的配置文件中有5个server block，但是最后会得到三个dnsserver.Server。CoreDNS会把指向相同端口的server block聚合成一个dnsserver.Server，如果有多个label标签指向了同一个端口，那么在匹配时会按照自右向左最长匹配原则进行处理和选择。这个Server会在这个相同的端口上通过多路复用提供DNS解析服务，并根据不同的域名传递到不同的插件链中进行处理。</p>
+<div style="text-align: center; width: 100%;">
+<img src="https://res.cloudinary.com/jknight/image/upload/v1623851508/BlogImages/CloudSerials/coredns-corefile-demo.webp" style="margin: 0 auto;">
+</div>
+<div align="center">
+    <div align="center"><br>图 - 10 corefile配置示例</div>
+&emsp;
+</div>
+
+
+<p>&emsp;&emsp;需要注意的是，在最后一个server block的配置中含有一个health插件，但是在图-10中并未出现对应的health插件。这是因为在CoreDNS的设计中将插件分为了两种类型的插件：一种插件是用来处理DNS请求的，因此会出现在插件链中。还有一类插件仅仅是用来修改server或者server block的配置，换言之，它们和处理DNS请求无任何关系，因此这类插件不会被插入到插件链中。这种类型的插件包括health、tls、startup、shutdown和root等插件。</p>
+<p>&emsp;&emsp;CoreDNS支持如下四种协议来访问DNS解析服务：</p>
+<ul>
+<li>dns:// for plain DNS (默认值，无需指定前缀)</li>
+<li>tls:// for DNS over TLS（DoT）, 参考 <a href="https://tools.ietf.org/html/rfc7858" target="_blank" rel="noopener">RFC 7858</a></li>
+<li>https:// for DNS over HTTPS（DoH）,参考 <a href="https://tools.ietf.org/html/rfc8484" target="_blank" rel="noopener">RFC 8484</a></li>
+<li>grpc:// for DNS over gRPC</li>
+</ul>
+<p>所以在第二个server block的定义中，定义了<strong>tls://</strong>前缀，这意味着这个server block仅支持使用tls协议来访问CoreDNS完成DNS的解析工作。</p>
+<p>&emsp;&emsp;一个可以实现完整功能的CoreDNS应用是由若干个插件完成的，每个插件负责实现一个具体的功能。如果有多个插件，那么这些插件会形成一个调用链，即插件链。当一个DNS解析请求到达时，首先通过贪心原则来匹配zone，进而选择一个处理当前请求的server。接着会根据<strong>plugin.cfg</strong>中定义的顺序顺着插件链逐个通过每个插件完成其功能，每个插件会做出如下判断来决定是否处理当前请求：</p>
+<ul>
+<li>请求被当前插件处理。当前插件会处理请求并直接向客户端返回响应，插件链调用结束。</li>
+<li>请求跳过当前插件。当前插件不会处理请求并将请求直接传递给下一个插件。</li>
+<li>请求被当前插件以Fallthrough形式处理。请求在当前插件处理过程中有可能会传递给下一个插件，这种现象称为fallthrough。</li>
+<li>请求被当前插件处理并伴随hint信息一同传递给下一个插件。</li>
+</ul>
+<p>plugin.cfg的内容如下所示（部分）：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//每行由冒号分隔，前面是插件名称，后面是插件包名。</span></span><br><span class="line"><span class="comment">//包名可以是完整的外部地址，如log:github.com/coredns/coredns/plugin/log</span></span><br><span class="line">metadata:metadata</span><br><span class="line">tls:tls</span><br><span class="line">reload:reload</span><br><span class="line">nsid:nsid</span><br><span class="line">root:root</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>每个插件的声明如下所示：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> (</span><br><span class="line">	Plugin <span class="function"><span class="keyword">func</span><span class="params">(Handler)</span> <span class="title">Handler</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">	<span class="title">Handler</span> <span class="title">interface</span></span> &#123;</span><br><span class="line">		ServeDNS(context.Context, dns.ResponseWriter, *dns.Msg) (<span class="keyword">int</span>, error)</span><br><span class="line">		Name() <span class="keyword">string</span></span><br><span class="line">	&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;所以只需要实现ServerDNS()和Name()方法，即可实现一个新的插件。所以说，插件的实质就是一个出入参数都是<strong>Handler</strong>的函数。在插件链执行过程中，每个插件可以通过<strong>NextOrFailure</strong>函数调用下一个插件的<strong>ServerDNS()</strong>方法，如果next为<strong>nil</strong>，说明插件链已经调用结束，会直接返回<strong>no next plugin found</strong>。如果不想继续向后传递，也可以通过<strong>WriteMsg()</strong>结束整个调用链。</p>
+<blockquote>
+<p>CoreDNS is powered by plugins.</p>
+<p>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;— coredns.io</p>
+</blockquote>
+<p>&emsp;&emsp;回到Kubernetes集群，如果想要使用CoreDNS实现DNS解析服务，那么只需要修改configmap文件，在其中加入corefile即可使用CoreDNS。示例如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: ConfigMap</span><br><span class="line">metadata:</span><br><span class="line">  name: coredns</span><br><span class="line">  namespace: kube-system</span><br><span class="line">data:</span><br><span class="line">  Corefile: |</span><br><span class="line">    .:53 &#123;</span><br><span class="line">        errors</span><br><span class="line">        health &#123;</span><br><span class="line">            lameduck 5s</span><br><span class="line">        &#125;</span><br><span class="line">        ready</span><br><span class="line">        kubernetes cluster.local in-addr.arpa ip6.arpa &#123;</span><br><span class="line">            pods insecure</span><br><span class="line">            fallthrough in-addr.arpa ip6.arpa</span><br><span class="line">            ttl 30</span><br><span class="line">        &#125;</span><br><span class="line">        prometheus :9153</span><br><span class="line">        forward . /etc/resolv.conf</span><br><span class="line">        cache 30</span><br><span class="line">        loop</span><br><span class="line">        reload</span><br><span class="line">        loadbalance</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;除了配置集群级别的DNS服务和规则，Kubernetes还支持在Pod上配置相应的DNS策略和配置，从而实现基于Pod的个性化的DNS解析服务。在Pod的资源文件中，可以通过两个字段<strong>spec.dnsPolicy</strong>和<strong>spec.dnsConfig</strong>字段进行设置。其中，dnsPolicy字段用于设置DNS策略，dnsConfig可用来自定义DNS的相关配置。当前版本中，dnsPolicy支持的DNS策略包括如下：</p>
+<ul>
+<li><p>Default。Pod会直接继承其所在节点（宿主机）的域名解析配置。实质上是让kubelet决定DNS策略，kubelet默认使用所在节点在/etc/resolv.conf下的配置，所以Pod默认会直接继承其所在节点的域名解析配置。同时，kubelet提供了参数<strong>–resolv-conf=</strong>来决定DNS策略的配置。</p>
+</li>
+<li><p>ClusterFirst。使用集群内的DNS服务（kube-dns或者CoreDNS）完成DNS解析工作。任何无法匹配和使用集群内DNS服务的DNS请求都会被转发到上游域名服务器进行处理，上游域名服务器的相关信息来自于Pod所在节点（宿主机）。</p>
+</li>
+<li>ClusterFirstWithHostNet。如果有Pod直接运行在宿主机网络上，那么Pod会直接使用宿主机的 /etc/resolv.conf 配置进行DNS解析。如果不想这么做而是继续通过集群内的DNS服务完成解析时，那么应该显式的将DNS策略设置为ClusterFirstWithHostNet。</li>
+<li>None。Pod会忽略来自Kubernetes环境变量的所有DNS设置，而由dnsConfig字段的配置提供DNS配置。</li>
+</ul>
+<p>同时，dnsConfig可以用于设置如下配置信息：</p>
+<ul>
+<li>nameservers。用来为Pod提供DNS服务的IP地址列表，最多可设置3个。如果Pod的dnsPolicy设置为<strong>None</strong>，这个字段必须至少指定一个IP地址。除了这种情况之外，这个字段可填可不填。</li>
+<li>searches。在Pod里用于域名查询的DNS搜索域列表。这个字段是可选项，如果指定了该字段，那么这个列表会被合并到由指定的DNS策略生成的基础搜索域名集合中。如果有重复域名，则只会保留一份。此外Kubernetes限制搜索域的个数最多有6个。</li>
+<li>options。DNS的配置选项列表。每个选项必须有一个name属性，可以有一个value属性。列表中的内容会被合并到由指定的DNS策略生成的配置选项数据中，如果有相同配置存在，只会保留一份。</li>
+</ul>
+<p>&emsp;&emsp;尽管集群DNS服务（kube-dns/CoreDNS）的性能非常优秀，但是随着集群规模的迅速增长，如果每个Pod都直接和集群DNS服务交互完成DNS解析服务，那么集群DNS服务最终也会疲于应对以致性能下降。为了解决这个问题，Kubernetes在v1.18版本引入了<strong>NodeLocal DNSCache</strong>来缓解集群DNS服务的压力。NodeLocal DNSCache会在集群的每个节点上以DaemonSet形式运行一个dns缓存代理Pod，之后Pod会先通过其所在节点的缓存代理完成DNS解析请求，如果解析失败，缓存代理才会向集群DNS服务发起DNS解析请求完成DNS解析。这些dns缓存代理处于其所在节点的kube-system命名空间下。</p>
+<div style="text-align: center; width: 100%;">
+<img src="https://res.cloudinary.com/jknight/image/upload/v1623912290/BlogImages/CloudSerials/nodelocal-dns-cache-arch.png" style="margin: 0 auto;">
+</div>
+<div align="center">
+    <div align="center">图 - 11 NodeLocal DNSCache 工作流程 <sup id="fnref:3" style="font-size:80%;line-height:80%;"><a href="#fn:3" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[3]</span></a></sup></div>
+&emsp;
+</div>
+
+
+<h3 id="自定义DNS服务器和上游DNS服务器"><a href="#自定义DNS服务器和上游DNS服务器" class="headerlink" title="自定义DNS服务器和上游DNS服务器"></a>自定义DNS服务器和上游DNS服务器</h3><p>&emsp;&emsp;kube-dns和CoreDNS都提供了自定义DNS服务器和上游DNS服务器的能力。在kube-dns中，通过如下配置便可以完成DNS服务器和上游服务器的配置：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">data:</span><br><span class="line">  stubDomains: |</span><br><span class="line">        &#123;<span class="attr">"abc.com"</span> : [<span class="string">"1.2.3.4"</span>], <span class="attr">"my.cluster.local"</span> : [<span class="string">"2.3.4.5"</span>]&#125;</span><br><span class="line">  upstreamNameservers: |</span><br><span class="line">        [<span class="string">"8.8.8.8"</span>, <span class="string">"8.8.4.4"</span>]</span><br><span class="line">kind: ConfigMap</span><br></pre></td></tr></table></figure>
+<p>上述配置文件转换成CoreDNS的corefile如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">.:53 &#123;</span><br><span class="line">    forward . 8.8.8.8 8.8.4.4</span><br><span class="line">    cache 30</span><br><span class="line">&#125;</span><br><span class="line">abc.com:53 &#123;</span><br><span class="line">    cache 30</span><br><span class="line">    forward . 1.2.3.4</span><br><span class="line">&#125;</span><br><span class="line">my.cluster.local:53 &#123;</span><br><span class="line">    cache 30</span><br><span class="line">    forward . 2.3.4.5</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="涉及基础知识点"><a href="#涉及基础知识点" class="headerlink" title="涉及基础知识点"></a>涉及基础知识点</h2><ol>
+<li><p><strong>DNS记录中A、AAAA、SRV、PTR、CNAME的含义</strong></p>
+<p>A由<a href="https://tools.ietf.org/html/rfc1035" target="_blank" rel="noopener">RFC 1035</a>定义，用于IPv4版本的DNS解析。常用于将一个主机名映射到一个IPv4地址。记录包括域名、对应IP地址、以秒为单位的TTL值，TTL会告诉DNS服务器应该在缓存中保留给定记录多久。</p>
+<p>AAAA由<a href="https://tools.ietf.org/html/rfc3596" target="_blank" rel="noopener">RFC 3596</a>定义，用于IPv6版本的DNS解析。常用于将一个主机名映射到一个IPv6地址。</p>
+<p>SRV由<a href="https://tools.ietf.org/html/rfc2782" target="_blank" rel="noopener">RFC 2782</a>定义，SRV记录标记了哪台服务器提供了什么服务。它除了指明服务的IP地址外，还指明了哪个端口会提供对应的服务。</p>
+<p>PTR由<a href="https://tools.ietf.org/html/rfc2782" target="_blank" rel="noopener">RFC 1035</a>定义，是A/AAAA记录的逆向记录，用于将IP地址反向映射到一个域名，因此也称为IP反查记录或者指针记录。</p>
+<p>CNAME（Canonical Name）由<a href="https://tools.ietf.org/html/rfc1035" target="_blank" rel="noopener">RFC 1035</a>定义，通常称为别名指向。用于将多个域名映射到同一个主机上。</p>
+</li>
+<li><p><strong>DNS Search Domain</strong></p>
+<p> &emsp;&emsp;DNS Search Domain（DNS 搜索域）是DNS服务用来解析非全限定域名的一个概念。</p>
+<p> &emsp;&emsp;全限定域名可以从根域（根域只是一个空字符串）逐级向下解析并最终返回一个IP地址。换句话说，全限定域名以诸如.com, .org, .net, .ca之类的顶级域名为后缀。根域包含了为全球顶级域名服务的域名解析服务器信息。</p>
+<p> &emsp;&emsp;以www.google.com.为例，在全球DNS体系中它是一个全限定域名。在com.之后是不可见的根域部分，专门在com之后留了一个点，意味着根域就是处理解析请求的最高级别区域。但是，myhost却不是一个全限定域名，在尝试定位和解析myhost的时候可能会引起歧义。</p>
+<p> &emsp;&emsp;一个全限定域名（FQDN）一定是非歧义的。可能会有多个IP地址绑定在一个域名上，但是绝不可能出现两条冲突的DNS结果。继续以myhost为例，可能会有myhost.example.com、myhost.example2.com等等之类的域名地址，所以需要一种机制来消除这种歧义现象，这就是DNS搜索域产生的背景。说白了，搜索域就是一个用来追加在一个非全限定域名后面的有序的域列表。</p>
+<p> &emsp;&emsp;许多公司和组织机构在构建内部网络时都有它们自己的DNS服务器。鉴于诸如现实和安全等一些目的，不使用全局域是一种普遍情况。一般而言，诸如”.local”, “.localdomain”, 和 “.corp”等等都是常见的内部域，在根域中是无法找到这些域的记录的。在同一台DNS服务器上，可能同时存在myhost.localdomain和myhost.otherdomain，搜索域会告诉服务器应该选择哪一个继续后面的工作。</p>
+<p> &emsp;&emsp;上面摘自<a href="https://forums.tomshardware.com/threads/what-does-dns-search-domains-mean.1640744/#:~:text=the%20DNS%20search%20domain%20is,up%20with%20an%20IP%20address." target="_blank" rel="noopener">What does “DNS search domains” mean?</a>中的内容。实际上搜索域就是一个域名后缀的集合，有的时候在做DNS解析的时候有可能给的不是一个完整的域名结构，比如”nrl-iman“。这个时候如果做域名解析的时候可能会有问题，因为”nrl-iman“所属的域无法确定，可能是”nrl-iman.com“、”nrl-iman.org“、”nrl-iman.corp“，”nrl-iman.cn.corp“等等。所以这个时候就需要给一个域后缀列表，指明当处理”nrl-iman“时，要在哪些域中尝试解析”nrl-iman“。假设设置搜索域为“corp”，“cn.corp”，那么当处理”nrl-iman“就只会考虑”nrl-iman.corp“，”nrl-iman.cn.corp“这两种情况，而不会尝试解析”nrl-iman.com“和”nrl-iman.org“。</p>
+</li>
+</ol>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p><div id="footnotes"><hr><div id="footnotelist"><ol style="list-style: none; padding-left: 0; margin-left: 40px"><li id="fn:1"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">1.</span><span style="display: inline-block; vertical-align: top;">Kubernetes contributors. &quot;<a href="https://kubernetes.io/docs/concepts/services-networking/ingress/" target="_blank" rel="noopener">Ingress</a>&quot; <em>Kubernetes.io</em>. N.p., 19 Aug. 2019. Web. 14 Apr. 2021.</span></li><li id="fn:2"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">2.</span><span style="display: inline-block; vertical-align: top;">shida_csdn. &quot;<a href="https://blog.csdn.net/shida_csdn/article/details/84032019" target="_blank" rel="noopener">K8S 源码探秘 之 Nginx-Ingress 工作原理分析.</a>&quot; <em>CSDN</em>. N.p., 14 Nov. 2018. Web. 14 Apr. 2021.</span></li><li id="fn:3"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">3.</span><span style="display: inline-block; vertical-align: top;">Kubernetes contributors. &quot;<a href="https://kubernetes.io/docs/tasks/administer-cluster/nodelocaldns/" target="_blank" rel="noopener">Using NodeLocal DNSCache in Kubernetes clusters</a>&quot; <em>Kubernetes.io</em>. N.p., 11 Jun. 2019. Web. 14 Apr. 2021.</span></li><li id="fn:4"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">4.</span><span style="display: inline-block; vertical-align: top;">Project Calico. <a href="https://www.youtube.com/watch?v=40VfZ_nIFWI" target="_blank" rel="noopener"><em>Kubernetes Ingress Networking</em></a>. <em>YouTube</em>, 3 May 2020, 14 Apr. 2021.</span></li><li id="fn:5"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">5.</span><span style="display: inline-block; vertical-align: top;">O’Haver, Chris, et al. &quot;<a href="https://github.com/kubernetes/dns/blob/master/docs/specification.md" target="_blank" rel="noopener">Kubernetes DNS-Based Service Discovery.</a>&quot; <em>GitHub</em>. N.p., 10 Jan. 2017. Web. 15 Apr. 2021.</span></li><li id="fn:6"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">6.</span><span style="display: inline-block; vertical-align: top;">&quot;<a href="https://www.cloudflare.com/learning/dns/dns-records/dns-srv-record/" target="_blank" rel="noopener">What Is a DNS SRV Record?</a>&quot; <em>Cloudflare</em>. N.p., n.d. Web. 15 Apr. 2021.</span></li><li id="fn:7"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">7.</span><span style="display: inline-block; vertical-align: top;">Wikipedia contributors. &quot;<a href="https://en.wikipedia.org/wiki/List_of_DNS_record_types" target="_blank" rel="noopener">List of DNS record types.</a>&quot; Wikipedia, The Free Encyclopedia. Wikipedia, The Free Encyclopedia, 2 Jun. 2021. Web. 19 Apr. 2021.</span></li><li id="fn:8"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">8.</span><span style="display: inline-block; vertical-align: top;">Google Cloud contributors. &quot;<a href="https://cloud.google.com/kubernetes-engine/docs/concepts/ingress" target="_blank" rel="noopener">GKE Ingress for HTTP(S) Load Balancing.</a>&quot; <em>Google Cloud</em>. N.p., n.d. Web. 15 Apr. 2021.</span></li><li id="fn:9"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">9.</span><span style="display: inline-block; vertical-align: top;">Luksa, Marko. <em>Kubernetes in Action中文版</em>. Trans. 七牛容器云团队. 1st ed. 北京: 电子工业出版社, 2019. Print.</span></li><li id="fn:10"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">10.</span><span style="display: inline-block; vertical-align: top;">杜军. <em>Kubernetes网络权威指南：基础、原理与实践</em>. 1st ed. 北京: 电子工业出版社, 2019. Print.</span></li><li id="fn:11"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">11.</span><span style="display: inline-block; vertical-align: top;">闫健勇, et al. <em>Kubernetes权威指南：企业级容器云实战</em>. 1st ed. 北京: 电子工业出版社, 2018. Print.</span></li><li id="fn:12"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">12.</span><span style="display: inline-block; vertical-align: top;">马永亮. <em>Kubernetes进阶实战</em>. 2nd ed. 北京: 机械工业出版社, 2019. Print.</span></li><li id="fn:13"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">13.</span><span style="display: inline-block; vertical-align: top;">Kubernetes contributors. &quot;<a href="https://kubernetes.io/docs/tasks/administer-cluster/dns-custom-nameservers" target="_blank" rel="noopener">Customizing DNS Service</a>&quot; <em>Kubernetes.io</em>. N.p., 20 Jun. 2018. Web. 14 Apr. 2021.</span></li><li id="fn:14"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">14.</span><span style="display: inline-block; vertical-align: top;">CoreDNS contributors. &quot;<a href="https://coredns.io/manual/toc/" target="_blank" rel="noopener">CoreDNS Manual.</a>&quot; <em>CoreDNS</em>. N.p., n.d. Web. 15 Apr. 2021.</span></li><li id="fn:15"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">15.</span><span style="display: inline-block; vertical-align: top;">Kubernetes contributors. &quot;<a href="https://kubernetes.io/docs/concepts/services-networking/dns-pod-service" target="_blank" rel="noopener">DNS for Services and Pods</a>&quot; <em>Kubernetes.io</em>. N.p., 5 May. 2018. Web. 14 Apr. 2021.</span></li><li id="fn:16"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">16.</span><span style="display: inline-block; vertical-align: top;">Project Calico contributors. &quot;<a href="https://docs.projectcalico.org/reference/architecture/overview" target="_blank" rel="noopener">Component Architecture.</a>&quot; <em>Project Calico</em>. N.p., n.d. Web. 15 Apr. 2021.</span></li><li id="fn:17"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">17.</span><span style="display: inline-block; vertical-align: top;">晒太阳的猫. &quot;<a href="https://zhengyinyong.com/post/coredns-plugin-system-implementation" target="_blank" rel="noopener">CoreDNS 插件系统的实现原理.</a>&quot; <em>zhengyinyong.com</em>. N.p., 4 Feb. 2019. Web. 13 Apr. 2021.</span></li><li id="fn:18"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">18.</span><span style="display: inline-block; vertical-align: top;">Google Cloud contributors. &quot;<a href="https://cloud.google.com/kubernetes-engine/docs/how-to/nodelocal-dns-cache" target="_blank" rel="noopener">Setting up NodeLocal DNSCache.</a>&quot; <em>Google Cloud</em>. N.p., n.d. Web. 13 Apr. 2021.</span></li><li id="fn:19"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">19.</span><span style="display: inline-block; vertical-align: top;">Anthony, Cornell. &quot;<a href="https://aws.amazon.com/blogs/opensource/network-load-balancer-nginx-ingress-controller-eks/" target="_blank" rel="noopener">Using a Network Load Balancer with the NGINX Ingress Controller on Amazon EKS.</a>&quot; <em>AWS Open Source Blog</em>. N.p., 9 Aug. 2019. Web. 14 Apr. 2021.</span></li><li id="fn:20"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">20.</span><span style="display: inline-block; vertical-align: top;">Kubernetes contributors. &quot;<a href="https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/" target="_blank" rel="noopener">Ingress Controllers.</a>&quot; <em>Kubernetes</em>. N.p., 18 Feb. 2019. Web. 14 Apr. 2021.</span></li><li id="fn:21"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">21.</span><span style="display: inline-block; vertical-align: top;">Kubernetes contributors. &quot;<a href="https://kubernetes.io/docs/concepts/services-networking/ingress/" target="_blank" rel="noopener">Ingress.</a>&quot; <em>Kubernetes</em>. N.p., 19 Aug. 2019. Web. 14 Apr. 2021.</span></li><li id="fn:22"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">22.</span><span style="display: inline-block; vertical-align: top;">乾坤李. &quot;<a href="https://qiankunli.github.io/2018/10/11/cni.html" target="_blank" rel="noopener">CNI——容器网络是如何打通的.</a>&quot; 李乾坤的博客. N.p., 11 Oct. 2018. Web. 14 Apr. 2021.</span></li><li id="fn:23"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">23.</span><span style="display: inline-block; vertical-align: top;">Belamaric, John, and Cricket Liu. <em>Learning CoreDNS:Configuring DNS for Cloud-Native Environments</em>. 1st ed. Boston: O’Reilly Media, 2019. Print.</span></li><li id="fn:24"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">24.</span><span style="display: inline-block; vertical-align: top;">&quot;<a href="https://kubernetes.github.io/ingress-nginx/how-it-works/" target="_blank" rel="noopener">How It Works.</a>&quot; <em>NGINX Ingress Controller</em>. N.p., n.d. Web. 14 Apr. 2021.</span></li></ol></div><p><br><br><br><br></p></div></p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2021/K8s-Network-Architecture-section-two.html" target="_blank" title="K8s network之二：Kubernetes的域名解析、服务发现和外部访问">K8s network之二：Kubernetes的域名解析、服务发现和外部访问</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2021/K8s-Network-Architecture-section-two.html" target="_blank" title="K8s network之二：Kubernetes的域名解析、服务发现和外部访问">https://marcuseddie.github.io/2021/K8s-Network-Architecture-section-two.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2021/K8s-Network-Architecture-section-four.html" class="alignleft prev" title="K8s network之四：Kubernetes集群通信的实现原理"> 上一篇： K8s network之四：Kubernetes集群通信的实现原理</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2021/K8s-Network-Architecture-section-one.html" class="alignright next" title="K8s network之一：K8s网络模型与网络策略"> 下一篇： K8s network之一：K8s网络模型与网络策略</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

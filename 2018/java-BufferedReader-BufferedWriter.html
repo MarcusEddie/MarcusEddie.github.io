@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      Java I/O 22 - BufferedReader &amp; BufferedWriter | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="BufferedReader和BufferedWriter提供缓冲区作为中间媒介，以此降低字符流读写操作与物理存储的交互次数并提高其读写效率和性能，涉及方法read,write,fill,close,flush,skip,mark,reset,flushBuffer。">
+<meta name="keywords" content="BufferedReader,BufferedWriter,read,close,fill,skip,mark,reset,write,flushBuffer,flush">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java I&#x2F;O 22 - BufferedReader &amp; BufferedWriter | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/java-BufferedReader-BufferedWriter.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="BufferedReader和BufferedWriter提供缓冲区作为中间媒介，以此降低字符流读写操作与物理存储的交互次数并提高其读写效率和性能，涉及方法read,write,fill,close,flush,skip,mark,reset,flushBuffer。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.353Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java I&#x2F;O 22 - BufferedReader &amp; BufferedWriter | Mr.Muzi">
+<meta name="twitter:description" content="BufferedReader和BufferedWriter提供缓冲区作为中间媒介，以此降低字符流读写操作与物理存储的交互次数并提高其读写效率和性能，涉及方法read,write,fill,close,flush,skip,mark,reset,flushBuffer。">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>Java I/O 22 - BufferedReader &amp; BufferedWriter</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-11-25" class="post-meta__date date">2018-11-25</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;5.2k&emsp;阅读时长:&nbsp;22&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.io.BufferedReader</strong> </em> 和<em> <strong>java.io.BufferedWriter</strong> </em> 的部分笔记，对字符读写提供了一个缓冲区作为中间媒介，以此降低读写操作与物理存储的交互次数并提高其读写效率和性能。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;BufferedReader和BufferedWriter同BufferedInputStream和BufferedOutputStream一样，对输入输出提供了一套缓冲区机制，以此来提高数据读写的效率和性能。BufferedReader和BufferedWriter内部的缓冲区默认大小为8192，通过将数据存储在缓冲区中（本质上是存储在内存中）可以降低读写与物理存储介质的交互次数，以达到优化读写速度的目标。但是和BufferedInputStream和BufferedOutputStream不同的是，BufferedReader和BufferedWriter处理的字符流，其数据范围是0 ~ 65535，而BufferedInputStream和BufferedOutputStream处理的字节流。</p>
+<p>&emsp;</p>
+<h2 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// BufferedReader</span></span><br><span class="line">--java.lang.Object</span><br><span class="line">  --java.io.Writer</span><br><span class="line">    --java.io.BufferedReader</span><br><span class="line">    </span><br><span class="line"><span class="comment">// BufferedWriter</span></span><br><span class="line">--java.lang.Object</span><br><span class="line">  --java.io.Writer</span><br><span class="line">    --java.io.BufferedWriter</span><br></pre></td></tr></table></figure>
+<p>&emsp;</p>
+<h2 id="实现接口"><a href="#实现接口" class="headerlink" title="实现接口"></a>实现接口</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">类名</th>
+<th style="text-align:center">实现接口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">BufferedReader</td>
+<td style="text-align:center">Closeable, AutoCloseable,Readable</td>
+</tr>
+<tr>
+<td style="text-align:center">BufferedReader</td>
+<td style="text-align:center">Closeable, AutoCloseable,Flushable, Appendable</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>&emsp;</p>
+<h2 id="BufferedReader"><a href="#BufferedReader" class="headerlink" title="BufferedReader"></a>BufferedReader</h2><h3 id="Constructor-Summary"><a href="#Constructor-Summary" class="headerlink" title="Constructor Summary"></a>Constructor Summary</h3><h4 id="public-BufferedReader-Reader-in-int-sz"><a href="#public-BufferedReader-Reader-in-int-sz" class="headerlink" title="public BufferedReader(Reader in, int sz)"></a>public BufferedReader(Reader in, int sz)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">BufferedReader</span><span class="params">(Reader in, <span class="keyword">int</span> sz)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(in);</span><br><span class="line">    <span class="keyword">if</span> (sz &lt;= <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Buffer size &lt;= 0"</span>);</span><br><span class="line">    <span class="keyword">this</span>.in = in;</span><br><span class="line">    cb = <span class="keyword">new</span> <span class="keyword">char</span>[sz];</span><br><span class="line">    nextChar = nChars = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个字符输入流。底层缓存区buffer的长度由参数sz指定。nextChar指向下一个需要被读取的字符串位置，nChars标记缓冲区数组中存储的最后一个字符的位置下标。</p>
+<h4 id="public-BufferedReader-Reader-in"><a href="#public-BufferedReader-Reader-in" class="headerlink" title="public BufferedReader(Reader in)"></a>public BufferedReader(Reader in)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">BufferedReader</span><span class="params">(Reader in)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(in, defaultCharBufferSize);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个字符输入流。底层缓存区buffer的长度默认为8192。通过调用构造方法<strong>BufferedReader(Reader in, int sz)</strong>完成初始化操作。</p>
+<h3 id="部分方法"><a href="#部分方法" class="headerlink" title="部分方法"></a>部分方法</h3><h4 id="private-void-ensureOpen"><a href="#private-void-ensureOpen" class="headerlink" title="private void ensureOpen()"></a>private void ensureOpen()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureOpen</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (in == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"Stream closed"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;检查当前底层输出流是否开启且可用。</p>
+<h4 id="private-void-fill"><a href="#private-void-fill" class="headerlink" title="private void fill()"></a>private void fill()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">fill</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> dst;</span><br><span class="line">    <span class="keyword">if</span> (markedChar &lt;= UNMARKED) &#123;</span><br><span class="line">        <span class="comment">/* No mark */</span></span><br><span class="line">        dst = <span class="number">0</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">/* Marked */</span></span><br><span class="line">        <span class="keyword">int</span> delta = nextChar - markedChar;</span><br><span class="line">        <span class="keyword">if</span> (delta &gt;= readAheadLimit) &#123;</span><br><span class="line">            <span class="comment">/* Gone past read-ahead limit: Invalidate mark */</span></span><br><span class="line">            markedChar = INVALIDATED;</span><br><span class="line">            readAheadLimit = <span class="number">0</span>;</span><br><span class="line">            dst = <span class="number">0</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (readAheadLimit &lt;= cb.length) &#123;</span><br><span class="line">                <span class="comment">/* Shuffle in the current buffer */</span></span><br><span class="line">                System.arraycopy(cb, markedChar, cb, <span class="number">0</span>, delta);</span><br><span class="line">                markedChar = <span class="number">0</span>;</span><br><span class="line">                dst = delta;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">/* Reallocate buffer to accommodate read-ahead limit */</span></span><br><span class="line">                <span class="keyword">char</span> ncb[] = <span class="keyword">new</span> <span class="keyword">char</span>[readAheadLimit];</span><br><span class="line">                System.arraycopy(cb, markedChar, ncb, <span class="number">0</span>, delta);</span><br><span class="line">                cb = ncb;</span><br><span class="line">                markedChar = <span class="number">0</span>;</span><br><span class="line">                dst = delta;</span><br><span class="line">            &#125;</span><br><span class="line">            nextChar = nChars = delta;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        n = in.read(cb, dst, cb.length - dst);</span><br><span class="line">    &#125; <span class="keyword">while</span> (n == <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (n &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        nChars = dst + n;</span><br><span class="line">        nextChar = dst;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;向当前底层缓冲区buffer中填充字符数据。在buffer中的数据都读完（即 nextChar &gt;= nChars）时调用触发此方法。第2行代码定义了一个dst用来记录数据填充完成后下一个读取位置。第3 ~ 5行代码表示如果在填充之前没有调用过mark方法，那么会将缓冲区buffer的内容从头开始全部重新填充。</p>
+<p>&emsp;&emsp;第6 ~ 30行代码则处理在填充之前曾调用过mark方法的场景。其中，第8行代码用于计算最近一次mark方法产生的标记值到buffer结束的数据长度，如果得到的数据长度超过了允许的最大限度，那么将重新赋值并清除mark相关信息。反之，则将自mark标识位置起到buffer缓冲区结束的内容全部移动到缓冲区首部，释放尾部的空间以此容纳新读入的数据内容，如果需要的话，会适当对缓冲区buffer数组进行扩容处理（即第21 ~ 27行代码中的处理）。数据移动完成后，清除markedChar标记内容，同时更新下一个读取位置的具体位置信息（即dst）。第28行代码则更新了在完成数据移动后缓冲区buffer中下一个读取位置、buffer中存储内容的最后一个位置等信息。</p>
+<p>&emsp;&emsp;第32 ~ 35行代码会从底层输入流中读取新的字符内容，其长度足以全部填充缓冲区buffer的可用空间。读取执行结束后，更新nChars值为dst + n，理论上等于缓冲区buffer的长度。nextChar为下一个读取位置的值，需要注意的，如果执行了mark方法，那么这里返回的nextChar并不会重读起始位置，如果需要从标记重读位置开始读取数据，需要另外调用reset方法来更新nextChar值。</p>
+<h4 id="public-int-read"><a href="#public-int-read" class="headerlink" title="public int read()"></a>public int read()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        ensureOpen();</span><br><span class="line">        <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">            <span class="keyword">if</span> (nextChar &gt;= nChars) &#123;</span><br><span class="line">                fill();</span><br><span class="line">                <span class="keyword">if</span> (nextChar &gt;= nChars)</span><br><span class="line">                    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (skipLF) &#123;</span><br><span class="line">                skipLF = <span class="keyword">false</span>;</span><br><span class="line">                <span class="keyword">if</span> (cb[nextChar] == <span class="string">'\n'</span>) &#123;</span><br><span class="line">                    nextChar++;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> cb[nextChar++];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;读取并返回一个字符内容，返回-1则表示文件已经读到了尾部。通过synchronized保证了多线程环境下的线程安全。第5 ~ 9行代码处理缓冲区buffer中已经没有内容可供读取需要从底层输入流中获取新的数据内容的场景。如果当前运行环境中指定了需要忽略换行符（skipLF = true），那么就跳过缓冲区buffer中存储的值为换行符的内容，读取下一个内容并执行相关的计算和判断。第17行代码则返回了缓冲区buffer中存储的一个字符内容给方法调用方。</p>
+<h4 id="public-int-read-char-cbuf-int-off-int-len"><a href="#public-int-read-char-cbuf-int-off-int-len" class="headerlink" title="public int read(char cbuf[], int off, int len)"></a>public int read(char cbuf[], int off, int len)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">(<span class="keyword">char</span> cbuf[], <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        ensureOpen();</span><br><span class="line">        <span class="keyword">if</span> ((off &lt; <span class="number">0</span>) || (off &gt; cbuf.length) || (len &lt; <span class="number">0</span>) ||</span><br><span class="line">            ((off + len) &gt; cbuf.length) || ((off + len) &lt; <span class="number">0</span>)) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IndexOutOfBoundsException();</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (len == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> n = read1(cbuf, off, len);</span><br><span class="line">        <span class="keyword">if</span> (n &lt;= <span class="number">0</span>) <span class="keyword">return</span> n;</span><br><span class="line">        <span class="keyword">while</span> ((n &lt; len) &amp;&amp; in.ready()) &#123;</span><br><span class="line">            <span class="keyword">int</span> n1 = read1(cbuf, off + n, len - n);</span><br><span class="line">            <span class="keyword">if</span> (n1 &lt;= <span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line">            n += n1;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> n;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">read1</span><span class="params">(<span class="keyword">char</span>[] cbuf, <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (nextChar &gt;= nChars) &#123;</span><br><span class="line">        <span class="comment">/* If the requested length is at least as large as the buffer, and</span></span><br><span class="line"><span class="comment">        	if there is no mark/reset activity, and if line feeds are not</span></span><br><span class="line"><span class="comment">        	being skipped, do not bother to copy the characters into the</span></span><br><span class="line"><span class="comment">        	local buffer.  In this way buffered streams will cascade</span></span><br><span class="line"><span class="comment">        	harmlessly. */</span></span><br><span class="line">        <span class="keyword">if</span> (len &gt;= cb.length &amp;&amp; markedChar &lt;= UNMARKED &amp;&amp; !skipLF) &#123;</span><br><span class="line">            <span class="keyword">return</span> in.read(cbuf, off, len);</span><br><span class="line">        &#125;</span><br><span class="line">        fill();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (nextChar &gt;= nChars) <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (skipLF) &#123;</span><br><span class="line">        skipLF = <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">if</span> (cb[nextChar] == <span class="string">'\n'</span>) &#123;</span><br><span class="line">            nextChar++;</span><br><span class="line">            <span class="keyword">if</span> (nextChar &gt;= nChars)</span><br><span class="line">                fill();</span><br><span class="line">            <span class="keyword">if</span> (nextChar &gt;= nChars)</span><br><span class="line">                <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> n = Math.min(len, nChars - nextChar);</span><br><span class="line">    System.arraycopy(cb, nextChar, cbuf, off, n);</span><br><span class="line">    nextChar += n;</span><br><span class="line">    <span class="keyword">return</span> n;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;读取并将读取的内容保存到字符数组cbuf并返回实际读取长度，返回-1则表示文件已经读到了尾部。通过synchronized保证了多线程环境下的线程安全。第4 ~ 9行代码对入参做了有效性校验，避免了溢出越界的发生。第11行代码则从底层buffer中获取数据，读取时会尽可能满足入参len规定的长度要求。如果读到了EOF标识，那么返回EOF表示已读完底层输入流的数据内容。如果长度要求没有达到且底层输入流仍旧可以提供数据，那么会继续读取数据（即第13 ~ 17行代码的操作流程）。最后返回实际读取的数据长度。</p>
+<p>&emsp;&emsp;整个读取过程调用的方法是<strong>private int read1(char[] cbuf, int off, int len)</strong>。在该方法中，如果缓冲区buffer中的内容已经读完，且如果入参len要求的长度超出了缓冲区的长度且未记录到打标信息且不容许忽略换行符，那么会直接从底层输入流中读取内容并返回，不会从缓冲区buffer中获取数据。如果缓冲区中的内容已经读完，那么会通过fill方法从底层输入流中获取数据填充到缓冲区buffer中。第34行代码如果在调用了fille方法进行缓冲区数据填充后还是没有可读取的数据，那么就认为底层输入流中已经没有可读取的数据了，所以返回EOF标识。第35 ~ 44行代码处理的需要忽略换行符的场景。如果缓冲区buffer中遇到了换行符<strong>\n</strong>，那么跳过该内容读取下一个内容，需要的时候可以调用fill方法向缓冲区buffer中填充新的数据内容或者返回EOF标识。</p>
+<p>&emsp;&emsp;第45行代码计算缓冲区buffer可以提供的数据容量，并将缓冲区buffer中的内容存储到字符数组cbuf中。之后更新nextChar的值并返回实际读取的字符内容长度。</p>
+<h4 id="public-String-readLine"><a href="#public-String-readLine" class="headerlink" title="public String readLine()"></a>public String readLine()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">readLine</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> readLine(<span class="keyword">false</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">String <span class="title">readLine</span><span class="params">(<span class="keyword">boolean</span> ignoreLF)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    StringBuffer s = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">int</span> startChar;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        ensureOpen();</span><br><span class="line">        <span class="keyword">boolean</span> omitLF = ignoreLF || skipLF;</span><br><span class="line"></span><br><span class="line">        bufferLoop:</span><br><span class="line">        <span class="keyword">for</span> (;;) &#123;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (nextChar &gt;= nChars)</span><br><span class="line">                fill();</span><br><span class="line">            <span class="keyword">if</span> (nextChar &gt;= nChars) &#123; <span class="comment">/* EOF */</span></span><br><span class="line">                <span class="keyword">if</span> (s != <span class="keyword">null</span> &amp;&amp; s.length() &gt; <span class="number">0</span>)</span><br><span class="line">                    <span class="keyword">return</span> s.toString();</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">boolean</span> eol = <span class="keyword">false</span>;</span><br><span class="line">            <span class="keyword">char</span> c = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">int</span> i;</span><br><span class="line"></span><br><span class="line">            <span class="comment">/* Skip a leftover '\n', if necessary */</span></span><br><span class="line">            <span class="keyword">if</span> (omitLF &amp;&amp; (cb[nextChar] == <span class="string">'\n'</span>))</span><br><span class="line">                nextChar++;</span><br><span class="line">            skipLF = <span class="keyword">false</span>;</span><br><span class="line">            omitLF = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">            charLoop:</span><br><span class="line">            <span class="keyword">for</span> (i = nextChar; i &lt; nChars; i++) &#123;</span><br><span class="line">                c = cb[i];</span><br><span class="line">                <span class="keyword">if</span> ((c == <span class="string">'\n'</span>) || (c == <span class="string">'\r'</span>)) &#123;</span><br><span class="line">                    eol = <span class="keyword">true</span>;</span><br><span class="line">                    <span class="keyword">break</span> charLoop;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            startChar = nextChar;</span><br><span class="line">            nextChar = i;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (eol) &#123;</span><br><span class="line">                String str;</span><br><span class="line">                <span class="keyword">if</span> (s == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    str = <span class="keyword">new</span> String(cb, startChar, i - startChar);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    s.append(cb, startChar, i - startChar);</span><br><span class="line">                    str = s.toString();</span><br><span class="line">                &#125;</span><br><span class="line">                nextChar++;</span><br><span class="line">                <span class="keyword">if</span> (c == <span class="string">'\r'</span>) &#123;</span><br><span class="line">                    skipLF = <span class="keyword">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> str;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (s == <span class="keyword">null</span>)</span><br><span class="line">                s = <span class="keyword">new</span> StringBuffer(defaultExpectedLineLength);</span><br><span class="line">            s.append(cb, startChar, i - startChar);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;读取一行内容并返回，每行内容由<strong>\n</strong>、<strong>\r</strong>或者二者的组合分隔拆分得到。第16 ~ 23行代码中如果缓冲区buffer中的数据内容已经读取完毕，那么就调用fill()方法向buffer中填充新数据内容，如果底层输入流中已经到达了文件尾部，那么就以String形式当前已经得到的数据内容。第29行代码如果下一个读取位置存储的是一个换行符，那么跳过并读取下一个内容。第34 ~ 41行代码循环读取缓冲区buffer，获得两个换行符之间的完整数据内容。第46 ~ 59行代码处理的是成功读取了一行内容的场景：如果成功的读到了一行完整的内容（即eol = true），那么就从缓冲区buffer中取出这一行完整的内容并将之转换成一个String内容。更新维护nextChar的值并返回String字符串。如果当读取到缓冲区buffer尾部时尚未得到一行完整的内容（即eol = false），那么继续通过fill方法向缓冲区buffer填充新内容并执行上述计算过程。</p>
+<h4 id="public-long-skip-long-n"><a href="#public-long-skip-long-n" class="headerlink" title="public long skip(long n)"></a>public long skip(long n)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">skip</span><span class="params">(<span class="keyword">long</span> n)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n &lt; <span class="number">0L</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"skip value is negative"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        ensureOpen();</span><br><span class="line">        <span class="keyword">long</span> r = n;</span><br><span class="line">        <span class="keyword">while</span> (r &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (nextChar &gt;= nChars)</span><br><span class="line">                fill();</span><br><span class="line">            <span class="keyword">if</span> (nextChar &gt;= nChars) <span class="comment">/* EOF */</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">if</span> (skipLF) &#123;</span><br><span class="line">                skipLF = <span class="keyword">false</span>;</span><br><span class="line">                <span class="keyword">if</span> (cb[nextChar] == <span class="string">'\n'</span>) &#123;</span><br><span class="line">                    nextChar++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">long</span> d = nChars - nextChar;</span><br><span class="line">            <span class="keyword">if</span> (r &lt;= d) &#123;</span><br><span class="line">                nextChar += r;</span><br><span class="line">                r = <span class="number">0</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                r -= d;</span><br><span class="line">                nextChar = nChars;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> n - r;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;跳过n个字符内容的长度，并从n+1位置开始读取字符内容。对n的要求是必须是一个大于等于0的数字。通过synchronized保证了多线程环境下的线程安全。第9 ~ 12行代码处理当前缓冲区buffer需要填充新数据内容的场景，且如果执行fill方法之后依旧没有新内容，那么会返回EOF标识给方法调用方。第13 ~ 18行代码处理需要忽略换行符的场景，如果遇到了换行符，那么就跳过该内容读取下一个内容。</p>
+<p>&emsp;&emsp;第19行代码计算缓冲区buffer中剩余的尚未读取的数据内容长度。如果入参跳过的长度n小于buffer剩余未读取的数据长度，那么会跳过缓冲区buffer中n个长度的内容并返回实际跳过长度给方法调用方。反之，则将缓冲区buffer中尚未读取的内容全部跳过，同时调用fill方法填充新的数据内容并继续计算需要跳过的长度直到跳过内容的总长度达到了n或者读到了文件结束位置。第30行代码计算最终跳过的长度并返回计算结果。</p>
+<h4 id="public-boolean-ready"><a href="#public-boolean-ready" class="headerlink" title="public boolean ready()"></a>public boolean ready()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">ready</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        ensureOpen();</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * If newline needs to be skipped and the next char to be read</span></span><br><span class="line"><span class="comment">         * is a newline character, then just skip it right away.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">if</span> (skipLF) &#123;</span><br><span class="line">            <span class="comment">/* Note that in.ready() will return true if and only if the next</span></span><br><span class="line"><span class="comment">             * read on the stream will not block.</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            <span class="keyword">if</span> (nextChar &gt;= nChars &amp;&amp; in.ready()) &#123;</span><br><span class="line">                fill();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (nextChar &lt; nChars) &#123;</span><br><span class="line">                <span class="keyword">if</span> (cb[nextChar] == <span class="string">'\n'</span>)</span><br><span class="line">                    nextChar++;</span><br><span class="line">                skipLF = <span class="keyword">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> (nextChar &lt; nChars) || in.ready();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;通知方法调用方当前缓冲区buffer和底层输入流中的任意一个是否可以对外提供数据。通过synchronized保证了多线程环境下的线程安全。如果当前运行环境需要忽略换行符，首先在缓冲区buffer无未读取数据的情况下先从底层输入流中获取数据填充到缓冲区buffer中。之后判断下一个读取位置是否为换行符，如果是的话就跳过并读取下一个字符内容。通过计算缓冲区buffer中是否有尚未读取的数据内容，或者底层输入流是否可以继续提供数据来判断ready方法的返回值。</p>
+<h4 id="public-boolean-markSupported"><a href="#public-boolean-markSupported" class="headerlink" title="public boolean markSupported()"></a>public boolean markSupported()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">markSupported</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;BufferedReader支持标记重读操作，所以返回true。</p>
+<h4 id="public-void-mark-int-readAheadLimit"><a href="#public-void-mark-int-readAheadLimit" class="headerlink" title="public void mark(int readAheadLimit)"></a>public void mark(int readAheadLimit)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">mark</span><span class="params">(<span class="keyword">int</span> readAheadLimit)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (readAheadLimit &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Read-ahead limit &lt; 0"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        ensureOpen();</span><br><span class="line">        <span class="keyword">this</span>.readAheadLimit = readAheadLimit;</span><br><span class="line">        markedChar = nextChar;</span><br><span class="line">        markedSkipLF = skipLF;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;标记需要重读的数据内容的起点位置。通过synchronized保证了多线程环境下的线程安全。该方法执行过后，通过执行reset方法可以重新读取已经读取过的数据内容。调用mark方法需要readAheadLimit大于等于0。通过synchronized保证了多线程环境下的线程安全。方法内部会将当前数据的读取位置nextChar的值记录到markedChar中，同时维护是否需要忽略换行符的信息。</p>
+<h4 id="public-void-reset"><a href="#public-void-reset" class="headerlink" title="public void reset()"></a>public void reset()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">reset</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        ensureOpen();</span><br><span class="line">        <span class="keyword">if</span> (markedChar &lt; <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IOException((markedChar == INVALIDATED)</span><br><span class="line">                                  ? <span class="string">"Mark invalid"</span></span><br><span class="line">                                  : <span class="string">"Stream not marked"</span>);</span><br><span class="line">        nextChar = markedChar;</span><br><span class="line">        skipLF = markedSkipLF;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;重置下一个读取位置实现数据重复读取场景。通过synchronized保证了多线程环境下的线程安全。在实现数据重读时，首先计算存储重读起始位置的markedChar是否有效。如果markedChar无效，那么会向上抛出异常，反之将nextChar的值更新为markedChar中维护的值，同时更新skipLF以完成所有操作。</p>
+<h4 id="public-void-close"><a href="#public-void-close" class="headerlink" title="public void close()"></a>public void close()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        <span class="keyword">if</span> (in == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        in.close();</span><br><span class="line">        in = <span class="keyword">null</span>;</span><br><span class="line">        cb = <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;关闭当前输入流。通过使用synchronized关键字保证了多线程环境下的线程安全。如果底层输入流已经关闭，那么直接返回，否则通过调用底层输入流的close()方法关闭底层输入流并释放占用的相关资源。</p>
+<p>&emsp;</p>
+<h2 id="BufferedWriter"><a href="#BufferedWriter" class="headerlink" title="BufferedWriter"></a>BufferedWriter</h2><h3 id="Constructor-Summary-1"><a href="#Constructor-Summary-1" class="headerlink" title="Constructor Summary"></a>Constructor Summary</h3><h4 id="public-BufferedWriter-Writer-out-int-sz"><a href="#public-BufferedWriter-Writer-out-int-sz" class="headerlink" title="public BufferedWriter(Writer out, int sz)"></a>public BufferedWriter(Writer out, int sz)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">BufferedWriter</span><span class="params">(Writer out, <span class="keyword">int</span> sz)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(out);</span><br><span class="line">    <span class="keyword">if</span> (sz &lt;= <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Buffer size &lt;= 0"</span>);</span><br><span class="line">    <span class="keyword">this</span>.out = out;</span><br><span class="line">    cb = <span class="keyword">new</span> <span class="keyword">char</span>[sz];</span><br><span class="line">    nChars = sz;</span><br><span class="line">    nextChar = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    lineSeparator = java.security.AccessController.doPrivileged(</span><br><span class="line">        <span class="keyword">new</span> sun.security.action.GetPropertyAction(<span class="string">"line.separator"</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个字符输出流。底层缓存区buffer的长度由参数sz指定。nextChar指向下一个保存字符内容的位置，nChars标记缓冲区数组中可以保存字符内容的最后一个位置。第10 ~ 11行代码初始化一个基于代码运行环境的行分隔符。</p>
+<h4 id="public-BufferedWriter-Writer-out"><a href="#public-BufferedWriter-Writer-out" class="headerlink" title="public BufferedWriter(Writer out)"></a>public BufferedWriter(Writer out)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">BufferedWriter</span><span class="params">(Writer out)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(out, defaultCharBufferSize);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个字符输出流。底层缓存区buffer的长度默认为8192。通过调用构造方法<strong>BufferedWriter(Writer out, int sz)</strong>完成初始化操作。</p>
+<h3 id="部分方法-1"><a href="#部分方法-1" class="headerlink" title="部分方法"></a>部分方法</h3><h4 id="private-void-ensureOpen-1"><a href="#private-void-ensureOpen-1" class="headerlink" title="private void ensureOpen()"></a>private void ensureOpen()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureOpen</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (out == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"Stream closed"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;检查当前底层输出流是否开启且可用。</p>
+<h4 id="void-flushBuffer"><a href="#void-flushBuffer" class="headerlink" title="void flushBuffer()"></a>void flushBuffer()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">flushBuffer</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        ensureOpen();</span><br><span class="line">        <span class="keyword">if</span> (nextChar == <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        out.write(cb, <span class="number">0</span>, nextChar);</span><br><span class="line">        nextChar = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将当前缓冲区buffer中的内容推送到底层的目标输出流中。通过synchronized保证了多线程环境下的线程安全。如果缓冲区buffer中尚未存储任何内容（即nextChar == 0），那么不做任何操作直接返回。否则将缓冲区buffer中的内容推送到底层输出流中，同时将nextChar重新置为0。</p>
+<h4 id="public-void-write-int-c"><a href="#public-void-write-int-c" class="headerlink" title="public void write(int c)"></a>public void write(int c)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">int</span> c)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        ensureOpen();</span><br><span class="line">        <span class="keyword">if</span> (nextChar &gt;= nChars)</span><br><span class="line">            flushBuffer();</span><br><span class="line">        cb[nextChar++] = (<span class="keyword">char</span>) c;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;向底层输出流写入一个字符内容（实际上是首先写入到了底层缓冲区buffer中）。通过synchronized保证了多线程环境下的线程安全。如果在写入前发现当前缓冲区buffer空间已满无法容纳新的内容，那么就调用flushBuffer()方法将缓冲区buffer中的内容推送到目标输出位置并释放缓冲区buffer的空间。之后将传入的字符数据c写入到缓冲区中保存。</p>
+<h4 id="public-void-write-char-cbuf-int-off-int-len"><a href="#public-void-write-char-cbuf-int-off-int-len" class="headerlink" title="public void write(char cbuf[], int off, int len)"></a>public void write(char cbuf[], int off, int len)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">char</span> cbuf[], <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        ensureOpen();</span><br><span class="line">        <span class="keyword">if</span> ((off &lt; <span class="number">0</span>) || (off &gt; cbuf.length) || (len &lt; <span class="number">0</span>) ||</span><br><span class="line">            ((off + len) &gt; cbuf.length) || ((off + len) &lt; <span class="number">0</span>)) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IndexOutOfBoundsException();</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (len == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (len &gt;= nChars) &#123;</span><br><span class="line">            <span class="comment">/* If the request length exceeds the size of the output buffer,</span></span><br><span class="line"><span class="comment">                   flush the buffer and then write the data directly.  In this</span></span><br><span class="line"><span class="comment">                   way buffered streams will cascade harmlessly. */</span></span><br><span class="line">            flushBuffer();</span><br><span class="line">            out.write(cbuf, off, len);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> b = off, t = off + len;</span><br><span class="line">        <span class="keyword">while</span> (b &lt; t) &#123;</span><br><span class="line">            <span class="keyword">int</span> d = min(nChars - nextChar, t - b);</span><br><span class="line">            System.arraycopy(cbuf, b, cb, nextChar, d);</span><br><span class="line">            b += d;</span><br><span class="line">            nextChar += d;</span><br><span class="line">            <span class="keyword">if</span> (nextChar &gt;= nChars)</span><br><span class="line">                flushBuffer();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">min</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (a &lt; b) <span class="keyword">return</span> a;</span><br><span class="line">    <span class="keyword">return</span> b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将字符数组cbuf中的内容写入到底层输出流中（实际上是首先写入到了底层缓冲区buffer中）。通过synchronized保证了多线程环境下的线程安全。第4 ~ 10行代码完成了参数的有效性校验，避免发生越界溢出。</p>
+<p>&emsp;&emsp;如果入参长度len大于缓冲区的容量，那么cbuf中的数据不会被保存到缓冲区中，而是首先将缓冲区buffer已有的数据推送到底层目标输出位置，然后直接把cbuf中的数据写入到底层目标输出位置里。反之，将cbuf中的数据先维护到缓冲区buffer中，如果buffer空间已满，则调用flushBuffer()方法将buffer中的数据推送到底层输出位置中，清空并释放buffer空间以此容纳新的数据，重复该过程直到cbuf中的内容全部被保存到了缓冲区buffer中（可能有部分数据已经被推送到了底层输出位置上）。</p>
+<h4 id="public-void-write-String-s-int-off-int-len"><a href="#public-void-write-String-s-int-off-int-len" class="headerlink" title="public void write(String s, int off, int len)"></a>public void write(String s, int off, int len)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(String s, <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        ensureOpen();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> b = off, t = off + len;</span><br><span class="line">        <span class="keyword">while</span> (b &lt; t) &#123;</span><br><span class="line">            <span class="keyword">int</span> d = min(nChars - nextChar, t - b);</span><br><span class="line">            s.getChars(b, b + d, cb, nextChar);</span><br><span class="line">            b += d;</span><br><span class="line">            nextChar += d;</span><br><span class="line">            <span class="keyword">if</span> (nextChar &gt;= nChars)</span><br><span class="line">                flushBuffer();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将字符串s中的内容写入到底层输出流中（实际上是首先写入到了底层缓冲区buffer中）。通过synchronized保证了多线程环境下的线程安全。第7行代码计算当前缓冲区buffer实际能容纳的s中的内容长度，第8行代码则将s中自off位置起，长度为d的内容复制保存到缓冲区buffer中。之后更新b、nextChar的值，如果缓冲区buffer空间已满则将缓冲区buffer中的内容推送到目标输出位置中。重复处理直到s中自off位置起长度为len的内容全部被保存到缓冲区buffer中（可能有部分数据已经被推送到了底层输出位置上）。</p>
+<h4 id="public-void-newLine"><a href="#public-void-newLine" class="headerlink" title="public void newLine()"></a>public void newLine()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">newLine</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    write(lineSeparator);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;写入一个换行符，实现换行效果。lineSeparator匹配当前运行环境机器的换行符格式。</p>
+<h4 id="public-void-flush"><a href="#public-void-flush" class="headerlink" title="public void flush()"></a>public void flush()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">flush</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        flushBuffer();</span><br><span class="line">        out.flush();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将当前缓冲区buffer中的内容推送到底层输出流。推送完毕后调用底层输出流的flush()方法将数据真正推送到目标输出位置。</p>
+<h4 id="public-void-close-1"><a href="#public-void-close-1" class="headerlink" title="public void close()"></a>public void close()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        <span class="keyword">if</span> (out == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            flushBuffer();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            out.close();</span><br><span class="line">            out = <span class="keyword">null</span>;</span><br><span class="line">            cb = <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;关闭当前输出流。通过使用synchronized关键字保证了多线程环境下的线程安全。如果底层输出流已经关闭，那么直接返回，否则首先将缓冲区buffer中的数据推送到目标输出位置，然后调用底层输出流的close()方法关闭底层输出流并释放占用的相关资源。</p>
+<h2 id="涉及基础知识点"><a href="#涉及基础知识点" class="headerlink" title="涉及基础知识点"></a>涉及基础知识点</h2><ol>
+<li>NIL</li>
+</ol>
+<p>&emsp;</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>NIL</li>
+</ol>
+<p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-BufferedReader-BufferedWriter.html" target="_blank" title="Java I/O 22 - BufferedReader &amp; BufferedWriter">Java I/O 22 - BufferedReader &amp; BufferedWriter</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-BufferedReader-BufferedWriter.html" target="_blank" title="Java I/O 22 - BufferedReader &amp; BufferedWriter">https://marcuseddie.github.io/2018/java-BufferedReader-BufferedWriter.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2018/java-Collection-Stack.html" class="alignleft prev" title="Java Collection 05 - Stack"> 上一篇： Java Collection 05 - Stack</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2018/java-PrintWriter.html" class="alignright next" title="Java I/O 21 - PrintWriter"> 下一篇： Java I/O 21 - PrintWriter</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

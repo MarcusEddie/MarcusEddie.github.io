@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      Java I/O 21 - PrintWriter | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="PrintWriter用来向文本输出流打印经过格式化处理的数据,借助方法write,newLine,print,println,printf,format,append完成操作且不会抛出IOException。">
+<meta name="keywords" content="PrintWriter,write,newLine,print,println,printf,format,append,flush,close">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java I&#x2F;O 21 - PrintWriter | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/java-PrintWriter.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="PrintWriter用来向文本输出流打印经过格式化处理的数据,借助方法write,newLine,print,println,printf,format,append完成操作且不会抛出IOException。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.357Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java I&#x2F;O 21 - PrintWriter | Mr.Muzi">
+<meta name="twitter:description" content="PrintWriter用来向文本输出流打印经过格式化处理的数据,借助方法write,newLine,print,println,printf,format,append完成操作且不会抛出IOException。">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>Java I/O 21 - PrintWriter</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-11-23" class="post-meta__date date">2018-11-23</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;3.1k&emsp;阅读时长:&nbsp;14&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.io.PrintWriter</strong> </em> 的部分笔记，PrintWriter属于处理流的一种，提供了丰富的打印方法用来向目标位置打印输出字符内容。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;PrintWriter用来向文本输出流打印经过格式化处理的数据。它实现了PrintStream中提及的所有打印方法，且这个类处理的都是字符数据，没有提供对字节数据的处理方法。和PrintStream不同的是，PrintWriter只会在调用了<tt>println</tt>, <tt>printf</tt>, 和<tt>format</tt>方法之后才会自动将数据推送到目标输出位置上（如果autoFlush = true）。而且，换行所用的行分隔符也是基于具体的运行机器的。</p>
+<p>&emsp;&emsp;PrintWriter还有一点特殊的地方就是，在调用其他方法都不会抛出I/O异常。如果要确认在调用PrintWriter处理输出数据的过程中是否产生了异常，可以通过调用<code>checkError()</code>进行确认。此这个过程中，如果流还没有关闭，会自动进行flush，同时返回错误状态标识位。</p>
+<p>&emsp;</p>
+<h2 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// PrintWriter</span></span><br><span class="line">--java.lang.Object</span><br><span class="line">  --java.io.Writer</span><br><span class="line">    --java.io.PrintWriter</span><br></pre></td></tr></table></figure>
+<p>&emsp;</p>
+<h2 id="实现接口"><a href="#实现接口" class="headerlink" title="实现接口"></a>实现接口</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">类名</th>
+<th style="text-align:center">实现接口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">PrintWriter</td>
+<td style="text-align:center">Closeable, AutoCloseable,Flushable, Appendable</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>&emsp;</p>
+<h2 id="PushbackReader"><a href="#PushbackReader" class="headerlink" title="PushbackReader"></a>PushbackReader</h2><h3 id="Constructor-Summary"><a href="#Constructor-Summary" class="headerlink" title="Constructor Summary"></a>Constructor Summary</h3><h4 id="public-PrintWriter-Writer-out-boolean-autoFlush"><a href="#public-PrintWriter-Writer-out-boolean-autoFlush" class="headerlink" title="public PrintWriter(Writer out, boolean autoFlush)"></a>public PrintWriter(Writer out, boolean autoFlush)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">PrintWriter</span><span class="params">(Writer out, <span class="keyword">boolean</span> autoFlush)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(out);</span><br><span class="line">    <span class="keyword">this</span>.out = out;</span><br><span class="line">    <span class="keyword">this</span>.autoFlush = autoFlush;</span><br><span class="line">    lineSeparator = java.security.AccessController.doPrivileged(</span><br><span class="line">        <span class="keyword">new</span> sun.security.action.GetPropertyAction(<span class="string">"line.separator"</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个打印输出流。入参是一个字符输出流和一个是否自动flush的标识位，在完成相关字段的赋值后根据代码运行环境初始化一个适用于当前运行机器环境的行分隔符。</p>
+<h4 id="public-PrintWriter-File-file"><a href="#public-PrintWriter-File-file" class="headerlink" title="public PrintWriter(File file)"></a>public PrintWriter(File file)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">PrintWriter</span><span class="params">(File file)</span> <span class="keyword">throws</span> FileNotFoundException </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(<span class="keyword">new</span> BufferedWriter(<span class="keyword">new</span> OutputStreamWriter(<span class="keyword">new</span> FileOutputStream(file))),</span><br><span class="line">         <span class="keyword">false</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始一个打印输出流。将入参文件转成一个BufferWriter，之后调用构造器<strong>PrintWriter(Writer out, boolean autoFlush)</strong>完成初始化操作。</p>
+<h4 id="public-PrintWriter-String-fileName"><a href="#public-PrintWriter-String-fileName" class="headerlink" title="public PrintWriter(String fileName)"></a>public PrintWriter(String fileName)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">PrintWriter</span><span class="params">(String fileName)</span> <span class="keyword">throws</span> FileNotFoundException </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(<span class="keyword">new</span> BufferedWriter(<span class="keyword">new</span> OutputStreamWriter(<span class="keyword">new</span> FileOutputStream(fileName))),</span><br><span class="line">         <span class="keyword">false</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始一个打印输出流。将入参文件路径字符串转成一个含有文件字节输出流的BufferWriter，之后调用构造器<strong>PrintWriter(Writer out, boolean autoFlush)</strong>完成初始化操作。</p>
+<h4 id="public-PrintWriter-Writer-out"><a href="#public-PrintWriter-Writer-out" class="headerlink" title="public PrintWriter (Writer out)"></a>public PrintWriter (Writer out)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">PrintWriter</span> <span class="params">(Writer out)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(out, <span class="keyword">false</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始一个打印输出流。</p>
+<h4 id="public-PrintWriter-OutputStream-out-boolean-autoFlush"><a href="#public-PrintWriter-OutputStream-out-boolean-autoFlush" class="headerlink" title="public PrintWriter(OutputStream out, boolean autoFlush)"></a>public PrintWriter(OutputStream out, boolean autoFlush)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">PrintWriter</span><span class="params">(OutputStream out, <span class="keyword">boolean</span> autoFlush)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(<span class="keyword">new</span> BufferedWriter(<span class="keyword">new</span> OutputStreamWriter(out)), autoFlush);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// save print stream for error propagation</span></span><br><span class="line">    <span class="keyword">if</span> (out <span class="keyword">instanceof</span> java.io.PrintStream) &#123;</span><br><span class="line">        psOut = (PrintStream) out;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;依赖已有的字节输出流初始一个字符打印输出流。</p>
+<h4 id="public-PrintWriter-OutputStream-out"><a href="#public-PrintWriter-OutputStream-out" class="headerlink" title="public PrintWriter(OutputStream out)"></a>public PrintWriter(OutputStream out)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">PrintWriter</span><span class="params">(OutputStream out)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(out, <span class="keyword">false</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;依赖已有的字节输出流初始一个字符打印输出流。通过调用构造器<strong>PrintWriter(OutputStream out, boolean autoFlush)</strong>完成初始化操作。</p>
+<h4 id="private-PrintWriter-Charset-charset-File-file"><a href="#private-PrintWriter-Charset-charset-File-file" class="headerlink" title="private PrintWriter(Charset charset, File file)"></a>private PrintWriter(Charset charset, File file)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="title">PrintWriter</span><span class="params">(Charset charset, File file)</span> <span class="keyword">throws</span> FileNotFoundException </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(<span class="keyword">new</span> BufferedWriter(<span class="keyword">new</span> OutputStreamWriter(<span class="keyword">new</span> FileOutputStream(file), charset)), <span class="keyword">false</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;根据指定的编码字符集和文件对象初始化一个字符打印输出流。私有方法，不对外暴露。</p>
+<h4 id="public-PrintWriter-String-fileName-String-csn"><a href="#public-PrintWriter-String-fileName-String-csn" class="headerlink" title="public PrintWriter(String fileName, String csn)"></a>public PrintWriter(String fileName, String csn)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">PrintWriter</span><span class="params">(String fileName, String csn)</span></span></span><br><span class="line"><span class="function">			<span class="keyword">throws</span> FileNotFoundException, UnsupportedEncodingException </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(toCharset(csn), <span class="keyword">new</span> File(fileName));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;根据指定的编码字符集名称和文件路径字符串信息初始化一个字符打印输出流。通过调用构造器<strong>PrintWriter(Charset charset, File file)</strong>完成初始化操作。</p>
+<h4 id="public-void-PrintWriter-File-file-String-csn"><a href="#public-void-PrintWriter-File-file-String-csn" class="headerlink" title="public void PrintWriter(File file, String csn)"></a>public void PrintWriter(File file, String csn)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">PrintWriter</span><span class="params">(File file, String csn)</span></span></span><br><span class="line"><span class="function">			<span class="keyword">throws</span> FileNotFoundException, UnsupportedEncodingException </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(toCharset(csn), file);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;根据指定的编码字符集名称和文件对象初始化一个字符打印输出流。通过调用构造器<strong>PrintWriter(Charset charset, File file)</strong>完成初始化操作。</p>
+<h3 id="部分方法"><a href="#部分方法" class="headerlink" title="部分方法"></a>部分方法</h3><h4 id="private-static-Charset-toCharset-String-csn"><a href="#private-static-Charset-toCharset-String-csn" class="headerlink" title="private static Charset toCharset(String csn)"></a>private static Charset toCharset(String csn)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> Charset <span class="title">toCharset</span><span class="params">(String csn)</span> <span class="keyword">throws</span> UnsupportedEncodingException </span>&#123;</span><br><span class="line">    Objects.requireNonNull(csn, <span class="string">"charsetName"</span>);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> Charset.forName(csn);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IllegalCharsetNameException | UnsupportedCharsetException unused) &#123;</span><br><span class="line">        <span class="comment">// UnsupportedEncodingException should be thrown</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedEncodingException(csn);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;根据字符集名称取得对应的字符集Charset对象。</p>
+<h4 id="private-void-ensureOpen"><a href="#private-void-ensureOpen" class="headerlink" title="private void ensureOpen()"></a>private void ensureOpen()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureOpen</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (out == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"Stream closed"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;检查当前底层输出流是否开启且可用。</p>
+<h4 id="public-boolean-checkError"><a href="#public-boolean-checkError" class="headerlink" title="public boolean checkError()"></a>public boolean checkError()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">checkError</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (out != <span class="keyword">null</span>) &#123;</span><br><span class="line">        flush();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (out <span class="keyword">instanceof</span> java.io.PrintWriter) &#123;</span><br><span class="line">        PrintWriter pw = (PrintWriter) out;</span><br><span class="line">        <span class="keyword">return</span> pw.checkError();</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (psOut != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> psOut.checkError();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> trouble;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;在当前输出流尚未关闭的情况下将当前输出流中的内容推送到目标输出位置，同时返回异常状态标志位。</p>
+<h4 id="protected-void-setError"><a href="#protected-void-setError" class="headerlink" title="protected void setError()"></a>protected void setError()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">setError</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    trouble = <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;显示设置异常状态标志位为true。</p>
+<h4 id="protected-void-clearError"><a href="#protected-void-clearError" class="headerlink" title="protected void clearError()"></a>protected void clearError()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">clearError</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    trouble = <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;清除异常状态标志位。</p>
+<h4 id="public-void-write-int-c"><a href="#public-void-write-int-c" class="headerlink" title="public void write(int c)"></a>public void write(int c)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">int</span> c)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">            ensureOpen();</span><br><span class="line">            out.write(c);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (InterruptedIOException x) &#123;</span><br><span class="line">        Thread.currentThread().interrupt();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (IOException x) &#123;</span><br><span class="line">        trouble = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;向底层输出流中写入一个字符数据。通过使用synchronized关键字可以保证多线程环境下的线程安全。具体实现则是通过直接调用底层输出流的write()方法来完成写入操作。如果期间出现了IOException，那么异常不返回，设置异常状态标志位为true。</p>
+<h4 id="public-void-write-char-buf-int-off-int-len"><a href="#public-void-write-char-buf-int-off-int-len" class="headerlink" title="public void write(char buf[], int off, int len)"></a>public void write(char buf[], int off, int len)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">char</span> buf[], <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">            ensureOpen();</span><br><span class="line">            out.write(buf, off, len);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (InterruptedIOException x) &#123;</span><br><span class="line">        Thread.currentThread().interrupt();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (IOException x) &#123;</span><br><span class="line">        trouble = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">char</span> buf[])</span> </span>&#123;</span><br><span class="line">    write(buf, <span class="number">0</span>, buf.length);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;向底层输出流中写入字符数组buf中自off位置起长度为len的内容。通过使用synchronized关键字可以保证多线程环境下的线程安全。具体实现则是通过直接调用底层输出流的write(char[] cbuf, int off, int len)方法来完成写入操作。如果期间出现了IOException，那么异常不返回，设置异常状态标志位为true。</p>
+<h4 id="public-void-write-String-s-int-off-int-len"><a href="#public-void-write-String-s-int-off-int-len" class="headerlink" title="public void write(String s, int off, int len)"></a>public void write(String s, int off, int len)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(String s, <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">            ensureOpen();</span><br><span class="line">            out.write(s, off, len);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (InterruptedIOException x) &#123;</span><br><span class="line">        Thread.currentThread().interrupt();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (IOException x) &#123;</span><br><span class="line">        trouble = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">    write(s, <span class="number">0</span>, s.length());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;向底层输出流中写入字符串s中自off位置起长度为len的内容。通过使用synchronized关键字可以保证多线程环境下的线程安全。具体实现则是通过直接调用底层输出流的write(String str, int off, int len)方法来完成写入操作。如果期间出现了IOException，那么异常不返回，设置异常状态标志位为true。</p>
+<h4 id="private-void-newLine"><a href="#private-void-newLine" class="headerlink" title="private void newLine()"></a>private void newLine()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">newLine</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">            ensureOpen();</span><br><span class="line">            out.write(lineSeparator);</span><br><span class="line">            <span class="keyword">if</span> (autoFlush)</span><br><span class="line">                out.flush();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (InterruptedIOException x) &#123;</span><br><span class="line">        Thread.currentThread().interrupt();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (IOException x) &#123;</span><br><span class="line">        trouble = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;另起一行写内容。如果设置了自动推送数据，那么就将当前底层输出流中含有的字符数据推送到目标输出位置。</p>
+<h4 id="public-void-print-args-…"><a href="#public-void-print-args-…" class="headerlink" title="public void print(args …)"></a>public void print(args …)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 打印boolean值，如果值为true，那么则打印“true”，否则打印“false”</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">boolean</span> b)</span> </span>&#123;</span><br><span class="line">    write(b ? <span class="string">"true"</span> : <span class="string">"false"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个字符</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">    write(c);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个数字</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">    write(String.valueOf(i));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个long型数字</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">long</span> l)</span> </span>&#123;</span><br><span class="line">    write(String.valueOf(l));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个单精度浮点数</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">float</span> f)</span> </span>&#123;</span><br><span class="line">    write(String.valueOf(f));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个双精度浮点数</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">double</span> d)</span> </span>&#123;</span><br><span class="line">    write(String.valueOf(d));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个字符数组</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">char</span> s[])</span> </span>&#123;</span><br><span class="line">    write(s);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个字符串，如果入参字符串为null，则打印“null”</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (s == <span class="keyword">null</span>) &#123;</span><br><span class="line">        s = <span class="string">"null"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    write(s);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个对象obj</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(Object obj)</span> </span>&#123;</span><br><span class="line">    write(String.valueOf(obj));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="public-void-println-args"><a href="#public-void-println-args" class="headerlink" title="public void println(args..)"></a>public void println(args..)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 换行</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">println</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    newLine();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个boolean值并换行</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">println</span><span class="params">(<span class="keyword">boolean</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        print(x);</span><br><span class="line">        println();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个字符并换行</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">println</span><span class="params">(<span class="keyword">char</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        print(x);</span><br><span class="line">        println();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个数字并换行</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">println</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        print(x);</span><br><span class="line">        println();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个long型数字并换行</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">println</span><span class="params">(<span class="keyword">long</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        print(x);</span><br><span class="line">        println();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个单精度浮点数值并换行</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">println</span><span class="params">(<span class="keyword">float</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        print(x);</span><br><span class="line">        println();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个双精度浮点数值并换行</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">println</span><span class="params">(<span class="keyword">double</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        print(x);</span><br><span class="line">        println();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个字符数组并换行</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">println</span><span class="params">(<span class="keyword">char</span> x[])</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        print(x);</span><br><span class="line">        println();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个字符串并换行</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">println</span><span class="params">(String x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        print(x);</span><br><span class="line">        println();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印一个对象obj并换行</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">println</span><span class="params">(Object x)</span> </span>&#123;</span><br><span class="line">    String s = String.valueOf(x);</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        print(s);</span><br><span class="line">        println();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="public-PrintWriter-printf-String-format-Object-…-args"><a href="#public-PrintWriter-printf-String-format-Object-…-args" class="headerlink" title="public PrintWriter printf(String format, Object … args)"></a>public PrintWriter printf(String format, Object … args)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> PrintWriter <span class="title">printf</span><span class="params">(String format, Object ... args)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> format(format, args);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;按照format指定的格式将args中的数据内容打印输出到底层输出流中。实际调用后执行效果同方法<strong>format(String format, Object …  args)</strong>。</p>
+<h4 id="public-PrintWriter-format-String-format-Object-…-args"><a href="#public-PrintWriter-format-String-format-Object-…-args" class="headerlink" title="public PrintWriter format(String format, Object … args)"></a>public PrintWriter format(String format, Object … args)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> PrintWriter <span class="title">format</span><span class="params">(String format, Object ... args)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">            ensureOpen();</span><br><span class="line">            <span class="keyword">if</span> ((formatter == <span class="keyword">null</span>)</span><br><span class="line">                || (formatter.locale() != Locale.getDefault()))</span><br><span class="line">                formatter = <span class="keyword">new</span> Formatter(<span class="keyword">this</span>);</span><br><span class="line">            formatter.format(Locale.getDefault(), format, args);</span><br><span class="line">            <span class="keyword">if</span> (autoFlush)</span><br><span class="line">                out.flush();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InterruptedIOException x) &#123;</span><br><span class="line">        Thread.currentThread().interrupt();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException x) &#123;</span><br><span class="line">        trouble = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;按照format指定的格式将args中带有的内容打印输出到底层输出流中。在根据格式进行内容拼装时采用的运行机器默认的语言环境（Locale）。如果允许自动推送数据，那么就将当前底层输出流中含有的字符数据推送到目标输出位置。</p>
+<h4 id="public-PrintWriter-printf-Locale-l-String-format-Object-…-args"><a href="#public-PrintWriter-printf-Locale-l-String-format-Object-…-args" class="headerlink" title="public PrintWriter printf(Locale l, String format, Object … args)"></a>public PrintWriter printf(Locale l, String format, Object … args)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> PrintWriter <span class="title">printf</span><span class="params">(Locale l, String format, Object ... args)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> format(l, format, args);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;按照format指定的格式、Locale指定的语言环境将args中的数据内容打印输出到底层输出流中。实际调用后执行效果同方法<strong>format(Locale l, String format, Object …  args)</strong>。</p>
+<h4 id="public-PrintWriter-format-Locale-l-String-format-Object-…-args"><a href="#public-PrintWriter-format-Locale-l-String-format-Object-…-args" class="headerlink" title="public PrintWriter format(Locale l, String format, Object … args)"></a>public PrintWriter format(Locale l, String format, Object … args)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> PrintWriter <span class="title">format</span><span class="params">(Locale l, String format, Object ... args)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">            ensureOpen();</span><br><span class="line">            <span class="keyword">if</span> ((formatter == <span class="keyword">null</span>) || (formatter.locale() != l))</span><br><span class="line">                formatter = <span class="keyword">new</span> Formatter(<span class="keyword">this</span>, l);</span><br><span class="line">            formatter.format(l, format, args);</span><br><span class="line">            <span class="keyword">if</span> (autoFlush)</span><br><span class="line">                out.flush();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InterruptedIOException x) &#123;</span><br><span class="line">        Thread.currentThread().interrupt();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException x) &#123;</span><br><span class="line">        trouble = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;按照format指定的格式、Locale指定的语言环境将args中带有的内容打印输出到底层输出流中。在根据格式进行内容拼装时采用的运行机器默认的语言环境（Locale）。如果允许自动推送数据，那么就将当前底层输出流中含有的字符数据推送到目标输出位置。</p>
+<h4 id="public-PrintWriter-append-CharSequence-csq"><a href="#public-PrintWriter-append-CharSequence-csq" class="headerlink" title="public PrintWriter append(CharSequence csq)"></a>public PrintWriter append(CharSequence csq)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> PrintWriter <span class="title">append</span><span class="params">(CharSequence csq)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (csq == <span class="keyword">null</span>)</span><br><span class="line">        write(<span class="string">"null"</span>);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        write(csq.toString());</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将CharSequence对象中含有的内容追加输出到底层输出流中。实际调用后执行效果同方法<strong>write(String s)</strong>。</p>
+<h4 id="public-PrintWriter-append-CharSequence-csq-int-start-int-end"><a href="#public-PrintWriter-append-CharSequence-csq-int-start-int-end" class="headerlink" title="public PrintWriter append(CharSequence csq, int start, int end)"></a>public PrintWriter append(CharSequence csq, int start, int end)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> PrintWriter <span class="title">append</span><span class="params">(CharSequence csq, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">    CharSequence cs = (csq == <span class="keyword">null</span> ? <span class="string">"null"</span> : csq);</span><br><span class="line">    write(cs.subSequence(start, end).toString());</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将CharSequence对象中自start至end之间的内容追加输出到底层输出流中。实际调用后执行效果同方法<strong>write(String s)</strong>。</p>
+<h4 id="public-PrintWriter-append-char-c"><a href="#public-PrintWriter-append-char-c" class="headerlink" title="public PrintWriter append(char c)"></a>public PrintWriter append(char c)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> PrintWriter <span class="title">append</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">    write(c);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将入参字符c追加输出到底层输出流中。实际调用后执行效果同方法<strong>write(int c)</strong>。</p>
+<h4 id="public-void-flush"><a href="#public-void-flush" class="headerlink" title="public void flush()"></a>public void flush()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">flush</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">            ensureOpen();</span><br><span class="line">            out.flush();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException x) &#123;</span><br><span class="line">        trouble = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将当前输出流中存储的数据推送到目标输出位置。通过使用synchronized关键字保证了多线程环境下的线程安全。在底层输出流开启的情况下通过调用底层输出流的flush()方法将数据推送到输出流指定的目标输出位置。如果在过程中出现了异常，当前方法不会向上抛出异常，而是将<strong>trouble</strong>字段标记为true，通过checkError()方法了解当前方法是否出现了异常。</p>
+<h4 id="public-void-close"><a href="#public-void-close" class="headerlink" title="public void close()"></a>public void close()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">            <span class="keyword">if</span> (out == <span class="keyword">null</span>)</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            out.close();</span><br><span class="line">            out = <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException x) &#123;</span><br><span class="line">        trouble = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;关闭当前输出流。通过使用synchronized关键字保证了多线程环境下的线程安全。如果底层输出流已经关闭，那么直接返回，否则通过调用底层输出流的close()方法关闭底层输出流并释放占用的相关资源。如果在过程中出现了异常，当前方法不会向上抛出异常，而是将<strong>trouble</strong>字段标记为true，通过checkError()方法了解当前方法是否出现了异常。</p>
+<p>&emsp;</p>
+<h2 id="涉及基础知识点"><a href="#涉及基础知识点" class="headerlink" title="涉及基础知识点"></a>涉及基础知识点</h2><ol>
+<li>NIL</li>
+</ol>
+<p>&emsp;</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>NIL</li>
+</ol>
+<p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-PrintWriter.html" target="_blank" title="Java I/O 21 - PrintWriter">Java I/O 21 - PrintWriter</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-PrintWriter.html" target="_blank" title="Java I/O 21 - PrintWriter">https://marcuseddie.github.io/2018/java-PrintWriter.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2018/java-BufferedReader-BufferedWriter.html" class="alignleft prev" title="Java I/O 22 - BufferedReader &amp; BufferedWriter"> 上一篇： Java I/O 22 - BufferedReader &amp; Buff...</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2018/java-PushbackReader.html" class="alignright next" title="Java I/O 20 - PushbackReader"> 下一篇： Java I/O 20 - PushbackReader</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

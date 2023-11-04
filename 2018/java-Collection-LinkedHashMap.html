@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      Java Map 04 - LinkedHashMap | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="LinkedHashMap是HashMap的扩展，底层依赖数组+双向链表的形式完成了元素的存储和查找，并且该实现返回的元素是有序的，transfer,init,containsValue,get,clear,addEntry,createEntry,accessOrder。">
+<meta name="keywords" content="LinkedHashMap,transfer,init,containsValue,get,clear,addEntry,createEntry,accessOrder">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java Map 04 - LinkedHashMap | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/java-Collection-LinkedHashMap.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="LinkedHashMap是HashMap的扩展，底层依赖数组+双向链表的形式完成了元素的存储和查找，并且该实现返回的元素是有序的，transfer,init,containsValue,get,clear,addEntry,createEntry,accessOrder。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1544702029/BlogImages/java-collection/map/Map-LinkedHashMap-underlying-data-structure-example.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1544701064/BlogImages/java-collection/map/Map-LinkedHashMap-Entry-example.png">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.353Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java Map 04 - LinkedHashMap | Mr.Muzi">
+<meta name="twitter:description" content="LinkedHashMap是HashMap的扩展，底层依赖数组+双向链表的形式完成了元素的存储和查找，并且该实现返回的元素是有序的，transfer,init,containsValue,get,clear,addEntry,createEntry,accessOrder。">
+<meta name="twitter:image" content="https://res.cloudinary.com/jknight/image/upload/v1544702029/BlogImages/java-collection/map/Map-LinkedHashMap-underlying-data-structure-example.png">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>Java Map 04 - LinkedHashMap</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-12-08" class="post-meta__date date">2018-12-08</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;3.8k&emsp;阅读时长:&nbsp;16&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java集合/">Java集合</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.util.LinkedHashMap&lt;K, V&gt;</strong> </em>的部分笔记，LinkedHashMap是HashMap的扩展，底层依赖数组+双向链表的形式完成了元素的存储和查找，并且该实现返回的元素是有序的。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;LinkedHashMap是一个可预先确定键值对遍历顺序的map集合实现。直接继承于HashMap，但是和HashMap不同的是，LinkedHashMap底层多了一个双向链表来链接所有的键值对实体对象。于是乎， LinkedHashMap的元素迭代顺序是由双向链表决定和维护的，而双向链表的顺序也反映了键值对被加入集合时的顺序，所以也可以理解成元素的插入顺序。如果向LinkedHashMap集合中插入一个已经存在的键值对，那么其在集合中的顺序不会因此而改变。</p>
+<p>&emsp;&emsp;LinkedHashMap提供了一个特殊的构造方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LinkedHashMap(<span class="keyword">int</span> initialCapacity, <span class="keyword">float</span> loadFactor, <span class="keyword">boolean</span> accessOrder)</span><br></pre></td></tr></table></figure>
+<p>该方法决定了元素的遍历顺序，因此该构造方法可以被用于LRU算法中。如果accessOrder被定义为true，那么在迭代时将不会按照插入顺序来遍历访问，而是按照访问顺序来遍历迭代。访问顺序的特点是最近访问的元素会最后被遍历到。这个构造方法在LRU相关实现中有用，就LinkedHashMap本身而言，用途不是特别大。</p>
+<p>&emsp;&emsp;LinkedHashMap提供的<strong>removeEldestEntry(Entry eldest)</strong>方法可以被子类覆盖，以便更好的实现移除最旧的键值对实体。除此之外，LinkedHashMap提供并实现了Map接口声明的所有方法，也允许null的加入。和HashMap一样，LinkedHashMap保证了插入，是否存在判断和移除操作可以在常量时间内完成。</p>
+<p>&emsp;&emsp;和HashMap一样，LinkedHashMap的性能影响因子也是两个参数：initialCapacity和loadFactor。但是initialCapacity对LinkedHashMap的查询/遍历性能影响小于HashMap，因为LinkedHashMap底层存在一个双向链表，该双向链表链接了map集合中的所有元素，所以迭代器在遍历时不会与数组进行交互而是直接遍历双向链表中的键值对实体，所以initialCapacity对LinkedHashMap无影响。</p>
+<p>&emsp;&emsp;LinkedHashMap是一个非线程安全的实现类。所以如果需要在多线程环境中使用LinkedHashMap，需要付诸额外的操作来保证多线程环境下的线程安全特性。一个常用的执行方式如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Map m = Collections.synchronizedMap(<span class="keyword">new</span> LinkedHashMap(...));</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;LinkedHashMap同样支持快速失败检查，但是并不保证可以一定捕捉到快速失败检查。</p>
+<p>&emsp;&emsp;LinkedHashMap的底层数据结构关系如图1所示：</p>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1544702029/BlogImages/java-collection/map/Map-LinkedHashMap-underlying-data-structure-example.png" alt></p>
+<div align="center">
+<div align="center">图 - 1</div>
+&emsp;
+</div>
+
+<p>&emsp;</p>
+<h2 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// LinkedHashMap&lt;E&gt;</span></span><br><span class="line">--java.lang.Object</span><br><span class="line">  --java.util.AbstractMap&lt;K,V&gt;</span><br><span class="line">    --java.util.HashMap&lt;K,V&gt;</span><br><span class="line">      --java.util.LinkedHashMap&lt;K,V&gt;</span><br></pre></td></tr></table></figure>
+<p>&emsp;</p>
+<h2 id="实现接口"><a href="#实现接口" class="headerlink" title="实现接口"></a>实现接口</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>类名</th>
+<th>实现接口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LinkedHashMap&lt;E&gt;</td>
+<td>Serializable, Cloneable,Map&lt;K,V&gt;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>&emsp;</p>
+<h2 id="LinkedHashMap"><a href="#LinkedHashMap" class="headerlink" title="LinkedHashMap"></a>LinkedHashMap</h2><h3 id="Constructor-Summary"><a href="#Constructor-Summary" class="headerlink" title="Constructor Summary"></a>Constructor Summary</h3><h4 id="public-LinkedHashMap-int-initialCapacity-float-loadFactor"><a href="#public-LinkedHashMap-int-initialCapacity-float-loadFactor" class="headerlink" title="public LinkedHashMap(int initialCapacity, float loadFactor)"></a>public LinkedHashMap(int initialCapacity, float loadFactor)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">LinkedHashMap</span><span class="params">(<span class="keyword">int</span> initialCapacity, <span class="keyword">float</span> loadFactor)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(initialCapacity, loadFactor);</span><br><span class="line">    accessOrder = <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个空HashMap集合，集合的初始容量和加载因子由initialCapacity和loadFactor确认。调用父类HashMap的同名构造方法完成初始化操作。通过当前构造方法得到的map集合按照键值对实体插入顺序进行访问。</p>
+<h4 id="public-LinkedHashMap-int-initialCapacity"><a href="#public-LinkedHashMap-int-initialCapacity" class="headerlink" title="public LinkedHashMap(int initialCapacity)"></a>public LinkedHashMap(int initialCapacity)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">LinkedHashMap</span><span class="params">(<span class="keyword">int</span> initialCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(initialCapacity);</span><br><span class="line">    accessOrder = <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个空HashMap集合，集合的初始容量由initialCapacity和确认，加载因子默认为0.75。调用父类HashMap的同名构造方法完成初始化操作。通过当前构造方法得到的map集合按照键值对实体插入顺序进行访问。</p>
+<h4 id="public-LinkedHashMap"><a href="#public-LinkedHashMap" class="headerlink" title="public LinkedHashMap()"></a>public LinkedHashMap()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">LinkedHashMap</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>();</span><br><span class="line">    accessOrder = <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个空HashMap集合，集合的初始容量默认为16，加载因子默认为0.75。调用父类HashMap的同名构造方法完成初始化操作。通过当前构造方法得到的map集合按照键值对实体插入顺序进行访问。</p>
+<h4 id="public-LinkedHashMap-Map-lt-extends-K-extends-V-gt-m"><a href="#public-LinkedHashMap-Map-lt-extends-K-extends-V-gt-m" class="headerlink" title="public LinkedHashMap(Map&lt;? extends K, ? extends V&gt; m)"></a>public LinkedHashMap(Map&lt;? extends K, ? extends V&gt; m)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">LinkedHashMap</span><span class="params">(Map&lt;? extends K, ? extends V&gt; m)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(m);</span><br><span class="line">    accessOrder = <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个空HashMap集合，并将m中的键值对保存到初始化的map中。在初始化过程中，集合的容量大小由m存储的键值对数量决定，保证空map集合可以将m中的键值对全部存储下来，且默认加载因子是0.75。调用父类HashMap的同名构造方法完成初始化操作。通过当前构造方法得到的map集合按照键值对实体插入顺序进行访问。</p>
+<h4 id="public-LinkedHashMap-int-initialCapacity-float-loadFactor-boolean-accessOrder"><a href="#public-LinkedHashMap-int-initialCapacity-float-loadFactor-boolean-accessOrder" class="headerlink" title="public LinkedHashMap(int initialCapacity, float loadFactor, boolean accessOrder)"></a>public LinkedHashMap(int initialCapacity, float loadFactor, boolean accessOrder)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">LinkedHashMap</span><span class="params">(<span class="keyword">int</span> initialCapacity, <span class="keyword">float</span> loadFactor, </span></span></span><br><span class="line"><span class="function"><span class="params">                     <span class="keyword">boolean</span> accessOrder)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(initialCapacity, loadFactor);</span><br><span class="line">    <span class="keyword">this</span>.accessOrder = accessOrder;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个空HashMap集合，集合的初始容量和加载因子由initialCapacity和loadFactor确认。调用父类HashMap的同名构造方法完成初始化操作。调用该构造方法返回的LinkedHashMap实例会按照访问顺序而不是插入顺序来完成键值对实体元素的迭代。</p>
+<h3 id="部分方法"><a href="#部分方法" class="headerlink" title="部分方法"></a>部分方法</h3><h4 id="void-init"><a href="#void-init" class="headerlink" title="void init()"></a>void init()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    header = <span class="keyword">new</span> Entry&lt;&gt;(-<span class="number">1</span>, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line">    header.before = header.after = header;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;在构造方法或者clone、readObject等方法执行过程中调用，用来完成LinkedHashMap底层双向链表的初始化操作。</p>
+<p>&emsp;&emsp;该方法执行过程中会首先实例化一个双向链表的头部节点，然后将头部节点的前驱和后继节点都指向自身。</p>
+<h4 id="void-transfer-HashMap-Entry-newTable-boolean-rehash"><a href="#void-transfer-HashMap-Entry-newTable-boolean-rehash" class="headerlink" title="void transfer(HashMap.Entry[] newTable, boolean rehash)"></a>void transfer(HashMap.Entry[] newTable, boolean rehash)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">transfer</span><span class="params">(HashMap.Entry[] newTable, <span class="keyword">boolean</span> rehash)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> newCapacity = newTable.length;</span><br><span class="line">    <span class="keyword">for</span> (Entry&lt;K,V&gt; e = header.after; e != header; e = e.after) &#123;</span><br><span class="line">        <span class="keyword">if</span> (rehash)</span><br><span class="line">            e.hash = (e.key == <span class="keyword">null</span>) ? <span class="number">0</span> : hash(e.key);</span><br><span class="line">        <span class="keyword">int</span> index = indexFor(e.hash, newCapacity);</span><br><span class="line">        e.next = newTable[index];</span><br><span class="line">        newTable[index] = e;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;完成键值对实体从旧数组到新数组的迁移。</p>
+<p>&emsp;&emsp;整个过程相对来说还是比较简单的。具体流程如下：</p>
+<ol>
+<li>从头部节点开始遍历，取得一个键值对实体对象，根据其hash值计算在新数组中的下标位置（如果有必要的话重新计算hash）；</li>
+<li>如果该下标位置尚未指向链表集合，那么该节点就是该下标位置的第一个节点；</li>
+<li>否则将该节点加入到该下标位置的链表集合的头部位置上。</li>
+</ol>
+<p>&emsp;&emsp;对所有节点执行上述流程，直至头部节点header的前驱节点也被加入到了新数组中的某个位置，此时认为旧数组上的所有元素都被加入到了新数组上，执行结束返回。</p>
+<h4 id="public-boolean-containsValue-Object-value"><a href="#public-boolean-containsValue-Object-value" class="headerlink" title="public boolean containsValue(Object value)"></a>public boolean containsValue(Object value)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">containsValue</span><span class="params">(Object value)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Overridden to take advantage of faster iterator</span></span><br><span class="line">    <span class="keyword">if</span> (value==<span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (Entry e = header.after; e != header; e = e.after)</span><br><span class="line">            <span class="keyword">if</span> (e.value==<span class="keyword">null</span>)</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (Entry e = header.after; e != header; e = e.after)</span><br><span class="line">            <span class="keyword">if</span> (value.equals(e.value))</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;如果当前map集合中存在匹配value的键值对实体，那么返回true，否则返回false。</p>
+<p>&emsp;&emsp;从header节点指向的第一个节点开始遍历，根据value是否为null执行不同的判断条件查找可以和value吻合的键值对实体。</p>
+<h4 id="public-V-get-Object-key"><a href="#public-V-get-Object-key" class="headerlink" title="public V get(Object key)"></a>public V get(Object key)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> V <span class="title">get</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">    Entry&lt;K,V&gt; e = (Entry&lt;K,V&gt;)getEntry(key);</span><br><span class="line">    <span class="keyword">if</span> (e == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    e.recordAccess(<span class="keyword">this</span>);</span><br><span class="line">    <span class="keyword">return</span> e.value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回当前map集合中匹配key的键值对实体，如果未找到可以匹配的对象，那么返回null。</p>
+<p>&emsp;&emsp;如果可以找到匹配的键值对实体，那么会把该键值对实体移到双向链表的结尾位置（也就是header节点的前驱节点位置上）。</p>
+<h4 id="public-void-clear"><a href="#public-void-clear" class="headerlink" title="public void clear()"></a>public void clear()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clear</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.clear();</span><br><span class="line">    header.before = header.after = header;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;清空当前map集合，同时将header指针初始化。</p>
+<h4 id="Iterator-lt-K-gt-newKeyIterator"><a href="#Iterator-lt-K-gt-newKeyIterator" class="headerlink" title="Iterator&lt;K&gt; newKeyIterator()"></a>Iterator&lt;K&gt; newKeyIterator()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Iterator&lt;K&gt; <span class="title">newKeyIterator</span><span class="params">()</span>   </span>&#123; <span class="keyword">return</span> <span class="keyword">new</span> KeyIterator();   &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">KeyIterator</span> <span class="keyword">extends</span> <span class="title">LinkedHashIterator</span>&lt;<span class="title">K</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> K <span class="title">next</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> nextEntry().getKey(); &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;构建一个遍历当前map集合中key的迭代器。KeyIterator基于LinkedHashMap.LinkedHashIterator&lt;V&gt;实现。</p>
+<h4 id="Iterator-lt-V-gt-newValueIterator"><a href="#Iterator-lt-V-gt-newValueIterator" class="headerlink" title="Iterator&lt;V&gt; newValueIterator()"></a>Iterator&lt;V&gt; newValueIterator()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Iterator&lt;V&gt; <span class="title">newValueIterator</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> <span class="keyword">new</span> ValueIterator(); &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">ValueIterator</span> <span class="keyword">extends</span> <span class="title">LinkedHashIterator</span>&lt;<span class="title">V</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> V <span class="title">next</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> nextEntry().value; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;构建一个遍历当前map集合中value的迭代器。ValueIterator基于LinkedHashMap.LinkedHashIterator&lt;V&gt;实现。</p>
+<h4 id="Iterator-lt-Map-Entry-lt-K-V-gt-gt-newEntryIterator"><a href="#Iterator-lt-Map-Entry-lt-K-V-gt-gt-newEntryIterator" class="headerlink" title="Iterator&lt;Map.Entry&lt;K,V&gt;&gt; newEntryIterator()"></a>Iterator&lt;Map.Entry&lt;K,V&gt;&gt; newEntryIterator()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Iterator&lt;Map.Entry&lt;K,V&gt;&gt; newEntryIterator() &#123; <span class="keyword">return</span> <span class="keyword">new</span> EntryIterator(); &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">EntryIterator</span> <span class="keyword">extends</span> <span class="title">LinkedHashIterator</span>&lt;<span class="title">Map</span>.<span class="title">Entry</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt;&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> Map.<span class="function">Entry&lt;K,V&gt; <span class="title">next</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> nextEntry(); &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;构建一个遍历当前map集合中键值对的迭代器。EntryIterator基于LinkedHashMap.LinkedHashIterator&lt;V&gt;实现。</p>
+<h4 id="void-addEntry-int-hash-K-key-V-value-int-bucketIndex"><a href="#void-addEntry-int-hash-K-key-V-value-int-bucketIndex" class="headerlink" title="void addEntry(int hash, K key, V value, int bucketIndex)"></a>void addEntry(int hash, K key, V value, int bucketIndex)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEntry</span><span class="params">(<span class="keyword">int</span> hash, K key, V value, <span class="keyword">int</span> bucketIndex)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.addEntry(hash, key, value, bucketIndex);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Remove eldest entry if instructed</span></span><br><span class="line">    Entry&lt;K,V&gt; eldest = header.after;</span><br><span class="line">    <span class="keyword">if</span> (removeEldestEntry(eldest)) &#123;</span><br><span class="line">        removeEntryForKey(eldest.key);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;构建一个键值对实体并加入到map集合中对应下标位置上的链表集合中。调用的是HashMap同名方法。在执行过程中，如果空间不足会调用<strong>resize(int newCapacity)</strong>进行扩容，扩容完成后将旧数组上的键值对实体迁移到新数组上时，调用的是LinkedHashMap覆盖的transfer(HashMap.Entry[] newTable, boolean rehash)方法。最后加入键值对实体时，调用LinkedHashMap覆盖的createEntry(int hash, K key, V value, int bucketIndex)方法完成操作。</p>
+<p>&emsp;&emsp;在将该键值对接入双向链表的过程中，该键值对会被加入到双向链表的尾部节点（即header的前驱节点）。</p>
+<p>&emsp;&emsp;最后删除当前map集合中存在时间最久的键值对实体，由于LinkedHashMap实现类中的方法removeEldestEntry(Map.Entry&lt;K,V&gt; eldest)直接返回false，所以第7行代码不会真正执行。</p>
+<h4 id="void-createEntry-int-hash-K-key-V-value-int-bucketIndex"><a href="#void-createEntry-int-hash-K-key-V-value-int-bucketIndex" class="headerlink" title="void createEntry(int hash, K key, V value, int bucketIndex)"></a>void createEntry(int hash, K key, V value, int bucketIndex)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">createEntry</span><span class="params">(<span class="keyword">int</span> hash, K key, V value, <span class="keyword">int</span> bucketIndex)</span> </span>&#123;</span><br><span class="line">    HashMap.Entry&lt;K,V&gt; old = table[bucketIndex];</span><br><span class="line">    Entry&lt;K,V&gt; e = <span class="keyword">new</span> Entry&lt;&gt;(hash, key, value, old);</span><br><span class="line">    table[bucketIndex] = e;</span><br><span class="line">    e.addBefore(header);</span><br><span class="line">    size++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;创建一个键值对实体并将该实体加入到当前map集合中。第2 ~4行代码将实体加入到当前map集合中底层数组对应下标位置上的链表集合中。第5行代码将当前新创建的节点加入到双向链表的尾部位置。</p>
+<h4 id="protected-boolean-removeEldestEntry-Map-Entry-lt-K-V-gt-eldest"><a href="#protected-boolean-removeEldestEntry-Map-Entry-lt-K-V-gt-eldest" class="headerlink" title="protected boolean removeEldestEntry(Map.Entry&lt;K,V&gt; eldest)"></a>protected boolean removeEldestEntry(Map.Entry&lt;K,V&gt; eldest)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">removeEldestEntry</span><span class="params">(Map.Entry&lt;K,V&gt; eldest)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;如果当前map集合需要移除存在时间最久远的键值对实体就返回true，否则返回false。该方法被put或者putAll调用，用来在加入元素的过程中删除存在时间最久的元素。在LinkedHashMap中，该方法简单的返回false表示不会删除当前集合的双向链表中的尾部元素节点。</p>
+<p>&emsp;</p>
+<h2 id="Entry-lt-K-V-gt"><a href="#Entry-lt-K-V-gt" class="headerlink" title="Entry&lt;K,V&gt;"></a>Entry&lt;K,V&gt;</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Entry</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; <span class="keyword">extends</span> <span class="title">HashMap</span>.<span class="title">Entry</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; </span>&#123;</span><br><span class="line">    <span class="comment">// These fields comprise the doubly linked list used for iteration.</span></span><br><span class="line">    Entry&lt;K,V&gt; before, after;</span><br><span class="line"></span><br><span class="line">    Entry(<span class="keyword">int</span> hash, K key, V value, HashMap.Entry&lt;K,V&gt; next) &#123;</span><br><span class="line">        <span class="keyword">super</span>(hash, key, value, next);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Removes this entry from the linked list.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        before.after = after;</span><br><span class="line">        after.before = before;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Inserts this entry before the specified existing entry in the list.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">addBefore</span><span class="params">(Entry&lt;K,V&gt; existingEntry)</span> </span>&#123;</span><br><span class="line">        after  = existingEntry;</span><br><span class="line">        before = existingEntry.before;</span><br><span class="line">        before.after = <span class="keyword">this</span>;</span><br><span class="line">        after.before = <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * This method is invoked by the superclass whenever the value</span></span><br><span class="line"><span class="comment">     * of a pre-existing entry is read by Map.get or modified by Map.set.</span></span><br><span class="line"><span class="comment">     * If the enclosing Map is access-ordered, it moves the entry</span></span><br><span class="line"><span class="comment">     * to the end of the list; otherwise, it does nothing.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">recordAccess</span><span class="params">(HashMap&lt;K,V&gt; m)</span> </span>&#123;</span><br><span class="line">        LinkedHashMap&lt;K,V&gt; lm = (LinkedHashMap&lt;K,V&gt;)m;</span><br><span class="line">        <span class="keyword">if</span> (lm.accessOrder) &#123;</span><br><span class="line">            lm.modCount++;</span><br><span class="line">            remove();</span><br><span class="line">            addBefore(lm.header);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">recordRemoval</span><span class="params">(HashMap&lt;K,V&gt; m)</span> </span>&#123;</span><br><span class="line">        remove();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;LinkedHashMap中的内部静态类Entry在继承了HashMap.Entry内容的基础上多了两个字段—Entry<k,v> before和Entry<k,v>  after。这两个字段是LinkedHashMap底层双向链表结构实现的基础。具体结构如图2所示：</k,v></k,v></p>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1544701064/BlogImages/java-collection/map/Map-LinkedHashMap-Entry-example.png" alt></p>
+<div align="center">
+<div align="center">图 - 2</div>
+&emsp;
+</div>
+
+<p>&emsp;&emsp;LinkedHashMap.Entry的构造方法直接调用其父类的同名方法完成键值对实体实例化操作。</p>
+<p>&emsp;&emsp;通过调用<strong>remove()</strong>方法可以将当前键值对节点从map集合的双向链表中移除，实现思想主要参考了双向链表关于节点移除的操作思想。</p>
+<p>&emsp;&emsp;<strong>addBefore(Entry&lt;K,V&gt; existingEntry)</strong>方法用来将当前键值对节点加入到existingEntry节点之前。</p>
+<p>&emsp;&emsp;<strong>recordAccess(HashMap&lt;K,V&gt; m)</strong>方法会在键值对实体加入map集合或者通过LinkedHashMap.get(Object key)方法访问某个键值对实体时调用。如果当前LinkedHashMap的访问顺序不是插入顺序，那么该方法会将被插入的（或者被访问的）键值对实体对象从当前位置删除并移动到双向链表的尾部位置（也就是header的前驱）。如果当前map集合的访问顺序是插入顺序，那么不做任何处理。</p>
+<p>&emsp;&emsp;在通过key或键值对自身从map集合中删除某个键值对实体时，会调用<strong>recordRemoval(HashMap<k,v>m)</k,v></strong>方法，该方法会将被删除键值对实体与其前驱、后继节点的关系断开，保证双向链表的连接性。</p>
+<p>&emsp;</p>
+<h2 id="LinkedHashIterator-lt-E-gt"><a href="#LinkedHashIterator-lt-E-gt" class="headerlink" title="LinkedHashIterator&lt;E&gt;"></a>LinkedHashIterator&lt;E&gt;</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">LinkedHashIterator</span>&lt;<span class="title">T</span>&gt; <span class="keyword">implements</span> <span class="title">Iterator</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    Entry&lt;K,V&gt; nextEntry    = header.after;</span><br><span class="line">    Entry&lt;K,V&gt; lastReturned = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The modCount value that the iterator believes that the backing</span></span><br><span class="line"><span class="comment">     * List should have.  If this expectation is violated, the iterator</span></span><br><span class="line"><span class="comment">     * has detected concurrent modification.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">int</span> expectedModCount = modCount;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> nextEntry != header;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (lastReturned == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException();</span><br><span class="line">        <span class="keyword">if</span> (modCount != expectedModCount)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> ConcurrentModificationException();</span><br><span class="line"></span><br><span class="line">        LinkedHashMap.<span class="keyword">this</span>.remove(lastReturned.key);</span><br><span class="line">        lastReturned = <span class="keyword">null</span>;</span><br><span class="line">        expectedModCount = modCount;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function">Entry&lt;K,V&gt; <span class="title">nextEntry</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (modCount != expectedModCount)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> ConcurrentModificationException();</span><br><span class="line">        <span class="keyword">if</span> (nextEntry == header)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line"></span><br><span class="line">        Entry&lt;K,V&gt; e = lastReturned = nextEntry;</span><br><span class="line">        nextEntry = e.after;</span><br><span class="line">        <span class="keyword">return</span> e;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;LinkedHashIterator是基于当前map集合的键值对实体的一个迭代器实现。该迭代器任何时候都会从header节点的后继节点开始迭代访问。</p>
+<p>&emsp;&emsp;判断是否可以继续向后遍历通过判断下一个节点是否等于header来判定，如果等于表示无法继续向后遍历。</p>
+<p>&emsp;</p>
+<h2 id="涉及基础知识点"><a href="#涉及基础知识点" class="headerlink" title="涉及基础知识点"></a>涉及基础知识点</h2><ol>
+<li><p><strong>LinkedHashMap实现LRU算法场景</strong></p>
+<p>&emsp;&emsp;实现一个LinkedHashMap的子类，子类中需要有方法指定一个当前集合中可以容纳的元素上限值，覆盖重新实现方法<strong>removeEldestEntry(Map.Entry<k,v> eldest) </k,v></strong>，实现思路如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">removeEldestEntry</span><span class="params">(Map.Entry eldest)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> size() &gt; MAX_ENTRIES;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;若当前集合容量大于上限，则返回true。在方法<strong>addEntry(int hash, K key, V value, int bucketIndex)</strong>中：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEntry</span><span class="params">(<span class="keyword">int</span> hash, K key, V value, <span class="keyword">int</span> bucketIndex)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.addEntry(hash, key, value, bucketIndex);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Remove eldest entry if instructed</span></span><br><span class="line">    Entry&lt;K,V&gt; eldest = header.after;</span><br><span class="line">    <span class="keyword">if</span> (removeEldestEntry(eldest)) &#123;</span><br><span class="line">        removeEntryForKey(eldest.key);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;第6行代码执行覆盖以后的removeEldestEntry(Map.Entry eldest)方法，如果返回true，那么就删除当前集合中双向链表的首部节点以保证元素数量满足要求（默认双向链表中长时间未被访问的元素位置越靠前）。</p>
+</li>
+</ol>
+<p>&emsp;</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>NIL</li>
+</ol>
+<p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-Collection-LinkedHashMap.html" target="_blank" title="Java Map 04 - LinkedHashMap">Java Map 04 - LinkedHashMap</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-Collection-LinkedHashMap.html" target="_blank" title="Java Map 04 - LinkedHashMap">https://marcuseddie.github.io/2018/java-Collection-LinkedHashMap.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2018/java-Collection-Hashtable.html" class="alignleft prev" title="Java Map 05 - Hashtable"> 上一篇： Java Map 05 - Hashtable</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2018/how-we-built-a-cost-based-sql-optimizer.html" class="alignright next" title="【译】如何构建基于成本的 SQL 优化器？"> 下一篇： 【译】如何构建基于成本的 SQL 优化器？</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

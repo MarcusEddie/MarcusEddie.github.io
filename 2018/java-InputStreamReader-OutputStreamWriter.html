@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      Java I/O 14 - InputStreamReader &amp; OutputStreamWriter | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="InputStreamReader和OutputStreamWriter是字节流和字符流之间转化的一个桥梁,底层依赖于类StreamDecoder和StreamEncoder。通过read,ready,close,flushBuffer,write,flush完成相关操作。">
+<meta name="keywords" content="InputStreamReader,OutputStreamWriter,StreamDecoder,StreamEncoder,read,ready,close,flushBuffer,write,flush">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java I&#x2F;O 14 - InputStreamReader &amp; OutputStreamWriter | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/java-InputStreamReader-OutputStreamWriter.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="InputStreamReader和OutputStreamWriter是字节流和字符流之间转化的一个桥梁,底层依赖于类StreamDecoder和StreamEncoder。通过read,ready,close,flushBuffer,write,flush完成相关操作。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.357Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java I&#x2F;O 14 - InputStreamReader &amp; OutputStreamWriter | Mr.Muzi">
+<meta name="twitter:description" content="InputStreamReader和OutputStreamWriter是字节流和字符流之间转化的一个桥梁,底层依赖于类StreamDecoder和StreamEncoder。通过read,ready,close,flushBuffer,write,flush完成相关操作。">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>Java I/O 14 - InputStreamReader &amp; OutputStreamWriter</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-11-08" class="post-meta__date date">2018-11-08</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;6.7k&emsp;阅读时长:&nbsp;30&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java-IO/">Java IO</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.io.InputStreamReader</strong> </em> 和 <em> <strong>java.io.OutputStreamWriter</strong> </em>的部分笔记，这两个类完成了字节流和字符流之间的相互转化和读写操作，但是这两个类自身不负责任何操作，所有的操作均依赖于类StreamDecoder和StreamEncoder。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;InputStreamReader和OutputStreamWriter是字节流和字符流之间进行相互转化的一个桥梁和媒介。InputStreamReader负责将字节流转成字符流，其底层是通过StreamDecoder来完成所有操作的。OutputStreamWriter则负责将字符流转换成对应的字节流，其底层的实现则依赖于StreamEncoder。换言之，InputStreamReader和OutputStreamWriter自身并不需要做什么操作和处理，所有的操作和实现都是在底层的调用StreamDecoder和StreamEncoder中，InputStreamReader和OutputStreamWriter只是起到了一个封装和调用的作用。</p>
+<p>&emsp;</p>
+<h2 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// InputStreamReader</span></span><br><span class="line">--java.lang.Object</span><br><span class="line">  --java.io.Reader</span><br><span class="line">    --java.io.InputStreamReader</span><br><span class="line"></span><br><span class="line"><span class="comment">// OutputStreamWriter</span></span><br><span class="line">--java.lang.Object</span><br><span class="line">  --java.io.Writer</span><br><span class="line">    --java.io.OutputStreamWriter</span><br></pre></td></tr></table></figure>
+<p>&emsp;</p>
+<h2 id="实现接口"><a href="#实现接口" class="headerlink" title="实现接口"></a>实现接口</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">类名</th>
+<th style="text-align:center">实现接口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">InputStreamReader</td>
+<td style="text-align:center">Closeable, AutoCloseable,Readable</td>
+</tr>
+<tr>
+<td style="text-align:center">OutputStreamWriter</td>
+<td style="text-align:center">Closeable, Flushable, Appendable,AutoCloseable</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>&emsp;</p>
+<h2 id="InputStreamReader"><a href="#InputStreamReader" class="headerlink" title="InputStreamReader"></a>InputStreamReader</h2><h3 id="Constructor-Summary"><a href="#Constructor-Summary" class="headerlink" title="Constructor Summary"></a>Constructor Summary</h3><h4 id="public-InputStreamReader-InputStream-in"><a href="#public-InputStreamReader-InputStream-in" class="headerlink" title="public InputStreamReader(InputStream in)"></a>public InputStreamReader(InputStream in)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">InputStreamReader</span><span class="params">(InputStream in)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(in);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">         <span class="comment">// ## check lock object</span></span><br><span class="line">        sd = StreamDecoder.forInputStreamReader(in, <span class="keyword">this</span>, (String)<span class="keyword">null</span>);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (UnsupportedEncodingException e) &#123;</span><br><span class="line">        <span class="comment">// The default encoding should always be available</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> Error(e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个底层的StreamDecoder。在InputStreamReader中，所有的流读取和转换操作都是在流解码器（StreamDecoder）中完成的。所以在完成继承父类的构造函数后，即通过<strong>StreamDecoder</strong>的方法forInputStreamReader来完成StreamDecoder的初始化工作。StreamDecoder的相关代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> Charset cs;</span><br><span class="line"><span class="keyword">private</span> CharsetDecoder decoder;</span><br><span class="line"><span class="keyword">private</span> ByteBuffer bb;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Exactly one of these is non-null</span></span><br><span class="line"><span class="keyword">private</span> InputStream in;</span><br><span class="line"><span class="keyword">private</span> ReadableByteChannel ch;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> StreamDecoder <span class="title">forInputStreamReader</span><span class="params">(InputStream in, Object lock,</span></span></span><br><span class="line"><span class="function"><span class="params">			String charsetName)</span> <span class="keyword">throws</span> UnsupportedEncodingException </span>&#123;</span><br><span class="line">    String csn = charsetName;</span><br><span class="line">    <span class="keyword">if</span> (csn == <span class="keyword">null</span>)</span><br><span class="line">        csn = Charset.defaultCharset().name();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (Charset.isSupported(csn))</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> StreamDecoder(in, lock, Charset.forName(csn));</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IllegalCharsetNameException x) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedEncodingException(csn);</span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line">StreamDecoder(InputStream in, Object lock, Charset cs) &#123;</span><br><span class="line">    <span class="keyword">this</span>(in, lock,</span><br><span class="line">         cs.newDecoder()</span><br><span class="line">         .onMalformedInput(CodingErrorAction.REPLACE)</span><br><span class="line">         .onUnmappableCharacter(CodingErrorAction.REPLACE));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">StreamDecoder(InputStream in, Object lock, CharsetDecoder dec) &#123;</span><br><span class="line">    <span class="keyword">super</span>(lock);</span><br><span class="line">    <span class="keyword">this</span>.cs = dec.charset();</span><br><span class="line">    <span class="keyword">this</span>.decoder = dec;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// This path disabled until direct buffers are faster</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">false</span> &amp;&amp; in <span class="keyword">instanceof</span> FileInputStream) &#123;</span><br><span class="line">        ch = getChannel((FileInputStream)in);</span><br><span class="line">        <span class="keyword">if</span> (ch != <span class="keyword">null</span>)</span><br><span class="line">            bb = ByteBuffer.allocateDirect(DEFAULT_BYTE_BUFFER_SIZE);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (ch == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.in = in;</span><br><span class="line">        <span class="keyword">this</span>.ch = <span class="keyword">null</span>;</span><br><span class="line">        bb = ByteBuffer.allocate(DEFAULT_BYTE_BUFFER_SIZE);</span><br><span class="line">    &#125;</span><br><span class="line">    bb.flip();                      <span class="comment">// So that bb is initially empty</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;StreamDecoder的路径信息如下：<strong>sun.nio.cs.StreamDecoder</strong>。方法forInputStreamReader( InputStream in, Object lock, String charsetName)完成StreamDecoder的初始化工作。第11 ~ 13行代码负责指定一个编码字符集。第16行代码则创建了一个StreamDecoder，并返回给方法调用方。第22 ~ 27行代码中，根据传入的字符集创建一个字符集解码器，然后调用方法StreamDecoder (InputStream in, Object lock, CharsetDecoder dec)完成相应的初始化操作。由于StreamDecoder继承了Reader，所以第30行代码会首先调用父类的有参构造方法。第31 ~ 32行指定了字符集和字符集解码器。第40 ~ 44行代码则指定了最终调用的输入流和用到的字节缓冲数组的大小，初始化大小为<strong>8192</strong>。第45行代码则表示缓冲数组目前为空，第一个可以写入的位置为0位置。</p>
+<h4 id="public-InputStreamReader-InputStream-in-String-charsetName"><a href="#public-InputStreamReader-InputStream-in-String-charsetName" class="headerlink" title="public InputStreamReader(InputStream in, String charsetName)"></a>public InputStreamReader(InputStream in, String charsetName)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">InputStreamReader</span><span class="params">(InputStream in, String charsetName)</span></span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> UnsupportedEncodingException</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(in);</span><br><span class="line">    <span class="keyword">if</span> (charsetName == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException(<span class="string">"charsetName"</span>);</span><br><span class="line">     sd = StreamDecoder.forInputStreamReader(in, <span class="keyword">this</span>, charsetName);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个底层的StreamDecoder。这个方法中显示指定了需要使用的字符集编码。</p>
+<h4 id="public-InputStreamReader-InputStream-in-Charset-cs"><a href="#public-InputStreamReader-InputStream-in-Charset-cs" class="headerlink" title="public InputStreamReader(InputStream in, Charset cs)"></a>public InputStreamReader(InputStream in, Charset cs)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">InputStreamReader</span><span class="params">(InputStream in, Charset cs)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(in);</span><br><span class="line">    <span class="keyword">if</span> (cs == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException(<span class="string">"charset"</span>);</span><br><span class="line">    sd = StreamDecoder.forInputStreamReader(in, <span class="keyword">this</span>, cs);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个底层的StreamDecoder。这个方法中显示指定了需要使用的字符集编码。创建StreamDecoder调用的方法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> StreamDecoder <span class="title">forInputStreamReader</span><span class="params">(InputStream in, Object lock,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                 Charset cs)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> StreamDecoder(in, lock, cs);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>调用的构造方法和<strong>public InputStreamReader(InputStream in)</strong>实际调用的方法一致。</p>
+<h4 id="public-InputStreamReader-InputStream-in-CharsetDecoder-dec"><a href="#public-InputStreamReader-InputStream-in-CharsetDecoder-dec" class="headerlink" title="public InputStreamReader(InputStream in, CharsetDecoder dec)"></a>public InputStreamReader(InputStream in, CharsetDecoder dec)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">InputStreamReader</span><span class="params">(InputStream in, CharsetDecoder dec)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(in);</span><br><span class="line">    <span class="keyword">if</span> (dec == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException(<span class="string">"charset decoder"</span>);</span><br><span class="line">    sd = StreamDecoder.forInputStreamReader(in, <span class="keyword">this</span>, dec);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个底层的StreamDecoder。这个方法中显示指定了需要使用的字符集解码器。CharsetDecoder可以将一个字节序列按照特定的字符集转换成一个16位的Unicode序列。创建StreamDecoder调用的方法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> StreamDecoder <span class="title">forInputStreamReader</span><span class="params">(InputStream in, Object lock,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                 CharsetDecoder dec)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> StreamDecoder(in, lock, dec);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>调用的构造方法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">StreamDecoder(InputStream in, Object lock, CharsetDecoder dec) &#123;</span><br><span class="line">    <span class="keyword">super</span>(lock);</span><br><span class="line">    <span class="keyword">this</span>.cs = dec.charset();</span><br><span class="line">    <span class="keyword">this</span>.decoder = dec;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// This path disabled until direct buffers are faster</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">false</span> &amp;&amp; in <span class="keyword">instanceof</span> FileInputStream) &#123;</span><br><span class="line">        ch = getChannel((FileInputStream)in);</span><br><span class="line">        <span class="keyword">if</span> (ch != <span class="keyword">null</span>)</span><br><span class="line">            bb = ByteBuffer.allocateDirect(DEFAULT_BYTE_BUFFER_SIZE);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (ch == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.in = in;</span><br><span class="line">        <span class="keyword">this</span>.ch = <span class="keyword">null</span>;</span><br><span class="line">        bb = ByteBuffer.allocate(DEFAULT_BYTE_BUFFER_SIZE);</span><br><span class="line">    &#125;</span><br><span class="line">    bb.flip();                      <span class="comment">// So that bb is initially empty</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="部分方法"><a href="#部分方法" class="headerlink" title="部分方法"></a>部分方法</h3><h4 id="public-String-getEncoding"><a href="#public-String-getEncoding" class="headerlink" title="public String getEncoding()"></a><span id="publicStringGetEncoding">public String getEncoding()</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getEncoding</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> sd.getEncoding();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;获取当前流使用的编码字符集信息，如果当前流已经被关闭，那么会返回null给接口调用方。具体实现位于StreamDecoder中，相关代码段如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getEncoding</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (isOpen())</span><br><span class="line">        <span class="keyword">return</span> encodingName();</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 流是否开启，默认为true，由close方法赋值为false</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">isOpen</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> isOpen;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">String <span class="title">encodingName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> ((cs <span class="keyword">instanceof</span> HistoricallyNamedCharset)</span><br><span class="line">            ? ((HistoricallyNamedCharset)cs).historicalName()</span><br><span class="line">            : cs.name());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在StreamDecoder的getEncoding()方法中，首先检查了当前输入流的开闭状态，如果当前输入流已经关闭，那么就返回null，否则就通过调用encodingName()来获取当前流采用的编码字符集信息。在encodingName()方法中，会判断当前编码字符集的种类，如果当前编码字符集是一个HistoricallyNamedCharset，那么就返回对应的historicalName，否则就返回对应的编码字符集名称。</p>
+<h4 id="public-int-read"><a href="#public-int-read" class="headerlink" title="public int read()"></a><span id="publicIntRead">public int read()</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> sd.read();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;从底层输入流中读取一个字节的内容并返回给调用方。具体实现位于StreamDecoder中，相关代码段如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> read0();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">boolean</span> haveLeftoverChar = <span class="keyword">false</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">char</span> leftoverChar;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">read0</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Return the leftover char, if there is one</span></span><br><span class="line">        <span class="keyword">if</span> (haveLeftoverChar) &#123;</span><br><span class="line">            haveLeftoverChar = <span class="keyword">false</span>;</span><br><span class="line">            <span class="keyword">return</span> leftoverChar;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Convert more bytes</span></span><br><span class="line">        <span class="keyword">char</span> cb[] = <span class="keyword">new</span> <span class="keyword">char</span>[<span class="number">2</span>];</span><br><span class="line">        <span class="keyword">int</span> n = read(cb, <span class="number">0</span>, <span class="number">2</span>);</span><br><span class="line">        <span class="keyword">switch</span> (n) &#123;</span><br><span class="line">            <span class="keyword">case</span> -<span class="number">1</span>:</span><br><span class="line">                <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">                leftoverChar = cb[<span class="number">1</span>];</span><br><span class="line">                haveLeftoverChar = <span class="keyword">true</span>;</span><br><span class="line">                <span class="comment">// FALL THROUGH</span></span><br><span class="line">            <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">return</span> cb[<span class="number">0</span>];</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">assert</span> <span class="keyword">false</span> : n;</span><br><span class="line">                <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;StreamDecoder中的方法read()中所有的逻辑操作都位于方法read0()中。在StreamDecoder中，为了支持对由两个字符构成的字符进行编解码的处理，每次都需要从底层输入流中读取两个字符的数据。但是方法只会返回一个字符，所以需要通过haveLeftoverChar来标记是否存储了一个高位字符，如果存储了一个高位字符的话，则需要通过leftoverChar来返回存储的高位字符。</p>
+<p>&emsp;&emsp;底层方法read0()完成数据的读取操作，且该方法内部整个方法体由synchronized关键字完成多线程环境下的锁操作。第11 ~ 15行代码中，如果存储了一个高位字符（haveLeftoverChar = true），那么就返回其存储的高位字符。第19行代码则从方法read(char cbuf[], int offset, int length)中读取两个字符。第20 ~ 32行则分情况向接口调用方返回读取到的字符信息。</p>
+<h4 id="public-int-read-char-cbuf-int-offset-int-length"><a href="#public-int-read-char-cbuf-int-offset-int-length" class="headerlink" title="public int read(char cbuf[], int offset, int length)"></a><span id="publicIntReadCII">public int read(char cbuf[], int offset, int length)</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">(<span class="keyword">char</span> cbuf[], <span class="keyword">int</span> offset, <span class="keyword">int</span> length)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> sd.read(cbuf, offset, length);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;底层输入流中将读取的内容存储到入参数组cbuf中并返回实际读取到的数据长度给调用方。具体实现位于StreamDecoder中，相关代码段如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureOpen</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!isOpen)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"Stream closed"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">(<span class="keyword">char</span> cbuf[], <span class="keyword">int</span> offset, <span class="keyword">int</span> length)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> off = offset;</span><br><span class="line">    <span class="keyword">int</span> len = length;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        ensureOpen();</span><br><span class="line">        <span class="keyword">if</span> ((off &lt; <span class="number">0</span>) || (off &gt; cbuf.length) || (len &lt; <span class="number">0</span>) ||</span><br><span class="line">            ((off + len) &gt; cbuf.length) || ((off + len) &lt; <span class="number">0</span>)) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IndexOutOfBoundsException();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (len == <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> n = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (haveLeftoverChar) &#123;</span><br><span class="line">            <span class="comment">// Copy the leftover char into the buffer</span></span><br><span class="line">            cbuf[off] = leftoverChar;</span><br><span class="line">            off++; len--;</span><br><span class="line">            haveLeftoverChar = <span class="keyword">false</span>;</span><br><span class="line">            n = <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> ((len == <span class="number">0</span>) || !implReady())</span><br><span class="line">                <span class="comment">// Return now if this is all we can produce w/o blocking</span></span><br><span class="line">                <span class="keyword">return</span> n;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (len == <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="comment">// Treat single-character array reads just like read()</span></span><br><span class="line">            <span class="keyword">int</span> c = read0();</span><br><span class="line">            <span class="keyword">if</span> (c == -<span class="number">1</span>)</span><br><span class="line">                <span class="keyword">return</span> (n == <span class="number">0</span>) ? -<span class="number">1</span> : n;</span><br><span class="line">            cbuf[off] = (<span class="keyword">char</span>)c;</span><br><span class="line">            <span class="keyword">return</span> n + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> n + implRead(cbuf, off, off + len);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;该方法会读取入参length指定长度的数据内容并存储到入参cbuf中。方法体被synchronized包围保证了多线程环境的锁操作。第10行代码判断当前输入流的开闭状态，如果关闭则直接抛出一个流关闭异常给方法调用方。第11 ~ 14行代码负责参数的有效性校验，防止出现越界溢出的情况。第18行代码初始化一个计数器n，用来标记实际读取的字符数。第20 ~ 29行代码中，如果当前环境已经存储了一个高位字符，那么就取出存储的高位字符保存到cbuf中，这个字符会作为读取到到的第一个字符被返回。之后更新了off，len和n的值。如果len已经变为0，或者底层输入流中已经没有可读的数据内容，那么就认为读取结束，直接返回当前记录的实际读取的字符数内容。第31 ~ 38行代码中，如果剩余需要读取的字符长度为1，那么就调用上面提到的read0()方法，该方法会直接读取并返回一个字符内容。最后返回实际读取的字符数。第40行代码则继续从底层输入流中读取字符内容，并返回最终实际读取的字符长度。其调用的方法<strong>implRead()</strong>处理逻辑如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> CharsetDecoder decoder;</span><br><span class="line"><span class="keyword">private</span> ByteBuffer bb;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">implRead</span><span class="params">(<span class="keyword">char</span>[] cbuf, <span class="keyword">int</span> off, <span class="keyword">int</span> end)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="comment">// In order to handle surrogate pairs, this method requires that</span></span><br><span class="line">    <span class="comment">// the invoker attempt to read at least two characters.  Saving the</span></span><br><span class="line">    <span class="comment">// extra character, if any, at a higher level is easier than trying</span></span><br><span class="line">    <span class="comment">// to deal with it here.</span></span><br><span class="line">    <span class="keyword">assert</span> (end - off &gt; <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    CharBuffer cb = CharBuffer.wrap(cbuf, off, end - off);</span><br><span class="line">    <span class="keyword">if</span> (cb.position() != <span class="number">0</span>)</span><br><span class="line">        <span class="comment">// Ensure that cb[0] == cbuf[off]</span></span><br><span class="line">        cb = cb.slice();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">boolean</span> eof = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        CoderResult cr = decoder.decode(bb, cb, eof);</span><br><span class="line">        <span class="keyword">if</span> (cr.isUnderflow()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (eof)</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">if</span> (!cb.hasRemaining())</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">if</span> ((cb.position() &gt; <span class="number">0</span>) &amp;&amp; !inReady())</span><br><span class="line">                <span class="keyword">break</span>;          <span class="comment">// Block at most once</span></span><br><span class="line">            <span class="keyword">int</span> n = readBytes();</span><br><span class="line">            <span class="keyword">if</span> (n &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                eof = <span class="keyword">true</span>;</span><br><span class="line">                <span class="keyword">if</span> ((cb.position() == <span class="number">0</span>) &amp;&amp; (!bb.hasRemaining()))</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                decoder.reset();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (cr.isOverflow()) &#123;</span><br><span class="line">            <span class="keyword">assert</span> cb.position() &gt; <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        cr.throwException();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (eof) &#123;</span><br><span class="line">        <span class="comment">// ## Need to flush decoder</span></span><br><span class="line">        decoder.reset();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (cb.position() == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (eof)</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">assert</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> cb.position();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;该方法用来把从底层输入流读取到的字节流转成字符流，然后再保存到数组cbuf中。第9行代码做了一个关于入参off和end的大小关系，避免越界溢出的情况发生，需要注意的是，这里的参数end和off一样，为下标值，而不是需要读取的长度值。第11 ~ 14行代码将入参cbuf封装到一个字符buffer中，对cbuf和字符buffer中任意一个的修改都会导致另外一个同时发生变更。第17 ~ 40行代码完成实际的字节数据转字符数据的操作，具体操作逻辑如下：</p>
+<ol>
+<li>第18行代码将当前字节buffer中的数据转成字符数据，并存储到字符buffer中；</li>
+<li>第19 ~ 21行代码中，如果字节buffer中的数据已经全部解码并存储到字符buffer中且已经读到了文件结束位置（eof = true），那么退出循环；</li>
+<li>第22 ~ 23行代码中，如果字节buffer中的数据已经全部解码并存储到字符buffer中且字符buffer中已经没有空余空间来容纳新的字符数据，那么退出循环；</li>
+<li>第24 ~ 25行代码中，如果字节buffer中的数据已经全部解码并存储到字符buffer中且底层输入流已经不再支持通过read方法获取数据，那么退出循环；</li>
+<li>通过readBytes()方法从底层输入流中获取字节数据，数据会被存储在字节buffer中，并返回实际读取的数据长度；</li>
+<li>如果通过readBytes()方法未读取到至少一个数据，那么设置eof = true，同时如果字节buffer中所有数据都已经读取完毕，那么退出循环；</li>
+<li>继续循环，将字节buffer中的内容解码存储到字符buffer中；</li>
+<li>第35 ~ 38行代码表示如果字符buffer中空间已满，那么退出循环。</li>
+</ol>
+<p>最后返回字符buffer中实际读取的数据长度。其中涉及到的readBytes()方法的相关实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> ByteBuffer bb;</span><br><span class="line"><span class="keyword">private</span> ReadableByteChannel ch;</span><br><span class="line"><span class="keyword">private</span> InputStream in;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">readBytes</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    bb.compact();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (ch != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">// Read from the channel</span></span><br><span class="line">            <span class="keyword">int</span> n = ch.read(bb);</span><br><span class="line">            <span class="keyword">if</span> (n &lt; <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">return</span> n;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// Read from the input stream, and then update the buffer</span></span><br><span class="line">            <span class="keyword">int</span> lim = bb.limit();</span><br><span class="line">            <span class="keyword">int</span> pos = bb.position();</span><br><span class="line">            <span class="keyword">assert</span> (pos &lt;= lim);</span><br><span class="line">            <span class="keyword">int</span> rem = (pos &lt;= lim ? lim - pos : <span class="number">0</span>);</span><br><span class="line">            <span class="keyword">assert</span> rem &gt; <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">int</span> n = in.read(bb.array(), bb.arrayOffset() + pos, rem);</span><br><span class="line">            <span class="keyword">if</span> (n &lt; <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">return</span> n;</span><br><span class="line">            <span class="keyword">if</span> (n == <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"Underlying input stream returned zero bytes"</span>);</span><br><span class="line">            <span class="keyword">assert</span> (n &lt;= rem) : <span class="string">"n = "</span> + n + <span class="string">", rem = "</span> + rem;</span><br><span class="line">            bb.position(pos + n);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="comment">// Flip even when an IOException is thrown,</span></span><br><span class="line">        <span class="comment">// otherwise the stream will stutter</span></span><br><span class="line">        bb.flip();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> rem = bb.remaining();</span><br><span class="line">    <span class="keyword">assert</span> (rem != <span class="number">0</span>) : rem;</span><br><span class="line">    <span class="keyword">return</span> rem;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;该方法完成从底层输入流中读取字节数据到字节buffer中的操作处理。第6行代码会将字节buffer中未读取的数据全部移到buffer左端，这样右端会留出空间来容纳新数据。第8 ~ 12行代码通过ReadableByteChannel来获取数据，第14 ~ 27行代码则通过输入流来获取数据，其中，第15 ~ 19行代码完成可用空间的计算，第20行代码则会从底层输入流中读取数据并存储在字节buffer中。第26行代码则更新字节buffer中下一个可以新数据的位置值。第31行代码负责读写转换，会将position置为0，同时将limit移动到存储的最后一个字节数据的位置。最后返回字节buffer中包含的未读取的字节数据的长度。</p>
+<h4 id="public-boolean-ready"><a href="#public-boolean-ready" class="headerlink" title="public boolean ready()"></a><span id="publicBooleanReady">public boolean ready()</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">ready</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> sd.ready();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回当前输入流是否可以通过read方法得到字符数据。具体实现位于StreamDecoder中，相关代码段如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> ByteBuffer bb;</span><br><span class="line"><span class="keyword">private</span> InputStream in;</span><br><span class="line"><span class="keyword">private</span> ReadableByteChannel ch;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">ready</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        ensureOpen();</span><br><span class="line">        <span class="keyword">return</span> haveLeftoverChar || implReady();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">implReady</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> bb.hasRemaining() || inReady();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">inReady</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> (((in != <span class="keyword">null</span>) &amp;&amp; (in.available() &gt; <span class="number">0</span>))</span><br><span class="line">                || (ch <span class="keyword">instanceof</span> FileChannel)); <span class="comment">// ## RBC.available()?</span></span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException x) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在StreamDecoder中，ready方法体被synchronized关键字包围，保证了多线程环境下一次只能被一个线程访问和操作。为了确认是否可以对外提供数据，首先会通过ensureOpen()判断当前流是否开启，只有在开启情况下才能对外提供数据。如果在之前的read方法调用过程中存储了高位字符，那么haveLeftoverChar的值就为true，可以继续通过read方法返回存储的高位字符，或者通过implReady()方法判断底层输入流中是否有未读取的数据流信息。</p>
+<p>&emsp;&emsp;在implReady()方法中，如果字节buffer中有数据，那么认为当前流是可对外提供数据的，或者通过inReady()方法来判断底层输入流中是否有可读取的数据内容。</p>
+<h4 id="public-void-close"><a href="#public-void-close" class="headerlink" title="public void close()"></a><span id="publicVoidClose">public void close()</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    sd.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;关闭当前输入流。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> InputStream in;</span><br><span class="line"><span class="keyword">private</span> ReadableByteChannel ch;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!isOpen)</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        implClose();</span><br><span class="line">        isOpen = <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">implClose</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (ch != <span class="keyword">null</span>)</span><br><span class="line">        ch.close();</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        in.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;关闭当前输入流，释放占用资源。</p>
+<p>&emsp;</p>
+<h2 id="OutputStreamWriter"><a href="#OutputStreamWriter" class="headerlink" title="OutputStreamWriter"></a>OutputStreamWriter</h2><h3 id="Constructor-Summary-1"><a href="#Constructor-Summary-1" class="headerlink" title="Constructor Summary"></a>Constructor Summary</h3><h4 id="public-OutputStreamWriter-OutputStream-out-String-charsetName"><a href="#public-OutputStreamWriter-OutputStream-out-String-charsetName" class="headerlink" title="public OutputStreamWriter(OutputStream out, String charsetName)"></a>public OutputStreamWriter(OutputStream out, String charsetName)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">OutputStreamWriter</span><span class="params">(OutputStream out, String charsetName)</span></span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> UnsupportedEncodingException</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(out);</span><br><span class="line">    <span class="keyword">if</span> (charsetName == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException(<span class="string">"charsetName"</span>);</span><br><span class="line">    se = StreamEncoder.forOutputStreamWriter(out, <span class="keyword">this</span>, charsetName);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个底层的StreamEncoder。在OutputStreamWriter中，所有的流写入和转换操作都是在流编码器（StreamEncoder）中完成的。所以在完成继承父类的构造函数后，即通过<strong>StreamEncoder</strong>的方法forOutputStreamWriter来完成StreamEncoder的初始化工作。StreamEncoder的相关代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> Charset cs;</span><br><span class="line"><span class="keyword">private</span> CharsetEncoder encoder;</span><br><span class="line"><span class="keyword">private</span> ByteBuffer bb;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> OutputStream out;</span><br><span class="line"><span class="keyword">private</span> WritableByteChannel ch;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> StreamEncoder <span class="title">forOutputStreamWriter</span><span class="params">(OutputStream out, Object lock,</span></span></span><br><span class="line"><span class="function"><span class="params">    String charsetName)</span> <span class="keyword">throws</span> UnsupportedEncodingException </span>&#123;</span><br><span class="line">    String csn = charsetName;</span><br><span class="line">    <span class="keyword">if</span> (csn == <span class="keyword">null</span>)</span><br><span class="line">        csn = Charset.defaultCharset().name();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (Charset.isSupported(csn))</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> StreamEncoder(out, lock, Charset.forName(csn));</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IllegalCharsetNameException x) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedEncodingException(csn);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="title">StreamEncoder</span><span class="params">(OutputStream out, Object lock, Charset cs)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(out, lock,</span><br><span class="line">         cs.newEncoder()</span><br><span class="line">         .onMalformedInput(CodingErrorAction.REPLACE)</span><br><span class="line">         .onUnmappableCharacter(CodingErrorAction.REPLACE));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="title">StreamEncoder</span><span class="params">(OutputStream out, Object lock, CharsetEncoder enc)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(lock);</span><br><span class="line">    <span class="keyword">this</span>.out = out;</span><br><span class="line">    <span class="keyword">this</span>.ch = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">this</span>.cs = enc.charset();</span><br><span class="line">    <span class="keyword">this</span>.encoder = enc;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// This path disabled until direct buffers are faster</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">false</span> &amp;&amp; out <span class="keyword">instanceof</span> FileOutputStream) &#123;</span><br><span class="line">        ch = ((FileOutputStream)out).getChannel();</span><br><span class="line">        <span class="keyword">if</span> (ch != <span class="keyword">null</span>)</span><br><span class="line">            bb = ByteBuffer.allocateDirect(DEFAULT_BYTE_BUFFER_SIZE);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (ch == <span class="keyword">null</span>) &#123;</span><br><span class="line">        bb = ByteBuffer.allocate(DEFAULT_BYTE_BUFFER_SIZE);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;StreamEncoder的路径信息如下：<strong>sun.nio.cs.StreamEncoder</strong>。方法forOutputStreamWriter( OutputStream out, Object lock, String charsetName)完成StreamEncoder的初始化工作。第10 ~ 11行代码负责指定一个编码字符集。第14行代码则创建了一个StreamEncoder，并返回给方法调用方。第22 ~ 24行代码中，根据传入的字符集创建一个字符集解码器，然后调用方法StreamEncoder(OutputStream out, Object lock, CharsetEncoder enc)完成相应的初始化操作。由于StreamEncoder继承了Writer，所以第30行代码会首先调用父类的有参构造方法。第29 ~ 32行指定了字符集和字符集解码器。第40 ~ 42行代码则指定了最终调用的输入流和用到的字节缓冲数组的大小，初始化大小为<strong>8192</strong>。第45行代码则表示缓冲数组目前为空，第一个可以写入的位置为0位置。</p>
+<h4 id="public-OutputStreamWriter-OutputStream-out"><a href="#public-OutputStreamWriter-OutputStream-out" class="headerlink" title="public OutputStreamWriter(OutputStream out)"></a>public OutputStreamWriter(OutputStream out)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">OutputStreamWriter</span><span class="params">(OutputStream out)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(out);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        se = StreamEncoder.forOutputStreamWriter(out, <span class="keyword">this</span>, (String)<span class="keyword">null</span>);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (UnsupportedEncodingException e) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> Error(e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个底层的StreamEncoder。这个方法中采用默认的字符集编码。</p>
+<h4 id="public-OutputStreamWriter-OutputStream-out-Charset-cs"><a href="#public-OutputStreamWriter-OutputStream-out-Charset-cs" class="headerlink" title="public OutputStreamWriter(OutputStream out, Charset cs)"></a>public OutputStreamWriter(OutputStream out, Charset cs)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">OutputStreamWriter</span><span class="params">(OutputStream out, Charset cs)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(out);</span><br><span class="line">    <span class="keyword">if</span> (cs == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException(<span class="string">"charset"</span>);</span><br><span class="line">    se = StreamEncoder.forOutputStreamWriter(out, <span class="keyword">this</span>, cs);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个底层的StreamEncoder。这个方法中显示指定了需要使用的字符集。创建StreamEncoder调用的方法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> StreamEncoder <span class="title">forOutputStreamWriter</span><span class="params">(OutputStream out,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                  Object lock,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                  Charset cs)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> StreamEncoder(out, lock, cs);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="public-OutputStreamWriter-OutputStream-out-CharsetEncoder-enc"><a href="#public-OutputStreamWriter-OutputStream-out-CharsetEncoder-enc" class="headerlink" title="public OutputStreamWriter(OutputStream out, CharsetEncoder enc)"></a>public OutputStreamWriter(OutputStream out, CharsetEncoder enc)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">OutputStreamWriter</span><span class="params">(OutputStream out, CharsetEncoder enc)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(out);</span><br><span class="line">    <span class="keyword">if</span> (enc == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException(<span class="string">"charset encoder"</span>);</span><br><span class="line">    se = StreamEncoder.forOutputStreamWriter(out, <span class="keyword">this</span>, enc);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个底层的StreamEncoder。这个方法中显示指定了需要使用的字符集编码器。创建StreamEncoder调用的方法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> StreamEncoder <span class="title">forOutputStreamWriter</span><span class="params">(OutputStream out,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                  Object lock,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                  CharsetEncoder enc)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> StreamEncoder(out, lock, enc);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="部分方法-1"><a href="#部分方法-1" class="headerlink" title="部分方法"></a>部分方法</h3><h4 id="public-String-getEncoding-1"><a href="#public-String-getEncoding-1" class="headerlink" title="public String getEncoding()"></a><span id="publicStringGetEncodingOut">public String getEncoding()</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getEncoding</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> se.getEncoding();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;获取当前流使用的编码字符集信息，如果当前流已经被关闭，那么会返回null给接口调用方。具体实现位于StreamEncoder中，相关代码段如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getEncoding</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (isOpen())</span><br><span class="line">        <span class="keyword">return</span> encodingName();</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">isOpen</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> isOpen;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">String <span class="title">encodingName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> ((cs <span class="keyword">instanceof</span> HistoricallyNamedCharset)</span><br><span class="line">            ? ((HistoricallyNamedCharset)cs).historicalName()</span><br><span class="line">            : cs.name());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在StreamEncoder的getEncoding()方法中，首先检查了当前输出流的开闭状态，如果当前输出流已经关闭，那么就返回null，否则就通过调用encodingName()来获取当前流采用的编码字符集信息。在encodingName()方法中，会判断当前编码字符集的种类，如果当前编码字符集是一个HistoricallyNamedCharset，那么就返回对应的historicalName，否则就返回对应的编码字符集名称。</p>
+<h4 id="void-flushBuffer"><a href="#void-flushBuffer" class="headerlink" title="void flushBuffer()"></a><span id="voidFlushBuffer">void flushBuffer()</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">flushBuffer</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    se.flushBuffer();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;把输出缓冲区buffer的数据推送到底层字节输出流中。具体实现位于StreamEncoder中，相关代码段如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">flushBuffer</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        <span class="keyword">if</span> (isOpen())</span><br><span class="line">            implFlushBuffer();</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"Stream closed"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">implFlushBuffer</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (bb.position() &gt; <span class="number">0</span>)</span><br><span class="line">        writeBytes();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">writeBytes</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    bb.flip();</span><br><span class="line">    <span class="keyword">int</span> lim = bb.limit();</span><br><span class="line">    <span class="keyword">int</span> pos = bb.position();</span><br><span class="line">    <span class="keyword">assert</span> (pos &lt;= lim);</span><br><span class="line">    <span class="keyword">int</span> rem = (pos &lt;= lim ? lim - pos : <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (rem &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (ch != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (ch.write(bb) != rem)</span><br><span class="line">                <span class="keyword">assert</span> <span class="keyword">false</span> : rem;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            out.write(bb.array(), bb.arrayOffset() + pos, rem);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    bb.clear();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;在flushBuffer()方法中，整个方法体被synchronized包围，保证了多线程环境下的同时只有一个线程可以获得资源的访问控制。如果当前流是开启的，那么调用implFlushBuffer()方法完成数据向底层输出流的推送。在第11 ~ 13行代码中，此时字节buffer<strong>bb</strong>处于写状态，所以一旦有内容写入，那么position满足大于0的条件，那么就调用writeBytes()方法完成具体的数据推送处理。</p>
+<p>&emsp;&emsp;在writeBytes()方法中，第16行代码将字节buffer由写状态转变成读状态。第17 ~ 20行代码完成空间和起始位置的相关计算。第23 ~ 28行代码则会将字节buffer中的内容实际写入到对应的底层输出流中。最后将字节buffer的内容清空，完成所有操作。</p>
+<h4 id="public-void-write-int-c"><a href="#public-void-write-int-c" class="headerlink" title="public void write(int c)"></a><span id="publicVoidWrite">public void write(int c)</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">int</span> c)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    se.write(c);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;向底层输出流中写入一个字节的数据。因为在实际写入时，会首先将字符数据转成字节数据，然后将转换后的字节数据存储在一个字节buffer中，此时数据并没有真正的被写出去，所以需要通过调用 flushBuffer()或者close()方法将字节buffer的数据真正写入到某个输出流中，否则会发生数据丢失无法获取的情况。具体实现位于StreamEncoder中，相关代码段如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> CharsetEncoder encoder;</span><br><span class="line"><span class="keyword">private</span> ByteBuffer bb;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">int</span> c)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">char</span> cbuf[] = <span class="keyword">new</span> <span class="keyword">char</span>[<span class="number">1</span>];</span><br><span class="line">    cbuf[<span class="number">0</span>] = (<span class="keyword">char</span>) c;</span><br><span class="line">    write(cbuf, <span class="number">0</span>, <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureOpen</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!isOpen)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"Stream closed"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">char</span> cbuf[], <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        ensureOpen();</span><br><span class="line">        <span class="keyword">if</span> ((off &lt; <span class="number">0</span>) || (off &gt; cbuf.length) || (len &lt; <span class="number">0</span>) ||</span><br><span class="line">            ((off + len) &gt; cbuf.length) || ((off + len) &lt; <span class="number">0</span>)) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IndexOutOfBoundsException();</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (len == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        implWrite(cbuf, off, len);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">implWrite</span><span class="params">(<span class="keyword">char</span> cbuf[], <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    CharBuffer cb = CharBuffer.wrap(cbuf, off, len);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (haveLeftoverChar)</span><br><span class="line">        flushLeftoverChar(cb, <span class="keyword">false</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (cb.hasRemaining()) &#123;</span><br><span class="line">        CoderResult cr = encoder.encode(cb, bb, <span class="keyword">false</span>);</span><br><span class="line">        <span class="keyword">if</span> (cr.isUnderflow()) &#123;</span><br><span class="line">            <span class="keyword">assert</span> (cb.remaining() &lt;= <span class="number">1</span>) : cb.remaining();</span><br><span class="line">            <span class="keyword">if</span> (cb.remaining() == <span class="number">1</span>) &#123;</span><br><span class="line">                haveLeftoverChar = <span class="keyword">true</span>;</span><br><span class="line">                leftoverChar = cb.get();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (cr.isOverflow()) &#123;</span><br><span class="line">            <span class="keyword">assert</span> bb.position() &gt; <span class="number">0</span>;</span><br><span class="line">            writeBytes();</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        cr.throwException();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;write(int c)最终依赖方法write(char cbuf[], int off, int len)完成字符数据向字节数据的转换以及写入操作。write(char cbuf[], int off, int len)底层直接依赖implWrite(char cbuf[], int off, int len)方法完成相关操作。第31 ~ 32行代码中，如果之前的写入操作中检测到了高位字符，那么就把保存下来的高位字符连同本次的字符数组中的内容一起写入到字节buffer中。第34 ~ 50行代码完成字符数据向字节数据的转换，将数据写入到底层的字节buffer中，最后将字节buffer中的数据写入到底层输出流中。第35行代码将字符数组中的内容转换成字节数据，并保存到字节buffer中。第36 ~ 43行代码如果最后字符数组中还留有一个字符，那么就标记高位字符并保存这个剩余的字符。第44 ~ 48行代码如果字节buffer没有空间来容纳新的字节数据，那么就将字节buffer中的内容输出到底层输出流中，清空字节buffer来容纳新的字节数据。下面的代码演示了如何处理高位字符的场景：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">boolean</span> haveLeftoverChar = <span class="keyword">false</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">char</span> leftoverChar;</span><br><span class="line"><span class="keyword">private</span> CharBuffer lcb = <span class="keyword">null</span>;</span><br><span class="line"><span class="keyword">private</span> ByteBuffer bb;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">flushLeftoverChar</span><span class="params">(CharBuffer cb, <span class="keyword">boolean</span> endOfInput)</span> </span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> IOException </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!haveLeftoverChar &amp;&amp; !endOfInput)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">if</span> (lcb == <span class="keyword">null</span>)</span><br><span class="line">        lcb = CharBuffer.allocate(<span class="number">2</span>);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        lcb.clear();</span><br><span class="line">    <span class="keyword">if</span> (haveLeftoverChar)</span><br><span class="line">        lcb.put(leftoverChar);</span><br><span class="line">    <span class="keyword">if</span> ((cb != <span class="keyword">null</span>) &amp;&amp; cb.hasRemaining())</span><br><span class="line">        lcb.put(cb.get());</span><br><span class="line">    lcb.flip();</span><br><span class="line">    <span class="keyword">while</span> (lcb.hasRemaining() || endOfInput) &#123;</span><br><span class="line">        CoderResult cr = encoder.encode(lcb, bb, endOfInput);</span><br><span class="line">        <span class="keyword">if</span> (cr.isUnderflow()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (lcb.hasRemaining()) &#123;</span><br><span class="line">                leftoverChar = lcb.get();</span><br><span class="line">                <span class="keyword">if</span> (cb != <span class="keyword">null</span> &amp;&amp; cb.hasRemaining())</span><br><span class="line">                    flushLeftoverChar(cb, endOfInput);</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (cr.isOverflow()) &#123;</span><br><span class="line">            <span class="keyword">assert</span> bb.position() &gt; <span class="number">0</span>;</span><br><span class="line">            writeBytes();</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        cr.throwException();</span><br><span class="line">    &#125;</span><br><span class="line">    haveLeftoverChar = <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;第11 ~ 18行代码将保留的高位字符和入参字符buffer的内容都获取到，然后在第19行将字节buffer转成读模式。第21行代码将字符数据编码成字节数据并存入字节buffer中。如果仍有留余，继续调用自身直至数据全部换成完成。如果字节buffer没有空间容纳新数据，那么将字节buffer中的数据全部写入到底层输出流中清空字节buffer继续循环过程。</p>
+<h4 id="public-void-write-char-cbuf-int-off-int-len"><a href="#public-void-write-char-cbuf-int-off-int-len" class="headerlink" title="public void write(char cbuf[], int off, int len)"></a><span id="publicVoidWriteCII">public void write(char cbuf[], int off, int len)</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">char</span> cbuf[], <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    se.write(cbuf, off, len);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将一个字符数组cbuf中的内容写入到底层输出流中。</p>
+<h4 id="public-void-write-String-str-int-off-int-len"><a href="#public-void-write-String-str-int-off-int-len" class="headerlink" title="public void write(String str, int off, int len)"></a><span id="publicVoidWriteSII">public void write(String str, int off, int len)</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(String str, <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    se.write(str, off, len);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将一个String字符串写入到底层输出流中。具体实现位于StreamEncoder中，相关代码段如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(String str, <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="comment">/* Check the len before creating a char buffer */</span></span><br><span class="line">    <span class="keyword">if</span> (len &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IndexOutOfBoundsException();</span><br><span class="line">    <span class="keyword">char</span> cbuf[] = <span class="keyword">new</span> <span class="keyword">char</span>[len];</span><br><span class="line">    str.getChars(off, off + len, cbuf, <span class="number">0</span>);</span><br><span class="line">    write(cbuf, <span class="number">0</span>, len);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;在方法中，会将String字符串先转成一个char数组，然后再调用上面提到的write(char cbuf[], int off, int len)将数据写入到底层输出流中。</p>
+<h4 id="public-void-flush"><a href="#public-void-flush" class="headerlink" title="public void flush()"></a><span id="publicVoidFlush">public void flush()</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">flush</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    se.flush();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将底层字节buffer的数据输出到底层输出流中。具体实现位于StreamEncoder中，相关代码段如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">flush</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        ensureOpen();</span><br><span class="line">        implFlush();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">implFlushBuffer</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (bb.position() &gt; <span class="number">0</span>)</span><br><span class="line">        writeBytes();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">implFlush</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    implFlushBuffer();</span><br><span class="line">    <span class="keyword">if</span> (out != <span class="keyword">null</span>)</span><br><span class="line">        out.flush();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;在StreamEncoder的flush()方法，最终由方法implFlush()完成推送操作。在该方法中，首先调用方法implFlushBuffer()将底层字节buffer的内容输出到底层输出流中，输出完毕后关闭当前输出流，释放占用的资源。</p>
+<h4 id="public-void-close-1"><a href="#public-void-close-1" class="headerlink" title="public void close()"></a><span id="publicVoidCloseOut">public void close()</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    se.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;关闭当前输入流。具体实现位于StreamEncoder中，相关代码段如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!isOpen)</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        implClose();</span><br><span class="line">        isOpen = <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">implClose</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    flushLeftoverChar(<span class="keyword">null</span>, <span class="keyword">true</span>);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">            CoderResult cr = encoder.flush(bb);</span><br><span class="line">            <span class="keyword">if</span> (cr.isUnderflow())</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">if</span> (cr.isOverflow()) &#123;</span><br><span class="line">                <span class="keyword">assert</span> bb.position() &gt; <span class="number">0</span>;</span><br><span class="line">                writeBytes();</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            cr.throwException();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (bb.position() &gt; <span class="number">0</span>)</span><br><span class="line">            writeBytes();</span><br><span class="line">        <span class="keyword">if</span> (ch != <span class="keyword">null</span>)</span><br><span class="line">            ch.close();</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            out.close();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException x) &#123;</span><br><span class="line">        encoder.reset();</span><br><span class="line">        <span class="keyword">throw</span> x;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;</p>
+<h2 id="涉及基础知识点"><a href="#涉及基础知识点" class="headerlink" title="涉及基础知识点"></a>涉及基础知识点</h2><ol>
+<li><p>StreamDecoder的其他构造方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> StreamDecoder <span class="title">forDecoder</span><span class="params">(ReadableByteChannel ch, CharsetDecoder dec, <span class="keyword">int</span> minBufferCap)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> StreamDecoder(ch, dec, minBufferCap);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">StreamDecoder(ReadableByteChannel ch, CharsetDecoder dec, <span class="keyword">int</span> mbc) &#123;</span><br><span class="line">    <span class="keyword">this</span>.in = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">this</span>.ch = ch;</span><br><span class="line">    <span class="keyword">this</span>.decoder = dec;</span><br><span class="line">    <span class="keyword">this</span>.cs = dec.charset();</span><br><span class="line">    <span class="keyword">this</span>.bb = ByteBuffer.allocate(mbc &lt; <span class="number">0</span> ? DEFAULT_BYTE_BUFFER_SIZE</span><br><span class="line">                                  : (mbc &lt; MIN_BYTE_BUFFER_SIZE</span><br><span class="line">                                     ? MIN_BYTE_BUFFER_SIZE : mbc));</span><br><span class="line">    bb.flip();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>StreamEncoder的其他构造方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> StreamEncoder <span class="title">forEncoder</span><span class="params">(WritableByteChannel ch, CharsetEncoder enc, <span class="keyword">int</span> minBufferCap)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> StreamEncoder(ch, enc, minBufferCap);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="title">StreamEncoder</span><span class="params">(WritableByteChannel ch, CharsetEncoder enc, <span class="keyword">int</span> mbc)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.out = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">this</span>.ch = ch;</span><br><span class="line">    <span class="keyword">this</span>.cs = enc.charset();</span><br><span class="line">    <span class="keyword">this</span>.encoder = enc;</span><br><span class="line">    <span class="keyword">this</span>.bb = ByteBuffer.allocate(mbc &lt; <span class="number">0</span> ? DEFAULT_BYTE_BUFFER_SIZE : mbc);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>&emsp;</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>黄亿华. <a href="https://my.oschina.net/flashsword/blog/159613" target="_blank" rel="noopener">Java NIO学习笔记之二-图解ByteBuffer</a> [E]</li>
+<li>咕噜是个大胖子. <a href="https://blog.csdn.net/ai_bao_zi/article/details/81205286" target="_blank" rel="noopener">JAVA基础知识之StreamDecoder流</a> [E]</li>
+<li>咕噜是个大胖子. <a href="https://blog.csdn.net/ai_bao_zi/article/details/81181198" target="_blank" rel="noopener">JAVA基础知识之StreamEncoder流</a> [E]</li>
+<li>江湖人称小白哥. <a href="https://blog.csdn.net/dd864140130/article/details/50318977" target="_blank" rel="noopener">通俗编程——白话NIO之Buffer</a> [E]</li>
+</ol>
+<p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-InputStreamReader-OutputStreamWriter.html" target="_blank" title="Java I/O 14 - InputStreamReader &amp; OutputStreamWriter">Java I/O 14 - InputStreamReader &amp; OutputStreamWriter</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-InputStreamReader-OutputStreamWriter.html" target="_blank" title="Java I/O 14 - InputStreamReader &amp; OutputStreamWriter">https://marcuseddie.github.io/2018/java-InputStreamReader-OutputStreamWriter.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2018/java-Collection-AbstractList.html" class="alignleft prev" title="Java Collection 02 - AbstractList"> 上一篇： Java Collection 02 - AbstractList</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2018/java-Collection-List.html" class="alignright next" title="Java Collection 01 - List"> 下一篇： Java Collection 01 - List</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

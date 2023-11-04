@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      【译】如何构建基于成本的 SQL 优化器？ | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="&amp;emsp;&amp;emsp;在 Cockroach 实验室，我们一直在持续关注性能的提升和可扩展性。为了实现这个目标，我们发布的 2.1  版本产品中包含了一个全新的、从零起步的、基于成本的 SQL  优化器。这个优化器因提供了一个灵活的优化框架会在未来即将发布的版本中带来显著的性能提升，尤其是在一些复杂的报表查询场景中。除此之外，还首次启用了关联子查询等 SQL  功能特性。如果你有一些想要查询速度">
+<meta name="keywords" content="transalate">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【译】如何构建基于成本的 SQL 优化器？ | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/how-we-built-a-cost-based-sql-optimizer.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;在 Cockroach 实验室，我们一直在持续关注性能的提升和可扩展性。为了实现这个目标，我们发布的 2.1  版本产品中包含了一个全新的、从零起步的、基于成本的 SQL  优化器。这个优化器因提供了一个灵活的优化框架会在未来即将发布的版本中带来显著的性能提升，尤其是在一些复杂的报表查询场景中。除此之外，还首次启用了关联子查询等 SQL  功能特性。如果你有一些想要查询速度">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1544189634/BlogImages/how-we-built-a-cost-based-sql-optimizer/Cost-based-optimizer-transaction-flow.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1544189628/BlogImages/how-we-built-a-cost-based-sql-optimizer/Cost-based-optimizer-memo-how-work.png">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.353Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【译】如何构建基于成本的 SQL 优化器？ | Mr.Muzi">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;在 Cockroach 实验室，我们一直在持续关注性能的提升和可扩展性。为了实现这个目标，我们发布的 2.1  版本产品中包含了一个全新的、从零起步的、基于成本的 SQL  优化器。这个优化器因提供了一个灵活的优化框架会在未来即将发布的版本中带来显著的性能提升，尤其是在一些复杂的报表查询场景中。除此之外，还首次启用了关联子查询等 SQL  功能特性。如果你有一些想要查询速度">
+<meta name="twitter:image" content="https://res.cloudinary.com/jknight/image/upload/v1544189634/BlogImages/how-we-built-a-cost-based-sql-optimizer/Cost-based-optimizer-transaction-flow.png">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>【译】如何构建基于成本的 SQL 优化器？</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-12-07" class="post-meta__date date">2018-12-07</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;5.2k&emsp;阅读时长:&nbsp;18&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/外文翻译/">外文翻译</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/协作翻译/">协作翻译</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;在 Cockroach 实验室，我们一直在持续关注性能的提升和可扩展性。为了实现这个目标，我们发布的 2.1  版本产品中包含了一个全新的、从零起步的、基于成本的 SQL  优化器。这个优化器因提供了一个灵活的优化框架会在未来即将发布的版本中带来显著的性能提升，尤其是在一些复杂的报表查询场景中。除此之外，还首次启用了关联子查询等 SQL  功能特性。如果你有一些想要查询速度更快的查询请求场景，把它们交给我们吧！我们正在构建一个用来调节优化器性能的查询库，并以此来规划确定未来工作的优先级顺序。 </p>
+<a id="more"></a>
+<p>&emsp;&emsp;作为一个工程师，我急切的想要深入了解新优化器是如何工作的（TL;DR -  一个令人兴奋的存在），所以第一件事情就是先要做好各种准备工作。我将会以解释什么是基于成本的 SQL  优化器作为开始，紧接着会告诉你我们是如何决定从众多优化器中选择出最能满足我们需要的一个优化器，以至于我们集合了四个工程师，把他们都关在了封闭的小黑屋里，全权委托他们重写实现了 CockroachDB  的一个主要部件。之后，我会带领大家进入到真正让人着迷的部分，引导大家一探新优化器内部的真面目。鉴于篇幅的缘故，我们不可能完全了解新优化器的全部，因为这不是一篇博文可以做到的。但是也不用太担心，之后还会有详细介绍优化器内部机制的文章不断发布。所以，请各位读者稍安勿躁，敬请期待。 </p>
+<h2 id="什么是-SQL-优化器？"><a href="#什么是-SQL-优化器？" class="headerlink" title="什么是 SQL 优化器？"></a>什么是 SQL 优化器？</h2><p>&emsp;&emsp;SQL 优化器会分析一个 SQL 查询语句并选择最高效的方式来执行请求。非常简单的查询可能只有一种执行的方法，与此同时，复杂的查询请求可能有数以千计，甚至数以百万计的方式可供选择。优化器的优化效果越好，就越接近<strong>最佳的执行方案</strong>，而这个最佳方案将会是执行查询请求的最高效方法。</p>
+<p>下面是一条看上去简单的查询 SQL ：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SELECT *</span><br><span class="line">FROM customers c, orders o</span><br><span class="line">WHERE c.id=o.cust_id AND c.name &lt; ’John Doe’</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;我不会用优化器在处理上述查询时需要考虑的诸多问题让你（或者我）感到无聊和厌烦，但下面的几个注意点会传达出我想要表达的观点:</p>
+<ol>
+<li>我们应该在表关联前后评估字段名过滤么？</li>
+<li>我们应该在索引上使用散列关联、合并关联、或者嵌套循环关联（在 CockroachDB 称为“查找关联”）？</li>
+<li>如果是查询关联或者散列关联，我们是要通过枚举客户的方式来查询订单，还是通过枚举订单的方式来查询客户？</li>
+<li>如果有一个建立在“name”字段上的辅助索引，我们是否可以通过这个索引来查询匹配的名字？或者说最好用主键索引来查找匹配的id？</li>
+</ol>
+<p>&emsp;&emsp;除此之外，让优化器孤立地解决上述问题是肯定没办法胜任实际需要的，它需要纵观所有解决方案来发现最好的那一个。可能通过使用查询关联结合辅助索引的方式是非常不错的方法，但如果可以使用合并关联，主键索引会有更好的执行效果。实际上，一个方案是否是最佳的解决方案受数据行总数、众多的硬件运算器的相对性能、数据值的存储位置和查询频率以及其他因素的共同影响。</p>
+<h2 id="启发式-vs-基于成本"><a href="#启发式-vs-基于成本" class="headerlink" title="启发式 vs 基于成本"></a>启发式 vs 基于成本</h2><p>&emsp;&emsp;人们是如何在众多可能的执行计划中做出优化选择的？在这件事情上进行开发与思考的历史比我的年龄还要大，所以任何人的回答都会显得不那么精确。但是别灰心，在这个问题上，我们还是有两条通用的途径可以解决的。</p>
+<p>&emsp;&emsp;第一条途径是每个人都在第一时间构建自己需要的优化器。人们基于常规原则收集预置的启发式规则。举例来说，假设有一条等式条件是预置的，则可能有一条启发式规则总是使用哈希连接（hash  join）来代替嵌套循环连接。大多数情况下，执行计划在结果上表现得好，那么，这就是一条好的启发式规则。也就是说，像这样的基于规则的优化器就叫做<strong>启发式优化器。</strong></p>
+<p>&emsp;&emsp;然而，静态启发式规则也有缺点。他们在大多数情况下工作得很好，但在其他情况下，他们可能找不到最优执行计划。例如，查找联接循环遍历来自外部关系的行，并通过反复探测内部关系上的索引来查找匹配的内部行。当外部行数很少时，这种方法很有效，但是随着外部行数的增加，这种方法会逐渐降低，并且每一行的探测开销开始拖长执行时间。在某些交叉点，散列或合并连接可能会更好。但是很难设计出启发式规则来捕捉这些微妙之处。</p>
+<p>&emsp;&emsp;接下来就开始介绍基于成本的优化器。基于成本的优化器将枚举可能的执行计划，并为每个计划分配成本，成本是执行该计划所需的时间和资源的估计值。一旦这些可能性被列举出来，优化器就会选择成本最低的计划并将其交付执行。虽然成本模型通常被设计为最大化吞吐量（即每秒查询），但它也可以被设计为支持其他期望指标的查询行为，例如最小化延迟（即检索第一行的时间）或最小化内存使用。</p>
+<p>&emsp;&emsp;基于此，你可能会问：“如果成本模型被证明是有缺陷的怎么办？”。确实如此，基于成本的优化器是否足够好和它分配的成本是成正比的。此外，成本的精确度也高度依赖于优化器评估数据行数时达到的精确度。这听上去就像优化器在执行查询过程中的每个阶段评估实际返回的数据行总数。此时，我们已经引入了另一个研究了数十年的课题：<strong>数据库统计</strong>。</p>
+<p>&emsp;&emsp;收集得到的数据库统计信息被发送给优化器希望其可以提供更精确的评估数据行数。有实际帮助的统计信息涵盖了表数据行、无重复的和存在空值的列数以及用于理解值分布的直方图等。这些信息都会传给优化器，优化器依据得到的信息给出关于采用何种关联类型、关联顺序、索引选择以及其他问题的解决方案。</p>
+<h2 id="优化器的重生"><a href="#优化器的重生" class="headerlink" title="优化器的重生"></a>优化器的重生</h2><p>&emsp;&emsp;随着时间的推移，CockroachDB从一个简单的、具有启发式探索性质的优化器发展成一个足够复杂的优化器。在2.0版本产品中，基于不可能简单的通过逃避事实的现实，我们开始限制启发式规则的使用数量。经过细微调整过的启发式规则开始与其他规则相互冲突，而我们却很难调查出问题到底出在了哪条规则上。一个非常简单的启发式规则:</p>
+<blockquote>
+<p>当遇到一个相等条件时采用散列关联</p>
+</blockquote>
+<p>被变更为</p>
+<blockquote>
+<p>当遇到一个相等条件时采用三联关联，除非所有的输入参数都是关联键，这种情况下会采用合并关联</p>
+</blockquote>
+<p>到最后，我们甚至考虑了诸如</p>
+<blockquote>
+<p>当遇到一个相等条件时采用三联关联，除非所有的输入都是关联键，这种情况下会采用合并关联。如果其中的一个关联输入参数由数量不多的列提供，而其他输入参数可以使用一个有效的索引集，那么就使用查找关联</p>
+</blockquote>
+<p>这样的规则设置。</p>
+<p>&emsp;&emsp;我们加入的每一条启发式规则都必须基于已经存在的规则进行测试检查，以此保证这些新加入的规则可以和其他现有规则正常高效的完成工作。如果说基于成本的优化器是一个平衡的积木塔的话，那么启发探索式优化器则是一个不稳定的结构，非常容易崩溃。</p>
+<p>&emsp;&emsp;在2017年后半年，Cockroach实验室内要求取代年代久远的启发探索式优化器的呼声和势头越来越强烈。实验室的联合创始人之一  — Peter  Mattis，安排了一个长达数月的由数据库优化器领域里的专家进行授课的训练营。这个训练营的宗旨是向开发人员传授关于最先进的优化器如何工作的知识，还要求参与学员阅读领域内有影响力的重要文献。为了可以快速决定和推动，Pete创建了一个<a href="https://github.com/petermattis/opttoy" target="_blank" rel="noopener">名叫“opttoy”的基于成本的优化器原型</a>。这个原型演示了一些非常重要的概念，同时也规划了之后的工作方向。</p>
+<p>&emsp;&emsp;我在2018年早些时候加入公司，公司达成了当下可以进行下一阶段工作的一致决定。在向我介绍了项目的背景和可能带来的收益之后，我被要求带领一个小团队（团队虽小，但是非常积极主动）从零开始构建一个基于成本的优化器。</p>
+<p>&emsp;&emsp;经过9个月的紧张工作，我们团队发布了新优化器的第一个版本，并且该版本被加入到了CockroachDB的2.1版本产品中。新优化器的第一个版本被视为这个项目进行过程中重要的里程牌之一，尽管我们还需要做很多工作来完善优化器。<br>&emsp;&emsp;如下是CockroachDB2.1版本中的优化器已经支持的几个非常重要的新特性：</p>
+<ul>
+<li><p><strong>关联子查询</strong> - 这些查询请求包含了需要引用外部查询列的内部子查询，比如下面的例子：    </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">SELECT *</span><br><span class="line">FROM customers c</span><br><span class="line">WHERE EXISTS (</span><br><span class="line">	SELECT *</span><br><span class="line">	FROM orders o</span><br><span class="line">	WHERE o.cust_id = c.id</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p> 有一篇博客会单独介绍关联子查询的优化，这篇博客会在不久之后完成。</p>
+</li>
+<li><p><strong>自动规划查询关联</strong>：当需要决定如何执行一个关联操作时，优化器除了合并关联和散列关联之外，还会考虑查询关联。查询关联是一种非常重要的用来快速执行相等关联的手段，经常被用于其中一个输入参数由数量不多的数据行提供，而另一个则具有一个相等条件下的索引集：    </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SELECT COUNT(*)</span><br><span class="line">FROM customers c, orders o</span><br><span class="line">WHERE c.id=o.cust_id AND c.zip=&apos;12345&apos; AND c.name=&apos;John Doe&apos;</span><br></pre></td></tr></table></figure>
+<p> 在这个例子中，优化器会决定如何找到第一个客户名为“John Doe”且居住在邮政编码为“12345”地区的客户，然后统计出该客户的下单数。</p>
+</li>
+</ul>
+<h2 id="高级选项"><a href="#高级选项" class="headerlink" title="高级选项"></a>高级选项</h2><p>&emsp;&emsp;正如我之前所说的，我会引导诸位读者一览新优化器的一些高级选项特征。在开始之前，把一个查询想象成一棵树结构，执行计划的中每一个步骤对应树结构的一个节点。事实上，这也是<a href="https://www.cockroachlabs.com/docs/stable/explain.html" target="_blank" rel="noopener">SQL解释器</a>如何展示一个执行计划的整个过程：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">group                    |             |</span><br><span class="line"> │                       | aggregate 0 | count_rows()</span><br><span class="line"> │                       | scalar      |</span><br><span class="line"> └── render              |             |</span><br><span class="line">      └── filter         |             |</span><br><span class="line">           │             | filter      | ((id = cust_id) AND</span><br><span class="line">           │             |             | (zip = &apos;12345&apos;)) AND</span><br><span class="line">           │             |             | (name = &apos;John Doe&apos;)</span><br><span class="line">           └── join      |             |</span><br><span class="line">                │        | type        | cross</span><br><span class="line">                ├── scan |             |</span><br><span class="line">                │        | table       | customers@primary</span><br><span class="line">                │        | spans       | ALL</span><br><span class="line">                └── scan |             |</span><br><span class="line">                         | table       | orders@primary</span><br><span class="line">                         | spans       | ALL</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;上图所示的输出结果显示了一个<em>未经优化</em>   的查询请求是如何执行的：首先，计算得到一个完整的关于客户表和订单表的交叉乘积结果，之后根据WHERE条件过滤结果集，之后计算结果行数。但是！这个执行过程的性能非常差！如果客户表里有10,000个用户，订单表里有100,000条订单，那么两表交叉乘积后会产生10亿条记录，而大部分数据都是要被过滤废弃掉的，这会造成极大的浪费。</p>
+<p>&emsp;&emsp;接下来会证明新优化器的价值所在。新优化器首先会将最开始的执行计划树结构<em>转换</em> 成一系列逻辑上等价的执行计划树，然后从中选出成本最小的那一个。那么问题来了，什么叫“逻辑上等价”呢？两棵执行计划树逻辑上等价意味着这两棵树被执行完成后会返回同样的结果（在没有<code>ORDER BY</code>条件限制时可能数据行顺序不一致）。换言之，从正确性的角度来看，优化器会选中哪个执行计划并不重要，它只关心哪个计划的性能更好。</p>
+<h2 id="转换"><a href="#转换" class="headerlink" title="转换"></a>转换</h2><p>&emsp;&emsp;新优化器不会一次性生成所有的等价执行计划树。相反，最开始的时候有一个初始化树结构，接着通过一系列递增的转换操作来生成可供选择的树结构。每一次独立的转换操作都是相对简单的；许多简单的转换操作相互结合共同实现复杂的优化需求。观察优化器的运行过程会让你觉得非常不可思议：即使你了解优化器使用的每一个独立的转换操作，它还是会发现可以产生许多令人惊讶的组合，而这些组合可以生产我们从未想到的执行计划。即使对于上述展示的相对简单的查询请求，优化器应用了12个转换操作来实现最终请求。下面展示了4个关键的转换操作流程图。</p>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1544189634/BlogImages/how-we-built-a-cost-based-sql-optimizer/Cost-based-optimizer-transaction-flow.png" alt></p>
+<p>&emsp;&emsp;你可能注意到了为了最大程度的追求性能过滤器条件被向下移动到了join部分，成为了扫描操作的一部分。在最后的转换操作中，优化器决定采用一个带有辅助索引的查询关联来响应查询请求。 </p>
+<p>&emsp;&emsp;截止到本文撰写时，基于成本的优化器已经实现了超过160个不同的转换操作，我们会继续在未来的发行版本中加入更多的转换操作类型。由于转换操作完全依赖于新优化器的核心，所以我们花费大量的时间使得这些转换操作尽可能容易的被定义、学习和维护。为了实现这个目的，我们创造了一个称为Optgen的域细节语言(DSL)来表述转换操作的结构，以及用来从DSL生产真实Go语言代码的工具。如下是用Optgen语言表述转换操作的一个例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[MergeSelectInnerJoin, Normalize]</span><br><span class="line">(Select</span><br><span class="line">	$input:(InnerJoin $left:* $right:* $on:*)</span><br><span class="line">	$filter:*</span><br><span class="line">)</span><br><span class="line">=&gt;</span><br><span class="line">(InnerJoin</span><br><span class="line">	$left</span><br><span class="line">	$right</span><br><span class="line">	(ConcatFilters $on $filter)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;这个转换将<code>WHERE</code>子句中的条件与内部连接的ON子句中的条件进行了合并。这个操作生成了大约25行的Go语言代码，其中包含了保证传递匹配转换被采用的代码。之后还会有更多的博客文章来详细解释更多的Optgen特性，事实上需要涵盖的内容太多了。如果想要迫切的了解相关知识，<a href="https://github.com/cockroachdb/cockroach/blob/master/pkg/sql/opt/optgen/lang/doc.go" target="_blank" rel="noopener">Optgen文档</a>是一个不错的选择。各位读者也浏览了一些<a href="https://github.com/cockroachdb/cockroach/tree/master/pkg/sql/opt/norm/rules" target="_blank" rel="noopener">转换操作的定义文件</a>，如果你的能力非常优秀，尝试实现一个新的、我们遗漏的转换操作，我们对社区贡献持非常欢迎的态度。</p>
+<h2 id="备忘"><a href="#备忘" class="headerlink" title="备忘"></a>备忘</h2><p>&emsp;&emsp;我已经解释了新发布的优化器是如何生成许多的等价执行计划，并且基于成本估计选择其中最理想的一个执行计划。理论上这一套机制听上去还不错，但是优化器实际的效果怎么样呢？它会不会有可能需要指数级的内存空间来存储生成的这些计划？我们可以从一个被称为备忘的精巧的数据结构中得到这个问题的答案。</p>
+<p>&emsp;&emsp;备忘被设计用来利用计划之间有意义的冗余来有效存储根据一个给定的查询请求生成的所有执行计划树集合。例如，一个关联查询可能有数个逻辑上相等的、从各个方面角度看都完全相同的执行计划，只不过一个计划采用了散列关联，一个计划采用了合并关联，另一个采用查询关联。除此之外，每个计划可能会有多个变量：一个变量里左连接输入参数使用主键索引来扫描行，在另一个变量里使用辅助索引做相同的工作。单纯地编码的话，这会因为计划的指数膨胀导致需要指数范围的空间来存储这些计划树。</p>
+<p>&emsp;&emsp;备忘通过定义一个名为备忘组的等值类集合来解决上述问题，在每个备忘组中包含了一个逻辑上等值的表达式集合。下图详细说明了备忘组的工作原理： </p>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1544189628/BlogImages/how-we-built-a-cost-based-sql-optimizer/Cost-based-optimizer-memo-how-work.png" alt></p>
+<p>&emsp;&emsp;为了构建一个执行计划，从组1中选任意一个运算符，然后分别从组2和组3中选择操作的左操作数和右操作数。因为在同一个组里的运算符一定是逻辑上相等的，所以不管你选中的是什么，你都会得到一个合法执行计划。简单的算术计算显示了共有12个（3 <em> 2 </em>  2）可能的执行计划会被编码到备忘里。所以，可以尽情想象一下拥有6种关联方式、复杂的聚合、众多的过滤器条件的报表查询可能带来的复杂度。其生成的计划树可能会以千计，如果你对备忘结构一无所知，那么在编码过程过程中需要的存储空间比你期望的要小的多。 </p>
+<p>&emsp;&emsp;当然，新的优化器不会随机的从备忘中挑选其中的一个执行方案树。相反，它会记录并选择每个备忘组中成本最小的那一个，然后基于这些选择的表达式中递归构建最终的执行方案。而且，备忘也是一种优雅的数据结构，这让我想起了Dan Brown的小说《天使与魔鬼》中<a href="http://www.johnlangdon.net/works/earth-air-fire-water/" target="_blank" rel="noopener">光明会(illuminati)的钻石</a>双重性。两者都会编码出比看上去可能更多的信息。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>&emsp;&emsp;我们团队计划在接下来的时间内连续推出关于CockroachDB内部基于成本的优化器的内部分析文章。在这篇文章里，我仅涉及了优化器的表象。联系我们告诉我们你感兴趣的主题和方向，或者更好的方式是<a href="https://www.cockroachlabs.com/careers/#jobs" target="_blank" rel="noopener">加入Cockroach实验室</a>，与我们共同构建可以一个在全球范围内广泛使用的ACID数据库。</p>
+<p>&emsp;</p>
+<h2 id="致谢"><a href="#致谢" class="headerlink" title="致谢"></a>致谢</h2><p>&emsp;&emsp;本文由<a href="https://my.oschina.net/crooner" target="_blank" rel="noopener">溪边九节</a>, <a href="https://my.oschina.net/u/2560193" target="_blank" rel="noopener">雪落无痕xdj</a>和作者共同完成，在这里向两位表示感谢并期待下一次的合作。</p>
+<p>&emsp;</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>原文链接：<a href="https://blog.chromium.org/2018/09/10-years-of-speed-in-chrome_11.html" target="_blank" rel="noopener">10 years of Speed in Chrome</a> </li>
+<li>首发链接：<a href="https://www.oschina.net/translate/building-cost-based-sql-optimizer" target="_blank" rel="noopener">如何构建基于成本的 SQL 优化器？</a></li>
+</ol>
+<p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+	  	
+		  	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>参与翻译完成，首发于<a href="https://www.oschina.net/translate?tab=completed">开源中国社区</a>，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/how-we-built-a-cost-based-sql-optimizer.html" target="_blank" title="【译】如何构建基于成本的 SQL 优化器？">【译】如何构建基于成本的 SQL 优化器？</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/how-we-built-a-cost-based-sql-optimizer.html" target="_blank" title="【译】如何构建基于成本的 SQL 优化器？">https://marcuseddie.github.io/2018/how-we-built-a-cost-based-sql-optimizer.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2018/java-Collection-LinkedHashMap.html" class="alignleft prev" title="Java Map 04 - LinkedHashMap"> 上一篇： Java Map 04 - LinkedHashMap</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2018/java-Collection-HashMap.html" class="alignright next" title="Java Map 03 - HashMap"> 下一篇： Java Map 03 - HashMap</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

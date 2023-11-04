@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      Java Collection 12 - SortedSet &amp; NavigableSet | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="SortedSet和NavigableSet借助于Comparable和Comparator提供了建立在元素大小关系的顺序（升序、降序）。">
+<meta name="keywords" content="SortedSet,NavigableSet">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java Collection 12 - SortedSet &amp; NavigableSet | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/java-Collection-SortedSet-NavigableSet.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="SortedSet和NavigableSet借助于Comparable和Comparator提供了建立在元素大小关系的顺序（升序、降序）。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.357Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java Collection 12 - SortedSet &amp; NavigableSet | Mr.Muzi">
+<meta name="twitter:description" content="SortedSet和NavigableSet借助于Comparable和Comparator提供了建立在元素大小关系的顺序（升序、降序）。">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>Java Collection 12 - SortedSet &amp; NavigableSet</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-12-04" class="post-meta__date date">2018-12-04</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;2.3k&emsp;阅读时长:&nbsp;8&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java集合/">Java集合</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;SortedSet和NavigableSet是两个继承了Set接口的子接口。除了常见的Set集合操作外，这两个接口提供了一种排序来更快的访问元素的机制和方法。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;SortedSet和NavigableSet均是Set接口的子接口，其中SortedSet直接继承于Set，而NavigableSet则直接继承于SortedSet。SortedSet借助于接口<strong>java.lang.Comparable</strong>和<strong>java.util.Comparator</strong>提供了一种建立在元素上的全排序（即对象中的所有字段都参与排序，在某字段相同的情况下比较下一个字段的大小关系），而这种排序手段可以允许迭代器向前或者向后访问元素。因此，SortedSet额外声明了一些方法来充分利用这种双向访问的特点。LinkedHashSet也是有序访问的，但是LinkedHashSet维护的是元素插入集合时的先后顺序，这个顺序是固定的，不会随着元素的插入发生变化。而SortedSet维护的是元素之间大小关系的顺序（比如升序、 降序等），这种顺序会随着元素的插入而发生变更。 </p>
+<p>&emsp;&emsp;但是SortedSet对加入集合中的元素也提出了一些要求，即需要实现Comparable或者comparator接口。此外，这些元素相互之间可以互相比较而不会抛出<strong>ClassCastException</strong>异常。</p>
+<p>&emsp;&emsp;NavigableSet&lt;E&gt;直接继承了SortedSet提供了更丰富的方法来完成元素查找，常用的有lower(E e)， floor(E e)，ceiling(E e)，higher(E e)等。 除此之外，NavigableSet&lt;E&gt;可以以升序或者降序的任意一种方式来完成遍历操作。需要注意的是，通过升序访问的性能会优于通过降序访问的性能。</p>
+<p>&emsp;&emsp;为了避免null引起的误会，NavigableSet&lt;E&gt;的实现类不鼓励允许null元素的加入。</p>
+<p>&emsp;</p>
+<h2 id="SortedSet"><a href="#SortedSet" class="headerlink" title="SortedSet"></a>SortedSet</h2><h3 id="方法列表"><a href="#方法列表" class="headerlink" title="方法列表"></a>方法列表</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Comparator&lt;? super E&gt; comparator();</td>
+<td>返回当前集合采用的比较器</td>
+</tr>
+<tr>
+<td>SortedSet&lt;E&gt; subSet(E fromElement, E toElement);</td>
+<td>返回当前集合中大于等于fromElement且小于toElement的元素集合。对该集合的修改会同步到原始集合上，反之亦然</td>
+</tr>
+<tr>
+<td>SortedSet&lt;E&gt; headSet(E toElement);</td>
+<td>返回当前集合中小于toElement的元素集合。对该集合的修改会同步到原始集合上，反之亦然</td>
+</tr>
+<tr>
+<td>SortedSet&lt;E&gt; tailSet(E fromElement);</td>
+<td>返回当前集合中大于等于fromElement的元素集合。对该集合的修改会同步到原始集合上，反之亦然</td>
+</tr>
+<tr>
+<td>E first();</td>
+<td>返回当前集合中第一个（也是最小）的元素</td>
+</tr>
+<tr>
+<td>E last();</td>
+<td>返回当前集合中最后（也是最大）的元素</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>&emsp;</p>
+<h2 id="NavigableSet"><a href="#NavigableSet" class="headerlink" title="NavigableSet"></a>NavigableSet</h2><h3 id="方法列表-1"><a href="#方法列表-1" class="headerlink" title="方法列表"></a>方法列表</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>方法声明</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>E lower(E e);</td>
+<td>返回小于元素e的最大元素，如果没有返回null</td>
+</tr>
+<tr>
+<td>E floor(E e);</td>
+<td>返回小于或者等于元素e的最大元素，如果没有返回null</td>
+</tr>
+<tr>
+<td>E ceiling(E e);</td>
+<td>返回大于或者等于元素e的最小元素，如果没有返回null</td>
+</tr>
+<tr>
+<td>E higher(E e);</td>
+<td>返回大于元素e的最小元素，如果没有返回null</td>
+</tr>
+<tr>
+<td>E pollFirst();</td>
+<td>移除并返回集合中的最小（第一个）元素，如果集合为空返回null</td>
+</tr>
+<tr>
+<td>E pollLast();</td>
+<td>移除并返回集合中的最大（最后一个）元素，如果集合为空返回null</td>
+</tr>
+<tr>
+<td>Iterator&lt;E&gt; iterator();</td>
+<td>返回一个以升序方式迭代集合的迭代器</td>
+</tr>
+<tr>
+<td>NavigableSet&lt;E&gt; descendingSet();</td>
+<td>返回当前集合的一个逆序集合表示。对该集合的修改会同步到原始集合上，反之亦然</td>
+</tr>
+<tr>
+<td>Iterator&lt;E&gt; descendingIterator();</td>
+<td>返回一个以降序方式迭代集合的迭代器</td>
+</tr>
+<tr>
+<td>NavigableSet&lt;E&gt; subSet(E fromElement, boolean fromInclusive,E toElement,   boolean toInclusive);</td>
+<td>返回一个以fromElement为起点，toElement为终点的子集合。由fromInclusive和toInclusive字段标记是否包含fromElement和toElement节点。</td>
+</tr>
+<tr>
+<td>NavigableSet&lt;E&gt; headSet(E toElement, boolean inclusive);</td>
+<td>返回一个小于（等于）toElement元素的子集合。由inclusive指定是否可以返回等于toElement元素的元素。</td>
+</tr>
+<tr>
+<td>NavigableSet&lt;E&gt; tailSet(E fromElement, boolean inclusive);</td>
+<td>返回一个大于（等于）fromElement元素的子集合。由inclusive指定是否可以返回等于fromElement元素的元素</td>
+</tr>
+<tr>
+<td>SortedSet&lt;E&gt; subSet(E fromElement, E toElement);</td>
+<td>返回一个大于（等于）fromElement元素、小于toElement元素的子集合。</td>
+</tr>
+<tr>
+<td>SortedSet&lt;E&gt; headSet(E toElement);</td>
+<td>返回一个小于toElement元素的子集合。</td>
+</tr>
+<tr>
+<td>SortedSet&lt;E&gt; tailSet(E fromElement);</td>
+<td>返回一个大于（等于）fromElement元素的子集合。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>&emsp;</p>
+<h2 id="涉及基础知识点"><a href="#涉及基础知识点" class="headerlink" title="涉及基础知识点"></a>涉及基础知识点</h2><ol>
+<li><p><strong>“consistent with equals”的意义是什么</strong></p>
+<p>&emsp;&emsp;标识比较结果和equals()方法结果一致。在<strong>java.lang.Comparable&lt;T&gt;</strong>接口中对“consistent with equals”做了如下定义：</p>
+<blockquote>
+<p>The natural ordering for a class C is said to be consistent with equals if and only if e1.compareTo(e2) == 0 has the same boolean value as e1.equals(e2) for every e1 and e2 of class C. Note that null is not an instance of any class, and e.compareTo(null) should throw a NullPointerException even though e.equals(null) returns false.</p>
+</blockquote>
+<p>&emsp;&emsp;翻译过来就是如果一个对象的自然排序被认为是consistent with equals当且仅当通过通过compareTo()和通过equals()方法可以得到一致的判断结果。如果是null元素，那么equals()方法返回false的同时compareTo()会抛出一个<strong>NullPointerException </strong>异常。</p>
+<p>&emsp;&emsp;在java中，==用来比较两个变量是否相等。如果运算数是基本数据类型，那么==比较的是值，如果运算数是对象，那么==比较的是对象在内存中的地址。equals()方法的默认实现也是比较对象在内存中的地址。而compareTo()方法则需要被实现来完成元素之间的比较。只有equals()方法和compareTo()方法完成了同样的判断结果时就认为相等性是一致的。</p>
+</li>
+<li><p><strong>覆盖equals()方法需要遵守的约定</strong></p>
+<p>&emsp;&emsp;在《Effective Java》中，介绍了如下的几条规则：</p>
+<blockquote>
+<p>自反性（reflexive）。对于任何非 null 的引用值 x，x.equals(x) 必须返回 true 。</p>
+<p>对称性（symmetric）。对于任何非 null 的引用值 x 和 y，当且仅当 y.equals(x) 返回 true时，x.equals(y) 必须返回 true 。</p>
+<p>传递性（transitive）。对于任何非 null 的引用值 x 、 y 和 z 。如果 x.equals(y) 返回 true ，并且 y.equals(z) 也返回 true ，那么 x.equals(z) 也必须返回 true 。</p>
+<p>一致性（consistent）。对于任何非 null 的引用值 x 和 y ，只要 equals 的比较操作在对象中所用的信息没有被修改，多次调用 x.equals(x) 就会一致地返回 true ，或者一致的返回 false 。</p>
+<p>对于任何非 null 的引用值 x ， x.equals(null) 必须返回 false 。</p>
+</blockquote>
+<p>&emsp;&emsp;如果确实需要覆盖equals()方法，那么需要同时覆盖hashCode()方法。否则无法保证可以在基于散列的集合中存储使用只覆盖了equals()方法的类。在覆盖hashCode()方法时，需要遵循如下规则：</p>
+<blockquote>
+<p>在应用程序的执行期间，只要对象的 equals 方法的比较操作所用到的信息没有被修改，那么对同一个对象调用多次， hashCode 方法都必须始终如一地返回同一个整数。在同一个应用程序的多次执行过程中 ,每次执行所返回的整数可以不一致。</p>
+<p>如果两个对象根据 equals(Object) 方法比较是相等的，那么调用这两个对象中任意一个对象的hashCode方法都必须产生同样的整数结果。</p>
+<p>如果两个对象根据 equals(Object) 方法比较是不等的，那么调用这两个对象中任意一个对象的hashCode  方法，则不一定要产生不同的整数结果。但是程序员应该知道，给不相等的对象产生截然不同的整数结果，有可能提高散列表（hash table）的性能。</p>
+</blockquote>
+</li>
+<li><p><strong>equals()和compartTo()的异同</strong></p>
+<p>&emsp;&emsp;两个方法都可以用来完成元素比较操作。</p>
+<p>&emsp;&emsp;equals()方法默认比较对象的内存地址，用来比较两个对象物理上是否属于同一个对象，可以通过覆盖equals()方法实现对象的逻辑比较（即值比较）。compareTo()方法被设计用来做内容比较，如果两个通过new实例化的对象含有相同的内容，那么通过compareTo()方法比较这两个对象被认为是相等的。</p>
+<p>&emsp;&emsp;equals()方法是Object的自带方法，由于Java中所有类都是Object的父类，所以所有类都继承了equals()方法。由于equals()方法有默认实现，所以equals()方法只有在实际需要的情况下才会被子类覆盖，反之则可以使用默认实现完成相关操作。而compareTo()方法是Comparable接口声明的方法，只有实现了该接口的方法才会拥有compareTo()方法。但是该方法没有任何实现，任何实现了Comparable接口的类都需要自定义实现compareTo()方法。</p>
+<p>&emsp;&emsp;只有实现了Comparable接口的类才能被存储到TreeSet等依赖于内容比较的集合中。而只有equals()方法未实现compareTo()方法的类在尝试加入到上述集合中时会导致失败。</p>
+</li>
+</ol>
+<p>&emsp;</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>[美] Joshua Bloch. Effective Java 2nd Edtion[M]. Boston:Addison-Wesley.</li>
+</ol>
+<p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-Collection-SortedSet-NavigableSet.html" target="_blank" title="Java Collection 12 - SortedSet &amp; NavigableSet">Java Collection 12 - SortedSet &amp; NavigableSet</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-Collection-SortedSet-NavigableSet.html" target="_blank" title="Java Collection 12 - SortedSet &amp; NavigableSet">https://marcuseddie.github.io/2018/java-Collection-SortedSet-NavigableSet.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2018/java-Collection-TreeSet.html" class="alignleft prev" title="Java Collection 13 - TreeSet"> 上一篇： Java Collection 13 - TreeSet</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2018/java-Collection-LinkedHashSet.html" class="alignright next" title="Java Collection 11 - LinkedHashSet"> 下一篇： Java Collection 11 - LinkedHashSet</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

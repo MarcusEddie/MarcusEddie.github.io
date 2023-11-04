@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      IP子网划分方法简述 | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="IP子网划分可以将一个网段划分成若干的更小的">
+<meta name="keywords" content="IP子网划分,子网掩码,固定长度子网掩码,FLSM,可变长度子网掩码,VLSM,Variable Length Subnet Masking,Fixed Length Subnet masking,CIDR,无类别域间路由,Classless Inter-Domain Routing">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IP子网划分方法简述 | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2021/IP-Subnet-Mask.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="IP子网划分可以将一个网段划分成若干的更小的">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1619230671/BlogImages/InternetSerials/ip-subnet-mask/ip-subnet-mask-ip-classes-range.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1619053351/BlogImages/InternetSerials/ip-subnet-mask/Ip-network-classes.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1619054007/BlogImages/InternetSerials/ip-subnet-mask/Ip-network-subnet-model.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1619053350/BlogImages/InternetSerials/ip-subnet-mask/Ip-network-subnet-demo1.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1619232346/BlogImages/InternetSerials/ip-subnet-mask/ip-subnet-mask-table-2.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1619230992/BlogImages/InternetSerials/ip-subnet-mask/ip-subnet-mask-table-3.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1619232346/BlogImages/InternetSerials/ip-subnet-mask/ip-subnet-mask-table-4.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1619232346/BlogImages/InternetSerials/ip-subnet-mask/ip-subnet-mask-table-5.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1619232346/BlogImages/InternetSerials/ip-subnet-mask/ip-subnet-mask-table-6.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1619169940/BlogImages/InternetSerials/ip-subnet-mask/Ip-cidr-demo1.png">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.349Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="IP子网划分方法简述 | Mr.Muzi">
+<meta name="twitter:description" content="IP子网划分可以将一个网段划分成若干的更小的">
+<meta name="twitter:image" content="https://res.cloudinary.com/jknight/image/upload/v1619230671/BlogImages/InternetSerials/ip-subnet-mask/ip-subnet-mask-ip-classes-range.png">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>IP子网划分方法简述</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2021-04-04" class="post-meta__date date">2021-04-04</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;5.4k&emsp;阅读时长:&nbsp;20&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/计算机网络/">计算机网络</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/IP地址/">IP地址</a>, <a class="tags-link" href="/tags/子网划分/">子网划分</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;在计算机网络中，IP协议（Internet Protocol，互联网络协议）是TCP/IP协议簇中的核心协议，该协议作用于网络层，要求计算机通过遵循一套相同的规则，从而实现计算机之间可以相互通信。在网络层中，数据以IP报文的形式存在，报文通过IP地址标识来源和目的主机。当前IP地址普遍遵循的是第四版互联网络协议（Internet Protocol version 4）也就是IPv4，在该版本协议中，一台主机的IP地址以<strong>点分十进制（Dotted Decimal Notation）</strong>方式表示，同时按照&lt;网络地址/网络号&gt;+&lt;主机地址/主机号&gt;的方式进行寻址。其中，网络地址（网络号）表示当前主机所在的网段，主机地址（主机号）表示当前主机在其所在网段中的唯一ID。</p>
+<a id="more"></a>
+<p>&emsp;&emsp;为了便于对IP地址进行管理，IETF（Internet Engineering Task Force，互联网工程任务组）在RFC 791<sup id="fnref:1" style="font-size:80%;line-height:80%;"><a href="#fn:1" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[1]</span></a></sup>中将IP地址定义为5种类型：<br>&emsp;&emsp;表 - 1：IP地址分类<sup id="fnref:2" style="font-size:80%;line-height:80%;"><a href="#fn:2" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[2]</span></a></sup></p>
+<div style="text-align: center; width: 100%;">
+<img src="https://res.cloudinary.com/jknight/image/upload/v1619230671/BlogImages/InternetSerials/ip-subnet-mask/ip-subnet-mask-ip-classes-range.png" style="margin: 0 auto;">
+</div>
+
+<p>对于A类网络，网络号”X”部分全为0的IP地址是个保留地址，网络号”X”部分全为1的IP地址是个环回地址，保留用作本地软件环回测试本主机的进程之间相互通信，所以A类网络可用的网络数量为$ 2^7 $ - 2。对B类和C类网络而言，128.0.0.0和192.0.0.0也是不对外分配使用的<sup id="fnref:3" style="font-size:80%;line-height:80%;"><a href="#fn:3" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[3]</span></a></sup>，所以可用网络数量分别为$ 2^{14} $ -1和$ 2^{21} $ -1。<br>&emsp;&emsp;在每个类别的每个网段中，都有两个特殊的地址：</p>
+<ul>
+<li>主机位全为0的网络地址；</li>
+<li>主机位全为1的广播地址；</li>
+</ul>
+<p>所以各个网段的可用主机号为$ 2^n $ （n为主机号位数）减去一个网络地址和一个广播地址，即为$ 2^n $  -2。 </p>
+<div style="text-align: center; width: 100%;">
+<img src="https://res.cloudinary.com/jknight/image/upload/v1619053351/BlogImages/InternetSerials/ip-subnet-mask/Ip-network-classes.png" style="margin: 0 auto;">
+</div>
+<div align="center">
+    <div align="center">图 - 1 IP地址分类结构 <sup id="fnref:4" style="font-size:80%;line-height:80%;"><a href="#fn:4" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[4]</span></a></sup> </div>
+&emsp;
+</div>
+
+<p>&emsp;&emsp;因此，诸如互联网名称与数字地址分配机构（ICANN，The Internet Corporation for Assigned Names and Numbers）等IP地址分配和管理机构会根据实际需求分配一个IP地址段给申请者，根据RFC791的描述，A类网络每个网段可容纳$ 2^{24} $ -2个主机，B类网络每个网段可容纳$ 2^{16} $  -2个主机，C类网络每个网段可容纳$ 2^8 $ -2个主机，如果申请者的需求小于A,B,C类网络各个网段的可用主机数，那么如果将整个网段全都分配出去，会造成IP地址的浪费，从而加剧IP地址的消耗速度。出于</p>
+<ol>
+<li>节约IP地址避免浪费；</li>
+<li>限制广播风暴的影响范围；</li>
+<li>通过分隔网段的方式保证各个网络的安全性；</li>
+</ol>
+<p>等目的，故在RFC 950<sup id="fnref:5" style="font-size:80%;line-height:80%;"><a href="#fn:5" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[5]</span></a></sup>中定义了子网掩码的相关概念及操作流程，从而按照实际需要分配IP地址，使得分配后的IP地址数量能在满足实际需要的前提下最大程度的减少浪费。</p>
+<h2 id="子网及子网掩码"><a href="#子网及子网掩码" class="headerlink" title="子网及子网掩码"></a>子网及子网掩码</h2><p>&emsp;&emsp;子网是对于IP地址网络的一种逻辑划分，把一个网段划分成两个及以上更小网段的过程就称为子网划分。划分子网后，寻址方式便由之前的&lt;网络号&gt;+&lt;主机号&gt;变成了&lt;网络号&gt;+&lt;子网号&gt;+&lt;主机号&gt;：</p>
+<div style="text-align: center; width: 100%;">
+<img src="https://res.cloudinary.com/jknight/image/upload/v1619054007/BlogImages/InternetSerials/ip-subnet-mask/Ip-network-subnet-model.png" style="margin: 0 auto;">
+</div>
+<div align="center">
+    <div align="center">图 - 2 子网划分结构 <sup id="fnref:5" style="font-size:80%;line-height:80%;"><a href="#fn:5" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[5]</span></a></sup> </div>
+&emsp;
+</div>
+
+<p>&emsp;&emsp;为了区分同一网段下的不同子网，需要使用<strong>子网掩码</strong>来进行区分。通常情况下，子网掩码由从左起若干个值为1的进制位表示。RFC950和RFC 1219<sup id="fnref:6" style="font-size:80%;line-height:80%;"><a href="#fn:6" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[6]</span></a></sup>中指出，<strong>1进制位可以不连续，但是并不推荐这么做</strong>。需要注意的是，在RFC950中，子网号全为0或者1的子网是不会被实际分配使用的，但是在RFC 1878<sup id="fnref:8" style="font-size:80%;line-height:80%;"><a href="#fn:8" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[8]</span></a></sup>废除了这个约定，所以本文也会遵照RFC 1878这个约定不再另行说明。在构成一个网段的所有子网段中，各个子网的子网掩码的长度是固定的，因此这种子网掩码也被称为FLSM(Fixed Length Subnet Masking)。子网掩码由如下的方式表示（以B类地址130.130.200.34为例）：</p>
+<div style="text-align: center; width: 100%;">
+<img src="https://res.cloudinary.com/jknight/image/upload/v1619053350/BlogImages/InternetSerials/ip-subnet-mask/Ip-network-subnet-demo1.png" style="margin: 0 auto;">
+</div>
+<div align="center">
+    <div align="center">图 - 3 子网掩码表示方法 <sup id="fnref:5" style="font-size:80%;line-height:80%;"><a href="#fn:5" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[5]</span></a></sup> </div>
+&emsp;
+</div>
+
+<p>&emsp;&emsp;鉴于在某些场景下这种表示方法可能有些繁琐和不便，可采用<strong>CIDR斜线记法</strong>在IP地址后加“/n”表示当前IP地址所对应的子网掩码值，n为从主机号中“借走”的位数，在此例中n为4。故图 - 3的子网掩码可表示为130.130.200.34/20，这里的“/20”表示子网掩码由自左向右连续的20个1进制位和12个0进制位表示。<br>&emsp;&emsp;在得知子网掩码后，便可以根据IP地址和子网掩码计算该地址所处的子网和在子网中的主机号，子网号的具体计算方法如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">IP地址点分十进制表示法：130.     130.     200.     34</span><br><span class="line">IP地址对应二进制表示法：10000010 10000010 11001000 00100010</span><br><span class="line">子网掩码点分十进制表示: 255.     255.     240.     0</span><br><span class="line">子网掩码二进制表示法：  11111111 11111111 11110000 00000000</span><br><span class="line">IP地址所处子网号：      10000010 10000010 11000000 00000000 //将IP地址与子网掩码按位做AND运算得到子网号</span><br><span class="line">IP地址所处子网号：      130.     130.     192.     0        //点分十进制表示</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;当前IP地址在所处子网中的对应主机号计算方法如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">IP地址点分十进制表示法：130.     130.     200.     34</span><br><span class="line">IP地址对应二进制表示法：10000010 10000010 11001000 00100010</span><br><span class="line">子网掩码点分十进制表示: 255.     255.     240.     0</span><br><span class="line">子网掩码二进制表示法：  11111111 11111111 11110000 00000000</span><br><span class="line">子网掩码按位取反:       00000000 00000000 00001111 11111111 //先将子网掩码按位取反</span><br><span class="line">IP地址在子网中的主机号: 00000000 00000000 00001000 00100010 //再与IP地址按位做AND运算得到对应主机号</span><br><span class="line">IP地址在子网中的主机号: 0.       0.       8.       34       //点分十进制表示</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;一般情况下，会有两种子网划分的分配场景：根据期望的子网数进行划分和根据每个子网区域内期望的主机数进行划分。下面会以一个B类地址为背景说明这两种场景是如何进行子网划分的。</p>
+<h3 id="根据期望的子网数进行划分"><a href="#根据期望的子网数进行划分" class="headerlink" title="根据期望的子网数进行划分"></a>根据期望的子网数进行划分</h3><p>&emsp;&emsp;当给定期望的子网数x后，计算得到一个能使$ 2^n $大于等于x的最小整数n，此时这个n值就是需要从主机号位数中借出来用作子网划分的位数。<br><strong>e.g. 1.  给定一个B类地址，默认子网掩码是255.255.0.0</strong><br>&emsp;&emsp;期望得到一个包含有6个子网的B类网络，那么x=6，由此可得能使$ 2^n $大于等于6的最小整数n=3，所以实际的子网掩码是255.255.224.0。由于在子网划分时从主机位借走了n=3位，所以实际的主机位数为16 - 3 = 13，那么当前的每个子网可容纳$ 2^{13} $个主机，其中有效主机数为$ 2^{13} $ - 2。</p>
+<h3 id="根据单个子网内期望的主机数进行划分"><a href="#根据单个子网内期望的主机数进行划分" class="headerlink" title="根据单个子网内期望的主机数进行划分"></a>根据单个子网内期望的主机数进行划分</h3><p>&emsp;&emsp;当给定单个子网内期望的主机数x时，计算得到一个能使$ 2^n $大于等于x + 3的最小整数n，此时这个n值就是目的子网需要的主机号位数，而用来进行子网划分的位数N = 主机位数 - n（PS：主机位数等于当前地址对应的主机号位数）。这里的“+ 3”表示除了实际需要的主机数外，还需要包含一个主机号全为0的网络地址，一个主机号全为1的广播地址和一个网关地址。<br><strong>e.g. 2.  给定一个B类地址，默认子网掩码是255.255.0.0</strong><br>&emsp;&emsp;由于某些原因，每个网段能容纳的主机数为49，那么x=49，由此可得能使$ 2^n $大于等于49 + 3的最小整数n=6，划分后每个子网可用主机数为62。所以划分到子网号部分的二进制位数N = 16 - 6 = 10，所以实际的子网掩码是255.255.255.192。<br>&emsp;&emsp;子网划分虽然可以通过将一个大的网段划分成若干个小的网段来更加高效的使用IP地址资源，但是子网划分也带来了一些缺点和不足：</p>
+<ol>
+<li>网络复杂性提高<br> 子网划分实施后，有可能使得划分前处在同一个网段的的IP地址在划分后处在两个不同的网段，尤其是当IP地址相邻时。这使得网络的复杂度和维护成本显著提高。</li>
+<li>通信成本开销上升<br> 由于划分子网后，不同子网之间是无法直接通信的，必须通过网关等中间层实现相互通信，通信成本也会上升。</li>
+<li>还是会造成可观的IP地址浪费<br> 尽管实施了子网划分，但是划分出的每个子网的可用主机数量是相同的，实际中还是会出现某些子网的可用主机数量利用率高，而有些子网的可用主机数量利用率低的问题。</li>
+</ol>
+<h2 id="可变长子网掩码（VLSM）"><a href="#可变长子网掩码（VLSM）" class="headerlink" title="可变长子网掩码（VLSM）"></a>可变长子网掩码（VLSM）</h2><p>&emsp;&emsp;可变长子网掩码（Variable Length Subnet Masking）<sup id="fnref:8" style="font-size:80%;line-height:80%;"><a href="#fn:8" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[8]</span></a></sup>是为了更合理的利用IP地址资源而设计的一种可以多次进行子网划分以产生不同大小网络的网络分配机制。通过前面的介绍我们已经知道，固定长度子网掩码使得每个子网的子网掩码位数是相同的，每个子网包含的主机数也是相同的。一旦子网分配后，该子网内尚未使用的IP地址便无法供不属于当前子网所有者的主机使用，造成了浪费。通过应用VLSM可以最小程度的避免IP地址资源的浪费，在公共IP地址分类方面VLSM的优势更加明显。下面会通过一个例子来说明可变长度子网掩码是如何工作的。<br><strong>背景：</strong><br>&emsp;&emsp;张三最近新成立了组织，需要构建组织的办公网络，于是向当地的互联网地址分配机构申请了一个B类地址130.130.0.0/16。这个组织有4个部门，部门概要如表 - 2所示：</p>
+<div style="text-align: left; width: 100%;">
+    &emsp;&emsp;&emsp;&emsp;&emsp;表 - 2：部门网络设计概要
+    <div style="text-align: center; width: 100%;">
+<img src="https://res.cloudinary.com/jknight/image/upload/v1619232346/BlogImages/InternetSerials/ip-subnet-mask/ip-subnet-mask-table-2.png" style="margin: 0 auto;">
+</div></div>
+
+<p>&emsp;&emsp;于是乎，组织的网络划分架构实施过程如下：</p>
+<ol>
+<li>首先根据从大到小的顺序将各个部门的网络接口数排序，结果是：<br> A（160） &gt; B（100） &gt; D（80）&gt; C（20）</li>
+<li><p>先对部门A进行子网划分</p>
+<ol>
+<li>A需要160个网络接口，根据公式<script type="math/tex; mode=display">2^n \ge x + 3 \tag{1}</script> 计算得到满足公式的最小整数n = 8，子网号占据16 - 8 = 8位。所以便把130.130.0.0/16划分成了如下的255个子网号： <div style="text-align: left; width: 100%;">
+     &emsp;&emsp;表 - 3：子网划分及其子网号表示
+     <div style="text-align: left; width: 100%;">
+ <img src="https://res.cloudinary.com/jknight/image/upload/v1619230992/BlogImages/InternetSerials/ip-subnet-mask/ip-subnet-mask-table-3.png" style="margin: 0 auto;">
+ </div></div></li>
+<li>部门A的网络规划配置如下<br> 部门A的子网掩码：255.255.255.0<br> 部门A的子网号：130.130.0.0/24（表 - 3中1号子网）<br> 第一个可用地址为：130.130.0.1<br> 最后一个可用地址为：130.130.0.254<br> 可用地址数量：254<br> 已用数量：160<br> 剩余数量：94</li>
+</ol>
+</li>
+<li><p>对部门B进行网络规划</p>
+<ol>
+<li><p>B需要100个网络接口，在（2）中我们可知使用24位子网掩码时可以满足B的需求。我们选择将表 - 3中2号子网<strong>130.130.1.0/24</strong>分配给部门B并进行进一步的划分。尝试继续增加子网号位数，当子网掩码位数为25时，每个子网可容纳126个主机。所以对<strong>130.130.1.0/24</strong>做如下划分：</p>
+ <div style="text-align: left; width: 100%;">
+     &emsp;&emsp;表 - 4：子网130.130.1.0/24的划分结果
+     <div style="text-align: left; width: 100%;">
+ <img src="https://res.cloudinary.com/jknight/image/upload/v1619232346/BlogImages/InternetSerials/ip-subnet-mask/ip-subnet-mask-table-4.png" style="margin: 0 auto;">
+ </div></div></li>
+<li>部门B的网络规划配置如下：<br> 部门B的子网掩码：255.255.255.128<br> 部门B的子网号：130.130.1.0/25（表 - 4中1号子网）<br> 第一个可用地址为：130.130.1.1<br> 最后一个可用地址为：130.130.1.126<br> 可用地址数量:126<br> 已用数量：100<br> 剩余数量：26</li>
+</ol>
+</li>
+<li><p>对部门D进行网络规划</p>
+<ol>
+<li>D需要80个网络接口，在（3）中我们知道可以使用和部门B相同的子网掩码位数，每个子网可容纳126个主机。所以将表 - 4 中2号子网<strong>130.130.1.128/25</strong>分配给部门D使用。</li>
+<li>部门D的网络规划配置如下：<br> 部门D的子网掩码为：255.255.255.128<br> 部门D的子网号：130.130.1.128/25（表 - 4中2号子网）<br> 第一个可用地址为：130.130.1.129<br> 最后一个可用地址为：130.130.1.254<br> 可用地址数量:126<br> 已用数量：80<br> 剩余数量：46</li>
+</ol>
+</li>
+<li><p>对部门C进行网络规划</p>
+<ol>
+<li><p>C需要20个网络接口，故划分后主机位数为5位，子网位数为11位。所以将表 - 3中3号子网<strong>130.130.2.0/24</strong>分配给部门C并做出如下划分：</p>
+ <div style="text-align: left; width: 100%;">
+     &emsp;&emsp;表 - 5：子网130.130.2.0/24的划分结果
+     <div style="text-align: left; width: 100%;">
+ <img src="https://res.cloudinary.com/jknight/image/upload/v1619232346/BlogImages/InternetSerials/ip-subnet-mask/ip-subnet-mask-table-5.png" style="margin: 0 auto;">
+ </div></div></li>
+<li>部门C的网络规划配置如下：<br> 部门C的子网掩码为：255.255.255.224<br> 部门C的子网号：130.130.2.0/27（表 - 5中1号子网）<br> 第一个可用地址为：130.130.2.1<br> 最后一个可用地址为：130.130.1.30<br> 可用地址数量:30<br> 已用数量：20<br> 剩余数量：10</li>
+</ol>
+</li>
+<li><p>综上所述，整个组织的网络规划配置如下：</p>
+ <div style="text-align: center; width: 100%;">
+ <img src="https://res.cloudinary.com/jknight/image/upload/v1619232346/BlogImages/InternetSerials/ip-subnet-mask/ip-subnet-mask-table-6.png" style="margin: 0 auto;">
+ </div>
+</li>
+<li><p>网络规划结束</p>
+</li>
+</ol>
+<p>&emsp;&emsp;需要注意的是，如果要使用VLSM对网络进行划分，那么包括但不限于路由器、网关等设施都需要支持VLSM。</p>
+<h2 id="无类别域间路由-CIDR"><a href="#无类别域间路由-CIDR" class="headerlink" title="无类别域间路由(CIDR)"></a>无类别域间路由(CIDR)</h2><p>&emsp;&emsp;标准的IP地址格式（也就是&lt;网络号&gt;+&lt;主机号&gt;格式）虽然简单易行，但是也有一些缺点，首先就是分配时很容易产生浪费，且这种浪费是不可再分配的。对于个人或者小型组织而言，一个C类网络很明显太大了，而对于多数企业而言又不太够。一个可容纳6万5千多台主机的B类网络很显然对大多数企业而言也会浪费很多IP地址资源。其次，不同网段之间相互通信需要建立路由表信息，随着网络数的增加，路由表的规模越来越大，对其进行有效维护变得越来越复杂。再加上IP地址耗尽等问题，ITEF尝试了一些优化和解决办法，其中一个就是于1993年提出的无类别域间路由技术。<br>&emsp;&emsp;无类别域间路由（Classless Inter-Domain Routing，CIDR /ˈsaɪdər, ˈsɪ-/） <sup id="fnref:9" style="font-size:80%;line-height:80%;"><a href="#fn:9" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[9]</span></a></sup><sup id="fnref:10" style="font-size:80%;line-height:80%;"><a href="#fn:10" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[10]</span></a></sup><sup id="fnref:11" style="font-size:80%;line-height:80%;"><a href="#fn:11" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[11]</span></a></sup>是一种应用于IP地址分配和IP路由的方法和技术。ITEF期望通过CIDR取代早先的A/B/C类IP地址分类架构。CIDR的实现依赖于可变长子网掩码，借助于可变长子网掩码技术，CIDR可以使用自最高位起8 ~ 30位二进制位构建网络号前缀。前文提到的”X.X.X.X/N”表示法也是CIDR首先提出来的。CIDR通过路由聚合，使得若干个小的子网聚合一个更大的网络，即所谓的<strong>超网（Supernetting）</strong><sup id="fnref:12" style="font-size:80%;line-height:80%;"><a href="#fn:12" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[12]</span></a></sup><sup id="fnref:13" style="font-size:80%;line-height:80%;"><a href="#fn:13" rel="footnote" style="font-size:80%;line-height:80%;"><span style="font-size:80%;line-height:80%;">[13]</span></a></sup>，将路由表中的按照规则尝试合并为成更少的数目，缓解了路由表数量快速攀升的问题，减少路由通告，同时也相应的提高了网络通信的速度和性能。<br>&emsp;&emsp;CIDR以二进制位为单位、使用基于前缀的标准和规则来表示IP地址和路由表条目属性，它通过将多个IP地址块合并成组并映射到一条路由表条目来简化路由操作，减少了不必要的路由表条目冗余。这些合并成组的地址块被称为<strong>CIDR地址块</strong>，块内的每个IP地址自最高位起具有若干位相同的二进制位表示，采用“X.X.X.X/n”表示，“/n”表示自最高位起共n位是相同的。比如，“130.130.13.23/24”表示自最高位起24位是相同的IP地址共有$ 2^{32 - 24} $个。如果n越小，那么每个网段可用的IP地址越多，反之亦然。下面通过维基百科的一段说明来了解CIDR是如何工作的：</p>
+<blockquote>
+<p>&ensp;&ensp;For example, in the late 1990s, the IP address <em>208.130.29.33</em> (since reassigned) was used by www.freesoft.org. An analysis of this address identified three CIDR prefixes. <em>208.128.0.0/11</em>, a large CIDR block containing over 2 million addresses, had been assigned by <a href="https://en.wikipedia.org/wiki/American_Registry_for_Internet_Numbers" target="_blank" rel="noopener">ARIN</a> (the North American RIR) to <a href="https://en.wikipedia.org/wiki/MCI_Communications" target="_blank" rel="noopener">MCI</a>. Automation Research Systems, a Virginia <a href="https://en.wikipedia.org/wiki/Value-added_reseller" target="_blank" rel="noopener">VAR</a>, leased an Internet connection from MCI and was assigned the <em>208.130.28.0/22</em> block, capable of addressing just over 1000 devices. ARS used a <em>/24</em> block for its publicly accessible servers, of which <em>208.130.29.33</em> was one. All of these CIDR prefixes would be used, at different locations in the network. Outside MCI’s network, the <em>208.128.0.0/11</em> prefix would be used to direct to MCI traffic bound not only for <em>208.130.29.33</em>, but also for any of the roughly two million IP addresses with the same initial 11 bits. Within MCI’s network, <em>208.130.28.0/22</em> would become visible, directing traffic to the leased line serving ARS. Only within the ARS corporate network would the <em>208.130.29.0/24</em> prefix have been used.</p>
+<p>​                                                                                                                                                       — wikipedia</p>
+</blockquote>
+<p>ARIN机构向MCI分配了一个<strong>208.128.0.0/11</strong>的CIDR地址块，这个地址块包含了超过200万个IP地址资源。Automation Research Systems从MCI申请接入互联网，得到了一个可以容纳超过1000台设备的网段，地址是<strong>208.130.28.0/22</strong>。ARS则申请得到了一个“<strong>208.130.29.0/24</strong>”的地址块。在MCI之外所有目的地址自最高位起11位与<strong>208.128.0.0/11</strong>相同的流量都会被转发到MCI，当流量到达MCI后，再根据自最高位起22位或者24位的匹配情况，决定是否将流量转发到Automation Research Systems或者ARS。</p>
+<div style="text-align: center; width: 100%;">
+<img src="https://res.cloudinary.com/jknight/image/upload/v1619169940/BlogImages/InternetSerials/ip-subnet-mask/Ip-cidr-demo1.png" style="margin: 0 auto;">
+</div>
+
+<div align="center">
+    <div align="center">图 - 4 CIDR示例图 </div>
+&emsp;
+</div>
+
+<p>&emsp;&emsp;从上述例子中，我们看到原来需要2个及以上的全局路由表条目现在只需要一个到MCI的路由表条目就能完成流量路由和转发，大大减少了路由表条目的维护成本。所以可以将CIDR看做是子网划分的逆过程：子网划分通过向右划出二进制位给子网号部分使得子网数量增多，每个子网所包含的主机数量下降，而CIDR则向左归还二进制给主机位部分使得子网数量减少，单个子网的规模增加。二者看似截然相反，但是两者的目的和使用场景是完全不同的，所以二者本质上并无矛盾。实际上，两者只有结合起来才能更加灵活地进行IP地址资源分配，既保证IP地址利用率最大化，同时又保证了一定的网络通信性能和网络复杂度。</p>
+<p>&emsp;&emsp;综上，由于IPv4地址结构的固有性质决定了IPv4地址资源的耗尽是一个不容忽视的问题。为了减缓IPv4地址资源消耗的速度和避免浪费，子网划分技术被提出并得到了广泛应用。子网划分可以固定长度的子网掩码进行，也可以采用可变长子网掩码技术，相较于固定长度子网掩码而言，可变长子网掩码技术更加灵活，能更好的避免IP地址资源浪费。但是子网划分带来的一个副作用就是需要为每个子网维护一个路由表条目，结果就是导致路由表规模越来越大，维护成本越来越高。为了解决这个问题，CIDR基于可变长子网掩码技术将多个小的子网聚合成一个大的超网，这些子网共享相同的指向超网的路由表信息和子网掩码，既保证了路由表条目不会增长太快，同时也保留了网络划分的灵活性。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p><div id="footnotes"><hr><div id="footnotelist"><ol style="list-style: none; padding-left: 0; margin-left: 40px"><li id="fn:1"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">1.</span><span style="display: inline-block; vertical-align: top;">Postel, J., Internet protocol―DARPA internet program protocol specification, ITEF <a href="https://tools.ietf.org/pdf/rfc791" target="_blank" rel="noopener">RFC 791</a>, September 1981.</span></li><li id="fn:2"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">2.</span><span style="display: inline-block; vertical-align: top;">Wikipedia contributors. <a href="https://en.wikipedia.org/w/index.php?title=Classful_network&amp;oldid=1016356303" target="_blank" rel="noopener">Classful network.</a> Wikipedia, The Free Encyclopedia, 6 April 2021.</span></li><li id="fn:3"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">3.</span><span style="display: inline-block; vertical-align: top;">Comer, Douglas E. Internetworking with TCP/IP Vol. 1: Principles, Protocols and Applications, 6ed. Pearson, 2014.</span></li><li id="fn:4"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">4.</span><span style="display: inline-block; vertical-align: top;">Postel, J., Address Mappings, ITEF <a href="https://tools.ietf.org/pdf/rfc796.pdf" target="_blank" rel="noopener">RFC 796</a>, September 1981.</span></li><li id="fn:5"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">5.</span><span style="display: inline-block; vertical-align: top;">Mogul J., and J. Postel, Internet Standard Subnetting Procedure, STD 5, ITEF <a href="https://tools.ietf.org/pdf/rfc950.pdf" target="_blank" rel="noopener">RFC 950</a>, Stanford, USC/Information, August 1985.</span></li><li id="fn:6"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">6.</span><span style="display: inline-block; vertical-align: top;">Tsuchiya, P. F. On the assignment of subnet numbers, ITEF <a href="https://tools.ietf.org/pdf/rfc1219.pdf" target="_blank" rel="noopener">RFC 1219</a>, April 1991.</span></li><li id="fn:7"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">7.</span><span style="display: inline-block; vertical-align: top;">Wikipedia contributors. <a href="https://en.wikipedia.org/w/index.php?title=Subnetwork&amp;oldid=1017756328" target="_blank" rel="noopener">Subnetwork.</a> Wikipedia, The Free Encyclopedia, 14 April 2021.</span></li><li id="fn:8"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">8.</span><span style="display: inline-block; vertical-align: top;">Pummill, T., and B. Manning. Variable Length Subnet Table For IPv4, ITEF <a href="https://tools.ietf.org/pdf/rfc1878.pdf" target="_blank" rel="noopener">RFC 1878</a>, December 1995.</span></li><li id="fn:9"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">9.</span><span style="display: inline-block; vertical-align: top;">Wikipedia contributors. <a href="https://en.wikipedia.org/w/index.php?title=Classless_Inter-Domain_Routing&amp;oldid=1018827207" target="_blank" rel="noopener">Classless Inter-Domain Routing</a>. Wikipedia, The Free Encyclopedia, 20 April 2021.</span></li><li id="fn:10"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">10.</span><span style="display: inline-block; vertical-align: top;">Fuller, Vince, et al. Classless inter-domain routing (CIDR): an address assignment and aggregation strategy, ITEF <a href="https://tools.ietf.org/pdf/rfc1519.pdf" target="_blank" rel="noopener">RFC 1519</a>, September 1993.</span></li><li id="fn:11"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">11.</span><span style="display: inline-block; vertical-align: top;">Rekhter, Y., and T. Li. An Architecture for IP Address Allocation with CIDR, ITEF <a href="https://tools.ietf.org/pdf/rfc1518.pdf" target="_blank" rel="noopener">RFC 1518</a>, September 1993.</span></li><li id="fn:12"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">12.</span><span style="display: inline-block; vertical-align: top;">Wikipedia contributors. <a href="https://en.wikipedia.org/w/index.php?title=Supernetwork&amp;oldid=1004215564" target="_blank" rel="noopener">Supernetwork.</a> Wikipedia, The Free Encyclopedia, 1 Febuary. 2021.</span></li><li id="fn:13"><span style="display: inline-block; vertical-align: top; padding-right: 10px; margin-left: -40px">13.</span><span style="display: inline-block; vertical-align: top;">Fuller, Vince, et al. Supernetting: An address assignment and aggregation strategy, ITEF <a href="https://tools.ietf.org/pdf/rfc1338.pdf" target="_blank" rel="noopener">RFC-1338</a>, June, 1992.</span></li></ol></div><p><br><br><br><br></p></div></p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2021/IP-Subnet-Mask.html" target="_blank" title="IP子网划分方法简述">IP子网划分方法简述</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2021/IP-Subnet-Mask.html" target="_blank" title="IP子网划分方法简述">https://marcuseddie.github.io/2021/IP-Subnet-Mask.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2021/K8s-Network-Architecture-section-one.html" class="alignleft prev" title="K8s network之一：K8s网络模型与网络策略"> 上一篇： K8s network之一：K8s网络模型与网络策略</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2019/PGP-Introduction.html" class="alignright next" title="PGP工作原理简述"> 下一篇： PGP工作原理简述</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

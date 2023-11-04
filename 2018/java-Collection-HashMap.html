@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
+    
+
+    <title>
+      Java Map 03 - HashMap | Mr.Muzi 
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Nathan R. Lee">
+    
+    
+
+    <meta name="description" content="HashMap是一个遍历顺序无序，不允许key重复的存储键值对映射的集合实现类。底层依赖了一个数组集合，数组中的每个元素维护了具有需要存储在相同下标位置的键值对实体链表结构,拥有方法hash,get,put,remove,containsKey,containsValue,entrySet,size,isEmpty,clear">
+<meta name="keywords" content="HashMap,hash,get,put,remove,containsKey,containsValue,entrySet,size,isEmpty,clear">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java Map 03 - HashMap | Mr.Muzi">
+<meta property="og:url" content="https://marcuseddie.github.io/2018/java-Collection-HashMap.html">
+<meta property="og:site_name" content="Mr.Muzi">
+<meta property="og:description" content="HashMap是一个遍历顺序无序，不允许key重复的存储键值对映射的集合实现类。底层依赖了一个数组集合，数组中的每个元素维护了具有需要存储在相同下标位置的键值对实体链表结构,拥有方法hash,get,put,remove,containsKey,containsValue,entrySet,size,isEmpty,clear">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1544683504/BlogImages/java-collection/map/Map-HashMap-underlying-data-structure-example.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1544615810/BlogImages/java-collection/map/Map-HashMap-createEntry-example.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1544618617/BlogImages/java-collection/map/Map-HashMap-transfer-example.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1544624282/BlogImages/java-collection/map/Map-HashMap-removeEntryForKey-example.png">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1544669150/BlogImages/java-collection/map/Map-HashMap-HashIterator-nextEntry-example.png">
+<meta property="og:updated_time" content="2023-11-03T09:11:26.353Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java Map 03 - HashMap | Mr.Muzi">
+<meta name="twitter:description" content="HashMap是一个遍历顺序无序，不允许key重复的存储键值对映射的集合实现类。底层依赖了一个数组集合，数组中的每个元素维护了具有需要存储在相同下标位置的键值对实体链表结构,拥有方法hash,get,put,remove,containsKey,containsValue,entrySet,size,isEmpty,clear">
+<meta name="twitter:image" content="https://res.cloudinary.com/jknight/image/upload/v1544683504/BlogImages/java-collection/map/Map-HashMap-underlying-data-structure-example.png">
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/images/icon_log1.png">
+    
+    <link rel="stylesheet" href="/css/uno.css">
+    <link rel="stylesheet" href="/css/hint.min.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/archive.css">
+    <link rel="stylesheet" href="/css/china-social-icon.css">
+    <link rel="stylesheet" href="/css/font-awesome.css">
+    <link rel="stylesheet" href="/css/suspend.css">
+    <link rel="stylesheet" href="/css/popup.css">
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    <div class="suspend">
+      <div class="site-search">
+        <div class="popup">
+          <span class="search-icon fa fa-search"></span>
+          <input type="text" id="local-search-input" placeholder="输入关键字">
+          <div id="local-search-result"></div>
+          <span class="popup-btn-close">close</span>
+        </div>
+      </div>      
+    </div>
+    
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+  <div class="panel-main">
+
+  
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+        <hr class="panel-cover__divider">
+
+        
+        <p class="panel-cover__description">
+          一只很安静的monkey
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+        
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
+              
+                
+                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
+              
+                
+                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
+              
+                
+                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title class>关于</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+-------------------------------->
+
+<!-- add social info here -->
+
+
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/MarcusEddie" title="GitHub">
+          <i class="icon icon-social-github"></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="javascript:;" class="popup-trigger" title="search">
+          <i class="icon icon-page-search"></i>
+          <span class="label">Search</span>
+        </a>
+      </li>
+    
+
+    <!-- China social icon -->
+    <!--
+    
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-douban'></i>
+          <span class="label">Douban</span>
+        </a>
+      </li>
+
+      <li class="navigation__item">
+        <a href="" title="">
+          <i class='icon cs-icon-weibo'></i>
+          <span class="label">Weibo</span>
+        </a>
+      </li>
+
+    -->
+
+
+
+  </ul>
+</nav>
+
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+<article class="post-container post-container--single">
+  	<header class="post-header">
+	    <h1 class="post-title"><b>Java Map 03 - HashMap</b></h1>
+	    
+		    <div class="post-meta">
+		      	<time datetime="2018-12-06" class="post-meta__date date">2018-12-06</time> 
+		        <span class="post-meta__count count">字数统计:&nbsp;1.4k&emsp;阅读时长:&nbsp;5&nbsp;mins</span>
+		      	<span class="post-meta__tags tags">
+			        
+			            <font class="categories">
+				            &#8226; 分类:
+				            <a class="categories-link" href="/categories/源码阅读/">源码阅读</a>
+			            </font>
+			        
+
+			        
+			            &#8226; 标签:
+			            <font class="tags">
+			              	<a class="tags-link" href="/tags/JDK-1-7/">JDK 1.7</a>, <a class="tags-link" href="/tags/Java集合/">Java集合</a>
+			            </font>
+			        
+		    	</span>
+		    </div>
+	    
+  	</header>
+
+  	<section id="post-content" class="article-content post">
+  		
+
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.util.HashMap&lt;K, V&gt;</strong> </em>的部分笔记，HashMap是一个遍历顺序无序，不允许key重复的存储键值对映射的集合实现类。底层依赖了一个数组集合，数组中的每个元素维护了具有需要存储在相同下标位置的键值对实体链表结构。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;HashMap是Map接口的实现类，提供了接口声明的所有方法的具体实现。HashMap允许存储key为null、value为null的元素。HashMap可以被视为等同于散列表（hash table），但是不同的是，散列表是线程安全的，主要方法都被synchronized关键字做了修饰，而HashMap是非线程安全的。Hashmap不保证元素遍历的顺序。</p>
+<p>&emsp;&emsp;HashMap执行get()和put()操作时可以保证常量时间的性能开销，如果需要遍历map集合，时间开销与map数组容量和存储的键值对数量之和成比例。</p>
+<p>&emsp;&emsp;HashMap中有两个参数会影响map的操作性能：initial capacity和load factor。initial capacity决定了map集合中桶（键值对实体数组）的大小，而load factor决定了当桶填充到什么程度时会执行数组扩容处理。如果执行了扩容操作，那么需要将当前map集合的键值对实体重新计算hashcode值并分配在扩容后数组中的位置。默认的加载因子是0.75，这个值保证了map的操作性能可以在时间和空间利用方面达到一个理想的平衡。</p>
+<p>&emsp;&emsp;如果在向map集合中插入元素前可以估计出插入的元素数量，可以提前完成集合空间分配，避免在加入过程中频繁重新分配空间导致性能降低。</p>
+<p>&emsp;&emsp;Hashmap是一个非线程安全的实现类。所以如果需要在多线程环境中使用hashmap，需要付诸额外的操作来保证多线程环境下的线程安全特性。一个常用的执行方式如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Map m = Collections.synchronizedMap(<span class="keyword">new</span> HashMap(...));</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;HashMap同样支持快速失败检查，但是并不保证可以一定捕捉到快速失败检查。</p>
+<p>&emsp;&emsp;HashMap底层数据结构如图1所示：</p>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1544683504/BlogImages/java-collection/map/Map-HashMap-underlying-data-structure-example.png" alt></p>
+<div align="center">
+<div align="center">图 - 1</div>
+&emsp;
+</div>
+
+<p>&emsp;</p>
+<h2 id="继承关系"><a href="#继承关系" class="headerlink" title="继承关系"></a>继承关系</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// HashMap&lt;E&gt;</span></span><br><span class="line">--java.lang.Object</span><br><span class="line">  --java.util.AbstractMap&lt;K,V&gt;</span><br><span class="line">    --java.util.HashMap&lt;K,V&gt;</span><br></pre></td></tr></table></figure>
+<p>&emsp;</p>
+<h2 id="实现接口"><a href="#实现接口" class="headerlink" title="实现接口"></a>实现接口</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>类名</th>
+<th>实现接口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HashMap&lt;E&gt;</td>
+<td>Serializable, Cloneable,Map&lt;K,V&gt;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>&emsp;</p>
+<h2 id="HashMap"><a href="#HashMap" class="headerlink" title="HashMap"></a>HashMap</h2><h3 id="Constructor-Summary"><a href="#Constructor-Summary" class="headerlink" title="Constructor Summary"></a>Constructor Summary</h3><h4 id="public-HashMap-int-initialCapacity-float-loadFactor"><a href="#public-HashMap-int-initialCapacity-float-loadFactor" class="headerlink" title="public HashMap(int initialCapacity, float loadFactor)"></a>public HashMap(int initialCapacity, float loadFactor)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashMap</span><span class="params">(<span class="keyword">int</span> initialCapacity, <span class="keyword">float</span> loadFactor)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (initialCapacity &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Illegal initial capacity: "</span> +</span><br><span class="line">                                           initialCapacity);</span><br><span class="line">    <span class="keyword">if</span> (initialCapacity &gt; MAXIMUM_CAPACITY)</span><br><span class="line">        initialCapacity = MAXIMUM_CAPACITY;</span><br><span class="line">    <span class="keyword">if</span> (loadFactor &lt;= <span class="number">0</span> || Float.isNaN(loadFactor))</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Illegal load factor: "</span> +</span><br><span class="line">                                           loadFactor);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.loadFactor = loadFactor;</span><br><span class="line">    threshold = initialCapacity;</span><br><span class="line">    init();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个空HashMap集合，集合的初始容量和加载因子由initialCapacity和loadFactor确认。</p>
+<p>&emsp;&emsp;第2 ~ 6行代码检查initialCapacity参数是否有效并确定最后的initialCapacity值，initialCapacity的最大值是MAXIMUM_CAPACITY（1&lt;&lt; 30或者$2^{30}$)。第7 ~ 9行代码则用来检查loadFactor的有效性。</p>
+<p>&emsp;&emsp;最后会调用一个init()方法。该方法在HashMap中是个方法体为空的方法，主要是给子类调用的，可以让子类在集合创建后，插入元素前执行一些想要的操作。</p>
+<h4 id="public-HashMap-int-initialCapacity"><a href="#public-HashMap-int-initialCapacity" class="headerlink" title="public HashMap(int initialCapacity)"></a>public HashMap(int initialCapacity)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashMap</span><span class="params">(<span class="keyword">int</span> initialCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(initialCapacity, DEFAULT_LOAD_FACTOR);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个空HashMap集合，集合的初始容量由initialCapacity和确认，加载因子默认为0.75。调用构造器方法<strong>HashMap(int initialCapacity, float loadFactor)</strong>完成初始化操作。</p>
+<h4 id="public-HashMap"><a href="#public-HashMap" class="headerlink" title="public HashMap()"></a>public HashMap()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashMap</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个空HashMap集合，集合的初始容量默认为16，加载因子默认为0.75。调用构造器方法<strong>HashMap(int initialCapacity, float loadFactor)</strong>完成初始化操作。</p>
+<h4 id="ublic-HashMap-Map-lt-extends-K-extends-V-gt-m"><a href="#ublic-HashMap-Map-lt-extends-K-extends-V-gt-m" class="headerlink" title="ublic HashMap(Map&lt;? extends K, ? extends V&gt; m)"></a>ublic HashMap(Map&lt;? extends K, ? extends V&gt; m)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashMap</span><span class="params">(Map&lt;? extends K, ? extends V&gt; m)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(Math.max((<span class="keyword">int</span>) (m.size() / DEFAULT_LOAD_FACTOR) + <span class="number">1</span>,</span><br><span class="line">                  DEFAULT_INITIAL_CAPACITY), DEFAULT_LOAD_FACTOR);</span><br><span class="line">    inflateTable(threshold);</span><br><span class="line"></span><br><span class="line">    putAllForCreate(m);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个空HashMap集合，并将m中的键值对保存到初始化的map中。在初始化过程中，集合的容量大小由m存储的键值对数量决定，保证空map集合可以将m中的键值对全部存储下来，且默认加载因子是0.75。初始化完成后通过<strong>inflateTable(int toSize)</strong>方法完成map集合底层存储数据结构的初始化操作。最后通过调用方法<strong>putAllForCreate(Map&lt;? extends K, ? extends V&gt; m)</strong>将m集合中的键值对保存到初始化的集合中。</p>
+<h3 id="部分方法"><a href="#部分方法" class="headerlink" title="部分方法"></a>部分方法</h3><h4 id="void-init"><a href="#void-init" class="headerlink" title="void init()"></a>void init()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;空方法，留给子类发挥。</p>
+<h4 id="private-void-inflateTable-int-toSize"><a href="#private-void-inflateTable-int-toSize" class="headerlink" title="private void inflateTable(int toSize)"></a>private void inflateTable(int toSize)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">inflateTable</span><span class="params">(<span class="keyword">int</span> toSize)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Find a power of 2 &gt;= toSize</span></span><br><span class="line">    <span class="keyword">int</span> capacity = roundUpToPowerOf2(toSize);</span><br><span class="line"></span><br><span class="line">    threshold = (<span class="keyword">int</span>) Math.min(capacity * loadFactor, MAXIMUM_CAPACITY + <span class="number">1</span>);</span><br><span class="line">    table = <span class="keyword">new</span> Entry[capacity];</span><br><span class="line">    initHashSeedAsNeeded(capacity);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;完成map底层存储结构初始化。首先根据传入的toSize寻找一个大于等于toSize的最小2次幂结果。第5行代码确定最终的初始空间容量并在第6行代码中初始化一个存储空间结构 — Entry<k,v>[] table。最后根据容量初始化一个散列掩码（hashing mask value）以完成底层存储结构初始化过程。</k,v></p>
+<h4 id="private-static-int-roundUpToPowerOf2-int-number"><a href="#private-static-int-roundUpToPowerOf2-int-number" class="headerlink" title="private static int roundUpToPowerOf2(int number)"></a>private static int roundUpToPowerOf2(int number)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">roundUpToPowerOf2</span><span class="params">(<span class="keyword">int</span> number)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// assert number &gt;= 0 : "number must be non-negative";</span></span><br><span class="line">    <span class="keyword">return</span> number &gt;= MAXIMUM_CAPACITY</span><br><span class="line">        ? MAXIMUM_CAPACITY</span><br><span class="line">        : (number &gt; <span class="number">1</span>) ? Integer.highestOneBit((number - <span class="number">1</span>) &lt;&lt; <span class="number">1</span>) : <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;计算求得一个大于等于number的最小2次幂结果。如果number比最大容量还大，那么就返回最大容量；如果number = 1，那么直接返回1，否则返回大于number的最小2次幂结果。在计算过程：</p>
+<p>&emsp;&emsp;&emsp;&emsp;<script type="math/tex">Integer.highestOneBit((number - 1) << 1)</script> </p>
+<p>中，number -1 是为了保证当number自身为2次幂时可以取到自身而不是大于自身的最小2次幂结果。因为方法实现的返回大于等于number的最小2次幂结果。所以number -1保证了这个条件，然后计算(number - 1) &lt;&lt; 1)过程，并通过Integer.highestOneBit()返回一个满足条件的数字。</p>
+<h4 id="final-boolean-initHashSeedAsNeeded-int-capacity"><a href="#final-boolean-initHashSeedAsNeeded-int-capacity" class="headerlink" title="final boolean initHashSeedAsNeeded(int capacity)"></a>final boolean initHashSeedAsNeeded(int capacity)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">initHashSeedAsNeeded</span><span class="params">(<span class="keyword">int</span> capacity)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">boolean</span> currentAltHashing = hashSeed != <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">boolean</span> useAltHashing = sun.misc.VM.isBooted() &amp;&amp;</span><br><span class="line">        (capacity &gt;= Holder.ALTERNATIVE_HASHING_THRESHOLD);</span><br><span class="line">    <span class="keyword">boolean</span> switching = currentAltHashing ^ useAltHashing;</span><br><span class="line">    <span class="keyword">if</span> (switching) &#123;</span><br><span class="line">        hashSeed = useAltHashing ? sun.misc.Hashing.randomHashSeed(<span class="keyword">this</span>) : <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> switching;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;初始化一个散列掩码（hashing mask value）。只有在实际需要的时候才会初始化这个值，也就是延迟初始化。在初始化时hashSeed的默认值为0。在我们尚未给hashmap赋值时，sun.misc.VM.isBooted()得到的是true，<strong>ALTERNATIVE_HASHING_THRESHOLD</strong>的值为Integer.MAX_VALUE = 2147483647 [0x7fffffff]。所以useAltHashing的值为false。第5行代码执行得到false。</p>
+<p>&emsp;&emsp;该方法用来计算一个hashSeed，hashSeed不为0的时候，对 String 类型的key 采用sun.misc.Hashing.stringHash32的 hash算法；对非 String 类型的 key，多一次和hashSeed的异或，这样可以一定程度上减少碰撞的概率。但是由于在产生hashSeed的过程中调用了Romdum.nextInt()方法，而该方法内部使用的AtomicLong，其操作类型是CAS(Compare And Swap)，所以多线程环境中性能无法满足要求，所以在JDK 7u40之后被移除，且在JDK 8中也不再使用该字段。</p>
+<h4 id="private-void-putAllForCreate-Map-lt-extends-K-extends-V-gt-m"><a href="#private-void-putAllForCreate-Map-lt-extends-K-extends-V-gt-m" class="headerlink" title="private void putAllForCreate(Map&lt;? extends K, ? extends V&gt; m)"></a>private void putAllForCreate(Map&lt;? extends K, ? extends V&gt; m)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">putAllForCreate</span><span class="params">(Map&lt;? extends K, ? extends V&gt; m)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (Map.Entry&lt;? extends K, ? extends V&gt; e : m.entrySet())</span><br><span class="line">        putForCreate(e.getKey(), e.getValue());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将m集合中的键值对保存到当前map集合中。调用的是putForCreate(K key, V value)方法。</p>
+<h4 id="private-void-putForCreate-K-key-V-value"><a href="#private-void-putForCreate-K-key-V-value" class="headerlink" title="private void putForCreate(K key, V value)"></a>private void putForCreate(K key, V value)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">putForCreate</span><span class="params">(K key, V value)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> hash = <span class="keyword">null</span> == key ? <span class="number">0</span> : hash(key);</span><br><span class="line">    <span class="keyword">int</span> i = indexFor(hash, table.length);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Look for preexisting entry for key.  This will never happen for</span></span><br><span class="line"><span class="comment">     * clone or deserialize.  It will only happen for construction if the</span></span><br><span class="line"><span class="comment">     * input Map is a sorted map whose ordering is inconsistent w/ equals.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">for</span> (Entry&lt;K,V&gt; e = table[i]; e != <span class="keyword">null</span>; e = e.next) &#123;</span><br><span class="line">        Object k;</span><br><span class="line">        <span class="keyword">if</span> (e.hash == hash &amp;&amp;</span><br><span class="line">            ((k = e.key) == key || (key != <span class="keyword">null</span> &amp;&amp; key.equals(k)))) &#123;</span><br><span class="line">            e.value = value;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    createEntry(hash, key, value, i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将key-value键值对映射存储到当前map集合中。在构造器和伪构造器方法（clone，readObject）中替换put方法完成键值对插入操作。该方法不会对map集合做扩容处理，检查修改状态等。而且该方法调用createEntry，而不是addEntry完成操作。</p>
+<p>&emsp;&emsp;第2行代码根据key完成hashCode值计算。之后根据indexFor()方法返回该hashcode在散列表中的下标位置。</p>
+<p>&emsp;&emsp;第10 ~ 17行代码遍历当前map集合，如果当前map集合中存在和参数key相同的键值对映射，那么就替换键值对的valu值，否则调用<strong>createEntry(int hash, K key, V value, int bucketIndex)</strong>将键值对加入到当前map集合中。</p>
+<h4 id="final-int-hash-Object-k"><a href="#final-int-hash-Object-k" class="headerlink" title="final int hash(Object k)"></a>final int hash(Object k)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">int</span> <span class="title">hash</span><span class="params">(Object k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> h = hashSeed;</span><br><span class="line">    <span class="keyword">if</span> (<span class="number">0</span> != h &amp;&amp; k <span class="keyword">instanceof</span> String) &#123;</span><br><span class="line">        <span class="keyword">return</span> sun.misc.Hashing.stringHash32((String) k);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    h ^= k.hashCode();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// This function ensures that hashCodes that differ only by</span></span><br><span class="line">    <span class="comment">// constant multiples at each bit position have a bounded</span></span><br><span class="line">    <span class="comment">// number of collisions (approximately 8 at default load factor).</span></span><br><span class="line">    h ^= (h &gt;&gt;&gt; <span class="number">20</span>) ^ (h &gt;&gt;&gt; <span class="number">12</span>);</span><br><span class="line">    <span class="keyword">return</span> h ^ (h &gt;&gt;&gt; <span class="number">7</span>) ^ (h &gt;&gt;&gt; <span class="number">4</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;一种补充的计算hashcode的方法。计算得到的随机hashSeed，来降低冲突发生的几率，如果hashSeed不等于0，且key是String字符串，那么通过方法sun.misc.Hashing.stringHash32()完成hashcode计算。否则</p>
+<p>&emsp;&emsp;这个方法的目的是对key的hashcode进行扰动计算，防止不同hashcode的高位不同但低位相同导致的hash冲突，尽量做到key的hashcode任何一位的变化都能对最终结果产生影响。</p>
+<h4 id="static-int-indexFor-int-h-int-length"><a href="#static-int-indexFor-int-h-int-length" class="headerlink" title="static int indexFor(int h, int length)"></a>static int indexFor(int h, int length)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">indexFor</span><span class="params">(<span class="keyword">int</span> h, <span class="keyword">int</span> length)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// assert Integer.bitCount(length) == 1 : "length must be a non-zero power of 2";</span></span><br><span class="line">    <span class="keyword">return</span> h &amp; (length-<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将hashcode转换成散列表中的下标。利用&amp;做取模运算得到hashcode在散列表中的下标。</p>
+<h4 id="void-createEntry-int-hash-K-key-V-value-int-bucketIndex"><a href="#void-createEntry-int-hash-K-key-V-value-int-bucketIndex" class="headerlink" title="void createEntry(int hash, K key, V value, int bucketIndex)"></a>void createEntry(int hash, K key, V value, int bucketIndex)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">createEntry</span><span class="params">(<span class="keyword">int</span> hash, K key, V value, <span class="keyword">int</span> bucketIndex)</span> </span>&#123;</span><br><span class="line">    Entry&lt;K,V&gt; e = table[bucketIndex];</span><br><span class="line">    table[bucketIndex] = <span class="keyword">new</span> Entry&lt;&gt;(hash, key, value, e);</span><br><span class="line">    size++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;创建一个键值对映射。table[buckedIndex]维护的是一个Entry结构的链表，得到这个链表结构，同时第3行代码会在第bucketIndex位置上创建一个新的对象实体，该对象实体的next节点是当前Entry结构的首部元素节点，最后同步size值，该值维护了当前map集合中存储的键值对数量。操作示意图如图2所示：</p>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1544615810/BlogImages/java-collection/map/Map-HashMap-createEntry-example.png" alt></p>
+<div align="center">
+<div align="center">图 - 2</div>
+&emsp;
+</div>
+
+
+<p>&emsp;&emsp;Alpha为createEntry方法执行前map集合的状态，Bravo为createEntry方法执行后的场景，如果根据key计算hashcode得到数组下标bucketIndex位置尚未存储元素，那么新创建的键值对实体会是该下标位置的第一个元素，如图2Bravo里的键值对“A11=123”。如果数组下标bucketIndex位置已经存储了元素，那么第2代码和第三行代码中的<strong>new Entry&lt;&gt;(hash, key, value, e)</strong>部分执行的是Bravo阶段中步骤（1）的结果，新创建了一个键值对实体“B11=12”，且将键值对“B11=12”的next节点指向了键值对实体”B12=123“。第3行代码执行完后，Bravo阶段中步骤（2）也就执行完成了，新创建的键值对实体“B11=12”成为下标位置N-3处的链表结构的首部节点。</p>
+<h4 id="public-V-put-K-key-V-value"><a href="#public-V-put-K-key-V-value" class="headerlink" title="public V put(K key, V value)"></a>public V put(K key, V value)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> V <span class="title">put</span><span class="params">(K key, V value)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (table == EMPTY_TABLE) &#123;</span><br><span class="line">        inflateTable(threshold);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (key == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">return</span> putForNullKey(value);</span><br><span class="line">    <span class="keyword">int</span> hash = hash(key);</span><br><span class="line">    <span class="keyword">int</span> i = indexFor(hash, table.length);</span><br><span class="line">    <span class="keyword">for</span> (Entry&lt;K,V&gt; e = table[i]; e != <span class="keyword">null</span>; e = e.next) &#123;</span><br><span class="line">        Object k;</span><br><span class="line">        <span class="keyword">if</span> (e.hash == hash &amp;&amp; ((k = e.key) == key || key.equals(k))) &#123;</span><br><span class="line">            V oldValue = e.value;</span><br><span class="line">            e.value = value;</span><br><span class="line">            e.recordAccess(<span class="keyword">this</span>);</span><br><span class="line">            <span class="keyword">return</span> oldValue;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    modCount++;</span><br><span class="line">    addEntry(hash, key, value, i);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将传入的key-value映射保存到当前map集合中。如果当前map集合中已经存在了key对应的键值对映射，那么原有映射的value值会被传入的value替换。</p>
+<p>&emsp;&emsp;如果当前map集合为空，那么调用<strong>inflateTable(int toSize)</strong>方法完成map底层数组初始化操作。</p>
+<p>&emsp;&emsp;如果key为null，那么调用<strong>putForNullKey(V value)</strong>加入一个key为null的键值对映射。</p>
+<p>&emsp;&emsp;计算key的hashcode值和在底层数组中的下标位置。取得该下标位置的映射实体对象，如果对象为空，那么调用<strong>addEntry(int hash, K key, V value, int bucketIndex)</strong>完成键值对添加。否则执行第9 ~ 17行代码替换已存在键值对映射的value值并返回被替换的值。因为put操作属于结构化修改，所以更新modCount的值。</p>
+<h4 id="private-V-putForNullKey-V-value"><a href="#private-V-putForNullKey-V-value" class="headerlink" title="private V putForNullKey(V value)"></a>private V putForNullKey(V value)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> V <span class="title">putForNullKey</span><span class="params">(V value)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (Entry&lt;K,V&gt; e = table[<span class="number">0</span>]; e != <span class="keyword">null</span>; e = e.next) &#123;</span><br><span class="line">        <span class="keyword">if</span> (e.key == <span class="keyword">null</span>) &#123;</span><br><span class="line">            V oldValue = e.value;</span><br><span class="line">            e.value = value;</span><br><span class="line">            e.recordAccess(<span class="keyword">this</span>);</span><br><span class="line">            <span class="keyword">return</span> oldValue;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    modCount++;</span><br><span class="line">    addEntry(<span class="number">0</span>, <span class="keyword">null</span>, value, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;向当前map集合中存储一个key为null的键值对映射。由于key为null时其hashcode为0，所以其在数组中的下标为0。所以取得下标为0的键值对实体，如果实体存在，直接替换下标为0的实体的value值，并返回被替换的值。否则调用<strong>addEntry(int hash, K key, V value, int bucketIndex)</strong>完成键值对添加。</p>
+<h4 id="void-addEntry-int-hash-K-key-V-value-int-bucketIndex"><a href="#void-addEntry-int-hash-K-key-V-value-int-bucketIndex" class="headerlink" title="void addEntry(int hash, K key, V value, int bucketIndex)"></a>void addEntry(int hash, K key, V value, int bucketIndex)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEntry</span><span class="params">(<span class="keyword">int</span> hash, K key, V value, <span class="keyword">int</span> bucketIndex)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> ((size &gt;= threshold) &amp;&amp; (<span class="keyword">null</span> != table[bucketIndex])) &#123;</span><br><span class="line">        resize(<span class="number">2</span> * table.length);</span><br><span class="line">        hash = (<span class="keyword">null</span> != key) ? hash(key) : <span class="number">0</span>;</span><br><span class="line">        bucketIndex = indexFor(hash, table.length);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    createEntry(hash, key, value, bucketIndex);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;向当前map集合中加入一个键值对映射。</p>
+<p>&emsp;&emsp;如果当前map存储的键值对数量达到了扩容阈值限制(capacity*load factor)，且计算得到的bucketIndex下标位置处已经被占用，那么首先执行扩容处理。扩容规则是按照当前容量的两倍进行扩容。扩容完成后重新计算key的hashcode值和在数组中的下标位置。</p>
+<p>&emsp;&emsp;通过<strong>createEntry(int hash, K key, V value, int bucketIndex)</strong>完成键值对的创建和保存。</p>
+<h4 id="public-void-putAll-Map-lt-extends-K-extends-V-gt-m"><a href="#public-void-putAll-Map-lt-extends-K-extends-V-gt-m" class="headerlink" title="public void putAll(Map&lt;? extends K, ? extends V&gt; m)"></a>public void putAll(Map&lt;? extends K, ? extends V&gt; m)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">putAll</span><span class="params">(Map&lt;? extends K, ? extends V&gt; m)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> numKeysToBeAdded = m.size();</span><br><span class="line">    <span class="keyword">if</span> (numKeysToBeAdded == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (table == EMPTY_TABLE) &#123;</span><br><span class="line">        inflateTable((<span class="keyword">int</span>) Math.max(numKeysToBeAdded * loadFactor, threshold));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Expand the map if the map if the number of mappings to be added</span></span><br><span class="line"><span class="comment">     * is greater than or equal to threshold.  This is conservative; the</span></span><br><span class="line"><span class="comment">     * obvious condition is (m.size() + size) &gt;= threshold, but this</span></span><br><span class="line"><span class="comment">     * condition could result in a map with twice the appropriate capacity,</span></span><br><span class="line"><span class="comment">     * if the keys to be added overlap with the keys already in this map.</span></span><br><span class="line"><span class="comment">     * By using the conservative calculation, we subject ourself</span></span><br><span class="line"><span class="comment">     * to at most one extra resize.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">if</span> (numKeysToBeAdded &gt; threshold) &#123;</span><br><span class="line">        <span class="keyword">int</span> targetCapacity = (<span class="keyword">int</span>)(numKeysToBeAdded / loadFactor + <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">if</span> (targetCapacity &gt; MAXIMUM_CAPACITY)</span><br><span class="line">            targetCapacity = MAXIMUM_CAPACITY;</span><br><span class="line">        <span class="keyword">int</span> newCapacity = table.length;</span><br><span class="line">        <span class="keyword">while</span> (newCapacity &lt; targetCapacity)</span><br><span class="line">            newCapacity &lt;&lt;= <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (newCapacity &gt; table.length)</span><br><span class="line">            resize(newCapacity);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (Map.Entry&lt;? extends K, ? extends V&gt; e : m.entrySet())</span><br><span class="line">        put(e.getKey(), e.getValue());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将集合m中的所有键值对映射都存储到当前map集合中。</p>
+<p>&emsp;&emsp;如果m集合为空，那么不做任何处理直接返回。如果当前map集合为空，那么先完成初始化操作。如果存储m集合中的键值对需要的空间超过了当前map集合的扩容限制阈值threshold，那么第20行代码会计算存储m集合需要的空间大小，第21 ~ 22行代码计算最终确定的目标空间大小，第23 ~ 25行代码以当前map空间的两倍逐次扩容直至满足目标空间大小的要求。第26 ~ 27行代码如果需要的空间超过了当前map集合的数组物理空间大小，那么就执行扩容处理。</p>
+<p>&emsp;&emsp;扩容完成后，遍历集合m，将m中的每个键值对映射加入到当前map集合中。</p>
+<h4 id="void-resize-int-newCapacity"><a href="#void-resize-int-newCapacity" class="headerlink" title="void resize(int newCapacity)"></a>void resize(int newCapacity)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">resize</span><span class="params">(<span class="keyword">int</span> newCapacity)</span> </span>&#123;</span><br><span class="line">    Entry[] oldTable = table;</span><br><span class="line">    <span class="keyword">int</span> oldCapacity = oldTable.length;</span><br><span class="line">    <span class="keyword">if</span> (oldCapacity == MAXIMUM_CAPACITY) &#123;</span><br><span class="line">        threshold = Integer.MAX_VALUE;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Entry[] newTable = <span class="keyword">new</span> Entry[newCapacity];</span><br><span class="line">    transfer(newTable, initHashSeedAsNeeded(newCapacity));</span><br><span class="line">    table = newTable;</span><br><span class="line">    threshold = (<span class="keyword">int</span>)Math.min(newCapacity * loadFactor, MAXIMUM_CAPACITY + <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;扩容当前map集合。扩容之后重新计算集合中已有键值对映射的hashcode和下标值并完成键值对存储位置的更新。如果当前map集合的容量已经达到了最大容量限制（$2^{30}  $），那么不再扩容，并返回扩容限制阈值。</p>
+<p>&emsp;&emsp;初始化一个新的数组，调用<strong>transfer(Entry[] newTable, boolean rehash)</strong>将当前map集合中的键值对都迁移到扩容后的新数组中，最后计算更新扩容限制阈值threshold。</p>
+<h4 id="void-transfer-Entry-newTable-boolean-rehash"><a href="#void-transfer-Entry-newTable-boolean-rehash" class="headerlink" title="void transfer(Entry[] newTable, boolean rehash)"></a>void transfer(Entry[] newTable, boolean rehash)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">transfer</span><span class="params">(Entry[] newTable, <span class="keyword">boolean</span> rehash)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> newCapacity = newTable.length;</span><br><span class="line">    <span class="keyword">for</span> (Entry&lt;K,V&gt; e : table) &#123;</span><br><span class="line">        <span class="keyword">while</span>(<span class="keyword">null</span> != e) &#123;</span><br><span class="line">            Entry&lt;K,V&gt; next = e.next;</span><br><span class="line">            <span class="keyword">if</span> (rehash) &#123;</span><br><span class="line">                e.hash = <span class="keyword">null</span> == e.key ? <span class="number">0</span> : hash(e.key);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">int</span> i = indexFor(e.hash, newCapacity);</span><br><span class="line">            e.next = newTable[i];</span><br><span class="line">            newTable[i] = e;</span><br><span class="line">            e = next;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;将当前map集合中的键值对映射从旧数组迁移到新数组中。</p>
+<p>&emsp;&emsp;遍历旧数组中的每个键值对实体，如果需要重新计算hashcode值，那么调用<strong>hash(Object k)</strong>重新计算hashcode值。之后重新计算每个键值对在新数组中的下标位置。第10行代码会将每个键值对的后继节点统一置为null，表示每个链表只会有一个元素。第11行代码将键值对实体存储到新数组中对应下标位置上。操作过程如图3所示：</p>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1544618617/BlogImages/java-collection/map/Map-HashMap-transfer-example.png" alt></p>
+<div align="center">
+<div align="center">图 - 3</div>
+&emsp;
+</div>
+
+
+<p>&emsp;&emsp;遍历旧数组table的每个键值对映射实体，首先得到某个下标位置链表结构的首部节点和首部节点的后继节点，并决定是否需要重新计算hashcode值。之后根据hashcode和新数组容量计算出当前节点在新数组的下标位置，这里有两种情况需要考虑，一种是新数组的下标位置为空，尚未存储元素，另外一种是新数组的下标位置已经有键值对实体存储了。</p>
+<p>&emsp;&emsp;如果是前一种情况，第10行代码执行后，在图3中是步骤（1）的情况，第11行代码执行后新数组下标位置的链表首部元素就是当前节点，即步骤（2）。之后将next指针指示的节点赋值给当前节点循环计算直至到达链表尾部。</p>
+<p>&emsp;&emsp;如果是后一种情况，第10行代码执行过程中，首先经历步骤（4.1），该过程会将现有新数组下标位置的首部元素指针从数组上断开，继而经历步骤（4.2），将当前遍历节点的后继指针指向链表首部元素。第11行代码执行后会经历步骤（5），当前元素会被加入到新数组下标位置链表的首部。之后将next指针指向的元素赋值给当前遍历节点循环遍历直至链表遍历结束。</p>
+<h4 id="public-V-remove-Object-key"><a href="#public-V-remove-Object-key" class="headerlink" title="public V remove(Object key)"></a>public V remove(Object key)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> V <span class="title">remove</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">    Entry&lt;K,V&gt; e = removeEntryForKey(key);</span><br><span class="line">    <span class="keyword">return</span> (e == <span class="keyword">null</span> ? <span class="keyword">null</span> : e.value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;删除当前map集合中和入参key匹配的键值对映射，并返回被删除的value值。底层调用<strong>removeEntryForKey(Object key)</strong>方法完成操作。</p>
+<h4 id="final-Entry-lt-K-V-gt-removeEntryForKey-Object-key"><a href="#final-Entry-lt-K-V-gt-removeEntryForKey-Object-key" class="headerlink" title="final Entry&lt;K,V&gt; removeEntryForKey(Object key)"></a>final Entry&lt;K,V&gt; removeEntryForKey(Object key)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> Entry&lt;K,V&gt; <span class="title">removeEntryForKey</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (size == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> hash = (key == <span class="keyword">null</span>) ? <span class="number">0</span> : hash(key);</span><br><span class="line">    <span class="keyword">int</span> i = indexFor(hash, table.length);</span><br><span class="line">    Entry&lt;K,V&gt; prev = table[i];</span><br><span class="line">    Entry&lt;K,V&gt; e = prev;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (e != <span class="keyword">null</span>) &#123;</span><br><span class="line">        Entry&lt;K,V&gt; next = e.next;</span><br><span class="line">        Object k;</span><br><span class="line">        <span class="keyword">if</span> (e.hash == hash &amp;&amp;</span><br><span class="line">            ((k = e.key) == key || (key != <span class="keyword">null</span> &amp;&amp; key.equals(k)))) &#123;</span><br><span class="line">            modCount++;</span><br><span class="line">            size--;</span><br><span class="line">            <span class="keyword">if</span> (prev == e)</span><br><span class="line">                table[i] = next;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                prev.next = next;</span><br><span class="line">            e.recordRemoval(<span class="keyword">this</span>);</span><br><span class="line">            <span class="keyword">return</span> e;</span><br><span class="line">        &#125;</span><br><span class="line">        prev = e;</span><br><span class="line">        e = next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> e;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;删除当前map集合中和入参key匹配的键值对映射，并返回被删除的键值对实体。如果当前map集合为空，那么直接返回null。</p>
+<p>&emsp;&emsp;根据key计算出key对应的hashcode和在数组中的下标值。实际流程如图4所示：</p>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1544624282/BlogImages/java-collection/map/Map-HashMap-removeEntryForKey-example.png" alt></p>
+<div align="center">
+<div align="center">图 - 4</div>
+&emsp;
+</div>
+
+
+<p>&emsp;&emsp;第5 ~ 9行代码计算当前入参key的hashcode值以及根据hashcode值计算匹配key的键值对在数组中的下标位置。取得该下标处链表结构的首部节点，开始遍历，找到hashcode值一致且key相等节点。如果该节点正好是链表的第一个节点，那么执行第17 ~ 18行代码后图3中键值对实体“B12=123”会被移除链表并返回。如果该节点是链表中的某个节点，那么执行第17 ~ 18行代码后图3中键值对实体“B13=123”会被移除链表并返回。</p>
+<p>&emsp;&emsp;如果没有找到匹配的key，那么返回null。</p>
+<h4 id="final-Entry-lt-K-V-gt-removeMapping-Object-o"><a href="#final-Entry-lt-K-V-gt-removeMapping-Object-o" class="headerlink" title="final Entry&lt;K,V&gt; removeMapping(Object o)"></a>final Entry&lt;K,V&gt; removeMapping(Object o)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> Entry&lt;K,V&gt; <span class="title">removeMapping</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (size == <span class="number">0</span> || !(o <span class="keyword">instanceof</span> Map.Entry))</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    Map.Entry&lt;K,V&gt; entry = (Map.Entry&lt;K,V&gt;) o;</span><br><span class="line">    Object key = entry.getKey();</span><br><span class="line">    <span class="keyword">int</span> hash = (key == <span class="keyword">null</span>) ? <span class="number">0</span> : hash(key);</span><br><span class="line">    <span class="keyword">int</span> i = indexFor(hash, table.length);</span><br><span class="line">    Entry&lt;K,V&gt; prev = table[i];</span><br><span class="line">    Entry&lt;K,V&gt; e = prev;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (e != <span class="keyword">null</span>) &#123;</span><br><span class="line">        Entry&lt;K,V&gt; next = e.next;</span><br><span class="line">        <span class="keyword">if</span> (e.hash == hash &amp;&amp; e.equals(entry)) &#123;</span><br><span class="line">            modCount++;</span><br><span class="line">            size--;</span><br><span class="line">            <span class="keyword">if</span> (prev == e)</span><br><span class="line">                table[i] = next;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                prev.next = next;</span><br><span class="line">            e.recordRemoval(<span class="keyword">this</span>);</span><br><span class="line">            <span class="keyword">return</span> e;</span><br><span class="line">        &#125;</span><br><span class="line">        prev = e;</span><br><span class="line">        e = next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> e;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;从当前集合中删除实体o（o被期望为一个键值对实体对象）。第5行代码将对象o转成了一个键值对实体，并计算出该键值对key的hashcode值以及其在当前map集合中的下标位置，然后根据下标找到该下标位置处的链表结构，找到与o的key匹配的键值对实体（比较整个entry实体的hashcode值），并删除。最后返回被删除的键值对实体对象。</p>
+<h4 id="public-void-clear"><a href="#public-void-clear" class="headerlink" title="public void clear()"></a>public void clear()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clear</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    modCount++;</span><br><span class="line">    Arrays.fill(table, <span class="keyword">null</span>);</span><br><span class="line">    size = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;清空整个数组实现清空map集合的功能。</p>
+<h4 id="public-V-get-Object-key"><a href="#public-V-get-Object-key" class="headerlink" title="public V get(Object key)"></a>public V get(Object key)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> V <span class="title">get</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (key == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">return</span> getForNullKey();</span><br><span class="line">    Entry&lt;K,V&gt; entry = getEntry(key);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span> == entry ? <span class="keyword">null</span> : entry.getValue();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;获取map集合中key对应的value值，如果没有对应映射，那么返回null。如果key为null，那么调用<strong>getForNullKey()</strong>方法得到null对应的键值对映射的value信息。否则调用<strong>getEntry(Object key)</strong>完成查找。最后返回结果给方法调用方。</p>
+<h4 id="private-V-getForNullKey"><a href="#private-V-getForNullKey" class="headerlink" title="private V getForNullKey()"></a>private V getForNullKey()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> V <span class="title">getForNullKey</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (size == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (Entry&lt;K,V&gt; e = table[<span class="number">0</span>]; e != <span class="keyword">null</span>; e = e.next) &#123;</span><br><span class="line">        <span class="keyword">if</span> (e.key == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">return</span> e.value;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;map集合中key为null的元素只有一个，且其hashcode为0，所以在散列表中的下标为0。所以第5 ~ 8行代码会直接取下标为0的元素实体，并返回。</p>
+<h4 id="public-boolean-containsKey-Object-key"><a href="#public-boolean-containsKey-Object-key" class="headerlink" title="public boolean containsKey(Object key)"></a>public boolean containsKey(Object key)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">containsKey</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> getEntry(key) != <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;判断当前map集合中是否含有key对应的键值对映射，如果有，那么返回true。否则返回false。</p>
+<h4 id="public-boolean-containsValue-Object-value"><a href="#public-boolean-containsValue-Object-value" class="headerlink" title="public boolean containsValue(Object value)"></a>public boolean containsValue(Object value)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">containsValue</span><span class="params">(Object value)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (value == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">return</span> containsNullValue();</span><br><span class="line"></span><br><span class="line">    Entry[] tab = table;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; tab.length ; i++)</span><br><span class="line">        <span class="keyword">for</span> (Entry e = tab[i] ; e != <span class="keyword">null</span> ; e = e.next)</span><br><span class="line">            <span class="keyword">if</span> (value.equals(e.value))</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;判断当前map集合中是否含有入参value匹配的键值对实体。如果有返回true，否则返回false。</p>
+<p>&emsp;&emsp;如果value为null，那么调用<strong>containsNullValue()</strong>方法完成操作并返回结果。否则第6 ~ 10行代码中外层遍历底层数组中的每个位置的链表集合，里层遍历每个链表集合中的每个键值对实体，检查是否有匹配value的键值对实体对象，如果有返回true，否则返回false。</p>
+<h4 id="private-boolean-containsNullValue"><a href="#private-boolean-containsNullValue" class="headerlink" title="private boolean containsNullValue()"></a>private boolean containsNullValue()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">containsNullValue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Entry[] tab = table;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; tab.length ; i++)</span><br><span class="line">        <span class="keyword">for</span> (Entry e = tab[i] ; e != <span class="keyword">null</span> ; e = e.next)</span><br><span class="line">            <span class="keyword">if</span> (e.value == <span class="keyword">null</span>)</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;判断当前map集合中是否含有value为null的键值对实体。如果有返回true，否则返回false。</p>
+<p>&emsp;&emsp;第3 ~ 6行代码中外层遍历底层数组中的每个位置的链表集合，里层遍历每个链表集合中的每个键值对实体，检查是否有value为null的键值对实体对象，如果有返回true，否则返回false。</p>
+<h4 id="final-Entry-lt-K-V-gt-getEntry-Object-key"><a href="#final-Entry-lt-K-V-gt-getEntry-Object-key" class="headerlink" title="final Entry&lt;K,V&gt; getEntry(Object key)"></a>final Entry&lt;K,V&gt; getEntry(Object key)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> Entry&lt;K,V&gt; <span class="title">getEntry</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (size == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> hash = (key == <span class="keyword">null</span>) ? <span class="number">0</span> : hash(key);</span><br><span class="line">    <span class="keyword">for</span> (Entry&lt;K,V&gt; e = table[indexFor(hash, table.length)];</span><br><span class="line">         e != <span class="keyword">null</span>;</span><br><span class="line">         e = e.next) &#123;</span><br><span class="line">        Object k;</span><br><span class="line">        <span class="keyword">if</span> (e.hash == hash &amp;&amp;</span><br><span class="line">            ((k = e.key) == key || (key != <span class="keyword">null</span> &amp;&amp; key.equals(k))))</span><br><span class="line">            <span class="keyword">return</span> e;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回key对应的键值对映射对象实体。如果当前map集合为空，那么直接返回null。调用<strong>hash(Object k)</strong>计算key的hashcode。第7行代码根据计算得到的hashcode值得到底层数组中对应下标位置处的链表集合，取出存储的value值并返回。</p>
+<h4 id="public-int-size"><a href="#public-int-size" class="headerlink" title="public int size()"></a>public int size()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> size;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回当前map集合中存储的键值对数量。</p>
+<h4 id="public-boolean-isEmpty"><a href="#public-boolean-isEmpty" class="headerlink" title="public boolean isEmpty()"></a>public boolean isEmpty()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> size == <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;判断当前map集合是否为空。</p>
+<h4 id="public-Object-clone"><a href="#public-Object-clone" class="headerlink" title="public Object clone()"></a>public Object clone()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">clone</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    HashMap&lt;K,V&gt; result = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        result = (HashMap&lt;K,V&gt;)<span class="keyword">super</span>.clone();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (CloneNotSupportedException e) &#123;</span><br><span class="line">        <span class="comment">// assert false;</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (result.table != EMPTY_TABLE) &#123;</span><br><span class="line">        result.inflateTable(Math.min(</span><br><span class="line">            (<span class="keyword">int</span>) Math.min(</span><br><span class="line">                size * Math.min(<span class="number">1</span> / loadFactor, <span class="number">4.0f</span>),</span><br><span class="line">                <span class="comment">// we have limits...</span></span><br><span class="line">                HashMap.MAXIMUM_CAPACITY),</span><br><span class="line">            table.length));</span><br><span class="line">    &#125;</span><br><span class="line">    result.entrySet = <span class="keyword">null</span>;</span><br><span class="line">    result.modCount = <span class="number">0</span>;</span><br><span class="line">    result.size = <span class="number">0</span>;</span><br><span class="line">    result.init();</span><br><span class="line">    result.putAllForCreate(<span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;克隆复制一个当前map集合副本并返回。该副本是当前map集合的浅度复制对象。</p>
+<h4 id="Iterator-lt-K-gt-newKeyIterator"><a href="#Iterator-lt-K-gt-newKeyIterator" class="headerlink" title="Iterator&lt;K&gt; newKeyIterator()"></a>Iterator&lt;K&gt; newKeyIterator()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Iterator&lt;K&gt; <span class="title">newKeyIterator</span><span class="params">()</span>   </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> KeyIterator();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">KeyIterator</span> <span class="keyword">extends</span> <span class="title">HashIterator</span>&lt;<span class="title">K</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> K <span class="title">next</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> nextEntry().getKey();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回一个基于当前map集合的key的迭代器。</p>
+<h4 id="Iterator-lt-V-gt-newValueIterator"><a href="#Iterator-lt-V-gt-newValueIterator" class="headerlink" title="Iterator&lt;V&gt; newValueIterator()"></a>Iterator&lt;V&gt; newValueIterator()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Iterator&lt;V&gt; <span class="title">newValueIterator</span><span class="params">()</span>   </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ValueIterator();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ValueIterator</span> <span class="keyword">extends</span> <span class="title">HashIterator</span>&lt;<span class="title">V</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> V <span class="title">next</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> nextEntry().value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回一个基于当前map集合的value的迭代器。</p>
+<h4 id="Iterator-lt-Map-Entry-lt-K-V-gt-gt-newEntryIterator"><a href="#Iterator-lt-Map-Entry-lt-K-V-gt-gt-newEntryIterator" class="headerlink" title="Iterator&lt;Map.Entry&lt;K,V&gt;&gt; newEntryIterator()"></a>Iterator&lt;Map.Entry&lt;K,V&gt;&gt; newEntryIterator()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Iterator&lt;Map.Entry&lt;K,V&gt;&gt; newEntryIterator()   &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> EntryIterator();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">EntryIterator</span> <span class="keyword">extends</span> <span class="title">HashIterator</span>&lt;<span class="title">Map</span>.<span class="title">Entry</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt;&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> Map.<span class="function">Entry&lt;K,V&gt; <span class="title">next</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> nextEntry();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回一个基于当前map集合的键值对的迭代器。</p>
+<h4 id="public-Set-lt-K-gt-keySet"><a href="#public-Set-lt-K-gt-keySet" class="headerlink" title="public Set&lt;K&gt; keySet()"></a>public Set&lt;K&gt; keySet()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Set&lt;K&gt; <span class="title">keySet</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Set&lt;K&gt; ks = keySet;</span><br><span class="line">    <span class="keyword">return</span> (ks != <span class="keyword">null</span> ? ks : (keySet = <span class="keyword">new</span> KeySet()));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回当前map集合包含的所有key的一个Set形式集合。对这个集合做的修改会同步出现在当前map集合中，反之亦然。KeySet的实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">KeySet</span> <span class="keyword">extends</span> <span class="title">AbstractSet</span>&lt;<span class="title">K</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Iterator&lt;K&gt; <span class="title">iterator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> newKeyIterator();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> size;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">contains</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> containsKey(o);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">remove</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> HashMap.<span class="keyword">this</span>.removeEntryForKey(o) != <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clear</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        HashMap.<span class="keyword">this</span>.clear();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="public-Collection-lt-V-gt-values"><a href="#public-Collection-lt-V-gt-values" class="headerlink" title="public Collection&lt;V&gt; values()"></a>public Collection&lt;V&gt; values()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Collection&lt;V&gt; <span class="title">values</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Collection&lt;V&gt; vs = values;</span><br><span class="line">    <span class="keyword">return</span> (vs != <span class="keyword">null</span> ? vs : (values = <span class="keyword">new</span> Values()));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回当前map集合中包含的所有value的一个Collection形式集合。对这个集合做的修改会同步出现在当前map集合中，反之亦然。Values的实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Values</span> <span class="keyword">extends</span> <span class="title">AbstractCollection</span>&lt;<span class="title">V</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Iterator&lt;V&gt; <span class="title">iterator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> newValueIterator();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> size;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">contains</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> containsValue(o);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clear</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        HashMap.<span class="keyword">this</span>.clear();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="public-Set-lt-Map-Entry-lt-K-V-gt-gt-entrySet"><a href="#public-Set-lt-Map-Entry-lt-K-V-gt-gt-entrySet" class="headerlink" title="public Set&lt;Map.Entry&lt;K,V&gt;&gt; entrySet()"></a>public Set&lt;Map.Entry&lt;K,V&gt;&gt; entrySet()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Set&lt;Map.Entry&lt;K,V&gt;&gt; entrySet() &#123;</span><br><span class="line">    <span class="keyword">return</span> entrySet0();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> Set&lt;Map.Entry&lt;K,V&gt;&gt; entrySet0() &#123;</span><br><span class="line">    Set&lt;Map.Entry&lt;K,V&gt;&gt; es = entrySet;</span><br><span class="line">    <span class="keyword">return</span> es != <span class="keyword">null</span> ? es : (entrySet = <span class="keyword">new</span> EntrySet());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;返回当前map集合中包含的所有键值对实体的Set表示形式。对这个集合做的修改会同步出现在当前map集合中，反之亦然。EntrySet的实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">EntrySet</span> <span class="keyword">extends</span> <span class="title">AbstractSet</span>&lt;<span class="title">Map</span>.<span class="title">Entry</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt;&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> Iterator&lt;Map.Entry&lt;K,V&gt;&gt; iterator() &#123;</span><br><span class="line">        <span class="keyword">return</span> newEntryIterator();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">contains</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!(o <span class="keyword">instanceof</span> Map.Entry))</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        Map.Entry&lt;K,V&gt; e = (Map.Entry&lt;K,V&gt;) o;</span><br><span class="line">        Entry&lt;K,V&gt; candidate = getEntry(e.getKey());</span><br><span class="line">        <span class="keyword">return</span> candidate != <span class="keyword">null</span> &amp;&amp; candidate.equals(e);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">remove</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> removeMapping(o) != <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> size;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clear</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        HashMap.<span class="keyword">this</span>.clear();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="private-void-writeObject-java-io-ObjectOutputStream-s"><a href="#private-void-writeObject-java-io-ObjectOutputStream-s" class="headerlink" title="private void writeObject(java.io.ObjectOutputStream s)"></a>private void writeObject(java.io.ObjectOutputStream s)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">writeObject</span><span class="params">(java.io.ObjectOutputStream s)</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="comment">// Write out the threshold, loadfactor, and any hidden stuff</span></span><br><span class="line">    s.defaultWriteObject();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Write out number of buckets</span></span><br><span class="line">    <span class="keyword">if</span> (table==EMPTY_TABLE) &#123;</span><br><span class="line">        s.writeInt(roundUpToPowerOf2(threshold));</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        s.writeInt(table.length);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Write out size (number of Mappings)</span></span><br><span class="line">    s.writeInt(size);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Write out keys and values (alternating)</span></span><br><span class="line">    <span class="keyword">if</span> (size &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span>(Map.Entry&lt;K,V&gt; e : entrySet0()) &#123;</span><br><span class="line">            s.writeObject(e.getKey());</span><br><span class="line">            s.writeObject(e.getValue());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;hashmap自定义序列化操作。</p>
+<h4 id="private-void-readObject-java-io-ObjectInputStream-s"><a href="#private-void-readObject-java-io-ObjectInputStream-s" class="headerlink" title="private void readObject(java.io.ObjectInputStream s)"></a>private void readObject(java.io.ObjectInputStream s)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">readObject</span><span class="params">(java.io.ObjectInputStream s)</span></span></span><br><span class="line"><span class="function">         <span class="keyword">throws</span> IOException, ClassNotFoundException </span>&#123;</span><br><span class="line">    <span class="comment">// Read in the threshold (ignored), loadfactor, and any hidden stuff</span></span><br><span class="line">    s.defaultReadObject();</span><br><span class="line">    <span class="keyword">if</span> (loadFactor &lt;= <span class="number">0</span> || Float.isNaN(loadFactor)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> InvalidObjectException(<span class="string">"Illegal load factor: "</span> +</span><br><span class="line">                                         loadFactor);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// set other fields that need values</span></span><br><span class="line">    table = (Entry&lt;K,V&gt;[]) EMPTY_TABLE;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Read in number of buckets</span></span><br><span class="line">    s.readInt(); <span class="comment">// ignored.</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Read number of mappings</span></span><br><span class="line">    <span class="keyword">int</span> mappings = s.readInt();</span><br><span class="line">    <span class="keyword">if</span> (mappings &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> InvalidObjectException(<span class="string">"Illegal mappings count: "</span> +</span><br><span class="line">                                         mappings);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// capacity chosen by number of mappings and desired load (if &gt;= 0.25)</span></span><br><span class="line">    <span class="keyword">int</span> capacity = (<span class="keyword">int</span>) Math.min(</span><br><span class="line">        mappings * Math.min(<span class="number">1</span> / loadFactor, <span class="number">4.0f</span>),</span><br><span class="line">        <span class="comment">// we have limits...</span></span><br><span class="line">        HashMap.MAXIMUM_CAPACITY);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// allocate the bucket array;</span></span><br><span class="line">    <span class="keyword">if</span> (mappings &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        inflateTable(capacity);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        threshold = capacity;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    init();  <span class="comment">// Give subclass a chance to do its thing.</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Read the keys and values, and put the mappings in the HashMap</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; mappings; i++) &#123;</span><br><span class="line">        K key = (K) s.readObject();</span><br><span class="line">        V value = (V) s.readObject();</span><br><span class="line">        putForCreate(key, value);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;hashmap自定义反序列操作。</p>
+<h4 id="int-capacity"><a href="#int-capacity" class="headerlink" title="int  capacity()"></a>int  capacity()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span>   <span class="title">capacity</span><span class="params">()</span>     </span>&#123; <span class="keyword">return</span> table.length; &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="float-loadFactor"><a href="#float-loadFactor" class="headerlink" title="float loadFactor()"></a>float loadFactor()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">loadFactor</span><span class="params">()</span>   </span>&#123; <span class="keyword">return</span> loadFactor;   &#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;</p>
+<h2 id="Entry-lt-K-V-gt"><a href="#Entry-lt-K-V-gt" class="headerlink" title="Entry&lt;K,V&gt;"></a>Entry&lt;K,V&gt;</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Entry</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; <span class="keyword">implements</span> <span class="title">Map</span>.<span class="title">Entry</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> K key;</span><br><span class="line">    V value;</span><br><span class="line">    Entry&lt;K,V&gt; next;</span><br><span class="line">    <span class="keyword">int</span> hash;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Creates new entry.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    Entry(<span class="keyword">int</span> h, K k, V v, Entry&lt;K,V&gt; n) &#123;</span><br><span class="line">        value = v;</span><br><span class="line">        next = n;</span><br><span class="line">        key = k;</span><br><span class="line">        hash = h;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> K <span class="title">getKey</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> key;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> V <span class="title">getValue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> V <span class="title">setValue</span><span class="params">(V newValue)</span> </span>&#123;</span><br><span class="line">        V oldValue = value;</span><br><span class="line">        value = newValue;</span><br><span class="line">        <span class="keyword">return</span> oldValue;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!(o <span class="keyword">instanceof</span> Map.Entry))</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        Map.Entry e = (Map.Entry)o;</span><br><span class="line">        Object k1 = getKey();</span><br><span class="line">        Object k2 = e.getKey();</span><br><span class="line">        <span class="keyword">if</span> (k1 == k2 || (k1 != <span class="keyword">null</span> &amp;&amp; k1.equals(k2))) &#123;</span><br><span class="line">            Object v1 = getValue();</span><br><span class="line">            Object v2 = e.getValue();</span><br><span class="line">            <span class="keyword">if</span> (v1 == v2 || (v1 != <span class="keyword">null</span> &amp;&amp; v1.equals(v2)))</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Objects.hashCode(getKey()) ^ Objects.hashCode(getValue());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> getKey() + <span class="string">"="</span> + getValue();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * This method is invoked whenever the value in an entry is</span></span><br><span class="line"><span class="comment">     * overwritten by an invocation of put(k,v) for a key k that's already</span></span><br><span class="line"><span class="comment">     * in the HashMap.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">recordAccess</span><span class="params">(HashMap&lt;K,V&gt; m)</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * This method is invoked whenever the entry is</span></span><br><span class="line"><span class="comment">     * removed from the table.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">recordRemoval</span><span class="params">(HashMap&lt;K,V&gt; m)</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;Entry<k,v>是HashMap集合的内部类，实现了Map.Entry&lt;K,V&gt;接口。实际上map集合内部的存储结构就是一个Entry<k,v>形式的数组，数组中的每个元素都是一个Entry<k,v>实体。</k,v></k,v></k,v></p>
+<p>&emsp;&emsp;Entry<k,v>中包含了四个字段：value（map集合中键值对的值内容），key（map集合中键值对的键内容），next（当前entry节点的下一个节点）和hash（map集合中键值对的键的hashcode值）。</k,v></p>
+<p>&emsp;&emsp;实体自身的hashcode计算方式是将当前实体的key的hashcode和value的hashcode求异或运算得到结果。</p>
+<p>&emsp;&emsp;比较两个实体是否相等，首先判断两个实体的类型是否一致，其次分别判断两个实体的key和value是否都相等。</p>
+<p>&emsp;</p>
+<h2 id="HashIterator-lt-E-gt"><a href="#HashIterator-lt-E-gt" class="headerlink" title="HashIterator&lt;E&gt;"></a>HashIterator&lt;E&gt;</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">HashIterator</span>&lt;<span class="title">E</span>&gt; <span class="keyword">implements</span> <span class="title">Iterator</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">    Entry&lt;K,V&gt; next;        <span class="comment">// next entry to return</span></span><br><span class="line">    <span class="keyword">int</span> expectedModCount;   <span class="comment">// For fast-fail</span></span><br><span class="line">    <span class="keyword">int</span> index;              <span class="comment">// current slot</span></span><br><span class="line">    Entry&lt;K,V&gt; current;     <span class="comment">// current entry</span></span><br><span class="line"></span><br><span class="line">    HashIterator() &#123;</span><br><span class="line">        expectedModCount = modCount;</span><br><span class="line">        <span class="keyword">if</span> (size &gt; <span class="number">0</span>) &#123; <span class="comment">// advance to first entry</span></span><br><span class="line">            Entry[] t = table;</span><br><span class="line">            <span class="keyword">while</span> (index &lt; t.length &amp;&amp; (next = t[index++]) == <span class="keyword">null</span>)</span><br><span class="line">                ;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> next != <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">final</span> Entry&lt;K,V&gt; <span class="title">nextEntry</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (modCount != expectedModCount)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> ConcurrentModificationException();</span><br><span class="line">        Entry&lt;K,V&gt; e = next;</span><br><span class="line">        <span class="keyword">if</span> (e == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> ((next = e.next) == <span class="keyword">null</span>) &#123;</span><br><span class="line">            Entry[] t = table;</span><br><span class="line">            <span class="keyword">while</span> (index &lt; t.length &amp;&amp; (next = t[index++]) == <span class="keyword">null</span>)</span><br><span class="line">                ;</span><br><span class="line">        &#125;</span><br><span class="line">        current = e;</span><br><span class="line">        <span class="keyword">return</span> e;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (current == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException();</span><br><span class="line">        <span class="keyword">if</span> (modCount != expectedModCount)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> ConcurrentModificationException();</span><br><span class="line">        Object k = current.key;</span><br><span class="line">        current = <span class="keyword">null</span>;</span><br><span class="line">        HashMap.<span class="keyword">this</span>.removeEntryForKey(k);</span><br><span class="line">        expectedModCount = modCount;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;HashIterator是基于当前map集合的键值对实体的一个迭代器实现。构造函数HashIterator()会定位到当前map集合中第一个不为null的键值对实体上。</p>
+<p>&emsp;&emsp;根据next是否为null来判断是否可以继续向后遍历。</p>
+<p>&emsp;&emsp;在nextEntry()方法中，执行逻辑如图5所示：</p>
+<p><img src="https://res.cloudinary.com/jknight/image/upload/v1544669150/BlogImages/java-collection/map/Map-HashMap-HashIterator-nextEntry-example.png" alt></p>
+<div align="center">
+<div align="center">图 - 5</div>
+&emsp;
+</div>
+
+<p>&emsp;&emsp;在完成HashIterator初始化完成之后，next指针会指向当前数组中第一个非空的键值对实体对象。如果当前指向处理的键值对实体的后继节点为空，那么就继续向后遍历数组，直到找到下一个非空的键值对实体链表结构并将next指针指向该链表的首部节点。得到当前处理的键值对实体对象节点并返回该对象。</p>
+<p>&emsp;&emsp;借助remove()方法完成删除当前节点的操作。取得当前键值对实体对象中的key值信息，调用HashMap的removeEntryForKey()方法将该节点删除，同时更新expectedModCount。</p>
+<p>&emsp;</p>
+<h2 id="涉及基础知识点"><a href="#涉及基础知识点" class="headerlink" title="涉及基础知识点"></a>涉及基础知识点</h2><ol>
+<li><p><strong>为什么要把数组的Size设置为2的N次方</strong></p>
+<ol>
+<li>indexFor利用&amp;做取模运算计算散列表下标值，a &amp; b中要求b的二进制位全部由1构成，所以需要散列表长度为$ 2^n $ 。此外，利用位操作实现取模运算比算术取模运算效率非常好，所以这么做可以提高运行效率；</li>
+<li>不同的hash值发生碰撞的概率相对来说比较小，可以让键值对实体在数组中均匀分布；</li>
+</ol>
+</li>
+<li><p><strong>加载因子对map集合查找效率的影响</strong></p>
+<ol>
+<li>加载因子越大，填满的数组元素越多，分配的内存空间空闲小，链表长度增加，查找效率变低；</li>
+<li>加载因子越小，填满的数组元素越少，分配的内存空间空闲多，链表长度减少，查找效率变高；</li>
+</ol>
+<p>因为在addEntry()方法中，由两个因素决定是否需要进行扩容操作：(size &gt;= threshold) 和 (null != table[bucketIndex])。即使(null != table[bucketIndex])条件满足了，由于扩容限制阈值太大导致前一个条件size &gt;= threshold一直无法满足，因此无法执行扩容操作，只能在链表首部不停的追加元素，导致链表长度变大。</p>
+</li>
+</ol>
+<p>&emsp;</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li>ChiuCheng. <a href="https://segmentfault.com/a/1190000015798586" target="_blank" rel="noopener">深入理解HashMap(二): 关键源码逐行分析之hash算法</a> [E]</li>
+<li>csfreebird. <a href="https://blog.csdn.net/csfreebird/article/details/7355282" target="_blank" rel="noopener">Java HashMap 分析之三:放入元素</a> [E]</li>
+<li>Yikun. <a href="http://yikun.github.io/2015/04/01/Java-HashMap%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E5%8F%8A%E5%AE%9E%E7%8E%B0/" target="_blank" rel="noopener">Java HashMap工作原理及实现</a> [E]</li>
+<li>ImportNew. <a href="http://www.importnew.com/7099.html" target="_blank" rel="noopener">HashMap的工作原理</a> [E]</li>
+<li>Liujiacai. <a href="https://liujiacai.net/blog/2015/09/03/java-hashmap/" target="_blank" rel="noopener">Java HashMap 源码解析</a> [E]</li>
+<li>Stack Overflow. <a href="https://stackoverflow.com/questions/9335169/understanding-strange-java-hash-function" target="_blank" rel="noopener">Understanding strange Java hash function</a> [E]</li>
+<li>Stack Overflow. <a href="https://stackoverflow.com/questions/14453163/can-anybody-explain-how-java-design-hashmaps-hash-function" target="_blank" rel="noopener">Can anybody explain how java design HashMap’s hash() function?</a> [E]</li>
+<li>Hollis. <a href="https://www.hollischuang.com/archives/2091" target="_blank" rel="noopener">全网把Map中的hash()分析的最透彻的文章，别无二家</a> [E]</li>
+<li>Carson_Ho. <a href="https://juejin.im/post/5aa87415f265da23a4048041" target="_blank" rel="noopener">Java：这是一份详细&amp;全面的HashMap 1.7 源码分析</a> [E]</li>
+<li>zhihu. <a href="https://www.zhihu.com/question/20733617" target="_blank" rel="noopener">JDK 源码中 HashMap 的 hash 方法原理是什么？</a> [E]</li>
+<li>miaoLoveCode. <a href="https://www.jianshu.com/p/a11b9c1002f1" target="_blank" rel="noopener">Java中的HashMap</a> [E]</li>
+</ol>
+<p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
+<link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
+  	</section>
+  	
+	  	<div>
+		  	
+				<div>
+	<div style="text-align:center;color: #ccc;font-size:20px;">------------- End of this article, thanks! -------------
+	<br>&emsp;</div>
+</div>
+		  	
+		</div>
+	    
+		 	
+		      	<section class="post-declare">
+<p>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="Nathan R. Lee">Nathan R. Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-Collection-HashMap.html" target="_blank" title="Java Map 03 - HashMap">Java Map 03 - HashMap</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-Collection-HashMap.html" target="_blank" title="Java Map 03 - HashMap">https://marcuseddie.github.io/2018/java-Collection-HashMap.html</a></b></div>
+</p>
+<section class="post-declare">
+		  	
+	  	
+	  	
+	  	<section class="post-comments">
+
+    <!-- 将评论系统（例如Disqus、多说、友言、畅言等）提供的代码片段粘贴在这里 -->
+    
+</section>
+	
+	
+<div class="prev_next clearfix">
+	<div style="width:50%;float:left;">
+		
+			
+				<a href="/2018/how-we-built-a-cost-based-sql-optimizer.html" class="alignleft prev" title="【译】如何构建基于成本的 SQL 优化器？"> 上一篇： 【译】如何构建基于成本的 SQL 优化器？</a>
+			
+		
+	</div>
+	<div style="width:50%;float:right;">
+		
+			
+				<a href="/2018/java-Collection-AbstractMap.html" class="alignright next" title="Java Map 02 - AbstractMap"> 下一篇： Java Map 02 - AbstractMap</a>
+			
+		
+	</div>
+</div>
+
+	<script>
+	    function createImgEventFullScreen() {
+	        var imgs = $(".post").find("img");
+	        for (var i = 0; i < imgs.length; i++) {
+	            imgs[i].onclick = function (e) {
+	                var ent = e.srcElement ? e.srcElement : e.target; // 兼容ie、Firefox、Chrome等
+	                var src = ent.currentSrc;
+	                var _this = $(this);
+	                createCover(src,_this);
+	            }
+	        }
+	        function createCover(src,_this) {
+	            var cover = $("<div id='outerDiv' style='position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);z-index:900;width:100%;height:100%;display:none;'><div id='innerDiv' style='position:absolute;'><img  id='bigImg' style='border:5px solid #fff;' src=''/></div></div>");
+	            $("#outerDiv").remove();
+	            $("body").append(cover);
+	            imgShow("#outerDiv", "#innerDiv", "#bigImg", _this,src);
+	        }
+	    }
+
+	    function imgShow(outerDiv, innerDiv, bigImg, _this,src) {
+	        $(bigImg).attr("src", src); //设置#bigImg元素的src属性
+	        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+	        $("<img/>").attr("src", src).load(function () {
+	            var windowW = $(window).width(); //获取当前窗口宽度
+	            var windowH = $(window).height(); //获取当前窗口高度
+	            var realWidth = this.width; //获取图片真实宽度
+	            var realHeight = this.height; //获取图片真实高度
+	            var imgWidth, imgHeight;
+	            var scale = 0.8; //缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+	            if (realHeight > windowH * scale) { //判断图片高度
+	                imgHeight = windowH * scale; //如大于窗口高度，图片高度进行缩放
+	                imgWidth = imgHeight / realHeight * realWidth; //等比例缩放宽度
+	                if (imgWidth > windowW * scale) { //如宽度仍大于窗口宽度
+	                    imgWidth = windowW * scale; //再对宽度进行缩放
+	                }
+	            } else if (realWidth > windowW * scale) { //如图片高度合适，判断图片宽度
+	                imgWidth = windowW * scale; //如大于窗口宽度，图片宽度进行缩放
+	                imgHeight = imgWidth / realWidth * realHeight; //等比例缩放高度
+	            } else { //如果图片真实高度和宽度都符合要求，高宽不变
+	                imgWidth = realWidth;
+	                imgHeight = realHeight;
+	            }
+	            $(bigImg).css("width", imgWidth); //以最终的宽度对图片缩放
+
+	            var w = (windowW - imgWidth) / 2; //计算图片与窗口左边距
+	            var h = (windowH - imgHeight) / 2; //计算图片与窗口上边距
+	            $(innerDiv).css({ "top": h, "left": w }); //设置#innerDiv的top和left属性
+	            $(outerDiv).fadeIn("fast"); //淡入显示#outerDiv
+	        });
+
+	        $(outerDiv).click(function () { //再次点击淡出消失弹出层
+	            $(this).fadeOut("fast");
+	        });
+	    }
+	    setTimeout(function () {
+	        createImgEventFullScreen();
+	    }, 1000)
+	</script>
+</section></section></article>
+
+
+            <footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+    
+</footer>
+        </div>
+    </div>
+
+    <!-- js files -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+
+    
+    <script src="/js/d3@6"></script>
+    <!--
+      <script src="/js/markmap-view@0.2.7"></script>
+    -->
+    
+
+      <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+		  
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+		  
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+		isfetched = false;
+        $('.popup').hide();
+		$(".popoverlay").remove();
+		$('body').css('overflow', '');
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+	  isfetched = false;
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+    
+
+    <script type="text/javascript" src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+            MathJax.Hub.Config({ 
+                tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+            });
+        });
+    </script>
+
+
+    
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/awesome-toc.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $.awesome_toc({
+                overlay: true,
+                contentId: "post-content",
+            });
+        });
+    </script>
+
+
+    
+    
+    <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+
+</body>
+</html>

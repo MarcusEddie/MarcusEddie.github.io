@@ -1,0 +1,58 @@
+.suspend{
+	width:40px;
+	height:249px;
+	position:fixed;
+	top:200px;
+	right:0;
+	overflow:hidden;
+	z-index:1000000;
+}
+
+.suspend dl{
+	width:80px;
+	height:249px;
+	border-radius:25px 0 0 25px;
+	padding-left:40px;
+}
+
+.suspend dl dt{
+	width:40px;
+	height:249px;
+	background:url(../images/suspend.png);
+	position:absolute;
+	top:0;left:0;
+	cursor:pointer;
+}
+
+.suspend dl dd.suspendHead{
+	width:80px;
+	height:39px;
+	background:url(../images/suspend.png) -40px -0px;
+	overflow:hidden;
+}
+
+.suspend dl dd.suspendSearch{
+	width:80px;
+	height:70px;
+	background:#ffffff;
+}
+
+.suspend dl dd.suspendSearch a{
+	width:80px;
+	height:70px;
+	display:block;
+	background:url(../images/suspend.png) -40px -40px;
+	overflow:hidden;
+}
+
+* html .suspend{
+	position:absolute;
+	left:expression(eval(document.documentElement.scrollRight));
+	top:expression(eval(document.documentElement.scrollTop+200))
+}
+
+@media all and (max-width: 960px) {
+	.suspend{
+		display:none;
+	}
+}
