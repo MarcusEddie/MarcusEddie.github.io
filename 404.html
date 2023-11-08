@@ -13,13 +13,15 @@
 <div class="wrap_2018_404" id="wrap_2018_404">
     <div class="content_2018_404">
         <h1><img src="/css/404.gif"/></h1>
-        <a href="https://marcuseddie.github.io" class="tip">Ooops...</a>
+        <a href="https://marcuseddie.github.io/#blog" class="tip" id="homepage">Ooops...</a>
     </div>
 </div>
 <script src="/js/min.js"></script>
 <script type="text/javascript">
-      var page_url = window.location.pathname
-    console.log(page_url)
+    var page_url = window.location.pathname
+    if (page_url.indexOf('/en/') == 0){
+      document.getElementById('homepage').href = "https://marcuseddie.github.io/en/#blog"
+    }
 </script>
 </body>
 </html>
