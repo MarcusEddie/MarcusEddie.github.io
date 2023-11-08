@@ -30,13 +30,6 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/java-Collection-Stack.html</loc>
-    
-    <lastmod>2023-11-03T09:11:26.357Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://marcuseddie.github.io/2018/java-Collection-SortedSet-NavigableSet.html</loc>
     
     <lastmod>2023-11-03T09:11:26.357Z</lastmod>
@@ -51,14 +44,14 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/java-Collection-Vector.html</loc>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-Stack.html</loc>
     
     <lastmod>2023-11-03T09:11:26.357Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/java-DataInputStream-DataOutputStream.html</loc>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-Vector.html</loc>
     
     <lastmod>2023-11-03T09:11:26.357Z</lastmod>
     
@@ -73,6 +66,13 @@
   
   <url>
     <loc>https://marcuseddie.github.io/2018/java-FilterReader-FilterWriter.html</loc>
+    
+    <lastmod>2023-11-03T09:11:26.357Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-DataInputStream-DataOutputStream.html</loc>
     
     <lastmod>2023-11-03T09:11:26.357Z</lastmod>
     
@@ -100,14 +100,7 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/java-ObjectInputStream.html</loc>
-    
-    <lastmod>2023-11-03T09:11:26.357Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://marcuseddie.github.io/2018/java-FileInputStream-FileOutputStream.html</loc>
+    <loc>https://marcuseddie.github.io/2018/java-ObjectOutputStream.html</loc>
     
     <lastmod>2023-11-03T09:11:26.357Z</lastmod>
     
@@ -121,21 +114,21 @@
   </url>
   
   <url>
+    <loc>https://marcuseddie.github.io/2018/java-FileInputStream-FileOutputStream.html</loc>
+    
+    <lastmod>2023-11-03T09:11:26.357Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-ObjectInputStream.html</loc>
+    
+    <lastmod>2023-11-03T09:11:26.357Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://marcuseddie.github.io/2018/java-PipedReader-PipedWriter.html</loc>
-    
-    <lastmod>2023-11-03T09:11:26.357Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://marcuseddie.github.io/2018/java-ObjectOutputStream.html</loc>
-    
-    <lastmod>2023-11-03T09:11:26.357Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://marcuseddie.github.io/2018/java-PrintWriter.html</loc>
     
     <lastmod>2023-11-03T09:11:26.357Z</lastmod>
     
@@ -156,13 +149,6 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/java-PushbackReader.html</loc>
-    
-    <lastmod>2023-11-03T09:11:26.357Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://marcuseddie.github.io/2018/java-SequenceInputStream.html</loc>
     
     <lastmod>2023-11-03T09:11:26.357Z</lastmod>
@@ -170,7 +156,14 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/java-Reader-Writer.html</loc>
+    <loc>https://marcuseddie.github.io/2018/java-PushbackReader.html</loc>
+    
+    <lastmod>2023-11-03T09:11:26.357Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-PrintWriter.html</loc>
     
     <lastmod>2023-11-03T09:11:26.357Z</lastmod>
     
@@ -178,6 +171,13 @@
   
   <url>
     <loc>https://marcuseddie.github.io/2018/java-StringReader-StringWriter.html</loc>
+    
+    <lastmod>2023-11-03T09:11:26.357Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-Reader-Writer.html</loc>
     
     <lastmod>2023-11-03T09:11:26.357Z</lastmod>
     
@@ -198,20 +198,6 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2021/K8s-Network-Architecture-section-two.html</loc>
-    
-    <lastmod>2023-11-03T09:11:26.353Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://marcuseddie.github.io/2018/Linear-algebra-determinant.html</loc>
-    
-    <lastmod>2023-11-03T09:11:26.353Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://marcuseddie.github.io/2019/MurMurhash-Learning.html</loc>
     
     <lastmod>2023-11-03T09:11:26.353Z</lastmod>
@@ -219,7 +205,7 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2019/PGP-Introduction.html</loc>
+    <loc>https://marcuseddie.github.io/2021/K8s-Network-Architecture-section-two.html</loc>
     
     <lastmod>2023-11-03T09:11:26.353Z</lastmod>
     
@@ -233,7 +219,14 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2021/Thoughts-of-losing-weight.html</loc>
+    <loc>https://marcuseddie.github.io/2019/PGP-Introduction.html</loc>
+    
+    <lastmod>2023-11-03T09:11:26.353Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/The-Why-of-Agile.html</loc>
     
     <lastmod>2023-11-03T09:11:26.353Z</lastmod>
     
@@ -247,7 +240,14 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/how-we-built-a-cost-based-sql-optimizer.html</loc>
+    <loc>https://marcuseddie.github.io/2018/Linear-algebra-determinant.html</loc>
+    
+    <lastmod>2023-11-03T09:11:26.353Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2021/Thoughts-of-losing-weight.html</loc>
     
     <lastmod>2023-11-03T09:11:26.353Z</lastmod>
     
@@ -255,6 +255,13 @@
   
   <url>
     <loc>https://marcuseddie.github.io/2018/java-BlockDataInputStream.html</loc>
+    
+    <lastmod>2023-11-03T09:11:26.353Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-AbstractList.html</loc>
     
     <lastmod>2023-11-03T09:11:26.353Z</lastmod>
     
@@ -282,20 +289,6 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/The-Why-of-Agile.html</loc>
-    
-    <lastmod>2023-11-03T09:11:26.353Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://marcuseddie.github.io/2018/java-Collection-AbstractList.html</loc>
-    
-    <lastmod>2023-11-03T09:11:26.353Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://marcuseddie.github.io/2018/java-Collection-AbstractMap.html</loc>
     
     <lastmod>2023-11-03T09:11:26.353Z</lastmod>
@@ -303,14 +296,21 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/java-Collection-AbstractSequentialList.html</loc>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-AbstractSet.html</loc>
     
     <lastmod>2023-11-03T09:11:26.353Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/java-Collection-AbstractSet.html</loc>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-ConcurrentHashMap.html</loc>
+    
+    <lastmod>2023-11-03T09:11:26.353Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-AbstractSequentialList.html</loc>
     
     <lastmod>2023-11-03T09:11:26.353Z</lastmod>
     
@@ -331,21 +331,7 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/java-Collection-ConcurrentHashMap.html</loc>
-    
-    <lastmod>2023-11-03T09:11:26.353Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://marcuseddie.github.io/2018/java-Collection-Hashtable.html</loc>
-    
-    <lastmod>2023-11-03T09:11:26.353Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://marcuseddie.github.io/2018/java-Collection-LinkedHashMap.html</loc>
+    <loc>https://marcuseddie.github.io/2018/how-we-built-a-cost-based-sql-optimizer.html</loc>
     
     <lastmod>2023-11-03T09:11:26.353Z</lastmod>
     
@@ -366,14 +352,14 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/java-Collection-List.html</loc>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-LinkedHashMap.html</loc>
     
     <lastmod>2023-11-03T09:11:26.353Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/java-Collection-Map.html</loc>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-List.html</loc>
     
     <lastmod>2023-11-03T09:11:26.353Z</lastmod>
     
@@ -388,6 +374,20 @@
   
   <url>
     <loc>https://marcuseddie.github.io/2018/java-Collection-Segment.html</loc>
+    
+    <lastmod>2023-11-03T09:11:26.353Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-Map.html</loc>
+    
+    <lastmod>2023-11-03T09:11:26.353Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-Hashtable.html</loc>
     
     <lastmod>2023-11-03T09:11:26.353Z</lastmod>
     
@@ -436,13 +436,6 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/Java-source-Integer.html</loc>
-    
-    <lastmod>2023-11-03T09:11:26.349Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://marcuseddie.github.io/2018/Java-source-String-StringBuilder-StringBuffer.html</loc>
     
     <lastmod>2023-11-03T09:11:26.349Z</lastmod>
@@ -457,7 +450,14 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2021/K8s-Network-Architecture-section-five.html</loc>
+    <loc>https://marcuseddie.github.io/2018/Java-source-Integer.html</loc>
+    
+    <lastmod>2023-11-03T09:11:26.349Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2021/K8s-Network-Architecture-section-four.html</loc>
     
     <lastmod>2023-11-03T09:11:26.349Z</lastmod>
     
@@ -471,7 +471,7 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2021/K8s-Network-Architecture-section-four.html</loc>
+    <loc>https://marcuseddie.github.io/2021/K8s-Network-Architecture-section-five.html</loc>
     
     <lastmod>2023-11-03T09:11:26.349Z</lastmod>
     
