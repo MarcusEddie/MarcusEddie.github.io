@@ -3,7 +3,6 @@
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
     
 
     <title>
@@ -23,9 +22,9 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2019/MurMurhash-Learning.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="Murmurhash是一种简单、非加密的散列函数，具有强混淆性、低冲突风险。Murmurhash包含Murmurhash、Murmurhash2和Murmurhash3三个版本的算法，支持X86、X64体系结构，可以生成32位、64位、128位的散列值">
-<meta property="og:locale" content="en">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1590126930/BlogImages/Algorithm/hash-related/Murmurhash-Learning-Result-About-Java-Hashcode-And-Murmurhash.png">
-<meta property="og:updated_time" content="2023-11-03T09:11:26.353Z">
+<meta property="og:updated_time" content="2023-11-08T07:39:55.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Murmurhash初步学习 | Mr.Muzi">
 <meta name="twitter:description" content="Murmurhash是一种简单、非加密的散列函数，具有强混淆性、低冲突风险。Murmurhash包含Murmurhash、Murmurhash2和Murmurhash3三个版本的算法，支持X86、X64体系结构，可以生成32位、64位、128位的散列值">
@@ -65,55 +64,57 @@
     
     
 
-<header class="panel-cover panel-cover--collapsed">
-
-
-  <div class="panel-main">
-
+  <header class="panel-cover panel-cover--collapsed">
   
-    <div class="panel-main__inner panel-inverted">
-    <div class="panel-main__content">
-
-        
-        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
-        
-
-        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
-        <hr class="panel-cover__divider">
-
-        
-        <p class="panel-cover__description">
-          一只很安静的monkey
-        </p>
-        <hr class="panel-cover__divider panel-cover__divider--secondary">
-        
-
-        <div class="navigation-wrapper">
-
-          <nav class="cover-navigation cover-navigation--primary">
-            <ul class="navigation">
-
-              
+  
+  
+  
+    <div class="panel-main">
+  
+    
+      <div class="panel-main__inner panel-inverted">
+      <div class="panel-main__content">
+  
+          
+          <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+          
+  
+          <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+          <hr class="panel-cover__divider">
+  
+          
+          <p class="panel-cover__description">
+            一只很安静的monkey
+          </p>
+          <hr class="panel-cover__divider panel-cover__divider--secondary">
+          
+  
+          <div class="navigation-wrapper">
+  
+            <nav class="cover-navigation cover-navigation--primary">
+              <ul class="navigation">
+  
                 
-                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
-              
+                  
+                  <li class="navigation__item"><a href="/#blog" title class="blog-button">Posts</a></li>
                 
-                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
-              
+                  
+                  <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
                 
-                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
-              
+                  
+                  <li class="navigation__item"><a href="/archive" title class>归档</a></li>
                 
-                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
-              
+                  
+                  <li class="navigation__item"><a href="/en/#blog" title class>英文站</a></li>
                 
-                <li class="navigation__item"><a href="/about" title class>关于</a></li>
-              
-
-            </ul>
-          </nav>
-
-          <!-- ----------------------------
+                  
+                  <li class="navigation__item"><a href="/about" title class>关于</a></li>
+                
+  
+              </ul>
+            </nav>
+  
+            <!-- ----------------------------
 To add a new social icon simply duplicate one of the list items from below
 and change the class in the <i> tag to match the desired social network
 and then add your link to the <a>. Here is a full list of social network
@@ -211,16 +212,16 @@ classes that you can use:
 </nav>
 
 
-
+  
+          </div>
+  
         </div>
-
+  
       </div>
-
+  
+      <div class="panel-cover--overlay"></div>
     </div>
-
-    <div class="panel-cover--overlay"></div>
-  </div>
-</header>
+  </header>
 
     <div class="content-wrapper">
         <div class="content-wrapper__inner entry">
@@ -256,11 +257,11 @@ classes that you can use:
   		
   			
 			  <div class="prev_next clearfix">
-				<div style="width:30%;float:left;">
-					<a href="/en/2019/MurMurhash-Learning.html" target="_blank">Read the English version</a>
+				<div style="width:20%;float:left;">
+					<a href="/en/2019/MurMurhash-Learning.html" target="_blank">阅读英文版本</a>
 				</div>
-		      </div>
-		  	
+			</div>
+		  
 		  
 
     	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;Murmurhash是由Austin Appleby在2008年发明的一种非常简单的、不具有加密特性的散列函数，可以非常容易的应用在一般的基于散列的查找场景中。Murmurhash非常简单，在X86体系结构的机器上可以用少于52条指令完成所有的计算，由此带来的性能也是非常优秀的。此外，Murmurhash具有非常好的强混淆性（雪崩效应）和非常低的冲突风险。强混淆性指的是输入数据的微小改变，都会产生一个完全不同的散列值。Murmurhash的强混淆性使得通过Murmurhash计算得到的散列值具有非常的分布性。Murmurhash的当前版本是Murmurhash3，可以用来生成一个32位或128的散列值。如果生成结果是128位结果，那么在X86结构和X64结构上的计算结果是不一样的。本文以Murmurhash2为例进行讨论。</p>
@@ -328,13 +329,13 @@ classes that you can use:
 		</div>
 	    
 		 	
-		      	<section class="post-declare">
+				
+					<section class="post-declare">
 <p>
 <div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="N.C.Lee">N.C.Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="N.C.Lee">N.C.Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2019/MurMurhash-Learning.html" target="_blank" title="Murmurhash初步学习">Murmurhash初步学习</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2019/MurMurhash-Learning.html" target="_blank" title="Murmurhash初步学习">https://marcuseddie.github.io/2019/MurMurhash-Learning.html</a></b></div>
 </p>
 <section class="post-declare">
-		  	
-	  	
+				
 	  	
 	  	<section class="post-comments">
 
@@ -343,23 +344,23 @@ classes that you can use:
 </section>
 	
 	
-<div class="prev_next clearfix">
-	<div style="width:50%;float:left;">
-		
+	<div class="prev_next clearfix">
+		<div style="width:50%;float:left;">
 			
-				<a href="/2019/PGP-Introduction.html" class="alignleft prev" title="PGP工作原理简述"> 上一篇： PGP工作原理简述</a>
+				
+					<a href="/2019/PGP-Introduction.html" class="alignleft prev" title="PGP工作原理简述"> 上一篇： PGP工作原理简述</a>
+				
 			
-		
+		</div>
+		<div style="width:50%;float:right;">
+			
+				
+					<a href="/2019/For-Tony.html" class="alignright next" title="I am Iron Man"> 下一篇： I am Iron Man</a>
+				
+			
+		</div>
 	</div>
-	<div style="width:50%;float:right;">
-		
-			
-				<a href="/2019/For-Tony.html" class="alignright next" title="I am Iron Man"> 下一篇： I am Iron Man</a>
-			
-		
-	</div>
-</div>
-
+	
 	<script>
 	    function createImgEventFullScreen() {
 	        var imgs = $(".post").find("img");
@@ -422,9 +423,11 @@ classes that you can use:
 </section></section></article>
 
 
-            <footer class="footer">
+            
 
-    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+<footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由 <a href="https://hexo.io/">Hexo</a> 强力驱动 </span>
     
 </footer>
         </div>
@@ -605,5 +608,21 @@ classes that you can use:
   <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
 <![endif]-->
 
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+<script src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </body>
 </html>

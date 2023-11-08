@@ -3,7 +3,6 @@
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
     
 
     <title>
@@ -23,7 +22,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2021/K8s-Network-Architecture-section-four.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="&amp;emsp;&amp;emsp;Kubernetes网络架构要求集群内的任意两个Pod之间可以在无需NAT的前提下进行通信。在集群中一共有四种Pod间通信的场景：Pod内容器之间相互通信、同一个节点内多个Pod之间相互通信、不同节点上的多个Pod之间相互通信以及Pod和Service之间的通信。其中，Pod和Service之间的通信过程分析请移步到《K8s network之五：Kubernetes集群Po">
-<meta property="og:locale" content="en">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1624527339/BlogImages/CloudSerials/K8sNetArchP4/Pod-Inner-Structure-demo.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1624433161/BlogImages/CloudSerials/K8sNetArchP4/How-To-Create-a-Pod.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1624528203/BlogImages/CloudSerials/K8sNetArchP4/Pod-Inner-Communication-demo.webp">
@@ -39,7 +38,7 @@
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1624802691/BlogImages/CloudSerials/K8sNetArchP4/Pod-Communication-Cross-Node-In-Overlay-Mode-Flannel-VXLAN-Arch.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1624928288/BlogImages/CloudSerials/K8sNetArchP4/Pod-Communication-Cross-Node-In-Overlay-Mode-Flannel-VXLAN-Demo.webp">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1624887689/BlogImages/CloudSerials/K8sNetArchP4/Flannel-VXLAN-Package-Structure-Demo.png">
-<meta property="og:updated_time" content="2023-11-03T09:11:26.349Z">
+<meta property="og:updated_time" content="2023-11-08T07:39:55.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="K8s network之四：Kubernetes集群通信的实现原理 | Mr.Muzi">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp;Kubernetes网络架构要求集群内的任意两个Pod之间可以在无需NAT的前提下进行通信。在集群中一共有四种Pod间通信的场景：Pod内容器之间相互通信、同一个节点内多个Pod之间相互通信、不同节点上的多个Pod之间相互通信以及Pod和Service之间的通信。其中，Pod和Service之间的通信过程分析请移步到《K8s network之五：Kubernetes集群Po">
@@ -79,55 +78,57 @@
     
     
 
-<header class="panel-cover panel-cover--collapsed">
-
-
-  <div class="panel-main">
-
+  <header class="panel-cover panel-cover--collapsed">
   
-    <div class="panel-main__inner panel-inverted">
-    <div class="panel-main__content">
-
-        
-        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
-        
-
-        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
-        <hr class="panel-cover__divider">
-
-        
-        <p class="panel-cover__description">
-          一只很安静的monkey
-        </p>
-        <hr class="panel-cover__divider panel-cover__divider--secondary">
-        
-
-        <div class="navigation-wrapper">
-
-          <nav class="cover-navigation cover-navigation--primary">
-            <ul class="navigation">
-
-              
+  
+  
+  
+    <div class="panel-main">
+  
+    
+      <div class="panel-main__inner panel-inverted">
+      <div class="panel-main__content">
+  
+          
+          <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+          
+  
+          <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+          <hr class="panel-cover__divider">
+  
+          
+          <p class="panel-cover__description">
+            一只很安静的monkey
+          </p>
+          <hr class="panel-cover__divider panel-cover__divider--secondary">
+          
+  
+          <div class="navigation-wrapper">
+  
+            <nav class="cover-navigation cover-navigation--primary">
+              <ul class="navigation">
+  
                 
-                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
-              
+                  
+                  <li class="navigation__item"><a href="/#blog" title class="blog-button">Posts</a></li>
                 
-                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
-              
+                  
+                  <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
                 
-                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
-              
+                  
+                  <li class="navigation__item"><a href="/archive" title class>归档</a></li>
                 
-                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
-              
+                  
+                  <li class="navigation__item"><a href="/en/#blog" title class>英文站</a></li>
                 
-                <li class="navigation__item"><a href="/about" title class>关于</a></li>
-              
-
-            </ul>
-          </nav>
-
-          <!-- ----------------------------
+                  
+                  <li class="navigation__item"><a href="/about" title class>关于</a></li>
+                
+  
+              </ul>
+            </nav>
+  
+            <!-- ----------------------------
 To add a new social icon simply duplicate one of the list items from below
 and change the class in the <i> tag to match the desired social network
 and then add your link to the <a>. Here is a full list of social network
@@ -225,16 +226,16 @@ classes that you can use:
 </nav>
 
 
-
+  
+          </div>
+  
         </div>
-
+  
       </div>
-
+  
+      <div class="panel-cover--overlay"></div>
     </div>
-
-    <div class="panel-cover--overlay"></div>
-  </div>
-</header>
+  </header>
 
     <div class="content-wrapper">
         <div class="content-wrapper__inner entry">
@@ -269,12 +270,12 @@ classes that you can use:
   	<section id="post-content" class="article-content post">
   		
 
-    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;Kubernetes网络架构要求集群内的任意两个Pod之间可以在无需NAT的前提下进行通信。在集群中一共有四种Pod间通信的场景：Pod内容器之间相互通信、同一个节点内多个Pod之间相互通信、不同节点上的多个Pod之间相互通信以及Pod和Service之间的通信。其中，Pod和Service之间的通信过程分析请移步到《<a href="/2021/K8s-Network-Architecture-section-five.html">K8s network之五：Kubernetes集群Pod和Service之间通信的实现原理</a>》，本文会着重分析多容器Pod内、同一节点上的Pod之间以及不同节点上的Pod之间的通信过程。出于篇幅考虑，相关的yaml配置不会在文章中出现，特殊情况除外，相关的yaml配置可以参考<a href="https://kubernetes.io/" target="_blank" rel="noopener">Kubernetes</a>官方文档。</p>
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;Kubernetes网络架构要求集群内的任意两个Pod之间可以在无需NAT的前提下进行通信。在集群中一共有四种Pod间通信的场景：Pod内容器之间相互通信、同一个节点内多个Pod之间相互通信、不同节点上的多个Pod之间相互通信以及Pod和Service之间的通信。其中，Pod和Service之间的通信过程分析请移步到《<a href>K8s network之五：Kubernetes集群Pod和Service之间通信的实现原理</a>》，本文会着重分析多容器Pod内、同一节点上的Pod之间以及不同节点上的Pod之间的通信过程。出于篇幅考虑，相关的yaml配置不会在文章中出现，特殊情况除外，相关的yaml配置可以参考<a href="https://kubernetes.io/" target="_blank" rel="noopener">Kubernetes</a>官方文档。</p>
 <a id="more"></a>
-<p>&emsp;&emsp;<a href="/2021/K8s-Network-Architecture-section-one.html">1. K8s network之一：K8s网络模型与网络策略</a></p>
-<p>&emsp;&emsp;<a href="/2021/K8s-Network-Architecture-section-two.html">2. K8s network之二：Kubernetes的域名解析、服务发现和外部访问</a> </p>
+<p>&emsp;&emsp;<a href>1. K8s network之一：K8s网络模型与网络策略</a></p>
+<p>&emsp;&emsp;<a href>2. K8s network之二：Kubernetes的域名解析、服务发现和外部访问</a> </p>
 <p>&emsp;&emsp;<a href="/404.html">3.Linux网络在Kubernetes集群中的应用</a> </p>
-<p>&emsp;&emsp;<a href="/2021/K8s-Network-Architecture-section-five.html">5.K8s network之五：Kubernetes集群Pod和Service之间通信的实现原理</a> </p>
+<p>&emsp;&emsp;<a href>5.K8s network之五：Kubernetes集群Pod和Service之间通信的实现原理</a> </p>
 <h2 id="Pod内容器之间通信过程"><a href="#Pod内容器之间通信过程" class="headerlink" title="Pod内容器之间通信过程"></a>Pod内容器之间通信过程</h2><p>&emsp;&emsp;在kubernetes集群中，每个Pod会被分配一个IP地址。同一个Pod内的多个业务容器会共享这个IP地址对外通信，同时，这些容器之间也可以直接通过localhost<strong>:</strong>端口号的方式进行通信。为了实现Pod内容器之间的通信，Kubernetes利用pause容器和Docker的container模式网络这两个工具来达成目的。</p>
 <p>&emsp;&emsp;Docker在创建业务容器的时候可以通过命令参数<strong>—network=container:NAME_or_ID</strong>来创建一个container模式的网络结构。在这种场景下，新创建的业务容器会加入NAME_or_ID指定的容器的网络命名空间中，与指定的容器共享同一个网络栈、对外使用同一个IP地址或者MAC地址进行通信、相互之间也可以直接使用localhost<strong>:</strong>端口的形式完成通信。如果业务容器执行了重启动作并再次以<strong>—network=container:NAME_or_ID</strong>完成创建操作，就可以实现重启前后拥有相同的IP地址信息。除非NAME_or_ID指定的容器被重启，否则当前Pod会始终拥有一个固定的IP地址，Pod内的业务容器亦是如此。Kubernetes的Pod内网络实现就是借鉴了Docker的这种模式来实现Pod内多个容器之间的相互通信的。</p>
 <div style="text-align: center; width: 100%;">
@@ -373,7 +374,7 @@ classes that you can use:
 </div>
 
 <p>&emsp;&emsp;直接路由方案虽然相对来说简单一些，但同时也有一些问题。在集群中的每个节点都需要配置非自身节点的路由信息来与其他节点通信，如果集群中节点的数量非常大，那么这个配置过程将会非常繁琐。如果向集群中加入新的节点，或者剔除因故无法继续工作的节点，同样需要更新集群中所有其他节点的路由信息，大大增加了集群网络管理的复杂性、成本和出错概率。还有，如果集群中节点规模非常大的话，有可能会造成路由表规模的膨胀，尽管有一些机制来应对路由表规模膨胀所带来的性能下降问题，但这依旧是一个不容忽视的问题。当然，你也可以借助BGP、RIP、OSPF等动态路由协议来完成集群节点之间的路由发现，一定程度上可以降低集群节点路由配置的成本。</p>
-<h3 id="Overlay网络方案"><a href="#Overlay网络方案" class="headerlink" title="Overlay网络方案"></a>Overlay网络方案</h3><p>&emsp;&emsp;除了上述提到的路由方案，其实还有一种更主流的跨主机网络构建方案—Overlay网络架构。在《<a href="/2021/K8s-Network-Architecture-section-one.html">K8s network之一：K8s网络模型与网络策略</a>》中，我们已经对Overlay网络进行了一个简单的介绍。一些流行的CNI插件诸如Flannel、Weave等都提供了基于Overlay网络的跨主机组网实现方案。Overlay可以在无需变更现有底层物理网络配置的前提下，通过网络协议和报文封装等方式来构建一个可以运行在物理网络上的逻辑网络。鉴于此，Overlay可以更灵活地针对业务需求的变化和迭代来构建满足要求的网络环境。</p>
+<h3 id="Overlay网络方案"><a href="#Overlay网络方案" class="headerlink" title="Overlay网络方案"></a>Overlay网络方案</h3><p>&emsp;&emsp;除了上述提到的路由方案，其实还有一种更主流的跨主机网络构建方案—Overlay网络架构。在《<a href>K8s network之一：K8s网络模型与网络策略</a>》中，我们已经对Overlay网络进行了一个简单的介绍。一些流行的CNI插件诸如Flannel、Weave等都提供了基于Overlay网络的跨主机组网实现方案。Overlay可以在无需变更现有底层物理网络配置的前提下，通过网络协议和报文封装等方式来构建一个可以运行在物理网络上的逻辑网络。鉴于此，Overlay可以更灵活地针对业务需求的变化和迭代来构建满足要求的网络环境。</p>
 <div style="text-align: center; width: 100%;">
 <img src="https://res.cloudinary.com/jknight/image/upload/v1624779098/BlogImages/CloudSerials/K8sNetArchP4/Pod-Communication-Cross-Node-In-Overlay-Mode-demo.png" style="margin: 0 auto;">
 </div>
@@ -488,13 +489,13 @@ classes that you can use:
 		</div>
 	    
 		 	
-		      	<section class="post-declare">
+				
+					<section class="post-declare">
 <p>
 <div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="N.C.Lee">N.C.Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="N.C.Lee">N.C.Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2021/K8s-Network-Architecture-section-four.html" target="_blank" title="K8s network之四：Kubernetes集群通信的实现原理">K8s network之四：Kubernetes集群通信的实现原理</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2021/K8s-Network-Architecture-section-four.html" target="_blank" title="K8s network之四：Kubernetes集群通信的实现原理">https://marcuseddie.github.io/2021/K8s-Network-Architecture-section-four.html</a></b></div>
 </p>
 <section class="post-declare">
-		  	
-	  	
+				
 	  	
 	  	<section class="post-comments">
 
@@ -503,23 +504,23 @@ classes that you can use:
 </section>
 	
 	
-<div class="prev_next clearfix">
-	<div style="width:50%;float:left;">
-		
+	<div class="prev_next clearfix">
+		<div style="width:50%;float:left;">
 			
-				<a href="/2021/K8s-Network-Architecture-section-five.html" class="alignleft prev" title="K8s network之五：Kubernetes集群Pod和Service之间通信的实现原理"> 上一篇： K8s network之五：Kubernetes集群Pod和Servi...</a>
+				
+					<a href="/2021/K8s-Network-Architecture-section-five.html" class="alignleft prev" title="K8s network之五：Kubernetes集群Pod和Service之间通信的实现原理"> 上一篇： K8s network之五：Kubernetes集群Pod和Servi...</a>
+				
 			
-		
+		</div>
+		<div style="width:50%;float:right;">
+			
+				
+					<a href="/2021/K8s-Network-Architecture-section-two.html" class="alignright next" title="K8s network之二：Kubernetes的域名解析、服务发现和外部访问"> 下一篇： K8s network之二：Kubernetes的域名解析、服务发现和...</a>
+				
+			
+		</div>
 	</div>
-	<div style="width:50%;float:right;">
-		
-			
-				<a href="/2021/K8s-Network-Architecture-section-two.html" class="alignright next" title="K8s network之二：Kubernetes的域名解析、服务发现和外部访问"> 下一篇： K8s network之二：Kubernetes的域名解析、服务发现和...</a>
-			
-		
-	</div>
-</div>
-
+	
 	<script>
 	    function createImgEventFullScreen() {
 	        var imgs = $(".post").find("img");
@@ -582,9 +583,11 @@ classes that you can use:
 </section></section></article>
 
 
-            <footer class="footer">
+            
 
-    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+<footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由 <a href="https://hexo.io/">Hexo</a> 强力驱动 </span>
     
 </footer>
         </div>
@@ -765,5 +768,21 @@ classes that you can use:
   <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
 <![endif]-->
 
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+<script src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </body>
 </html>

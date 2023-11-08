@@ -3,7 +3,6 @@
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
     
 
     <title>
@@ -23,7 +22,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2021/K8s-Network-Architecture-section-one.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="&amp;emsp;&amp;emsp;Kubernetes网络是Kubernetes得以正常工作的重要基础之一，这其中涉及到了包括但不限于IP地址划分、MAC地址学习、路由转发、服务发现、网络通信等诸多领域。借助于CNI接口及其实现产品，Kubernetes可以提供丰富的网络配置架构方案。关于Kubernetes网络，将会有一系列笔记，本篇是第一篇—关于Kubernetes网络模型和策略的初步学习，知其然，稍微">
-<meta property="og:locale" content="en">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1623247049/BlogImages/CloudSerials/K8s-cluster-IP-allocation-demo.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1623247220/BlogImages/CloudSerials/K8s-CNI-Structure.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1623247301/BlogImages/CloudSerials/CNI-Plugins-Dependency.png">
@@ -37,7 +36,7 @@
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1623247691/BlogImages/CloudSerials/K8s-Network-Policy-Basic.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1623247761/BlogImages/CloudSerials/Calico-Network-Policy-Implement.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1623330489/BlogImages/CloudSerials/K8s-NetworkPolicy-Demo.webp">
-<meta property="og:updated_time" content="2023-11-03T09:11:26.349Z">
+<meta property="og:updated_time" content="2023-11-08T07:39:55.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="K8s network之一：K8s网络模型与网络策略 | Mr.Muzi">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp;Kubernetes网络是Kubernetes得以正常工作的重要基础之一，这其中涉及到了包括但不限于IP地址划分、MAC地址学习、路由转发、服务发现、网络通信等诸多领域。借助于CNI接口及其实现产品，Kubernetes可以提供丰富的网络配置架构方案。关于Kubernetes网络，将会有一系列笔记，本篇是第一篇—关于Kubernetes网络模型和策略的初步学习，知其然，稍微">
@@ -77,55 +76,57 @@
     
     
 
-<header class="panel-cover panel-cover--collapsed">
-
-
-  <div class="panel-main">
-
+  <header class="panel-cover panel-cover--collapsed">
   
-    <div class="panel-main__inner panel-inverted">
-    <div class="panel-main__content">
-
-        
-        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
-        
-
-        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
-        <hr class="panel-cover__divider">
-
-        
-        <p class="panel-cover__description">
-          一只很安静的monkey
-        </p>
-        <hr class="panel-cover__divider panel-cover__divider--secondary">
-        
-
-        <div class="navigation-wrapper">
-
-          <nav class="cover-navigation cover-navigation--primary">
-            <ul class="navigation">
-
-              
+  
+  
+  
+    <div class="panel-main">
+  
+    
+      <div class="panel-main__inner panel-inverted">
+      <div class="panel-main__content">
+  
+          
+          <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+          
+  
+          <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+          <hr class="panel-cover__divider">
+  
+          
+          <p class="panel-cover__description">
+            一只很安静的monkey
+          </p>
+          <hr class="panel-cover__divider panel-cover__divider--secondary">
+          
+  
+          <div class="navigation-wrapper">
+  
+            <nav class="cover-navigation cover-navigation--primary">
+              <ul class="navigation">
+  
                 
-                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
-              
+                  
+                  <li class="navigation__item"><a href="/#blog" title class="blog-button">Posts</a></li>
                 
-                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
-              
+                  
+                  <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
                 
-                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
-              
+                  
+                  <li class="navigation__item"><a href="/archive" title class>归档</a></li>
                 
-                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
-              
+                  
+                  <li class="navigation__item"><a href="/en/#blog" title class>英文站</a></li>
                 
-                <li class="navigation__item"><a href="/about" title class>关于</a></li>
-              
-
-            </ul>
-          </nav>
-
-          <!-- ----------------------------
+                  
+                  <li class="navigation__item"><a href="/about" title class>关于</a></li>
+                
+  
+              </ul>
+            </nav>
+  
+            <!-- ----------------------------
 To add a new social icon simply duplicate one of the list items from below
 and change the class in the <i> tag to match the desired social network
 and then add your link to the <a>. Here is a full list of social network
@@ -223,16 +224,16 @@ classes that you can use:
 </nav>
 
 
-
+  
+          </div>
+  
         </div>
-
+  
       </div>
-
+  
+      <div class="panel-cover--overlay"></div>
     </div>
-
-    <div class="panel-cover--overlay"></div>
-  </div>
-</header>
+  </header>
 
     <div class="content-wrapper">
         <div class="content-wrapper__inner entry">
@@ -269,10 +270,10 @@ classes that you can use:
 
     	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;Kubernetes网络是Kubernetes得以正常工作的重要基础之一，这其中涉及到了包括但不限于IP地址划分、MAC地址学习、路由转发、服务发现、网络通信等诸多领域。借助于CNI接口及其实现产品，Kubernetes可以提供丰富的网络配置架构方案。关于Kubernetes网络，将会有一系列笔记，本篇是第一篇—关于Kubernetes网络模型和策略的初步学习，知其然，稍微知其所以然。出于篇幅考虑，相关的yaml配置不会在文章中出现，特殊情况除外，相关的yaml配置可以参考<a href="https://kubernetes.io/" target="_blank" rel="noopener">Kubernetes</a>官方文档。</p>
 <a id="more"></a>
-<p>&emsp;&emsp;<a href="/2021/K8s-Network-Architecture-section-two.html">2. K8s network之二：Kubernetes的域名解析、服务发现和外部访问</a> </p>
+<p>&emsp;&emsp;<a href>2. K8s network之二：Kubernetes的域名解析、服务发现和外部访问</a> </p>
 <p>&emsp;&emsp;<a href="/404.html">3.Linux网络在Kubernetes集群中的应用</a> </p>
-<p>&emsp;&emsp;<a href="/2021/K8s-Network-Architecture-section-four.html">4.K8s network之四：Kubernetes集群通信的实现原理</a> </p>
-<p>&emsp;&emsp;<a href="/2021/K8s-Network-Architecture-section-five.html">5.K8s network之五：Kubernetes集群Pod和Service之间通信的实现原理</a> </p>
+<p>&emsp;&emsp;<a href>4.K8s network之四：Kubernetes集群通信的实现原理</a> </p>
+<p>&emsp;&emsp;<a href>5.K8s network之五：Kubernetes集群Pod和Service之间通信的实现原理</a> </p>
 <h2 id="网络模型"><a href="#网络模型" class="headerlink" title="网络模型"></a>网络模型</h2><p>&emsp;&emsp;Kubernetes网络模型遵循的一个核心原则是每个Pod都拥有一个唯一且独立的IP地址，只要彼此通信的Pod在同一个集群里，那么就可以通过IP地址的方式实现Pod间的直接访问而无需借助其他工具和手段，即使它们不在同一个node节点上。也就是说，同一个集群里的所有Pod形成了一个扁平的、可相互通信的网络组织。于是乎，每个Pod可以像虚拟机或者物理机实体那样执行诸如端口分配、命名、服务发现、负载均衡、应用配置和迁移等动作。因此，基于这个核心原则建立的模型就是“<strong>IP-Per-Pod</strong>”模型。</p>
 <p>&emsp;&emsp;<strong>IP-Per-Pod</strong>模型认为，Pod之间会通过目标方的IP地址来完成通信和交互行为，无论是在Pod的内部还是外部，这个Pod的IP地址、端口等信息都是一致的，因此，Pod内部和外部之间、Pod和Pod之间、Node和Pod之间也就不再需要NAT操作来确保通信成功。没有了NAT之后，整个集群的通信性能会更好，源地址伪装的情况也就不复存在，因此具备了源地址可溯源的能力，对于集群维护和排障都有非常重要的帮助。而且这个模型可以很好的兼容现有的应用架构，如果我们的应用是运行在虚拟机上，每个虚拟机有自己的IP地址而且彼此之间可以相互通信，那么这个应用就可以很容易的迁移到Kubernetes集群上，降低成本和风险。这个模型还有另外一个好处，那就是同一个Pod内的容器之间共享了同一个网络命名空间，这些容器之间通过同一个IP地址对外发送消息，通过同一个IP地址接收来自Pod之外的消息。它们相互之间的访问可以通过localhost加端口的形式直接访问。在整个集群范围内，每个Node都有一个与其他Node节点无交集的IP地址段，这个IP地址段内的IP地址会拿来分配给该节点上的Pod使用。</p>
 <div style="text-align: center; width: 100%;">
@@ -566,13 +567,13 @@ classes that you can use:
 		</div>
 	    
 		 	
-		      	<section class="post-declare">
+				
+					<section class="post-declare">
 <p>
 <div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="N.C.Lee">N.C.Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="N.C.Lee">N.C.Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2021/K8s-Network-Architecture-section-one.html" target="_blank" title="K8s network之一：K8s网络模型与网络策略">K8s network之一：K8s网络模型与网络策略</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2021/K8s-Network-Architecture-section-one.html" target="_blank" title="K8s network之一：K8s网络模型与网络策略">https://marcuseddie.github.io/2021/K8s-Network-Architecture-section-one.html</a></b></div>
 </p>
 <section class="post-declare">
-		  	
-	  	
+				
 	  	
 	  	<section class="post-comments">
 
@@ -581,23 +582,23 @@ classes that you can use:
 </section>
 	
 	
-<div class="prev_next clearfix">
-	<div style="width:50%;float:left;">
-		
+	<div class="prev_next clearfix">
+		<div style="width:50%;float:left;">
 			
-				<a href="/2021/K8s-Network-Architecture-section-two.html" class="alignleft prev" title="K8s network之二：Kubernetes的域名解析、服务发现和外部访问"> 上一篇： K8s network之二：Kubernetes的域名解析、服务发现和...</a>
+				
+					<a href="/2021/K8s-Network-Architecture-section-two.html" class="alignleft prev" title="K8s network之二：Kubernetes的域名解析、服务发现和外部访问"> 上一篇： K8s network之二：Kubernetes的域名解析、服务发现和...</a>
+				
 			
-		
+		</div>
+		<div style="width:50%;float:right;">
+			
+				
+					<a href="/2021/IP-Subnet-Mask.html" class="alignright next" title="IP子网划分方法简述"> 下一篇： IP子网划分方法简述</a>
+				
+			
+		</div>
 	</div>
-	<div style="width:50%;float:right;">
-		
-			
-				<a href="/2021/IP-Subnet-Mask.html" class="alignright next" title="IP子网划分方法简述"> 下一篇： IP子网划分方法简述</a>
-			
-		
-	</div>
-</div>
-
+	
 	<script>
 	    function createImgEventFullScreen() {
 	        var imgs = $(".post").find("img");
@@ -660,9 +661,11 @@ classes that you can use:
 </section></section></article>
 
 
-            <footer class="footer">
+            
 
-    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+<footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由 <a href="https://hexo.io/">Hexo</a> 强力驱动 </span>
     
 </footer>
         </div>
@@ -843,5 +846,21 @@ classes that you can use:
   <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
 <![endif]-->
 
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+<script src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </body>
 </html>

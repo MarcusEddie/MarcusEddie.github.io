@@ -3,7 +3,6 @@
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
     
 
     <title>
@@ -23,7 +22,7 @@
 <meta property="og:url" content="https://marcuseddie.github.io/2021/K8s-Network-Architecture-section-five.html">
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="&amp;emsp;&amp;emsp;Kubernetes集群内Pod之间默认可以无障碍的进行通信，但是通常情况下Pod是不稳定的，无法确定Pod会在何时因为何种原因被重启。当Pod重启后，其会得到一个新的IP地址。而且，如无特别指明，Pod有可能会在不同的节点之间被调度。当提供相同服务的Pod有多个时，就需要一个统一的对外地址来接收服务请求，并将请求以负载均衡的方式分发到Pod上。Kubernetes Ser">
-<meta property="og:locale" content="en">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1624950799/BlogImages/CloudSerials/K8sNetArchP4/K8s-Service-Demo.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1624958971/BlogImages/CloudSerials/K8sNetArchP4/K8s-Service-Arch.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1625386322/BlogImages/CloudSerials/K8sNetArchP4/K8s-Services-Userspace-overview.svg">
@@ -44,7 +43,7 @@
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1625582214/BlogImages/CloudSerials/K8sNetArchP4/IPVS_Mode_Service_Packet_Path.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1625622293/BlogImages/CloudSerials/K8sNetArchP4/Round-Trip-Response-Time-vs-Number-of-Services.png">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1625622293/BlogImages/CloudSerials/K8sNetArchP4/CPU-vs-Number-of-Services.png">
-<meta property="og:updated_time" content="2023-11-03T09:11:26.349Z">
+<meta property="og:updated_time" content="2023-11-08T07:39:55.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="K8s network之五：Kubernetes集群Pod和Service之间通信的实现原理 | Mr.Muzi">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp;Kubernetes集群内Pod之间默认可以无障碍的进行通信，但是通常情况下Pod是不稳定的，无法确定Pod会在何时因为何种原因被重启。当Pod重启后，其会得到一个新的IP地址。而且，如无特别指明，Pod有可能会在不同的节点之间被调度。当提供相同服务的Pod有多个时，就需要一个统一的对外地址来接收服务请求，并将请求以负载均衡的方式分发到Pod上。Kubernetes Ser">
@@ -84,55 +83,57 @@
     
     
 
-<header class="panel-cover panel-cover--collapsed">
-
-
-  <div class="panel-main">
-
+  <header class="panel-cover panel-cover--collapsed">
   
-    <div class="panel-main__inner panel-inverted">
-    <div class="panel-main__content">
-
-        
-        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
-        
-
-        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
-        <hr class="panel-cover__divider">
-
-        
-        <p class="panel-cover__description">
-          一只很安静的monkey
-        </p>
-        <hr class="panel-cover__divider panel-cover__divider--secondary">
-        
-
-        <div class="navigation-wrapper">
-
-          <nav class="cover-navigation cover-navigation--primary">
-            <ul class="navigation">
-
-              
+  
+  
+  
+    <div class="panel-main">
+  
+    
+      <div class="panel-main__inner panel-inverted">
+      <div class="panel-main__content">
+  
+          
+          <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+          
+  
+          <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+          <hr class="panel-cover__divider">
+  
+          
+          <p class="panel-cover__description">
+            一只很安静的monkey
+          </p>
+          <hr class="panel-cover__divider panel-cover__divider--secondary">
+          
+  
+          <div class="navigation-wrapper">
+  
+            <nav class="cover-navigation cover-navigation--primary">
+              <ul class="navigation">
+  
                 
-                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
-              
+                  
+                  <li class="navigation__item"><a href="/#blog" title class="blog-button">Posts</a></li>
                 
-                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
-              
+                  
+                  <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
                 
-                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
-              
+                  
+                  <li class="navigation__item"><a href="/archive" title class>归档</a></li>
                 
-                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
-              
+                  
+                  <li class="navigation__item"><a href="/en/#blog" title class>英文站</a></li>
                 
-                <li class="navigation__item"><a href="/about" title class>关于</a></li>
-              
-
-            </ul>
-          </nav>
-
-          <!-- ----------------------------
+                  
+                  <li class="navigation__item"><a href="/about" title class>关于</a></li>
+                
+  
+              </ul>
+            </nav>
+  
+            <!-- ----------------------------
 To add a new social icon simply duplicate one of the list items from below
 and change the class in the <i> tag to match the desired social network
 and then add your link to the <a>. Here is a full list of social network
@@ -230,16 +231,16 @@ classes that you can use:
 </nav>
 
 
-
+  
+          </div>
+  
         </div>
-
+  
       </div>
-
+  
+      <div class="panel-cover--overlay"></div>
     </div>
-
-    <div class="panel-cover--overlay"></div>
-  </div>
-</header>
+  </header>
 
     <div class="content-wrapper">
         <div class="content-wrapper__inner entry">
@@ -276,10 +277,10 @@ classes that you can use:
 
     	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;Kubernetes集群内Pod之间默认可以无障碍的进行通信，但是通常情况下Pod是不稳定的，无法确定Pod会在何时因为何种原因被重启。当Pod重启后，其会得到一个新的IP地址。而且，如无特别指明，Pod有可能会在不同的节点之间被调度。当提供相同服务的Pod有多个时，就需要一个统一的对外地址来接收服务请求，并将请求以负载均衡的方式分发到Pod上。Kubernetes Service就是在这种背景下被引入的，Service是一种为一组提供相同服务的Pod提供单一不变的、简单透明的接入访问点的资源对象。Service的IP地址和端口在其整个生命周期不会改变，客户端可以通过服务IP:服务Port的方式发起服务请求，也可以直接访问服务名，由Kubernetes集群提供的DNS解析服务将请求分发到Service背后的Pod上。出于篇幅考虑，相关的yaml配置不会在文章中出现，特殊情况除外，相关的yaml配置可以参考<a href="https://kubernetes.io/" target="_blank" rel="noopener">Kubernetes</a>官方文档。</p>
 <a id="more"></a>
-<p>&emsp;&emsp;<a href="/2021/K8s-Network-Architecture-section-one.html">1. K8s network之一：K8s网络模型与网络策略</a></p>
-<p>&emsp;&emsp;<a href="/2021/K8s-Network-Architecture-section-two.html">2. K8s network之二：Kubernetes的域名解析、服务发现和外部访问</a> </p>
+<p>&emsp;&emsp;<a href>1. K8s network之一：K8s网络模型与网络策略</a></p>
+<p>&emsp;&emsp;<a href>2. K8s network之二：Kubernetes的域名解析、服务发现和外部访问</a> </p>
 <p>&emsp;&emsp;<a href="/404.html">3.Linux网络在Kubernetes集群中的应用</a> </p>
-<p>&emsp;&emsp;<a href="/2021/K8s-Network-Architecture-section-four.html">4.K8s network之四：Kubernetes集群通信的实现原理</a> </p>
+<p>&emsp;&emsp;<a href>4.K8s network之四：Kubernetes集群通信的实现原理</a> </p>
 <h2 id="Pod和Service之间的通信过程"><a href="#Pod和Service之间的通信过程" class="headerlink" title="Pod和Service之间的通信过程"></a>Pod和Service之间的通信过程</h2><p>&emsp;&emsp;前面我们大概了解了Kubernetes集群中同一Pod内各个容器之间以及Pod之间相互通信的过程，Pod之间可以直接通过IP地址在无需NAT的前提下完成通信过程，至于如何得知对方IP，可以采用某种方式将IP固定下来，或者写入配置项等等手段。但是Pod的生存周期通常来说是短暂的，有可能会因为各种原因被重启，而Pod的设计原理又使得当Pod在重启前后会得到不一致的IP地址，而且，在Pod启动前会通过CNI插件完成Pod的IP地址分配和配置工作，所以调用方也不可能在Pod启动前提前知道Pod的IP地址信息。就调用方而言，它其实并不关心提供服务的Pod有多少个，分布在哪里，IP地址信息是什么等，它只关心自己能通过何种方式访问Pod提供的服务。Service就是在这种背景下产生的，它把一系列提供相同服务的Pod聚合在一起，形成一个抽象的网络服务。Service一方面会根据一定的规则汇总提供服务的Pod信息集合，另一方面又向调用方提供了一个简单且统一的方式供其访问Pod提供的服务。</p>
 <div style="text-align: center; width: 100%;">
 <img src="https://res.cloudinary.com/jknight/image/upload/v1624950799/BlogImages/CloudSerials/K8sNetArchP4/K8s-Service-Demo.png" style="margin: 0 auto;">
@@ -634,13 +635,13 @@ classes that you can use:
 		</div>
 	    
 		 	
-		      	<section class="post-declare">
+				
+					<section class="post-declare">
 <p>
 <div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="N.C.Lee">N.C.Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="N.C.Lee">N.C.Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2021/K8s-Network-Architecture-section-five.html" target="_blank" title="K8s network之五：Kubernetes集群Pod和Service之间通信的实现原理">K8s network之五：Kubernetes集群Pod和Service之间通信的实现原理</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2021/K8s-Network-Architecture-section-five.html" target="_blank" title="K8s network之五：Kubernetes集群Pod和Service之间通信的实现原理">https://marcuseddie.github.io/2021/K8s-Network-Architecture-section-five.html</a></b></div>
 </p>
 <section class="post-declare">
-		  	
-	  	
+				
 	  	
 	  	<section class="post-comments">
 
@@ -649,23 +650,23 @@ classes that you can use:
 </section>
 	
 	
-<div class="prev_next clearfix">
-	<div style="width:50%;float:left;">
-		
+	<div class="prev_next clearfix">
+		<div style="width:50%;float:left;">
 			
-				<a href="/2021/Thoughts-of-losing-weight.html" class="alignleft prev" title="跳绳感悟"> 上一篇： 跳绳感悟</a>
+				
+					<a href="/2021/Thoughts-of-losing-weight.html" class="alignleft prev" title="跳绳感悟"> 上一篇： 跳绳感悟</a>
+				
 			
-		
+		</div>
+		<div style="width:50%;float:right;">
+			
+				
+					<a href="/2021/K8s-Network-Architecture-section-four.html" class="alignright next" title="K8s network之四：Kubernetes集群通信的实现原理"> 下一篇： K8s network之四：Kubernetes集群通信的实现原理</a>
+				
+			
+		</div>
 	</div>
-	<div style="width:50%;float:right;">
-		
-			
-				<a href="/2021/K8s-Network-Architecture-section-four.html" class="alignright next" title="K8s network之四：Kubernetes集群通信的实现原理"> 下一篇： K8s network之四：Kubernetes集群通信的实现原理</a>
-			
-		
-	</div>
-</div>
-
+	
 	<script>
 	    function createImgEventFullScreen() {
 	        var imgs = $(".post").find("img");
@@ -728,9 +729,11 @@ classes that you can use:
 </section></section></article>
 
 
-            <footer class="footer">
+            
 
-    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+<footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由 <a href="https://hexo.io/">Hexo</a> 强力驱动 </span>
     
 </footer>
         </div>
@@ -911,5 +914,21 @@ classes that you can use:
   <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
 <![endif]-->
 
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+<script src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </body>
 </html>

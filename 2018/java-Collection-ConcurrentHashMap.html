@@ -3,7 +3,6 @@
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
     
 
     <title>
@@ -25,7 +24,7 @@
 <meta property="og:description" content="ConcurrentHashMap是线程安全版本的HashMap，且支持多个线程同时对map进行操作。具有方法get,put,containsKey,contains,remove,replace,clear。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1545100740/BlogImages/java-collection/map/ConcurrentHashMap-demo-example.png">
-<meta property="og:updated_time" content="2023-11-03T09:11:26.353Z">
+<meta property="og:updated_time" content="2023-11-08T07:39:55.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java Map 07 - ConcurrentHashMap | Mr.Muzi">
 <meta name="twitter:description" content="ConcurrentHashMap是线程安全版本的HashMap，且支持多个线程同时对map进行操作。具有方法get,put,containsKey,contains,remove,replace,clear。">
@@ -65,55 +64,57 @@
     
     
 
-<header class="panel-cover panel-cover--collapsed">
-
-
-  <div class="panel-main">
-
+  <header class="panel-cover panel-cover--collapsed">
   
-    <div class="panel-main__inner panel-inverted">
-    <div class="panel-main__content">
-
-        
-        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
-        
-
-        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
-        <hr class="panel-cover__divider">
-
-        
-        <p class="panel-cover__description">
-          一只很安静的monkey
-        </p>
-        <hr class="panel-cover__divider panel-cover__divider--secondary">
-        
-
-        <div class="navigation-wrapper">
-
-          <nav class="cover-navigation cover-navigation--primary">
-            <ul class="navigation">
-
-              
+  
+  
+  
+    <div class="panel-main">
+  
+    
+      <div class="panel-main__inner panel-inverted">
+      <div class="panel-main__content">
+  
+          
+          <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+          
+  
+          <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+          <hr class="panel-cover__divider">
+  
+          
+          <p class="panel-cover__description">
+            一只很安静的monkey
+          </p>
+          <hr class="panel-cover__divider panel-cover__divider--secondary">
+          
+  
+          <div class="navigation-wrapper">
+  
+            <nav class="cover-navigation cover-navigation--primary">
+              <ul class="navigation">
+  
                 
-                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
-              
+                  
+                  <li class="navigation__item"><a href="/#blog" title class="blog-button">Posts</a></li>
                 
-                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
-              
+                  
+                  <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
                 
-                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
-              
+                  
+                  <li class="navigation__item"><a href="/archive" title class>归档</a></li>
                 
-                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
-              
+                  
+                  <li class="navigation__item"><a href="/en/#blog" title class>英文站</a></li>
                 
-                <li class="navigation__item"><a href="/about" title class>关于</a></li>
-              
-
-            </ul>
-          </nav>
-
-          <!-- ----------------------------
+                  
+                  <li class="navigation__item"><a href="/about" title class>关于</a></li>
+                
+  
+              </ul>
+            </nav>
+  
+            <!-- ----------------------------
 To add a new social icon simply duplicate one of the list items from below
 and change the class in the <i> tag to match the desired social network
 and then add your link to the <a>. Here is a full list of social network
@@ -211,16 +212,16 @@ classes that you can use:
 </nav>
 
 
-
+  
+          </div>
+  
         </div>
-
+  
       </div>
-
+  
+      <div class="panel-cover--overlay"></div>
     </div>
-
-    <div class="panel-cover--overlay"></div>
-  </div>
-</header>
+  </header>
 
     <div class="content-wrapper">
         <div class="content-wrapper__inner entry">
@@ -258,7 +259,7 @@ classes that you can use:
     	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.util.concurrent.ConcurrentHashMap&lt;K, V&gt;</strong> </em>的部分笔记，ConcurrentHashMap支持多个线程同一时刻访问集合内部的不同元素的特性，是HashMap的另一个线程安全版本（另一个是Hashtable）。本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
 <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;ConcurrentHashMap是一个支持并发访问的map集合，和Hashtable一样，都是HashMap的线程安全版本。但是和Hashtable不一样的是，ConcurrentHashMap可以允许多个线程在同一时刻对map集合中的多个键值对进行操作，而Hashtable则因为当前线程会锁定整个集合导致同一时刻只能有一个线程可以访问Hashtable集合。</p>
-<p>&emsp;&emsp;ConcurrentHashMap的实现思想是将整个map集合拆分成了多个子集合，每个子集合由一个<a href="/2018/java-Collection-Segment.html"> Segment</a>实例进行维护。线程访问时会对某个特定的segment实例进行锁定，其他的segment实例继续保持自由状态，这样就实现了多个线程同时访问ConcurrentHashMap集合中不同元素的特性。但是需要注意的是，如果多个线程访问的是同一个segment实例内部的键值对实例，那么由于同一时刻只有一个线程会保存对该segment实例的锁定，所以依旧会出现线程等待的现象。</p>
+<p>&emsp;&emsp;ConcurrentHashMap的实现思想是将整个map集合拆分成了多个子集合，每个子集合由一个<a href> Segment</a>实例进行维护。线程访问时会对某个特定的segment实例进行锁定，其他的segment实例继续保持自由状态，这样就实现了多个线程同时访问ConcurrentHashMap集合中不同元素的特性。但是需要注意的是，如果多个线程访问的是同一个segment实例内部的键值对实例，那么由于同一时刻只有一个线程会保存对该segment实例的锁定，所以依旧会出现线程等待的现象。</p>
 <p>&emsp;&emsp;每个segment实例内部是一个HashEntry数组，数组的每个节点维护了一个链表集合，该集合存储和维护了键值对映射实体。</p>
 <p>&emsp;&emsp;ConcurrentHashMap的底层存储结构如图1所示：</p>
 <p><img src="https://res.cloudinary.com/jknight/image/upload/v1545100740/BlogImages/java-collection/map/ConcurrentHashMap-demo-example.png" alt></p>
@@ -388,13 +389,13 @@ classes that you can use:
 		</div>
 	    
 		 	
-		      	<section class="post-declare">
+				
+					<section class="post-declare">
 <p>
 <div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="N.C.Lee">N.C.Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="N.C.Lee">N.C.Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-Collection-ConcurrentHashMap.html" target="_blank" title="Java Map 07 - ConcurrentHashMap">Java Map 07 - ConcurrentHashMap</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-Collection-ConcurrentHashMap.html" target="_blank" title="Java Map 07 - ConcurrentHashMap">https://marcuseddie.github.io/2018/java-Collection-ConcurrentHashMap.html</a></b></div>
 </p>
 <section class="post-declare">
-		  	
-	  	
+				
 	  	
 	  	<section class="post-comments">
 
@@ -403,23 +404,23 @@ classes that you can use:
 </section>
 	
 	
-<div class="prev_next clearfix">
-	<div style="width:50%;float:left;">
-		
+	<div class="prev_next clearfix">
+		<div style="width:50%;float:left;">
 			
-				<a href="/2018/java-Collection-Segment.html" class="alignleft prev" title="Java Map 08 - Segment"> 上一篇： Java Map 08 - Segment</a>
+				
+					<a href="/2018/java-Collection-Segment.html" class="alignleft prev" title="Java Map 08 - Segment"> 上一篇： Java Map 08 - Segment</a>
+				
 			
-		
+		</div>
+		<div style="width:50%;float:right;">
+			
+				
+					<a href="/2018/java-Collection-Hashtable.html" class="alignright next" title="Java Map 05 - Hashtable"> 下一篇： Java Map 05 - Hashtable</a>
+				
+			
+		</div>
 	</div>
-	<div style="width:50%;float:right;">
-		
-			
-				<a href="/2018/java-Collection-Hashtable.html" class="alignright next" title="Java Map 05 - Hashtable"> 下一篇： Java Map 05 - Hashtable</a>
-			
-		
-	</div>
-</div>
-
+	
 	<script>
 	    function createImgEventFullScreen() {
 	        var imgs = $(".post").find("img");
@@ -482,9 +483,11 @@ classes that you can use:
 </section></section></article>
 
 
-            <footer class="footer">
+            
 
-    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+<footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由 <a href="https://hexo.io/">Hexo</a> 强力驱动 </span>
     
 </footer>
         </div>
@@ -665,5 +668,21 @@ classes that you can use:
   <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
 <![endif]-->
 
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+<script src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </body>
 </html>

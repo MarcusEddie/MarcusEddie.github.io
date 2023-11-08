@@ -3,7 +3,6 @@
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
     
 
     <title>
@@ -24,7 +23,7 @@
 <meta property="og:site_name" content="Mr.Muzi">
 <meta property="og:description" content="&amp;emsp;&amp;emsp;关于 java.util.AbstractSequentialList&amp;lt;E&amp;gt; 的部分笔记。AbstractSequentialList因其借鉴顺序访问的思想而被用于插入元素比访问元素更频繁的场景中。顺序访问思想赋予了其插入元素可以做到常量时间的优势。鉴于其是一个抽象类，在实际应用时实现其抽象方法来完成实际操作。需要本文演示代码段的执行环境基于JDK版本1.7。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2023-11-03T09:11:26.353Z">
+<meta property="og:updated_time" content="2023-11-08T07:39:55.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java Collection 06 - AbstractSequentialList | Mr.Muzi">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp;关于 java.util.AbstractSequentialList&amp;lt;E&amp;gt; 的部分笔记。AbstractSequentialList因其借鉴顺序访问的思想而被用于插入元素比访问元素更频繁的场景中。顺序访问思想赋予了其插入元素可以做到常量时间的优势。鉴于其是一个抽象类，在实际应用时实现其抽象方法来完成实际操作。需要本文演示代码段的执行环境基于JDK版本1.7。">
@@ -63,55 +62,57 @@
     
     
 
-<header class="panel-cover panel-cover--collapsed">
-
-
-  <div class="panel-main">
-
+  <header class="panel-cover panel-cover--collapsed">
   
-    <div class="panel-main__inner panel-inverted">
-    <div class="panel-main__content">
-
-        
-        <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
-        
-
-        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
-        <hr class="panel-cover__divider">
-
-        
-        <p class="panel-cover__description">
-          一只很安静的monkey
-        </p>
-        <hr class="panel-cover__divider panel-cover__divider--secondary">
-        
-
-        <div class="navigation-wrapper">
-
-          <nav class="cover-navigation cover-navigation--primary">
-            <ul class="navigation">
-
-              
+  
+  
+  
+    <div class="panel-main">
+  
+    
+      <div class="panel-main__inner panel-inverted">
+      <div class="panel-main__content">
+  
+          
+          <a href="/" title="link to homepage for Mr.Muzi"><img src="/images/icon_log1.png" width="80" alt="Mr.Muzi logo" class="panel-cover__logo logo"></a>
+          
+  
+          <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Mr.Muzi</a></h1>
+          <hr class="panel-cover__divider">
+  
+          
+          <p class="panel-cover__description">
+            一只很安静的monkey
+          </p>
+          <hr class="panel-cover__divider panel-cover__divider--secondary">
+          
+  
+          <div class="navigation-wrapper">
+  
+            <nav class="cover-navigation cover-navigation--primary">
+              <ul class="navigation">
+  
                 
-                <li class="navigation__item"><a href="/#blog" title class="blog-button">首页</a></li>
-              
+                  
+                  <li class="navigation__item"><a href="/#blog" title class="blog-button">Posts</a></li>
                 
-                <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
-              
+                  
+                  <li class="navigation__item"><a href="/library" title class>图书馆</a></li>
                 
-                <li class="navigation__item"><a href="/archive" title class>归档</a></li>
-              
+                  
+                  <li class="navigation__item"><a href="/archive" title class>归档</a></li>
                 
-                <li class="navigation__item"><a href="/en/#blog" title class>英文</a></li>
-              
+                  
+                  <li class="navigation__item"><a href="/en/#blog" title class>英文站</a></li>
                 
-                <li class="navigation__item"><a href="/about" title class>关于</a></li>
-              
-
-            </ul>
-          </nav>
-
-          <!-- ----------------------------
+                  
+                  <li class="navigation__item"><a href="/about" title class>关于</a></li>
+                
+  
+              </ul>
+            </nav>
+  
+            <!-- ----------------------------
 To add a new social icon simply duplicate one of the list items from below
 and change the class in the <i> tag to match the desired social network
 and then add your link to the <a>. Here is a full list of social network
@@ -209,16 +210,16 @@ classes that you can use:
 </nav>
 
 
-
+  
+          </div>
+  
         </div>
-
+  
       </div>
-
+  
+      <div class="panel-cover--overlay"></div>
     </div>
-
-    <div class="panel-cover--overlay"></div>
-  </div>
-</header>
+  </header>
 
     <div class="content-wrapper">
         <div class="content-wrapper__inner entry">
@@ -255,7 +256,7 @@ classes that you can use:
 
     	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;关于<em> <strong>java.util.AbstractSequentialList&lt;E&gt;</strong> </em>的部分笔记。AbstractSequentialList因其借鉴顺序访问的思想而被用于插入元素比访问元素更频繁的场景中。顺序访问思想赋予了其插入元素可以做到常量时间的优势。鉴于其是一个抽象类，在实际应用时实现其抽象方法来完成实际操作。需要本文演示代码段的执行环境基于JDK版本<strong>1.7</strong>。</p>
 <a id="more"></a>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;AbstractSequentialList提供了顺序访问List集合的一种思路和实现，其最常见的实现类即为 <a href="/2018/java-Collection-LinkedList.html">LinkedList</a>。和以AbstractList为代表的随机访问类相比，顺序访问会导致在访问元素时会按照从首到尾逐个遍历的方式获取目标元素，所以其访问元素需要的时间随着集合元素数量呈比例增长，但是其优点是保证了元素插入的高效率。</p>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>&emsp;&emsp;AbstractSequentialList提供了顺序访问List集合的一种思路和实现，其最常见的实现类即为 <a href>LinkedList</a>。和以AbstractList为代表的随机访问类相比，顺序访问会导致在访问元素时会按照从首到尾逐个遍历的方式获取目标元素，所以其访问元素需要的时间随着集合元素数量呈比例增长，但是其优点是保证了元素插入的高效率。</p>
 <p>&emsp;&emsp;鉴于AbstractSequentialList已经实现了List和Collection接口的部分方法，所以如果单纯的实现一个AbstractSequentialList的话，只需要实现listIterator(int index)和size()方法即可。如果需要实现一个不可修改的List集合，那么只需要实现listIterator的hasNext()、next()、hasPrevious()和index()方法即可。</p>
 <p>&emsp;&emsp;如果需要实现一个可修改的List集合，除了上述提及方法外还需要实现listIterator的set()方法。如果需要实现一个长度可变的List集合，还需要额外实现listIterator的remove()和add()方法。</p>
 <p>&emsp;</p>
@@ -315,13 +316,13 @@ classes that you can use:
 		</div>
 	    
 		 	
-		      	<section class="post-declare">
+				
+					<section class="post-declare">
 <p>
 <div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;版权声明</b>：本文由<b><a href="/about" target="_blank" title="N.C.Lee">N.C.Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="N.C.Lee">N.C.Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/2018/java-Collection-AbstractSequentialList.html" target="_blank" title="Java Collection 06 - AbstractSequentialList">Java Collection 06 - AbstractSequentialList</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/2018/java-Collection-AbstractSequentialList.html" target="_blank" title="Java Collection 06 - AbstractSequentialList">https://marcuseddie.github.io/2018/java-Collection-AbstractSequentialList.html</a></b></div>
 </p>
 <section class="post-declare">
-		  	
-	  	
+				
 	  	
 	  	<section class="post-comments">
 
@@ -330,23 +331,23 @@ classes that you can use:
 </section>
 	
 	
-<div class="prev_next clearfix">
-	<div style="width:50%;float:left;">
-		
+	<div class="prev_next clearfix">
+		<div style="width:50%;float:left;">
 			
-				<a href="/2018/java-Collection-LinkedList.html" class="alignleft prev" title="Java Collection 07 - LinkedList"> 上一篇： Java Collection 07 - LinkedList</a>
+				
+					<a href="/2018/java-Collection-LinkedList.html" class="alignleft prev" title="Java Collection 07 - LinkedList"> 上一篇： Java Collection 07 - LinkedList</a>
+				
 			
-		
+		</div>
+		<div style="width:50%;float:right;">
+			
+				
+					<a href="/2018/java-BlockDataInputStream.html" class="alignright next" title="Java I/O 25 - BlockDataInputStream"> 下一篇： Java I/O 25 - BlockDataInputStream</a>
+				
+			
+		</div>
 	</div>
-	<div style="width:50%;float:right;">
-		
-			
-				<a href="/2018/java-BlockDataInputStream.html" class="alignright next" title="Java I/O 25 - BlockDataInputStream"> 下一篇： Java I/O 25 - BlockDataInputStream</a>
-			
-		
-	</div>
-</div>
-
+	
 	<script>
 	    function createImgEventFullScreen() {
 	        var imgs = $(".post").find("img");
@@ -409,9 +410,11 @@ classes that you can use:
 </section></section></article>
 
 
-            <footer class="footer">
+            
 
-    <span class="footer__copyright">&copy; 2018-2020. | 由<a href="https://hexo.io/">Hexo</a>强力驱动 </span>
+<footer class="footer">
+
+    <span class="footer__copyright">&copy; 2018-2020. | 由 <a href="https://hexo.io/">Hexo</a> 强力驱动 </span>
     
 </footer>
         </div>
@@ -592,5 +595,21 @@ classes that you can use:
   <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
 <![endif]-->
 
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+<script src="/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 </body>
 </html>
