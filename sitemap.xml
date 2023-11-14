@@ -4,19 +4,19 @@
   <url>
     <loc>https://marcuseddie.github.io/en/2019/MurMurhash-Learning.html</loc>
     
-    <lastmod>2023-11-08T07:39:55.000Z</lastmod>
+    <lastmod>2023-11-14T01:41:17.273Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2019/MurMurhash-Learning.html</loc>
+    
+    <lastmod>2023-11-14T01:03:49.965Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://marcuseddie.github.io/2018/10-years-of-speed-in-chrome.html</loc>
-    
-    <lastmod>2023-11-08T07:39:55.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://marcuseddie.github.io/en/2023/minds.html</loc>
     
     <lastmod>2023-11-08T07:39:55.000Z</lastmod>
     
@@ -65,14 +65,14 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/Java-source-String-StringBuilder-StringBuffer.html</loc>
+    <loc>https://marcuseddie.github.io/2018/Java-source-String.html</loc>
     
     <lastmod>2023-11-08T07:39:55.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/Java-source-String.html</loc>
+    <loc>https://marcuseddie.github.io/2018/Java-source-String-StringBuilder-StringBuffer.html</loc>
     
     <lastmod>2023-11-08T07:39:55.000Z</lastmod>
     
@@ -100,21 +100,7 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2021/K8s-Network-Architecture-section-two.html</loc>
-    
-    <lastmod>2023-11-08T07:39:55.000Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://marcuseddie.github.io/2018/Linear-algebra-determinant.html</loc>
-    
-    <lastmod>2023-11-08T07:39:55.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://marcuseddie.github.io/2019/MurMurhash-Learning.html</loc>
     
     <lastmod>2023-11-08T07:39:55.000Z</lastmod>
     
@@ -135,6 +121,13 @@
   </url>
   
   <url>
+    <loc>https://marcuseddie.github.io/2019/Tech-Books.html</loc>
+    
+    <lastmod>2023-11-08T07:39:55.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://marcuseddie.github.io/2018/The-Why-of-Agile.html</loc>
     
     <lastmod>2023-11-08T07:39:55.000Z</lastmod>
@@ -142,7 +135,7 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2019/Tech-Books.html</loc>
+    <loc>https://marcuseddie.github.io/2021/K8s-Network-Architecture-section-two.html</loc>
     
     <lastmod>2023-11-08T07:39:55.000Z</lastmod>
     
@@ -198,13 +191,6 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/java-Collection-AbstractMap.html</loc>
-    
-    <lastmod>2023-11-08T07:39:55.000Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://marcuseddie.github.io/2018/java-Collection-AbstractList.html</loc>
     
     <lastmod>2023-11-08T07:39:55.000Z</lastmod>
@@ -212,7 +198,7 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/java-Collection-AbstractSet.html</loc>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-AbstractMap.html</loc>
     
     <lastmod>2023-11-08T07:39:55.000Z</lastmod>
     
@@ -226,13 +212,6 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/java-Collection-ArrayList.html</loc>
-    
-    <lastmod>2023-11-08T07:39:55.000Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://marcuseddie.github.io/2018/java-Collection-ConcurrentHashMap.html</loc>
     
     <lastmod>2023-11-08T07:39:55.000Z</lastmod>
@@ -240,7 +219,14 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/java-Collection-HashSet.html</loc>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-AbstractSet.html</loc>
+    
+    <lastmod>2023-11-08T07:39:55.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-ArrayList.html</loc>
     
     <lastmod>2023-11-08T07:39:55.000Z</lastmod>
     
@@ -254,14 +240,14 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/java-Collection-Hashtable.html</loc>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-HashSet.html</loc>
     
     <lastmod>2023-11-08T07:39:55.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/java-Collection-LinkedHashMap.html</loc>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-Hashtable.html</loc>
     
     <lastmod>2023-11-08T07:39:55.000Z</lastmod>
     
@@ -289,7 +275,7 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/java-Collection-Map.html</loc>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-LinkedHashMap.html</loc>
     
     <lastmod>2023-11-08T07:39:55.000Z</lastmod>
     
@@ -310,6 +296,13 @@
   </url>
   
   <url>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-Map.html</loc>
+    
+    <lastmod>2023-11-08T07:39:55.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://marcuseddie.github.io/2018/java-Collection-SortedSet-NavigableSet.html</loc>
     
     <lastmod>2023-11-08T07:39:55.000Z</lastmod>
@@ -324,13 +317,6 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/java-Collection-TreeSet.html</loc>
-    
-    <lastmod>2023-11-08T07:39:55.000Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://marcuseddie.github.io/2018/java-Collection-Vector.html</loc>
     
     <lastmod>2023-11-08T07:39:55.000Z</lastmod>
@@ -338,14 +324,14 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/java-DataInputStream-DataOutputStream.html</loc>
+    <loc>https://marcuseddie.github.io/2018/java-FileInputStream-FileOutputStream.html</loc>
     
     <lastmod>2023-11-08T07:39:55.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/java-FileInputStream-FileOutputStream.html</loc>
+    <loc>https://marcuseddie.github.io/2018/java-DataInputStream-DataOutputStream.html</loc>
     
     <lastmod>2023-11-08T07:39:55.000Z</lastmod>
     
@@ -366,7 +352,7 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/java-InputStream-OutputStream.html</loc>
+    <loc>https://marcuseddie.github.io/2018/java-Collection-TreeSet.html</loc>
     
     <lastmod>2023-11-08T07:39:55.000Z</lastmod>
     
@@ -380,7 +366,7 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/java-ObjectOutputStream.html</loc>
+    <loc>https://marcuseddie.github.io/2018/java-InputStream-OutputStream.html</loc>
     
     <lastmod>2023-11-08T07:39:55.000Z</lastmod>
     
@@ -395,6 +381,13 @@
   
   <url>
     <loc>https://marcuseddie.github.io/2018/java-ObjectInputStream.html</loc>
+    
+    <lastmod>2023-11-08T07:39:55.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://marcuseddie.github.io/2018/java-ObjectOutputStream.html</loc>
     
     <lastmod>2023-11-08T07:39:55.000Z</lastmod>
     
@@ -422,6 +415,13 @@
   </url>
   
   <url>
+    <loc>https://marcuseddie.github.io/2018/java-PrintWriter.html</loc>
+    
+    <lastmod>2023-11-08T07:39:55.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://marcuseddie.github.io/2018/java-PushbackInputStream.html</loc>
     
     <lastmod>2023-11-08T07:39:55.000Z</lastmod>
@@ -430,13 +430,6 @@
   
   <url>
     <loc>https://marcuseddie.github.io/2018/java-PushbackReader.html</loc>
-    
-    <lastmod>2023-11-08T07:39:55.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://marcuseddie.github.io/2018/java-PrintWriter.html</loc>
     
     <lastmod>2023-11-08T07:39:55.000Z</lastmod>
     
@@ -457,14 +450,14 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2019/java-multiThread-ThreadLocal.html</loc>
+    <loc>https://marcuseddie.github.io/2018/java-StringReader-StringWriter.html</loc>
     
     <lastmod>2023-11-08T07:39:55.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/2018/java-StringReader-StringWriter.html</loc>
+    <loc>https://marcuseddie.github.io/2019/java-multiThread-ThreadLocal.html</loc>
     
     <lastmod>2023-11-08T07:39:55.000Z</lastmod>
     
@@ -478,14 +471,14 @@
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/en/archive/index.html</loc>
+    <loc>https://marcuseddie.github.io/en/library/index.html</loc>
     
     <lastmod>2023-11-08T07:39:55.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://marcuseddie.github.io/en/library/index.html</loc>
+    <loc>https://marcuseddie.github.io/en/archive/index.html</loc>
     
     <lastmod>2023-11-08T07:39:55.000Z</lastmod>
     

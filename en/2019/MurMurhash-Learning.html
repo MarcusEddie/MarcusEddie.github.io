@@ -3,10 +3,11 @@
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="google-site-verification" content="I-tP-pxN_zm4opKxF0P8T1R4yQMAPQ7OLMamNToLgTw">
     
 
     <title>
-      Murmurhash初步学习-EN | Mr.Muzi 
+      Murmurhash Analysis | Mr.Muzi 
     </title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -15,18 +16,20 @@
     
     
 
-    <meta name="description" content="Murmurhash是一种简单、非加密的散列函数，具有强混淆性、低冲突风险。Murmurhash包含Murmurhash、Murmurhash2和Murmurhash3三个版本的算法，支持X86、X64体系结构，可以生成32位、64位、128位的散列值">
-<meta name="keywords" content="Murmurhash,Murmurhash,Murmurhash2,Murmurhash3">
+    <meta name="description" content="&amp;emsp;&amp;emsp;Murmurhash, invented by Austin Appleby in 2008, is an exceptionally simple, non-cryptographic hash function that can be easily applied in common hash-based lookup scenarios. Murmurhash is">
+<meta name="keywords" content="Murmurhash">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Murmurhash初步学习-EN | Mr.Muzi">
+<meta property="og:title" content="Murmurhash Analysis | Mr.Muzi">
 <meta property="og:url" content="https://marcuseddie.github.io/en/2019/MurMurhash-Learning.html">
 <meta property="og:site_name" content="Mr.Muzi">
-<meta property="og:description" content="Murmurhash是一种简单、非加密的散列函数，具有强混淆性、低冲突风险。Murmurhash包含Murmurhash、Murmurhash2和Murmurhash3三个版本的算法，支持X86、X64体系结构，可以生成32位、64位、128位的散列值">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;Murmurhash, invented by Austin Appleby in 2008, is an exceptionally simple, non-cryptographic hash function that can be easily applied in common hash-based lookup scenarios. Murmurhash is">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2023-11-08T07:39:55.000Z">
+<meta property="og:image" content="https://res.cloudinary.com/jknight/image/upload/v1590126930/BlogImages/Algorithm/hash-related/Murmurhash-Learning-Result-About-Java-Hashcode-And-Murmurhash.png">
+<meta property="og:updated_time" content="2023-11-14T01:41:17.273Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Murmurhash初步学习-EN | Mr.Muzi">
-<meta name="twitter:description" content="Murmurhash是一种简单、非加密的散列函数，具有强混淆性、低冲突风险。Murmurhash包含Murmurhash、Murmurhash2和Murmurhash3三个版本的算法，支持X86、X64体系结构，可以生成32位、64位、128位的散列值">
+<meta name="twitter:title" content="Murmurhash Analysis | Mr.Muzi">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp;Murmurhash, invented by Austin Appleby in 2008, is an exceptionally simple, non-cryptographic hash function that can be easily applied in common hash-based lookup scenarios. Murmurhash is">
+<meta name="twitter:image" content="https://res.cloudinary.com/jknight/image/upload/v1590126930/BlogImages/Algorithm/hash-related/Murmurhash-Learning-Result-About-Java-Hashcode-And-Murmurhash.png">
     
     
     
@@ -227,23 +230,23 @@ classes that you can use:
 
 <article class="post-container post-container--single">
   	<header class="post-header">
-	    <h1 class="post-title"><b>Murmurhash初步学习-EN</b></h1>
+	    <h1 class="post-title"><b>Murmurhash Analysis</b></h1>
 	    
 		    <div class="post-meta">
 		      	<time datetime="2019-08-06" class="post-meta__date date">2019-08-06</time> 
-		        <span class="post-meta__count count">Words Count:&nbsp;125&emsp;Reading Time:&nbsp;1&nbsp;mins</span>
+		        <span class="post-meta__count count">Words Count:&nbsp;1.6k&emsp;Reading Time:&nbsp;9&nbsp;mins</span>
 		      	<span class="post-meta__tags tags">
 			        
 			            <font class="categories">
 				            &#8226; Categories:
-				            <a class="categories-link" href="/en/categories/Code-Review/">Code Review</a>
+				            <a class="categories-link" href="/en/categories/en-Code-Review/">Code Review</a>
 			            </font>
 			        
 
 			        
 			            &#8226; Tags:
 			            <font class="tags">
-			              	<a class="tags-link" href="/tags/hash/">hash</a>
+			              	<a class="tags-link" href="/en/tags/en-hash/">hash</a>
 			            </font>
 			        
 		    	</span>
@@ -263,14 +266,58 @@ classes that you can use:
 		  	
 		  
 
-    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;Murmurhash是由Austin Appleby在2008年发明的一种非常简单的、不具有加密特性的散列函数.</p>
+    	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>&emsp;&emsp;Murmurhash, invented by Austin Appleby in 2008, is an exceptionally simple, non-cryptographic hash function that can be easily applied in common hash-based lookup scenarios. Murmurhash is notably straightforward, completing all computations in fewer than 52 instructions on X86 architecture machines, resulting in excellent performance. Furthermore, Murmurhash exhibits outstanding avalanche effects and very low collision risks. The term “avalanche effects” refers to the fact that even slight changes in input data produce entirely different hash values, contributing to the excellent distribution of hash values calculated via Murmurhash. The current version of Murmurhash is Murmurhash3, capable of generating a 32-bit or 128-bit hash value. If the result is a 128-bit value, the computation results differ between X86 and X64 architectures. This discussion uses Murmurhash2 as an example.</p>
 <a id="more"></a>
-<p>&emsp;&emsp;作者在C版本的代码中对Murmurhash的运行提出了一些假设和解释：</p>
+<p>&emsp;&emsp;The author makes certain assumptions and explanations about the operation of Murmurhash in the C code:</p>
 <ol>
-<li>假设系统可以一次性读取4个字节；</li>
-<li>假设int类型数据的长度是4个字节；</li>
-<li>算法不会按照增量的方式工作；</li>
-<li>算法在大端（big-endian）和小端（little-endian）结构下的执行结果不一致。</li>
+<li>Assumes the system can read 4 bytes at once.</li>
+<li>Assumes the length of int data is 4 bytes.</li>
+<li>Assumes the algorithm does not operate incrementally.</li>
+<li>Notes that the algorithm’s results differ between big-endian and little-endian architectures.</li>
+</ol>
+<p>&emsp;&emsp;This Java code snippet demonstrates the 32-bit version of MurmurHash as implemented in Jedis 3.2.0. It takes a key as input and produces a 32-bit hash value. The code follows the MurmurHash algorithm with the specified assumptions and settings.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">hash</span><span class="params">(ByteBuffer buf, <span class="keyword">int</span> seed)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// save byte order for later restoration</span></span><br><span class="line">    ByteOrder byteOrder = buf.order();</span><br><span class="line">    buf.order(ByteOrder.LITTLE_ENDIAN);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> m = <span class="number">0x5bd1e995</span>;</span><br><span class="line">    <span class="keyword">int</span> r = <span class="number">24</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> h = seed ^ buf.remaining();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> k;</span><br><span class="line">    <span class="keyword">while</span> (buf.remaining() &gt;= <span class="number">4</span>) &#123;</span><br><span class="line">      k = buf.getInt();</span><br><span class="line"></span><br><span class="line">      k *= m;</span><br><span class="line">      k ^= k &gt;&gt;&gt; r;</span><br><span class="line">      k *= m;</span><br><span class="line"></span><br><span class="line">      h *= m;</span><br><span class="line">      h ^= k;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (buf.remaining() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">      ByteBuffer finish = ByteBuffer.allocate(<span class="number">4</span>).order(ByteOrder.LITTLE_ENDIAN);</span><br><span class="line">      <span class="comment">// for big-endian version, use this first:</span></span><br><span class="line">      <span class="comment">// finish.position(4-buf.remaining());</span></span><br><span class="line">      finish.put(buf).rewind();</span><br><span class="line">      h ^= finish.getInt();</span><br><span class="line">      h *= m;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    h ^= h &gt;&gt;&gt; <span class="number">13</span>;</span><br><span class="line">    h *= m;</span><br><span class="line">    h ^= h &gt;&gt;&gt; <span class="number">15</span>;</span><br><span class="line"></span><br><span class="line">    buf.order(byteOrder);</span><br><span class="line">    <span class="keyword">return</span> h;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;In the 32-bit version’s method call, you need to provide a seed. On one hand, the seed helps reduce the probability of collisions. Even with an excellent hashing algorithm, there’s still a chance of generating the same hash value for different data. By introducing a seed into the calculation process, random number generation helps further decrease the likelihood of collisions. On the other hand, when calculating hash values for the same data, different seed values yield different results, providing a degree of protection against HashDoS security issues.</p>
+<p>&emsp;&emsp;However, it’s important to note that since Murmurhash itself is non-cryptographic, the latter explanation regarding HashDoS might not be as relevant. Murmurhash primarily aims to reduce collision probabilities by using seed values. In the method used to generate a 64-bit hash value in Murmurhash2, the seed value is specified as <strong>0x1234ABCD</strong>. The method caller only needs to focus on the data content for which the hash value needs to be calculated.</p>
+<p>&emsp;&emsp;In the hash() method, specifically in the 9th line of code, the author use XORs operation to combine the user-provided seed with the number of remaining bytes in the buffer. This combination helps ensure that different instances of the hash function with different seeds will produce different starting points, even if the remaining bytes are the same. It’s a technique to enhance the randomness and distribution of hash values, especially when dealing with similar or repetitive data. Subsequently, perform multiple multiplication, bitwise shifting (right shift), and XOR operations for every 4 bits, until all original data content has been processed or the remaining data is less than 4 bits. The values <strong>0x5bd1e995</strong> and <strong>24</strong> used in the process are predetermined by the author, chosen because the author believes these values yield satisfactory results.</p>
+<p>&emsp;&emsp;The author iteratively extracts an int data (taking every 4 bits) within the loop and performs multiple multiplication, bitwise shifting, and XOR operations to calculate the hash value. The code from lines 23 to 30 handles the calculation of the hash value for the remaining data that is less than 4 bits. The code from lines 32 to 34 ensures that the remaining few bits are adequately dispersed in the overall hash result after hashing.</p>
+<h2 id="Murmurhash2-64-bit-implementation"><a href="#Murmurhash2-64-bit-implementation" class="headerlink" title="Murmurhash2 64-bit implementation"></a>Murmurhash2 64-bit implementation</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">long</span> <span class="title">hash64A</span><span class="params">(ByteBuffer buf, <span class="keyword">int</span> seed)</span> </span>&#123;</span><br><span class="line">    ByteOrder byteOrder = buf.order();</span><br><span class="line">    buf.order(ByteOrder.LITTLE_ENDIAN);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">long</span> m = <span class="number">0xc6a4a7935bd1e995L</span>;</span><br><span class="line">    <span class="keyword">int</span> r = <span class="number">47</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">long</span> h = seed ^ (buf.remaining() * m);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">long</span> k;</span><br><span class="line">    <span class="keyword">while</span> (buf.remaining() &gt;= <span class="number">8</span>) &#123;</span><br><span class="line">      k = buf.getLong();</span><br><span class="line"></span><br><span class="line">      k *= m;</span><br><span class="line">      k ^= k &gt;&gt;&gt; r;</span><br><span class="line">      k *= m;</span><br><span class="line"></span><br><span class="line">      h ^= k;</span><br><span class="line">      h *= m;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (buf.remaining() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">      ByteBuffer finish = ByteBuffer.allocate(<span class="number">8</span>).order(ByteOrder.LITTLE_ENDIAN);</span><br><span class="line">      <span class="comment">// for big-endian version, do this first:</span></span><br><span class="line">      <span class="comment">// finish.position(8-buf.remaining());</span></span><br><span class="line">      finish.put(buf).rewind();</span><br><span class="line">      h ^= finish.getLong();</span><br><span class="line">      h *= m;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    h ^= h &gt;&gt;&gt; r;</span><br><span class="line">    h *= m;</span><br><span class="line">    h ^= h &gt;&gt;&gt; r;</span><br><span class="line"></span><br><span class="line">    buf.order(byteOrder);</span><br><span class="line">    <span class="keyword">return</span> h;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="The-flaw-of-Murmurhash2"><a href="#The-flaw-of-Murmurhash2" class="headerlink" title="The flaw of Murmurhash2"></a>The flaw of Murmurhash2</h2><p>&emsp;&emsp;Murmurhash2’s design contains an irremediable flaw, still based on the 32-bit hash function:</p>
+<p>&emsp;&emsp;If we set the program’s parameter (m) to 1, the calculation of hash values results in complete cancellation of the impact factor (k), and generating identical hash values. Even with awareness and prohibition of setting (m) to 1, achieving the expected $ 2^{32} $ possible hash values for the same input remains unattainable.</p>
+<p>While challenging to fix, this flaw is unlikely to cause application failures in practical scenarios. Stringent conditions are required for the flaw to manifest: the data must include repeating 4-byte values, with differences limited to these repetitions and the repetition count aligning with 4-byte boundaries. If such circumstances occur, the hash value range reduces from $ 2^{32} $to $ 2^{27.4} $.</p>
+<p>&emsp;&emsp;In Murmurhash3, the author employs a superior design for hash value calculation, mitigating the flaw present in Murmurhash2, and offering faster computation.</p>
+<h2 id="Tests-based-on-Murmurhash-and-Java’s-hashCode"><a href="#Tests-based-on-Murmurhash-and-Java’s-hashCode" class="headerlink" title="Tests based on Murmurhash and Java’s hashCode"></a>Tests based on Murmurhash and Java’s hashCode</h2><p>&emsp;&emsp;Below is an example of a string. We’ll observe the differences between the hash codes generated by Java’s String.hashCode() and Murmurhash, implemented by Jedis. It’s important to note that Murmurhash generates a 64-bit hash code for the same string:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    System.out.println(<span class="string">"LiXiansheng01"</span>.hashCode());</span><br><span class="line">    System.out.println(<span class="string">"LiXiansheng02"</span>.hashCode());</span><br><span class="line">    MurmurHash hash = <span class="keyword">new</span> MurmurHash();</span><br><span class="line">    System.out.println(hash.hash(<span class="string">"LiXiansheng01"</span>));</span><br><span class="line">    System.out.println(hash.hash(<span class="string">"LiXiansheng02"</span>));</span><br><span class="line">    System.out.println(hash.hash(<span class="string">"LiXiansheng03"</span>));</span><br><span class="line">    System.out.println(hash.hash(<span class="string">"LiXiansheng04"</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;The execution results of the code are shown in Figure 1：</p>
+<div style="text-align: center; width: 100%;">
+<img src="https://res.cloudinary.com/jknight/image/upload/v1590126930/BlogImages/Algorithm/hash-related/Murmurhash-Learning-Result-About-Java-Hashcode-And-Murmurhash.png" style="margin: 0 auto;">
+</div>
+
+<div align="center">
+<div align="center">Figure - 1</div>
+&emsp;
+</div>
+
+<p>&emsp;&emsp;From the results, it’s evident that while Java’s String class provides a straightforward hashCode() method, in scenarios with minimal string differences, its hash codes can easily become consecutive, leading to a lack of uniformity and randomness in hash code distribution, making clustering more likely. On the other hand, observing the results of Murmurhash, even with minor string differences, the hash code differences are significant. This ensures that Murmurhash provides hash codes with a well-distributed pattern, minimizing the occurrence of clustering phenomena.</p>
+<h2 id="Supplements"><a href="#Supplements" class="headerlink" title="Supplements"></a>Supplements</h2><ol>
+<li><p><strong>Avalanche effect</strong></p>
+<p>The <strong>“Avalanche Effect”</strong> is an ideal property in encryption algorithms, signifying that even the slightest change in input results in a significantly noticeable change in output. Coined by Horst Feistel, the concept traces back to Claude Shannon’s diffusion theory. In the context of block ciphers or cryptographic hash functions, if a system fails to exhibit a reasonable degree of avalanche effect, it is considered to have poor randomization characteristics. This deficiency could potentially enable cryptanalysts to deduce input solely from the output, posing a risk of partial or complete algorithm compromise.</p>
+</li>
+<li><p><strong>Strict Avalanche Criterion (SAC)</strong></p>
+<p>The <strong>“Strict Avalanche Criterion”</strong> formalizes the avalanche effect. It dictates that when any input bit is flipped, each output bit should, on average, have a 50% probability of changing. The Strict Avalanche Criterion is grounded in the integrity concepts of cryptography and was introduced by Webster and Tavares in 1985.</p>
+</li>
+<li><p><strong>The core idea behind String.hashCode()</strong></p>
+<p>The implementation process of String.hashCode() utilizes Horner’s rule, also known as Horner’s method or Qin Jiushao’s algorithm. It is an efficient algorithm for computing the value of an nth-degree polynomial. Horner’s rule achieves computational efficiency by transforming an nth-degree polynomial </p>
+<script type="math/tex; mode=display">f\left( x\right) =a_{n}x^{n}+a_{n-1}x^{n-1}+a_{n-2}x^{n-2}+\ldots \ldots +a_{2}x^{2}+a_{1}x+a_{0}</script><p>into</p>
+<script type="math/tex; mode=display">f\left( x\right) =\left( \left( \left( \ldots \left( \left( a_{n}x+a_{n-1}\right) \cdot x+a_{n-2}\right) \cdot x+a_{n-3}\right) x+\ldots \ldots +a_{2}\right) x+a_{1}\right) x+a_{0}</script><p>reducing the number of multiplication and addition operations from $ \dfrac {n\left( n+1\right) }{2} $ and n, respectively, to n multiplications and n additions. This optimization enhances computational performance.</p>
+</li>
+</ol>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ol>
+<li>Stack Overflow. <a href="https://stackoverflow.com/questions/9241230/what-is-murmurhash3-seed-parameter" target="_blank" rel="noopener">What is MurmurHash3 seed parameter?</a> [E]</li>
+<li>spacewander. <a href="https://segmentfault.com/a/1190000010990136" target="_blank" rel="noopener">漫谈非加密哈希算法</a> [E]</li>
+<li>aappleby. <a href="https://github.com/aappleby/smhasher/wiki" target="_blank" rel="noopener">SMHasher</a> [E]</li>
+<li>Anderson Dadario. <a href="https://dadario.com.br/cryptographic-and-non-cryptographic-hash-functions/" target="_blank" rel="noopener">Cryptographic and Non-Cryptographic Hash Functions</a> [E]</li>
+<li>Wikipedia. <a href="http://en.wikipedia.org/wiki/MurmurHash" target="_blank" rel="noopener">MurmurHash</a> [E]</li>
 </ol>
 <p>&emsp;<br>&emsp;<br>&emsp;<br>&emsp;</p>
 <link rel="stylesheet" href="/css/spoiler.css" type="text/css"><script src="/js/spoiler.js" type="text/javascript" async></script>
@@ -289,7 +336,7 @@ classes that you can use:
 				
 		      		<section class="post-declare">
 <p>
-<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;CopyRight</b>：本文由<b><a href="/about" target="_blank" title="N.C.Lee">N.C.Lee</a></b>创作和发表，采用<b>署名(BY)</b>-<b>非商业性使用(NC)</b>-<b>相同方式共享(SA)</b>国际许可协议进行许可，转载请注明作者及出处。<br>&emsp;&emsp;本文作者为&nbsp;<b><a href="/about" target="_blank" title="N.C.Lee">N.C.Lee</a></b><br>&emsp;&emsp;本文标题为&nbsp;<b><a href="/en/2019/MurMurhash-Learning.html" target="_blank" title="Murmurhash初步学习-EN">Murmurhash初步学习-EN</a></b><br>&emsp;&emsp;本文链接为&nbsp;<b><a href="/en/2019/MurMurhash-Learning.html" target="_blank" title="Murmurhash初步学习-EN">https://marcuseddie.github.io/en/2019/MurMurhash-Learning.html</a></b></div>
+<div style="background-color:#E8E8E8;color:#000;padding:10px 15px 15px 20px;"><br><b>&emsp;&emsp;CopyRight</b>：This article was created and published by <b><a href="/about" target="_blank" title="N.C.Lee">N.C.Lee</a></b> and is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike International License (CC BY-NC-SA). Please attribute the author and source if you reproduce it.<br>&emsp;&emsp;Author: &nbsp;<b><a href="/about" target="_blank" title="N.C.Lee">N.C.Lee</a></b><br>&emsp;&emsp;Title: &nbsp;<b><a href="/en/2019/MurMurhash-Learning.html" target="_blank" title="Murmurhash Analysis">Murmurhash Analysis</a></b><br>&emsp;&emsp;Link: &nbsp;<b><a href="/en/2019/MurMurhash-Learning.html" target="_blank" title="Murmurhash Analysis">https://marcuseddie.github.io/en/2019/MurMurhash-Learning.html</a></b></div>
 </p>
 <section class="post-declare">
 		  		
@@ -300,21 +347,6 @@ classes that you can use:
     
 </section>
 	
-	
-	<div class="prev_next clearfix">
-		<div style="width:50%;float:left;">
-			
-				
-					<a href="/en/2023/minds.html" class="alignleft prev" title="思维导图测试用例-EN"> Prev： 思维导图测试用例-EN</a>
-				
-			
-		</div>
-		<div style="width:50%;float:right;">
-			
-				<a href="javascript:return false;" class="alignleft next" title="NON_NEXT_ANYMORE">Ooops...</a>
-			
-		</div>
-	</div>
 	
 	<script>
 	    function createImgEventFullScreen() {
